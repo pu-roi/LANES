@@ -1,6 +1,14 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 14, 2026, 6:17 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 19, 2026, 4:07 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current NER requirement clarification — October 19, 2026
+
+**Status: requirement clarified; interim demonstration priority selected by the user.** The user's original goal includes trained location, DEPTH and TIME recognition, with separately evaluated per-location/shared-fact associations. Completed models learn six location labels only. Section 30's location-only profile records that implementation choice; it does not establish that the user abandoned learned DEPTH/TIME or that the original goal is complete. Existing depth/time rules are separate capabilities. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The user subsequently selected a limited location-model + depth/time-rule demonstration as the temporary defense priority. No additional neural training runs on this interim preparation path; learned DEPTH/TIME remains a later unfinished annotation/training/evaluation requirement. The frozen reference/acceptance package precedes offline association repair and any read-only connection. This is not a permanent scope reduction or a completion guarantee. Keep system fields distinct from neural labels/scores; production architecture, data and behavior remain unchanged. [Current tasks](task_plan.md#current-ner-scope-and-defense-checkpoint).
+
+**Earlier dated decisions below retain their original historical context.**
 
 **Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

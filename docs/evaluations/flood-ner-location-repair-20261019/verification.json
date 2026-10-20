@@ -1,0 +1,110 @@
+{
+  "application_connected": false,
+  "code_files_unchanged": 50,
+  "container_stopped_pid_zero": true,
+  "context_inputs": 24,
+  "eligible_context_references": 23,
+  "freeze_sha256": "990c387cc4218e2490c0bb820ea8a0e42bd730223ff4be4c5393213317b7b65a",
+  "held_references_unchanged": 3,
+  "historical_metadata_entries_unchanged": 1539,
+  "independent_counts": {
+    "combined": {
+      "associations": {
+        "fn": 3,
+        "fp": 1,
+        "tp": 102
+      },
+      "recognition": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "explicit_road": {
+      "associations": {
+        "fn": 7,
+        "fp": 0,
+        "tp": 98
+      },
+      "recognition": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        }
+      }
+    },
+    "shared_locality": {
+      "associations": {
+        "fn": 7,
+        "fp": 1,
+        "tp": 98
+      },
+      "recognition": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 18,
+          "fp": 12,
+          "tp": 822
+        }
+      }
+    },
+    "transport_asset": {
+      "associations": {
+        "fn": 3,
+        "fp": 0,
+        "tp": 102
+      },
+      "recognition": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 18,
+          "fp": 13,
+          "tp": 822
+        }
+      }
+    }
+  },
+  "isolation_and_mount_source_identities_verified": true,
+  "new_neural_inference": false,
+  "no_post_result_tuning": true,
+  "old_fixture_baseline_passed": 238,
+  "preservation_limit": "Historical mixed-split packages and excluded partitions checked by size/mtime only; explicit training evidence checked by SHA256.",
+  "private_verification_script_sha256": "4374c3ffa5d56bd69e89e5e6bd1a79f64f8fcd00f6454decc46ebf21d232399d",
+  "protected_hashes_unchanged": 208,
+  "raw_records": 679,
+  "software_tests_passed": 347,
+  "status": "independently_verified_saved_outputs",
+  "system_connection_cleared": false,
+  "temporal_failures_by_expected_role": {
+    "onset": 3,
+    "report": 4
+  },
+  "temporal_passed": 29,
+  "temporal_total": 36,
+  "training_records": 345,
+  "training_started": false,
+  "validation_holdout_contents_opened": false,
+  "validation_holdout_metadata_entries_unchanged": 82,
+  "verified_at_utc": "2026-10-19T14:00:04.083336+00:00"
+}

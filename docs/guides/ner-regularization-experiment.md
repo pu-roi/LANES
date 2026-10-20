@@ -1,6 +1,41 @@
 # Regularization experiment: verified desktop delivery
 
-> **Last Updated:** October 19, 2026, 01:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 19, 2026, 2:39 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Repaired offline location comparison completed.** One explicitly authorized new Linux attempt processed all **six saved training articles and eight fictional cases**. Independent verification reconciles every input/hash, Unicode span, label and comparison count. Startup **5.688 s**, slowest input **0.666 s**, peak worker RSS **450.79 MiB** and wall time **9.206 s** all pass unchanged limits. The previous failed attempt, source bindings and claim are preserved; its verified stopped-owner lock was archived. The successful attempt is stopped and its active lease is cleared. [Executed outcome](../evaluations/flood-ner-shadow-execution-20261019/README.md).
+
+**Next:** separately design and test how location mentions associate with clause-local flood status, time, depth and uncertainty. No live processing is connected. Preserve all **345 training / 60 validation / 60 research-holdout passages**; no new data, retraining or validation/holdout evaluation occurred. The 604 passing software checks remain preparation evidence; this task adds actual execution and independent verification, with no source change or suite rerun. [Operator guide](ner-shadow-comparison.md).
+
+**Earlier dated checkpoints below are historical.**
+
+**Offline location shadow adapter implemented; comparison execution remains pending.** The single Linux attempt stopped during startup before processing any article. An ORM-import/engine-construction conflict is reproduced with a constructed probe. The repaired offline import boundary passes **604 checks / 62 new checks** and read-only preparation verification, but has not been rerun in Linux. Failed receipts, original source bindings, stopped container and lease remain preserved; no automatic retry occurred. [Outcome](../evaluations/flood-ner-shadow-comparison-20261019/README.md).
+
+**Next:** explicitly reconcile the stopped failed attempt and execute one new offline comparison with the repaired grant and an absent destination. Only after that comparison completes should claim-context integration be scoped. Gate 3 remains passed for its earlier frozen Linux profile; the shadow-comparison gate is still open. No new data, training, validation/holdout evaluation or live connection occurred. Membership remains **345/60/60**. [Operator guide](ner-shadow-comparison.md).
+
+**Earlier dated checkpoints below are historical.**
+
+**Current result: local Linux CPU qualification passes.** V29 executes against Docker Desktop 4.95.0 / Linux engine 29.8.2; all 345 predictions match, fixed runtime limits pass and eight real fictional fault probes verify containment. No live adapter is implemented. [Executed evidence](../evaluations/flood-ner-linux-execution-20261019/README.md). Next separately implement the read-only shadow adapter. Earlier blocked/next-step statements below are preserved historical scope, superseded by this result; no training or holdout rerun follows.
+
+**Current Linux attempt is blocked before image build.** The latest Docker startup log records an inaccessible ingest-socket rename; a normal restart did not produce a completed receipt and the Linux API remains unavailable. No Linux inference/performance or actual fault recovery is claimed. See the [v27 outcome](../evaluations/flood-ner-linux-qualification-20261019/README.md); preserve the passed Windows smoke and complete Gate 3 before a shadow connection.
+
+**Current next gate:** [Linux runtime qualification](ner-runtime-qualification.md), then a separately scoped [shadow integration](../plans/ner-v19-shadow-integration.md). The Windows CPU smoke passes; Linux Docker is unavailable. V19 remains retained; no training or completed-holdout rerun is needed. The earlier execution instructions below remain historical.
+
+**Latest completed task:** the separate [training-only boundary study](../evaluations/flood-ner-road-boundaries-20261019/README.md) produced zero corrective actions and no qualifying rules. V19 control remains retained; no additional validation comparison, integration or retraining follows. See the [boundary operator guide](ner-road-boundary-study.md). The earlier dated instructions/results below remain historical and unchanged in their frozen packages.
+
+
+**Latest completed task:** the separately authorized [frozen validation comparison](../evaluations/flood-ner-context-validation-20261019/README.md) scores 76.54% shadow F1 versus 71.60% control, but fails its zero-new-strict-FP gate. V19 control remains retained and the prototype remains unintegrated. See the [validation operator guide](ner-context-safeguard-validation.md); do not rerun the consumed comparison or tune rules from these findings. The instructions and next-step wording below describe their earlier dated scope.
+
+
+**Latest checkpoint:** the separate [training-only context study](../evaluations/flood-ner-context-safeguards-20261019/README.md) is complete. Three shadow retags pass the training no-harm gate; no validation gain has been measured. V19 control remains retained. A [separate frozen validation proposal](ner-context-safeguards.md) is the next gate; no training or completed-holdout evaluation is authorized. The instructions below describe preserved regularization/comparison history.
+
+
+**Current NER diagnosis completed: retain corrected v19 control, seed 0 primary.** Saved predictions reproduce candidate validation F1 69.71% versus control 71.60%. All 405 records are accounted for; 22 affected validation passages/18 complete saved captures and 33 training contexts were reviewed. Candidate gains seven correct entities, loses four, introduces eighteen FPs and resolves eight. No supported reference correction or training/scoring defect was found; one inherited boundary question remains unresolved. Fresh 197 tests/20 subtests pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** a separately scoped development-only feasibility task for convention/training-derived context safeguards and constructed contrasts. No additional optimizer search, data collection, model selection or training is authorized. The completed holdout stays excluded; the desktop can remain off.
+
+[Diagnosis report](../evaluations/flood-ner-regularization-diagnosis-20261019/README.md) · [Comparison guide](ner-regularization-comparison.md)
+
+**Earlier dated checkpoints below are historical.**
 
 **Private archival backup:** [Nine owner-only, fully byte-verified files](https://drive.google.com/drive/folders/14A4kgWRH0LNay8My9vCutIQp_ro-ezTl) preserve the completed run and frozen decision. Original packages and retained control are unchanged. [Publication checks](../evaluations/flood-ner-regularization-publication-20261019/README.md). No retraining or additional holdout evaluation is authorized by this backup.
 

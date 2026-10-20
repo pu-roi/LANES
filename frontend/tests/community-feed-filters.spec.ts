@@ -117,25 +117,25 @@ test('default All Time and newest order, responsive controls and oldest sorting'
   expect(state.errors).toEqual([]);
 });
 
-for (const [option, value, total] of [['Today (UTC)', 'today', 43], ['Last 24 Hours', '24h', 43],
-  ['Last 3 Days', '3d', 44], ['Last 7 Days', '7d', 44]] as const) {
-  test(`${option} filters the complete dataset before pagination`, async ({ page }) => {
+for (const [option, value] of [['Today (UTC)', 'today'], ['Last 24 Hours', '24h'],
+  ['Last 3 Days', '3d'], ['Last 7 Days', '7d']] as const) {
+  test(`${option} filters the complete dataset with continuous stream`, async ({ page }) => {
     const state = await setup(page);
     await page.goto('/feed');
     await expect(contents(page)).toHaveCount(20);
     await openFilters(page);
     await select(page, 'Date posted', option);
-    await expect(page.getByRole('navigation', { name: 'Feed pagination' })).toContainText(`${total} posts`);
     expect(state.requests.at(-1)!.get('date_range')).toBe(value);
-    await page.getByRole('button', { name: 'Next', exact: true }).click();
-    await expect(page.getByRole('navigation', { name: 'Feed pagination' })).toContainText('Page 2');
+    await expect(page.getByRole('button', { name: 'Load more posts', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Load more posts', exact: true }).click();
+    await expect(contents(page)).toHaveCount(40);
     expect(state.requests.at(-1)!.get('date_range')).toBe(value);
     expect(state.requests.at(-1)!.get('skip')).toBe('20');
     expect(state.errors).toEqual([]);
   });
 }
 
-test('combined filters survive page changes, hard refresh, voting and live refresh', async ({ page }) => {
+test('combined filters survive continuous loading, hard refresh, voting and live refresh', async ({ page }) => {
   const state = await setup(page);
   await page.goto('/feed');
   await expect(contents(page)).toHaveCount(20);
@@ -143,21 +143,19 @@ test('combined filters survive page changes, hard refresh, voting and live refre
   await select(page, 'Date posted', 'Last 24 Hours');
   await select(page, 'Flood status', 'Active Floods');
   await select(page, 'Flood severity', 'High');
-  await expect(page.getByRole('navigation', { name: 'Feed pagination' })).toContainText('21 posts');
-  await page.getByRole('button', { name: 'Next', exact: true }).click();
-  await expect(contents(page)).toHaveText(['Public update 5']);
+  await expect(page.getByRole('button', { name: 'Load more posts', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Load more posts', exact: true }).click();
+  await expect(contents(page)).toHaveCount(21);
+  await expect(contents(page).last()).toHaveText('Public update 5');
   await page.reload();
-  await expect(contents(page)).toHaveText(['Public update 5']);
+  await expect(contents(page)).toHaveCount(20);
   const query = state.requests.at(-1)!;
-  expect([query.get('date_range'), query.get('flood_status'), query.get('severity'), query.get('skip')])
-    .toEqual(['24h', 'active', 'high', '20']);
-  await page.getByRole('button', { name: 'Upvote', exact: true }).click();
-  await expect(contents(page)).toHaveText(['Public update 5']);
+  expect([query.get('date_range'), query.get('flood_status'), query.get('severity')])
+    .toEqual(['24h', 'active', 'high']);
+  await page.getByRole('button', { name: 'Upvote', exact: true }).first().click();
   const requests = state.requests.length;
   await page.evaluate(() => (window as unknown as { emitFeedEvent: () => void }).emitFeedEvent());
   await expect.poll(() => state.requests.length).toBeGreaterThan(requests);
-  expect(state.requests.at(-1)!.get('skip')).toBe('20');
-  await expect(contents(page)).toHaveText(['Public update 5']);
   expect(state.errors).toEqual([]);
 });
 
@@ -227,5 +225,26 @@ test('Nearby with unavailable location preserves the existing location prompt', 
   await expect(page.getByRole('button', { name: 'Nearby radius', exact: true })).toContainText('1 km');
   await expect(page.getByRole('button', { name: 'Date posted', exact: true })).toContainText('Last 7 Days');
   expect(state.requests).toHaveLength(0);
+  expect(state.errors).toEqual([]);
+});
+
+test('Feed button in navigation bar refreshes feed and returns to top', async ({ page }) => {
+  const state = await setup(page);
+  await page.goto('/feed');
+  await expect(contents(page)).toHaveCount(20);
+
+  // Click load more to fetch next batch
+  await page.getByRole('button', { name: 'Load more posts', exact: true }).click();
+  await expect(contents(page)).toHaveCount(40);
+
+  // Scroll down
+  await page.evaluate(() => window.scrollTo(0, 800));
+
+  // Click Feed button in navbar
+  const feedBtn = page.getByRole('link', { name: 'Feed', exact: true }).first();
+  await feedBtn.click();
+
+  // Reset to initial page and fresh posts
+  await expect(contents(page)).toHaveCount(20);
   expect(state.errors).toEqual([]);
 });

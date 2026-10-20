@@ -1,0 +1,231 @@
+{
+  "ai_assisted_silver": true,
+  "constructed_location_cases": 36,
+  "constructed_temporal_cases": 36,
+  "existing_baseline_passed": 238,
+  "independent_generalization_accuracy": false,
+  "learned_depth_time_unfinished": true,
+  "lost_correct_locations_all_methods": 0,
+  "methods": {
+    "combined": {
+      "association_counts": {
+        "fn": 3,
+        "fp": 1,
+        "tp": 102
+      },
+      "blockers": [
+        "introduced_association_fp",
+        "temporal_failures"
+      ],
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "fixture_failures": 0,
+        "gained_correct_associations": 4,
+        "gained_correct_locations": 2,
+        "introduced_association_fp": 1,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 7
+      },
+      "generalization_claim": false,
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      },
+      "seven_misses_recovered": 4,
+      "training_only_exposed_silver": true
+    },
+    "explicit_road": {
+      "association_counts": {
+        "fn": 7,
+        "fp": 0,
+        "tp": 98
+      },
+      "blockers": [
+        "temporal_failures",
+        "no_supported_location_correction"
+      ],
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "fixture_failures": 0,
+        "gained_correct_associations": 0,
+        "gained_correct_locations": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 7
+      },
+      "generalization_claim": false,
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        }
+      },
+      "seven_misses_recovered": 0,
+      "training_only_exposed_silver": true
+    },
+    "shared_locality": {
+      "association_counts": {
+        "fn": 7,
+        "fp": 1,
+        "tp": 98
+      },
+      "blockers": [
+        "introduced_association_fp",
+        "temporal_failures"
+      ],
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "fixture_failures": 0,
+        "gained_correct_associations": 0,
+        "gained_correct_locations": 1,
+        "introduced_association_fp": 1,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 7
+      },
+      "generalization_claim": false,
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 18,
+          "fp": 12,
+          "tp": 822
+        }
+      },
+      "seven_misses_recovered": 0,
+      "training_only_exposed_silver": true
+    },
+    "transport_asset": {
+      "association_counts": {
+        "fn": 3,
+        "fp": 0,
+        "tp": 102
+      },
+      "blockers": [
+        "temporal_failures"
+      ],
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "fixture_failures": 0,
+        "gained_correct_associations": 4,
+        "gained_correct_locations": 1,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 7
+      },
+      "generalization_claim": false,
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 19,
+          "fp": 13,
+          "tp": 821
+        },
+        "candidate": {
+          "fn": 18,
+          "fp": 13,
+          "tp": 822
+        }
+      },
+      "seven_misses_recovered": 4,
+      "training_only_exposed_silver": true
+    }
+  },
+  "model_retained": "v19_corrected_control_seed_0",
+  "new_location_fp_all_methods": 0,
+  "new_neural_inference": false,
+  "new_training": false,
+  "no_post_result_tuning": true,
+  "pure_tagalog_real_performance": "unmeasured",
+  "real_language_scope": {
+    "context_references": {
+      "english": 11,
+      "taglish": 12
+    },
+    "training": {
+      "english": 170,
+      "taglish": 175
+    }
+  },
+  "software_tests_passed": 347,
+  "system_connection_cleared": false,
+  "temporal_by_language": {
+    "english": {
+      "passed": 10,
+      "total": 12
+    },
+    "tagalog": {
+      "passed": 9,
+      "total": 12
+    },
+    "taglish": {
+      "passed": 10,
+      "total": 12
+    }
+  },
+  "temporal_by_role": {
+    "clearance": {
+      "passed": 6,
+      "total": 6
+    },
+    "observation": {
+      "passed": 6,
+      "total": 6
+    },
+    "onset": {
+      "passed": 3,
+      "total": 6
+    },
+    "recession": {
+      "passed": 6,
+      "total": 6
+    },
+    "report": {
+      "passed": 2,
+      "total": 6
+    },
+    "unspecified": {
+      "passed": 6,
+      "total": 6
+    }
+  },
+  "temporal_passed": 29,
+  "temporal_total": 36,
+  "three_reference_holds_retained": true
+}

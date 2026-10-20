@@ -81,7 +81,7 @@ class NewsExtractionRun(Base):
     __tablename__ = "news_extraction_runs"
     __table_args__ = (
         UniqueConstraint("article_version_id", "pipeline_version", "mode", name="uq_news_extraction_run_identity"),
-        CheckConstraint("mode = 'rules_only'", name="rules_only_mode"),
+        CheckConstraint("mode IN ('rules_only', 'ner_rules_v1')", name="rules_only_mode"),
         CheckConstraint("status IN ('pending','processing','completed','retry_wait','failed')", name="processing_status"),
         CheckConstraint("attempt_count BETWEEN 0 AND 5", name="bounded_attempts"),
         CheckConstraint("(status = 'processing' AND lease_token IS NOT NULL AND lease_expires_at IS NOT NULL) OR "

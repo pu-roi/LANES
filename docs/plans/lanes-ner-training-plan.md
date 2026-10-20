@@ -1,6 +1,286 @@
 # LANES spaCy NER research and training proposal
 
-> **Last Updated:** October 18, 2026, 11:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 20, 2026, 10:25 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current integration — C3a runtime/queue gate passed locally
+
+[C3a evidence](../evaluations/rss-ner-native-worker-20261020/README.md): one authorized ten-input local integration run uses the unchanged v19 control seed 0 and v40 → v44 → v42 behavior. All 4,483 retained spans, including 53 reviewed predictions, and complete graph/projection outputs match. No new dataset, retraining, reference changes, rule tuning or held-out use. Six prior receipt packages remain intact. Next is C3b RSS admission/corrections, original feed provenance, readers and downstream acceptance; automatic NER and cloud release remain gated.
+
+**Earlier checkpoints below are historical.**
+
+## Current integration — Phase C2 evidence adapter delivered
+
+[C2 projection/source verification](../evaluations/rss-ner-native-projection-20261020/README.md) preserves all original predictions and qualified v40 → v44 → v42 behavior using saved outputs only. No inference, data collection, reference revision or retraining. Original one-/two-GiB failures, passing three-GiB qualification, schema and C1 artifacts remain unchanged. Next is C3 runtime/session-budget, RSS admission/corrections, intended-method readers and controlled end-to-end acceptance; automatic NER and deployment stay gated.
+
+**Earlier checkpoints below are historical.**
+
+## Current integration scope — C1 complete; projection/source checking next
+
+[93 C1 checks](../evaluations/rss-ner-method-boundary-20261020/README.md) verify queue isolation and lossless backend native-history inspection. Native automatic writes remain off; scalar/publication consumers remain closed to native data. Next is conservative projection and deterministic source checking, then runtime/admission/current-reader wiring and end-to-end acceptance. No new training/data/reference revision or inference. Runtime failures, passing three-GiB evidence and schema receipts remain preserved, with current-source differences recorded separately. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Earlier checkpoints below are historical.**
+
+## Current integration scope — approved schema foundation verified
+
+The minimal `ner_rules_v1` mode-check change is explicitly approved, implemented and locally verified by **66 checks**. [Schema report and preservation exception](../evaluations/rss-ner-mode-schema-20261020/README.md) · [Current Phase C tasks](../task_plan.md#phase-c--connect-automatic-article-processing). Both failed runtime profiles and the passing three-GiB qualification remain preserved; only the authorized current SQLAlchemy check line differs from the frozen runtime source. No inference, training, new data, shared/cloud migration or automatic wiring occurred. **Next: Phase C controlled integration**, retaining the full contract and downstream safety gates.
+
+**Earlier checkpoints below are historical.**
+
+## Current integration scope — Phase B passes locally at one CPU / 3 GiB
+
+The explicitly authorized single three-GiB attempt completes all **355 requests**, matching **352 retained prediction records**, every reviewed-article neural prediction (53) and its full saved proposal/graph, and 355 live graph bindings. Peak **1,972.21 MiB** passes below **2,688 MiB**; all performance, isolation/failure and clean model-session shutdown checks pass independent inference-free verification. Earlier failed profiles and original runtime/model/rules remain unchanged. [Passing outcome](../evaluations/rss-ner-runtime-phase-b-3g-20261020/README.md) · [Ordered gates](../task_plan.md#phase-b--qualify-the-production-inference-runtime). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** separate approval of the existing processing-mode schema proposal, then Phase C controlled RSS-to-saved-NER integration. No new dataset/retraining/reference revision, schema/database write, automatic processing, UI or cloud resource/deployment change occurs in this qualification. The local three-GiB pass does not qualify the inspected one-GiB cloud job; actual Cloud Run/full-job verification and release remain later gates. Retain all previously recorded source/research limitations.
+
+**Earlier checkpoints below are historical.**
+
+## Current integration scope — authorized 2-GiB follow-up fails headroom
+
+One newly frozen one-CPU / 2-GiB local attempt completes all 345 training passages, six articles and three stress cases, with exact saved neural spans and 354 reproduced graphs. Combined peak reaches 2,048 MiB, above the below-1,792-MiB gate; the guard stops before the reviewed article and the model shuts down cleanly. **Phase B remains open; Phase C cannot start.** [Latest measured result](../evaluations/rss-ner-runtime-phase-b-2g-20261020/README.md) · [Ordered gates](../task_plan.md#phase-b--qualify-the-production-inference-runtime). A proposed 3-GiB local profile needs a separate decision; no further attempt, new data/training, runtime/model/rule/schema or cloud change occurs. Original failed receipts remain preserved. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Current integration scope — Phase B memory gate failed
+
+The supervised runtime is implemented; one frozen one-CPU / 1-GiB attempt completed all 345 training passages, six articles and two stress cases, with exact saved neural spans and reproduced grouping. The maximum-length fictional case caused OOM; the reviewed 53-prediction article was not reached. **Phase B remains open; Phase C cannot start.** [Measured outcome](../evaluations/rss-ner-runtime-phase-b-20261020/README.md) · [Ordered gates](../task_plan.md#phase-b--qualify-the-production-inference-runtime). A separate resource decision is next; no retry, model/rule change, new training/data, schema edit, automatic wiring or cloud change followed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Current integration scope — Phase A specification complete
+
+The user selected automatic RSS-to-NER processing and saved results in the existing News Intelligence page, superseding the earlier interface-only next step. The [integration contract](rss-ner-integration-contract.md) traces discovery through publication/readers, specifies full native graph preservation, bounded candidate admission, conservative legacy projection, versioned source checks and 23 future acceptance cases. The [separate processing-mode proposal](rss-ner-processing-mode-schema-proposal.md) awaits explicit schema-change approval. No model, migration, inference, database, frontend or cloud change is delivered by Phase A. **Next: Phase B cloud-compatible runtime qualification**, then the [ordered implementation gates](../task_plan.md#current-milestone-rss-to-ner-integration-and-news-intelligence). No new training or dataset collection is included. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V46 backend preview integration — complete; admin interface next
+
+The [specified backend connection](ner-backend-location-repairs-v46.md) now runs original v19 predictions through v40 proposals, qualified v44 combined repairs and unchanged v42 matching. Both worker and host share the adapter; the host recomputes chain and graph. Source link/v1 fields remain, with explicit stage provenance and replacement evidence. [Outcome](../evaluations/flood-ner-backend-location-v46-20261020/README.md) · [Guide](../guides/ner-backend-preview.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+1,281 tests, 788 cached inputs, 407 saved graphs, 418 applicable cases, three repaired-view checks and one real isolated-worker API check pass. All 53 saved article neural predictions and grouped output match; actual isolation/cleanup and preservation are independently verified. The preview remains disabled by default. The backend task is complete; plan admin-panel display next. Eleven source rows, type-family real evidence, three holds, non-flood access, learned DEPTH/TIME and real pure-Tagalog measurement remain limitations rather than newly imposed frontend prerequisites. No automatic processing, database/history or map changes occur.
+
+**Earlier checkpoints below are historical.**
+
+## V45 scoring reassessment — qualification passed for three saved views
+
+The [scoring-only successor](ner-location-scoring-v45.md) preserves original-control expectations and adds three source-authored repaired-view expectations. 176 tests, 418 applicable cases and three conditional paired checks per method pass. Missing-junction, boundary-replacement and combined views qualify for a later proposal; type correction remains unqualified without real evidence. [Outcome](../evaluations/flood-ner-location-scoring-v45-20261020/README.md) · [Guide](../guides/ner-location-scoring-v45.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The evidence is already exposed: saved training/context counts and article gains remain unchanged. Combined source findings are eight corrected occurrences, 40 restored facts and 11 unresolved rows. No extraction/inference or worker rerun, rules/model/reference changes or promotion occurred. Next separately scope a backend-preview proposal for qualified views without treating the type family or an untested combination as established. Preserve existing strict recognition errors, three holds, non-flood access, learned DEPTH/TIME and real pure-Tagalog uncertainty; the preview stays disabled.
+
+**Earlier checkpoints below are historical.**
+
+## V44 location feasibility — completed; further qualification required
+
+The [frozen study](ner-location-repair-v44.md) processes 788 inputs once. Combined proposals correct eight source occurrences and restore 40 facts across eight measured rows; 11 article rows remain unresolved. Training and eligible contextual controls remain unchanged, with no new strict errors or supported losses. [Outcome](../evaluations/flood-ner-location-repair-v44-20261020/README.md) · [Guide](../guides/ner-location-repair-v44.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+No method qualifies: the frozen scorer mishandles serialized expected spans, three preserved incomplete-target fixture contracts conflict with the combined effective view, and the type family demonstrates no real correction. Independent normalized saved-output checks match all 36 new expectations without changing official scores. Next separately qualify JSON round-trip scoring and original-control/repaired-view contracts while preserving every old expectation; no automatic rerun, parser broadening or promotion. Model/v40/v42/references and three holds remain preserved. Learned DEPTH/TIME, pure-Tagalog measurement, non-flood access and later interface/history/plotting remain open.
+
+**Earlier checkpoints below are historical.**
+
+## Saved-article recognition assessment — next research scope identified
+
+The [completed assessment](../evaluations/flood-ner-recognition-gaps-20261020/README.md) reconciles 19 unresolved rows, 34 target occurrences and 93 retained unassigned facts. Seventeen occurrences are missing, three have boundary defects and one has an incompatible type. Six overlapping cases need label/meaning review. No new references, accuracy measurement, model/rule changes or inference occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Next separately freeze a source-supported location-proposal feasibility study for explicit junction spans and boundary/type corrections. Preserve original neural predictions and uncertain abbreviations/addresses; require zero new strict location errors, no lost correct locations, and correct downstream depth/time/status/access retention. Do not assume every missing target is repairable or that retraining is necessary. V42 stays accepted, preview disabled, and frontend/history/plotting remain later work. Three holds, non-flood access, learned DEPTH/TIME and real pure-Tagalog measurement remain open.
+
+**Earlier checkpoints below are historical.**
+
+## V42 context repair — bounded acceptance passed; recognition gaps retained
+
+One frozen 371-input/1,419-graph comparison passes all 36 new scenarios and 310 preserved expectations in their prescribed views. Existing 120 contextual link/expression sets remain unchanged. The five complete article junctions now retain co-described depths, list observation/access/caution is supported, and dateline relations are excluded. All 26 measured rows and 59 previous facts are reconciled without losing 52 depth spans/qualifiers. [Outcome](../evaluations/flood-ner-context-repair-v42-20261019/README.md) · [Guide](../guides/ner-context-repair-v42.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+After independent verification, v42 replaces only the backend context version; 1,195 post-promotion tests and cached response-contract checks pass, and the flag stays off. Original v19/v40/v41, predictions, references and source hashes are preserved. No inference, proposal regeneration, database access, frontend or map change. Eighteen measured rows and one unmeasured junction remain recognition-limited. Next separately assess missing/boundary/type recognition gaps; no automatic name fallback or retraining. Three holds, non-flood access, learned DEPTH/TIME and real pure-Tagalog measurement remain open.
+
+**Earlier checkpoints below are historical.**
+
+## Actual saved-article review — full-article extraction readiness remains open
+
+The additive source-link field and one real read-only database/API/worker check pass, along with 379 preview tests. A field-by-field source review finds junction/equivalent-depth, dotted-clock/list-header, dateline and location-specificity gaps outside the earlier bounded acceptance claims. The full article's 52 depth substrings remain source-exact; that does not establish correct attachment. [Findings and recommendation](../evaluations/flood-ner-saved-article-review-20261019/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Next separately scope these extraction repairs before relying on this article's grouped output. Keep missing neural mentions separate, retain v41/old references/three holds and do not infer independent accuracy. No training, extraction-rule change, publisher fetch, database write, frontend or plotting change occurred.
+
+**Earlier checkpoints below are historical.**
+
+## Extraction-only backend preview — local implementation verified
+
+The [specified preview](ner-extraction-only-backend-preview.md) is implemented and locally verified, default disabled: active-admin saved-body API, grouped fields/source evidence, original neural mentions plus labeled v40 proposals, v41 context and immutable input/model/code bindings. **798 tests**, nine real-worker API calls, six article neural parity checks and 120 cached context-view comparisons pass. Source/evidence/excluded preservation and live isolation are checked; the deliberate four-setting config change is separately reconciled without inference retry. [Outcome](../evaluations/flood-ner-backend-preview-20261019/README.md) · [Guide](../guides/ner-backend-preview.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Three held references, the separate non-flood access miss, real pure-Tagalog uncertainty and unfinished learned DEPTH/TIME remain explicit. No frontend, database history, ordinary-processing replacement or map change. Interface discussion, durable neural storage/schema approval and operational deployment remain later tasks.
+
+**Earlier checkpoints below are historical.**
+
+## V41 context repair — bounded offline acceptance passed
+
+The separate successor repairs two-sided onset/report attachment and joint indoor-locality scope without modifying v38/v40, the model, location proposals or references. All 36 old temporal and 36 new regression cases pass; all 238 contextual fixtures retain their exact oracles and pass in the original/four saved proposal views. One frozen Linux attempt processes 334 raw inputs. Combined contextual counts improve from 102/1/3 to **104 TP / 0 FP / 1 FN**, retaining four transport gains and recovering both collective misses. The residual miss is non-flood access. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+419 bound software checks and independent saved-output verification pass. No real location recognition rerun, neural inference, training, validation/holdout content, reference change or connection occurred. Saved 345 training recognition rows, 36 location fixtures, V19 seed 0 and 345/60/60 membership remain unchanged. These are exposed silver/constructed results, not independent accuracy; three holds and real pure-Tagalog measurement remain open. Learned DEPTH/TIME remains unfinished. [Outcome](../evaluations/flood-ner-context-repair-v41-20261019/README.md) · [Guide](../guides/ner-context-repair-v41.md).
+
+**Next proposal:** separately scope extraction-only backend integration with supported provenance, unresolved fields, errors and known limitations. No automatic deployment, publication/routing, history/map change or retraining follows the passed bounded repair. Preserve the user's observation-versus-onset and subsided-history/no-current-plotting requirements for that later design. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V40 offline recognition feasibility — completed, not qualified for connection
+
+The separately authorized rule-assisted study keeps v19 unchanged and separates original neural mentions from proposed additions/type corrections. One frozen Linux attempt processes 345 training predictions, 24 context inputs and 310 fictional cases (679 raw inputs). Transport recognition gains one correct location and four strict associations without new errors on the reviewed subset. Shared-locality typing gains one location but introduces one collective/shared scope disagreement. Exact road typing has no demonstrated corrective applicability. No complete method qualifies. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Unchanged v38 passes 29/36 new temporal cases; seven onset/report-to-observation errors remain. All 36 location and 238 preserved context cases pass in their prescribed views; 347 bound software checks pass. Full results are exposed training diagnosis, not independent accuracy or pure-Tagalog measurement. All model/data/reference/history constraints remain unchanged; no neural inference, training or connection occurred. The user's future subsided-history/no-current-plotting policy is recorded but not implemented. [Study](../evaluations/flood-ner-location-repair-20261019/README.md) · [Guide](../guides/ner-location-repair-v40.md).
+
+**Next proposal:** separately repair temporal subject/word-order handling and collective scope after correction. Preserve frozen v40 evidence and the three reference holds; no automatic optimizer search, validation evaluation, method deployment or completed-holdout reuse. Learned DEPTH/TIME and real pure-Tagalog performance remain unfinished. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V38 fixed-reference repair — contextual gate passed, connection blocked
+
+**Four incorrect links removed; eight contextual misses recovered**, including the lost baseline-correct status. One frozen Linux comparison processed 24 unchanged training inputs + 238 fictional cases. All **238 cases and 1,158 fresh affected tests (298 new)** pass. References, model and 345/60/60 membership remain unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Fixed-reference result: 98 TP / zero FP / seven FN; 96.55% association F1**, versus saved v37's 90.45% on the same 23 silver training references. All 90 v37-correct, 14 original-rules-correct and 70 mapped associations are retained. No new strict DEPTH/TIME span errors or qualifier losses. This exposed training-subset result is not independent system accuracy.
+
+**Next gate:** separately assess seven missing/mistyped-neural-target links, three reference holds and unmeasured real-world Tagalog performance before proposing a read-only LANES demonstration. Contextual repair passes; overall connection remains blocked. Learned DEPTH/TIME stays unfinished. No new data, neural inference, training, integration, upload, commit or push occurred. [Outcome](../evaluations/flood-ner-context-fixed-links-20261019/README.md) · [Metrics](../evaluations/flood-ner-context-fixed-links-20261019/metrics.json) · [Verification](../evaluations/flood-ner-context-fixed-links-20261019/verification.json) · [Guide](../guides/ner-context-association-v38.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V37 grouping clarification and repair — complete, acceptance blocked
+
+**Current stage remains offline context acceptance.** A uniform source-only review froze 14 retained/nine corrected proposals, all 168 entities and three prior holds unchanged. All 103 old relations and 70 previously correct associations are mapped. One frozen Linux successor processed **24 unchanged real inputs + 208 fictional cases**. All 208 cases and **860 fresh affected tests (299 new)** pass. No post-result tuning or retry occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Revised-reference result:** **90 TP / four FP / 15 FN; 90.45% association F1**. All 70 pre-frozen source-supported mappings and all 61 revised-reference v36-correct links are retained. One additional original-rules-correct local status under revised references is missed, so retention and zero-incorrect gates fail. Seven misses require absent/mistyped neural targets; eight are contextual omissions. TIME-span checks introduce zero FP/FN and recognition F1 is 95.65%. These are exposed silver training-subset results, not independent accuracy or learned DEPTH/TIME performance.
+
+**Reference encodings stay separate:** saved v36 scores 66.67% and the successor 90.45% on the clarified references; under unchanged v36 references the successor scores **69.74%**, versus saved v36's 78.21%. Representation revisions are not model improvement. The isolated review's incidental generic-code/filename exposure is recorded; no actual prediction/output/score data was exposed. Pure-Tagalog real performance remains **unmeasured** despite 48 passing Tagalog fixtures.
+
+**Next proposal:** separately repair the four wrong links and eight contextual misses, including the lost baseline-correct status; keep seven recognition-dependent misses and three contextual holds explicit. No LANES connection is cleared. Preserve **345/60/60**, trained models and completed holdout exclusion. Learned DEPTH/TIME remains unfinished; no new data, neural inference, training, integration, upload, commit or push occurred. October 25 readiness is unestablished. [Outcome](../evaluations/flood-ner-context-grouping-20261019/README.md) · [Metrics](../evaluations/flood-ner-context-grouping-20261019/metrics.json) · [Verification](../evaluations/flood-ner-context-grouping-20261019/verification.json) · [Guide](../guides/ner-context-association-v37.md) · [Representation](../plans/ner-context-representation-v37.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V36 comprehensive association review — task complete, connection blocked
+
+**Current stage: offline flood-context acceptance.** Runtime qualification and the location-only shadow comparison are complete; the association method is still not cleared for a LANES connection. One frozen successor processed **24 real training inputs + 160 fictional cases**. All 160 behavior cases pass; **561 fresh affected tests pass (295 new)**. Independent review retained 14/corrected nine proposals and preserved all three holds. All **13 incorrect + 43 missed** old links have evidence-bound dispositions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Real result:** eight incorrect / 31 missed associations on 23 revised references, **78.21% association F1**. All 48 revised-reference v35-correct links are retained and 22 are gained. On unchanged v35 references, successor F1 is 78.11%; reference revisions are reported separately. There is **one newly introduced wrong link versus v35** despite six removed. TIME expression recognition declines to 84.00% F1, so aggregate association gains do not mean every component improved. Seven misses require absent exact neural targets. Passing fixtures does not override the zero-total-incorrect gate or the three reference holds.
+
+**Language scope:** all software checks pass (English 64, Tagalog 32, Taglish 64); real references are English/Taglish only. Pure-Tagalog empirical/neural performance remains **unmeasured**, with AI-assisted language/borrowing uncertainty. Preserve **345/60/60**, saved six-class model mentions and completed holdout exclusion. Learned DEPTH/TIME remains unfinished; no neural inference, training or integration ran. No post-result tuning occurred.
+
+**Next proposal:** separately address the eight wrong resolved links, the remaining code omissions, required missing neural targets and contextual holds. Freeze any later repair before another authorized comparison; do not silently add/resize/retag mentions or introduce fallback. A read-only LANES demonstration and its language limitations remain a later gate, not automatic next execution. October 25 readiness is unestablished. [Outcome](../evaluations/flood-ner-context-three-language-20261019/README.md) · [Metrics](../evaluations/flood-ner-context-three-language-20261019/metrics.json) · [Verification](../evaluations/flood-ner-context-three-language-20261019/verification.json) · [Operator guide](../guides/ner-context-association-v36.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V35 source-only review and repair checkpoint — acceptance remains open
+
+**Review-first v35 task complete; read-only LANES connection is not qualified.** An isolated source-only reviewer froze nine retained / fourteen corrected / one newly held contextual proposals; two earlier holds remain unchanged. Schema/frozen-tokenizer qualification passes. One candidate worker processed 24 raw training passages plus 64 fictional inputs. **64/64 behavior cases pass; 39 correct links gained, zero supported baseline-correct links lost, seven introduced strict disagreements on 23 revised references.** All 46 revised-reference v34-correct links and all 40 previously original-reference-correct links are retained. **470 fresh tests pass (111 new)**. No post-result tuning occurred.
+
+**Next proposal:** narrowly repair recession-time precedence and collective/gauge semantics, with independent source-only disposition of remaining status-reference coverage questions before another freeze. Preserve the three contextual holds, original and revised score reports, all 345/60/60 membership and completed holdout exclusion. No LANES connection, new data or retraining is authorized by this failed gate. Learned DEPTH/TIME remains unfinished; October 25 readiness is unestablished. [Outcome](../evaluations/flood-ner-context-repair-20261019/README.md) · [Operator guide](../guides/ner-context-association-v35.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Offline context association checkpoint — not qualified
+
+**Offline association implementation and one comparison are complete; acceptance failed.** All 24 eligible training proposals and 40 fictional cases were processed with references outside extraction; the two held records remain unscored. **36/40 behavior cases pass; 34 correct links gained, zero baseline-correct links lost and 20 new strict silver-reference disagreements.** Those disagreements include demonstrated scope/time errors and separately recorded reference/grouping concerns; none was relabeled or hidden. **277 fresh tests pass (61 new)**; a broader timed-out test attempt remains incomplete. No empirical retuning occurred.
+
+**Next proposal:** separately repair clause/time updates, collective/list scope and nearby-facility abstention, and independently resolve the recorded reference questions. Freeze a successor before a separately authorized comparison. **Read-only LANES connection is not cleared.** Preserve 345/60/60, the two holds and completed holdout exclusion; no retraining/new data is needed for this repair proposal. Learned DEPTH/TIME remains unfinished; October 25 readiness is unestablished. [Outcome](../evaluations/flood-ner-context-association-20261019/README.md) · [Operator guide](../guides/ner-context-association.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Current requirements and deadline status
+
+**Original goal:** trained recognition of location, DEPTH and TIME spans plus separately evaluated per-location/shared-fact associations. V19 and completed location-profile experiments learn only six location labels. Their scores establish neither trained DEPTH/TIME recognition nor complete flood-information extraction. Earlier location-only/paper-specific descriptions below record the implemented choice; they do not settle or cancel the broader user requirement.
+
+**Delivered:** retained v19 control seed 0; unchanged 345 training / 60 validation / 60 completed research-holdout membership; qualified Linux CPU execution; location shadow adapter and verified six-article/eight-fictional-case offline comparison. Existing depth/time/status rules are separate components. Their presence is not evidence that the neural head learned those fields or that all contextual references are complete. No live neural processing is connected.
+
+**Unfinished:** learned DEPTH/TIME recognition; complete source-supported association and evaluation of per-location/shared depths, time roles, condition and access; integration and operational acceptance. An observation is not onset, recession is not clearance, and missing/ambiguous information stays unresolved. NER span recognition alone does not learn all relationships.
+
+**October 25 interim priority — selected by the user:** prepare a bounded demonstration combining the trained location model and depth/time rules. Additional neural DEPTH/TIME training is deferred on this interim path, not cancelled. Its annotation/profile/training/evaluation requirements remain open. The approximately three-day training cycle also requires preparation and evaluation time; no completion or operational-readiness guarantee is made. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Existing-data gap review completed:** one inventory entry for every development record and one guarded rules pass on all 405 passages. Only 26 exact contextual pilots match current records, all training; 21 support limited diagnostics, five are held, and 379 records including all validation lack matching contextual references. Supported pilot coverage is 30 DEPTH / 18 TIME spans; no contextual accuracy or learned DEPTH/TIME readiness is established. **659 fresh tests pass (48 new).** [Findings and coverage](../evaluations/flood-ner-context-gaps-20261019/README.md).
+
+**Interim reference package complete:** 26 training dispositions (20 retain / four corrected proposals / two holds), 24 eligible source-bound references with 35 DEPTH / 22 TIME spans, and 40 fictional acceptance cases. Existing annotations remain unchanged. Guarded CPU schema/tokenizer verification and **753 fresh tests (94 new)** pass. No onset/clearance real-reference support is established in this subset. [Outcome](../evaluations/flood-ner-context-acceptance-20261019/README.md).
+
+**Next work:** bounded offline association repairs using saved training-only location predictions, a frozen same-input rules baseline and the [fixed specification](ner-interim-context-acceptance.md). Keep references outside extraction; report recognition, association and abstention separately. All fictional behavior cases must pass; no new incorrect resolved links or loss of supported baseline-correct links is allowed. No live connection, retraining or validation/holdout use is automatic.
+
+The selected interim path now has fixed acceptance cases for English/Taglish, different depths under shared times, genuinely shared depths, boundaries/qualifiers, negation, forecasts, historical/cleared reports and supported onset/clearance. Isolated integration acceptance and separately approved persistence/deployment follow. Preserve source/time/depth/geometry/expiry gates and the `rules_only` constraint.
+
+The later learned DEPTH/TIME path requires an explicit annotation/profile decision, separate source-bound reference revisions, tokenizer/configuration qualification, a bounded training protocol and an evaluation boundary. Preserve current location references/results. Keep the completed exposed holdout closed during tuning; do not claim a certified-fresh benchmark or start a new run from this clarification.
+
+**Change discipline:** do not silently narrow labels or substitute rules for trained capabilities. Record whether each proposed scope/schedule change is proposed, accepted, implemented or verified. [Current tasks](../task_plan.md#current-ner-scope-and-defense-checkpoint).
+
+**Earlier dated implementation checkpoints below are historical.**
+
+**Repaired offline location comparison completed.** One explicitly authorized new Linux attempt processed all **six saved training articles and eight fictional cases**. Independent verification reconciles every input/hash, Unicode span, label and comparison count. Startup **5.688 s**, slowest input **0.666 s**, peak worker RSS **450.79 MiB** and wall time **9.206 s** all pass unchanged limits. The previous failed attempt, source bindings and claim are preserved; its verified stopped-owner lock was archived. The successful attempt is stopped and its active lease is cleared. [Executed outcome](../evaluations/flood-ner-shadow-execution-20261019/README.md).
+
+**Next:** separately design and test how location mentions associate with clause-local flood status, time, depth and uncertainty. No live processing is connected. Preserve all **345 training / 60 validation / 60 research-holdout passages**; no new data, retraining or validation/holdout evaluation occurred. The 604 passing software checks remain preparation evidence; this task adds actual execution and independent verification, with no source change or suite rerun. [Operator guide](../guides/ner-shadow-comparison.md).
+
+**Earlier dated checkpoints below are historical.**
+
+**Offline location shadow adapter implemented; comparison execution remains pending.** The single Linux attempt stopped during startup before processing any article. An ORM-import/engine-construction conflict is reproduced with a constructed probe. The repaired offline import boundary passes **604 checks / 62 new checks** and read-only preparation verification, but has not been rerun in Linux. Failed receipts, original source bindings, stopped container and lease remain preserved; no automatic retry occurred. [Outcome](../evaluations/flood-ner-shadow-comparison-20261019/README.md).
+
+**Next:** explicitly reconcile the stopped failed attempt and execute one new offline comparison with the repaired grant and an absent destination. Only after that comparison completes should claim-context integration be scoped. Gate 3 remains passed for its earlier frozen Linux profile; the shadow-comparison gate is still open. No new data, training, validation/holdout evaluation or live connection occurred. Membership remains **345/60/60**. [Operator guide](../guides/ner-shadow-comparison.md).
+
+**Earlier dated checkpoints below are historical.**
+
+**Gate 3 Linux CPU qualification passes for the frozen local profile.** Retained v19 control seed 0 runs in the unchanged backend image on Linux/Python 3.12.15/spaCy 3.7.5. All 345 saved training predictions match exactly; tokenizer parity, runtime limits and eight executed fictional fault-containment checks pass. **475 fresh regressions pass**, including 82 versioned-runner checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Measured:** cold readiness 4.078 s, passage p95 36.23 ms, slowest selected article 0.507 s, 100,000-character stress 5.368 s and peak worker RSS 1.839 GiB under two CPUs / 4 GiB. These are single-worker local measurements, not deployment performance or improved accuracy. All 633 protected file hashes and stat-only validation/holdout entries remain unchanged. V19 and 345/60/60 membership are unchanged.
+
+**Next:** separately implement the read-only shadow adapter. No retraining, new data, completed-holdout evaluation or live connection is needed for this next scope. Keep context/evidence/placement gates; durable neural processing remains separately gated by the existing `rules_only` database constraint. The desktop GPU can remain off.
+
+[Linux execution and qualification](../evaluations/flood-ner-linux-execution-20261019/README.md) · [Runtime guide](../guides/ner-runtime-qualification.md). No production API, dependency or schema changes; no integration, deployment, upload, commit or push.
+
+**Earlier dated checkpoints below are historical.**
+
+**Clean-launch task stopped at failed graceful exit.** One normal Docker Desktop stop timed out and reported failure; six Desktop/backend processes remain, while its WSL distribution is stopped. The Linux API is unavailable. **No independent Start-menu launch occurred**, so the launch-environment hypothesis and ordinary PowerShell connectivity remain untested. Gate 3 is open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next user action:** use Docker Desktop's normal **Quit** action (tray menu or error-window Quit), then report that it has closed. Verify process exit before one independent Windows Start-menu launch. No force-stop, reset, update, socket cleanup or reboot is authorized. Stop before image builds or model execution.
+
+[Clean-launch outcome](../evaluations/flood-ner-docker-clean-launch-20261019/README.md) · [Runtime guide](../guides/ner-runtime-qualification.md). All 564 protected hashes and stat-only validation/holdout entries remain unchanged. No new software tests ran; the prior 393-pass result remains historical. V19 and 345/60/60 membership are unchanged.
+
+**Earlier dated checkpoints below are historical.**
+
+**Linux qualification attempted: blocked before image build.** Docker's backend records an inaccessible `sailor-ingest.sock` rename, its Linux API is absent and WSL reports the engine stopped. Normal start reports already running; the single restart attempt did not return a completed receipt and was interrupted. No reset, socket deletion, reinstall, security change or reboot occurred. **Gate 3 remains open; compatibility and performance are unmeasured.** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Delivered:** separate Linux measurement helpers, an authenticated raw-only projection of all 345 training records with expected predictions kept separate, frozen local limits and **393 fresh passing regressions / 71 new Linux checks**. These are constructed tests, not a Linux execution. The full article-use workload and actual operational fault/restart qualification remain pending. V19 control seed 0 and 345/60/60 membership remain unchanged.
+
+**Next:** restore normal Docker Desktop startup on the laptop, then resume this qualification scope: supported article workload, pinned image, parity, latency/RSS and operational failure checks. Do not move to the shadow adapter until evidence passes. No retraining, new data or completed-holdout reuse is needed; the desktop GPU can remain off.
+
+[Linux outcome](../evaluations/flood-ner-linux-qualification-20261019/README.md) · [Operator guide](../guides/ner-runtime-qualification.md). No Linux inference, production connection, deployment, upload, commit or push.
+
+**Earlier dated checkpoints below are historical.**
+
+**Gate 3 runtime preflight completed; Linux qualification remains blocked.** The retained v19 control seed-0 checkpoint (11 files) and pinned resources (23 files) authenticate. Existing Windows/Python 3.12.14/spaCy 3.7.5 CPU inference passes four fictional probes and 40 warm calls with deterministic predictions and frozen-tokenizer parity. Docker's Linux engine is unavailable; Linux inference, representative article latency, peak RAM and failure/restart qualification remain pending. **Gate 4 live integration has not started.** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** finish isolated Linux CPU qualification, then separately implement a read-only shadow adapter. The [integration design](ner-v19-shadow-integration.md) preserves context/placement gates, original-body offsets and six-class mapping. Durable processing currently has a `rules_only` database constraint; do not bypass it. No retraining, data collection or completed-holdout reuse is needed. The desktop GPU can remain off.
+
+[Runtime preflight report](../evaluations/flood-ner-runtime-preflight-20261019/README.md) · [Operator guide](../guides/ner-runtime-qualification.md). Fresh **322 tests pass, including 54 new runtime checks**. V19 remains retained; 345/60/60 membership is unchanged. No dependency installation, production connection, upload, commit or push.
+
+**Earlier dated checkpoints below are historical.**
+
+**Training-only road-boundary study completed: no qualifying rules.** Trimming and explicit crossing separation pass fictional checks, but all 345 original control prediction records remain unchanged. Descriptor trimming abstains twice; directional trimming and explicit splitting have no observed corrective applicability. Both families are partially supported and empirically unproven. **V19 corrected control seed 0 remains retained.** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current disposition:** close this bounded feasibility study without a validation comparison or integration proposal. An empty qualifying subset is not evidence of improvement; do not tune rules from exposed findings or combine rejected prototypes automatically. Any future development direction requires a separate scope. The desktop can remain off.
+
+[Boundary study](../evaluations/flood-ner-road-boundaries-20261019/README.md) · [Boundary operator guide](../guides/ner-road-boundary-study.md). All seven training ROAD-error records and five complete saved articles were reviewed. Fresh **269 tests** pass, including **71 new checks**; 24 fictional core cases remain outside membership. Ten replay files reproduce byte-for-byte. Protected 507 hashes, prior-validation metadata and 55 stat-only holdout entries remain unchanged; no validation or holdout content was supplied to this study.
+
+**Earlier dated checkpoints below are historical.**
+
+**Frozen validation comparison completed: retain v19 corrected control, seed 0 primary.** The two-rule shadow method increases strict validation F1 from 71.60% to 76.54% on unchanged 60 validation passages, but **does not qualify** under the prospectively frozen zero-new-strict-FP gate. Four correct entities are gained, none lost; five typed FPs are resolved and one typed FP is introduced when an already-truncated road span changes type but remains incomplete. No new textual entity or boundary is added. References, model selection and the prototype remain unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current disposition:** keep the prototype separate from production and close this bounded comparison. Any future method, revised policy or integration proposal needs a separate scope; no automatic rule tuning, retraining or completed-holdout evaluation follows. The desktop can remain off.
+
+[Validation comparison](../evaluations/flood-ner-context-validation-20261019/README.md) · [Validation operator guide](../guides/ner-context-safeguard-validation.md). All 60 records are accounted for; three changed passages and complete saved articles were reviewed. Fresh **250 tests** pass, including **52 new checks**. One comparison consumed one persistent claim; no replay or retry occurred. Protected 505 hashes and 55 stat-only holdout entries remain unchanged.
+
+**Earlier dated checkpoints below are historical.**
+
+**Training-only context-safeguard study completed.** V19 corrected control seed 0 remains retained. The unchanged 345 training passages support two frozen rules for a later validation proposal: named-asset typing and bounded shared identifiers. Three shadow retags resolve three typed FPs and gain three TPs, with zero introduced training FP/FN; training F1 changes from 98.09% to 98.45%. Organization/role exclusions and direct designator corrections remain empirically unproven. No validation comparison, holdout content access, neural inference, training or integration occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** separately scope a frozen validation-only comparison of the two qualifying rules using saved predictions. Do not tune further rules against validation or reopen the completed holdout. Data, annotations and the retained model stay unchanged; the desktop can remain off.
+
+[Training-only study](../evaluations/flood-ner-context-safeguards-20261019/README.md) · [Context-safeguard operator guide](../guides/ner-context-safeguards.md). Fresh checks: **198 passing tests**, including **94 new context checks**; the 48 fictional cases stay outside corpus membership. Eleven output files reproduce byte-for-byte; 451 protected hashes and 55 stat-only holdout entries remain unchanged.
+
+**Earlier dated checkpoints below are historical.**
+
+**Current NER diagnosis completed: retain corrected v19 control, seed 0 primary.** Saved predictions reproduce candidate validation F1 69.71% versus control 71.60%. All 405 records are accounted for; 22 affected validation passages/18 complete saved captures and 33 training contexts were reviewed. Candidate gains seven correct entities, loses four, introduces eighteen FPs and resolves eight. No supported reference correction or training/scoring defect was found; one inherited boundary question remains unresolved. Fresh 197 tests/20 subtests pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** a separately scoped development-only feasibility task for convention/training-derived context safeguards and constructed contrasts. No additional optimizer search, data collection, model selection or training is authorized. The completed holdout stays excluded; the desktop can remain off.
+
+[Diagnosis report](../evaluations/flood-ner-regularization-diagnosis-20261019/README.md) · [Comparison guide](../guides/ner-regularization-comparison.md)
+
+**Earlier dated checkpoints below are historical.**
 
 **Current NER handoff: the regularization experiment is verified on private Drive; matching code and instructions accompany this roi-branch publication.** The 345 training / 60 validation exports are unchanged. One L2 = 0.05 candidate has seed 0/1/2 configs and a fixed maximum-three-run protocol. All four uploaded files match authenticated readback; parent, destination and files are owner-only. Desktop receipt and GPU verification remain pending. No training, inference or holdout access occurred during delivery. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

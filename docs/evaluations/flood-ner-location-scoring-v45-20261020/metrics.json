@@ -1,0 +1,397 @@
+{
+  "already_exposed_evidence_not_independent_accuracy": true,
+  "backend_promoted": false,
+  "control_checks": {
+    "existing": {
+      "passed": 238,
+      "total": 238
+    },
+    "location_fixtures": {
+      "passed": 36,
+      "total": 36
+    },
+    "new": {
+      "passed": 36,
+      "total": 36
+    },
+    "temporal": {
+      "passed": 36,
+      "total": 36
+    },
+    "v41": {
+      "passed": 36,
+      "total": 36
+    },
+    "v42": {
+      "passed": 36,
+      "total": 36
+    }
+  },
+  "eligible_context_references": 23,
+  "extraction_calls": 0,
+  "fictional_cases": 418,
+  "historical_v44_unchanged": true,
+  "inference": false,
+  "methods": {
+    "boundary_replacement": {
+      "article": {
+        "corrected_occurrences": 3,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 16,
+        "restored_facts": 15,
+        "restored_rows": 3
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [],
+      "candidate_fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 36,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 36,
+          "total": 36
+        }
+      },
+      "checks": {
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_unsupported_proposals": 0,
+        "candidate_fixture_failures": 0,
+        "control_expectation_failures": 0,
+        "dateline_error": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "invented_unmeasured_depth": 0,
+        "lost_correct_locations": 0,
+        "lost_supported_associations": 0,
+        "original_mention_failures": 0,
+        "paired_view_failures": 0,
+        "previous_complete_row_losses": 0,
+        "protected_fact_losses": 0,
+        "qualifier_losses": 0,
+        "saved_expression_changes": 0,
+        "span_regressions": 0,
+        "temporal_role_losses": 0
+      },
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "original_mention_checks": {
+        "passed": 788,
+        "total": 788
+      },
+      "paired_view_checks": {
+        "passed": 3,
+        "total": 3
+      },
+      "qualified_for_later_proposal": true,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "combined": {
+      "article": {
+        "corrected_occurrences": 8,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 11,
+        "restored_facts": 40,
+        "restored_rows": 8
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [],
+      "candidate_fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 36,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 36,
+          "total": 36
+        }
+      },
+      "checks": {
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_unsupported_proposals": 0,
+        "candidate_fixture_failures": 0,
+        "control_expectation_failures": 0,
+        "dateline_error": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "invented_unmeasured_depth": 0,
+        "lost_correct_locations": 0,
+        "lost_supported_associations": 0,
+        "original_mention_failures": 0,
+        "paired_view_failures": 0,
+        "previous_complete_row_losses": 0,
+        "protected_fact_losses": 0,
+        "qualifier_losses": 0,
+        "saved_expression_changes": 0,
+        "span_regressions": 0,
+        "temporal_role_losses": 0
+      },
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "original_mention_checks": {
+        "passed": 788,
+        "total": 788
+      },
+      "paired_view_checks": {
+        "passed": 3,
+        "total": 3
+      },
+      "qualified_for_later_proposal": true,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "junction_type": {
+      "article": {
+        "corrected_occurrences": 0,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 19,
+        "restored_facts": 0,
+        "restored_rows": 0
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [
+        "no_supported_real_correction"
+      ],
+      "candidate_fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 36,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 36,
+          "total": 36
+        }
+      },
+      "checks": {
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_unsupported_proposals": 0,
+        "candidate_fixture_failures": 0,
+        "control_expectation_failures": 0,
+        "dateline_error": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "invented_unmeasured_depth": 0,
+        "lost_correct_locations": 0,
+        "lost_supported_associations": 0,
+        "original_mention_failures": 0,
+        "paired_view_failures": 0,
+        "previous_complete_row_losses": 0,
+        "protected_fact_losses": 0,
+        "qualifier_losses": 0,
+        "saved_expression_changes": 0,
+        "span_regressions": 0,
+        "temporal_role_losses": 0
+      },
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "original_mention_checks": {
+        "passed": 788,
+        "total": 788
+      },
+      "paired_view_checks": {
+        "passed": 3,
+        "total": 3
+      },
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "missing_junction": {
+      "article": {
+        "corrected_occurrences": 5,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 14,
+        "restored_facts": 25,
+        "restored_rows": 5
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [],
+      "candidate_fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 36,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 36,
+          "total": 36
+        }
+      },
+      "checks": {
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_unsupported_proposals": 0,
+        "candidate_fixture_failures": 0,
+        "control_expectation_failures": 0,
+        "dateline_error": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "invented_unmeasured_depth": 0,
+        "lost_correct_locations": 0,
+        "lost_supported_associations": 0,
+        "original_mention_failures": 0,
+        "paired_view_failures": 0,
+        "previous_complete_row_losses": 0,
+        "protected_fact_losses": 0,
+        "qualifier_losses": 0,
+        "saved_expression_changes": 0,
+        "span_regressions": 0,
+        "temporal_role_losses": 0
+      },
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "original_mention_checks": {
+        "passed": 788,
+        "total": 788
+      },
+      "paired_view_checks": {
+        "passed": 3,
+        "total": 3
+      },
+      "qualified_for_later_proposal": true,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    }
+  },
+  "repaired_view_expectations": 3,
+  "saved_raw_records": 788,
+  "status": "scoring_reassessment_completed",
+  "supersedes_scoring_interpretation_only": true,
+  "three_holds_retained": true,
+  "worker_rerun": false
+}

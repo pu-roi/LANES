@@ -1,0 +1,89 @@
+{
+  "additional_constructed_group_checks": 2,
+  "ai_assisted_silver": true,
+  "application_connected": false,
+  "fresh_regression_tests": 561,
+  "hashes": {
+    "error_outcomes": "a4c8f038b8e1adf1203983b258934169574da3b1f82ddb198070c14d0bf05260",
+    "execution_manifest": "65c2cadcf85bdfff5209f9a1252f22150c8a276d7d69d9ff13df626b1e3980ee",
+    "freeze": "6df5c0fd7e23e86350ee4ecbeda5b6f03c72845e37ec518cb3ee54b826cb3470",
+    "grant": "ce0d28149261a44692eba756e4ad97462c8ce60d01d3fd7684c2b1001518b50c",
+    "grouping_correction": "7f43f37565d24ff042799d7180950e57f57fec0fe6221adbe832cce023b3ebf9",
+    "metrics": "17451060bbad648222c65b1ee03852316a329324b87d261a34c1cfa5c06b1e19",
+    "old_error_inventory": "54ca484179bd3abb8167adc8009062f894636b4a2f1e8525a757c72e9f6de901",
+    "private_package_manifest": "42cbddd957fef93507265134c23309a808a926adcb6d20dee59d542b316493d5",
+    "reference_freeze": "0490ff31289f08519d5cd27acabee9cf88dbe88b25399cb9a0ba6ffedba878d4",
+    "reference_manifest": "430949f1c146d0c0561965bd521caad1ab8eebbe985d3be0f629bcca0d3fd83b",
+    "remaining_source_bound_diagnostics": "35cb06c899f7b12efdefe714f1f745b0c12540046dd02fa562d98430084b590d",
+    "results": "c2408795cb2b05082a209136ea11c346f94320cee5a5633cccbceabd0c2f3bf6",
+    "test_receipt": "9df0aeace16f65c73a5f20098390e1b1f60211c377c3f46d42fba8dfe1bd8272"
+  },
+  "incomplete_history_limitations_preserved": true,
+  "neural_inference": false,
+  "new_v36_regression_tests": 295,
+  "old_error_outcomes": {
+    "original_incorrect_key_no_longer_predicted": 5,
+    "original_missed_key_recovered": 19,
+    "original_missed_key_still_absent": 22,
+    "source_only_reference_revised_not_method_gain": 3,
+    "still_predicted_original_incorrect_key": 7
+  },
+  "old_errors": {
+    "categories": {
+      "code_defect": 48,
+      "missing_neural_location": 5,
+      "reference_concern": 3
+    },
+    "dispositions": 56,
+    "incorrect": 13,
+    "missed": 43,
+    "prior_introduced_errors_accounted": 7
+  },
+  "post_result_tuning": false,
+  "preservation": {
+    "holdout_contents_opened": false,
+    "holdout_metadata_only_unchanged": 55,
+    "protected_baseline_files_hash_verified": 1383,
+    "status": "preserved",
+    "v35_predecessor_files_hash_verified": 147,
+    "validation_contents_opened": false,
+    "validation_metadata_only_unchanged": 27
+  },
+  "pure_tagalog_real_performance": "unmeasured",
+  "reference_review": {
+    "all_counterparts": 26,
+    "carried_holds_unchanged": 3,
+    "corrected": 9,
+    "eligible_reviewed": 23,
+    "full_saved_sources": 19,
+    "retained": 14
+  },
+  "remaining_errors": {
+    "incorrect": 8,
+    "missed": 31,
+    "missing_required_neural_target_links": 7
+  },
+  "schema": "lanes-context-v36-public-verification",
+  "single_worker": {
+    "attempts": 1,
+    "cold_seconds": 2.014999999999418,
+    "cpus": 2,
+    "exit_code": 0,
+    "fictional_inputs": 160,
+    "fictional_passed": 160,
+    "max_input_seconds": 0.0041119000015896745,
+    "memory_bytes": 4294967296,
+    "network": "none",
+    "network_database_guarded": true,
+    "neural_libraries_loaded": false,
+    "oom_killed": false,
+    "processed": 184,
+    "raw_real_inputs": 24,
+    "read_only_code_and_inputs": true,
+    "stopped_pid": 0,
+    "wall_seconds": 4.639999999999418
+  },
+  "status": "bounded_task_complete_acceptance_blocked",
+  "training_started": false,
+  "upstream_warnings": 1
+}

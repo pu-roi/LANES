@@ -1,0 +1,122 @@
+{
+  "accepted": true,
+  "application_promoted": true,
+  "article": {
+    "complete_junction_rows": 5,
+    "complete_measured_rows": 8,
+    "facts": 141,
+    "failures": [],
+    "passed": true,
+    "previous_facts_accounted": 59,
+    "recognition_unresolved_measured_rows": 18,
+    "source_depth_facts_retained": 52,
+    "unassigned": 101
+  },
+  "database_access": false,
+  "fixtures": {
+    "temporal": {
+      "passed": 36,
+      "total": 36
+    },
+    "v41_regressions": {
+      "passed": 36,
+      "total": 36
+    },
+    "v42_regressions": {
+      "passed": 36,
+      "total": 36
+    }
+  },
+  "graphs": 1419,
+  "neural_inference": false,
+  "new_accuracy_measurement": false,
+  "no_post_result_tuning": true,
+  "post_promotion_software_tests_passed": 1195,
+  "pre_freeze_software_tests_passed": 1158,
+  "preservation": {
+    "excluded_metadata_unchanged": 82,
+    "historical_metadata_unchanged": 1538,
+    "preexisting_declared_config_change": [
+      "backend/app/core/config.py"
+    ],
+    "protected_evidence_hashes": 208,
+    "v41_source_test_hashes": 55,
+    "validation_holdout_content_opened": false
+  },
+  "preview_enabled": false,
+  "raw_records": 371,
+  "references_unchanged": true,
+  "three_holds_retained": true,
+  "views": {
+    "combined": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "new_incorrect": 0,
+        "qualifier_losses": 0,
+        "span_regressions": 0,
+        "supported_lost": 0
+      },
+      "counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      }
+    },
+    "explicit_road": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "new_incorrect": 0,
+        "qualifier_losses": 0,
+        "span_regressions": 0,
+        "supported_lost": 0
+      },
+      "counts": {
+        "fn": 7,
+        "fp": 0,
+        "tp": 98
+      }
+    },
+    "original": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "new_incorrect": 0,
+        "qualifier_losses": 0,
+        "span_regressions": 0,
+        "supported_lost": 0
+      },
+      "counts": {
+        "fn": 7,
+        "fp": 0,
+        "tp": 98
+      }
+    },
+    "shared_locality": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "new_incorrect": 0,
+        "qualifier_losses": 0,
+        "span_regressions": 0,
+        "supported_lost": 0
+      },
+      "counts": {
+        "fn": 5,
+        "fp": 0,
+        "tp": 100
+      }
+    },
+    "transport_asset": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "new_incorrect": 0,
+        "qualifier_losses": 0,
+        "span_regressions": 0,
+        "supported_lost": 0
+      },
+      "counts": {
+        "fn": 3,
+        "fp": 0,
+        "tp": 102
+      }
+    }
+  }
+}

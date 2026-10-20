@@ -1,0 +1,6596 @@
+{
+  "fictional_families": {
+    "abbreviated_lists": {
+      "cases": 4,
+      "passed": 4
+    },
+    "collective_ranges": {
+      "cases": 4,
+      "passed": 4
+    },
+    "facility_scope": {
+      "cases": 4,
+      "passed": 4
+    },
+    "flood_evidence": {
+      "cases": 4,
+      "passed": 4
+    },
+    "forecast": {
+      "cases": 4,
+      "passed": 4
+    },
+    "historical_update": {
+      "cases": 4,
+      "passed": 4
+    },
+    "negation": {
+      "cases": 4,
+      "passed": 4
+    },
+    "observation_onset": {
+      "cases": 4,
+      "passed": 4
+    },
+    "parallel_updates": {
+      "cases": 4,
+      "passed": 4
+    },
+    "ranges_qualifiers": {
+      "cases": 4,
+      "passed": 4
+    },
+    "recession_clearance": {
+      "cases": 4,
+      "passed": 4
+    },
+    "row_measurements": {
+      "cases": 4,
+      "passed": 4
+    },
+    "scope_boundaries": {
+      "cases": 4,
+      "passed": 4
+    },
+    "separate_depth_shared_time": {
+      "cases": 4,
+      "passed": 4
+    },
+    "shared_depth": {
+      "cases": 4,
+      "passed": 4
+    },
+    "temporal_evidence": {
+      "cases": 4,
+      "passed": 4
+    }
+  },
+  "generalization_claim": false,
+  "original_slices": {
+    "english": {
+      "groups": 5,
+      "metrics": {
+        "BARANGAY": {
+          "baseline": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "CITY": {
+          "baseline": {
+            "f1": 0.3333333333333333,
+            "fn": 7,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 3,
+            "recall": 0.2222222222222222,
+            "support": 9,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 1.0,
+            "support": 9,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 1.0,
+            "support": 9,
+            "tp": 9
+          }
+        },
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.4444444444444444,
+            "fn": 14,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8571428571428571,
+            "predicted": 7,
+            "recall": 0.3,
+            "support": 20,
+            "tp": 6
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 20,
+            "recall": 1.0,
+            "support": 20,
+            "tp": 20
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 20,
+            "recall": 1.0,
+            "support": 20,
+            "tp": 20
+          }
+        },
+        "LANDMARK": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 4,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 4,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          }
+        },
+        "LOCAL_AREA": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          }
+        },
+        "PROVINCE": {
+          "baseline": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 4,
+            "recall": 1.0,
+            "support": 4,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 4,
+            "recall": 1.0,
+            "support": 4,
+            "tp": 4
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 4,
+            "recall": 1.0,
+            "support": 4,
+            "tp": 4
+          }
+        },
+        "ROAD": {
+          "baseline": {
+            "f1": 0.35294117647058826,
+            "fn": 16,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 12,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          },
+          "candidate": {
+            "f1": 0.9767441860465116,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 21,
+            "recall": 0.9545454545454546,
+            "support": 22,
+            "tp": 21
+          },
+          "v34": {
+            "f1": 0.9767441860465116,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 21,
+            "recall": 0.9545454545454546,
+            "support": 22,
+            "tp": 21
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 5,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 5,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.08450704225352113,
+            "fn": 51,
+            "fp": 14,
+            "measured": true,
+            "precision": 0.17647058823529413,
+            "predicted": 17,
+            "recall": 0.05555555555555555,
+            "support": 54,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.6265060240963856,
+            "fn": 28,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.896551724137931,
+            "predicted": 29,
+            "recall": 0.48148148148148145,
+            "support": 54,
+            "tp": 26
+          },
+          "v34": {
+            "f1": 0.5116279069767442,
+            "fn": 32,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.6875,
+            "predicted": 32,
+            "recall": 0.4074074074074074,
+            "support": 54,
+            "tp": 22
+          }
+        },
+        "links_access": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 17,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 17,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.5217391304347826,
+            "fn": 11,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.35294117647058826,
+            "support": 17,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.5217391304347826,
+            "fn": 11,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.35294117647058826,
+            "support": 17,
+            "tp": 6
+          }
+        },
+        "links_depth": {
+          "baseline": {
+            "f1": 0.18181818181818182,
+            "fn": 23,
+            "fp": 4,
+            "measured": true,
+            "precision": 0.42857142857142855,
+            "predicted": 7,
+            "recall": 0.11538461538461539,
+            "support": 26,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.7906976744186046,
+            "fn": 9,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 0.6538461538461539,
+            "support": 26,
+            "tp": 17
+          },
+          "v34": {
+            "f1": 0.7441860465116279,
+            "fn": 10,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9411764705882353,
+            "predicted": 17,
+            "recall": 0.6153846153846154,
+            "support": 26,
+            "tp": 16
+          }
+        },
+        "links_status": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 8,
+            "fp": 9,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 9,
+            "recall": 0.0,
+            "support": 8,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.0,
+            "fn": 8,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 8,
+            "tp": 0
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 8,
+            "fp": 9,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 9,
+            "recall": 0.0,
+            "support": 8,
+            "tp": 0
+          }
+        },
+        "links_time": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          }
+        },
+        "locations": {
+          "baseline": {
+            "f1": 0.46153846153846156,
+            "fn": 28,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.6818181818181818,
+            "predicted": 22,
+            "recall": 0.3488372093023256,
+            "support": 43,
+            "tp": 15
+          },
+          "candidate": {
+            "f1": 0.9647058823529412,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9761904761904762,
+            "predicted": 42,
+            "recall": 0.9534883720930233,
+            "support": 43,
+            "tp": 41
+          },
+          "v34": {
+            "f1": 0.9647058823529412,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9761904761904762,
+            "predicted": 42,
+            "recall": 0.9534883720930233,
+            "support": 43,
+            "tp": 41
+          }
+        }
+      },
+      "records": 11
+    },
+    "phenomenon:collective_depth_without_uniform_scalar": {
+      "groups": 4,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.4166666666666667,
+            "fn": 12,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7142857142857143,
+            "predicted": 7,
+            "recall": 0.29411764705882354,
+            "support": 17,
+            "tp": 5
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 1.0,
+            "support": 17,
+            "tp": 17
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 1.0,
+            "support": 17,
+            "tp": 17
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 8,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 8,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 1.0,
+            "support": 8,
+            "tp": 8
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 1.0,
+            "support": 8,
+            "tp": 8
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.057971014492753624,
+            "fn": 50,
+            "fp": 15,
+            "measured": true,
+            "precision": 0.11764705882352941,
+            "predicted": 17,
+            "recall": 0.038461538461538464,
+            "support": 52,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 0.6419753086419753,
+            "fn": 26,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.896551724137931,
+            "predicted": 29,
+            "recall": 0.5,
+            "support": 52,
+            "tp": 26
+          },
+          "v34": {
+            "f1": 0.5238095238095238,
+            "fn": 30,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.6875,
+            "predicted": 32,
+            "recall": 0.4230769230769231,
+            "support": 52,
+            "tp": 22
+          }
+        }
+      },
+      "records": 7
+    },
+    "phenomenon:depth_collective": {
+      "groups": 5,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.4827586206896552,
+            "fn": 13,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7777777777777778,
+            "predicted": 9,
+            "recall": 0.35,
+            "support": 20,
+            "tp": 7
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 20,
+            "recall": 1.0,
+            "support": 20,
+            "tp": 20
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 20,
+            "recall": 1.0,
+            "support": 20,
+            "tp": 20
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 10,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 10,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.046511627906976744,
+            "fn": 55,
+            "fp": 27,
+            "measured": true,
+            "precision": 0.06896551724137931,
+            "predicted": 29,
+            "recall": 0.03508771929824561,
+            "support": 57,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 0.6153846153846154,
+            "fn": 29,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.8235294117647058,
+            "predicted": 34,
+            "recall": 0.49122807017543857,
+            "support": 57,
+            "tp": 28
+          },
+          "v34": {
+            "f1": 0.5052631578947369,
+            "fn": 33,
+            "fp": 14,
+            "measured": true,
+            "precision": 0.631578947368421,
+            "predicted": 38,
+            "recall": 0.42105263157894735,
+            "support": 57,
+            "tp": 24
+          }
+        }
+      },
+      "records": 9
+    },
+    "phenomenon:depth_maximum": {
+      "groups": 4,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5,
+            "fn": 4,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.3333333333333333,
+            "support": 6,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.1111111111111111,
+            "fn": 10,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.14285714285714285,
+            "predicted": 7,
+            "recall": 0.09090909090909091,
+            "support": 11,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.631578947368421,
+            "fn": 5,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 8,
+            "recall": 0.5454545454545454,
+            "support": 11,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 5,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 9,
+            "recall": 0.5454545454545454,
+            "support": 11,
+            "tp": 6
+          }
+        }
+      },
+      "records": 4
+    },
+    "phenomenon:depth_range": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "v34": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          }
+        }
+      },
+      "records": 1
+    },
+    "phenomenon:multi_target_depth": {
+      "groups": 6,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5,
+            "fn": 14,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8,
+            "predicted": 10,
+            "recall": 0.36363636363636365,
+            "support": 22,
+            "tp": 8
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 22,
+            "recall": 1.0,
+            "support": 22,
+            "tp": 22
+          },
+          "v34": {
+            "f1": 0.9767441860465116,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 21,
+            "recall": 0.9545454545454546,
+            "support": 22,
+            "tp": 21
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 10,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 10,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.043478260869565216,
+            "fn": 59,
+            "fp": 29,
+            "measured": true,
+            "precision": 0.06451612903225806,
+            "predicted": 31,
+            "recall": 0.03278688524590164,
+            "support": 61,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 0.6122448979591837,
+            "fn": 31,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.8108108108108109,
+            "predicted": 37,
+            "recall": 0.4918032786885246,
+            "support": 61,
+            "tp": 30
+          },
+          "v34": {
+            "f1": 0.49019607843137253,
+            "fn": 36,
+            "fp": 16,
+            "measured": true,
+            "precision": 0.6097560975609756,
+            "predicted": 41,
+            "recall": 0.4098360655737705,
+            "support": 61,
+            "tp": 25
+          }
+        }
+      },
+      "records": 11
+    },
+    "phenomenon:multi_target_time": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.5806451612903226,
+            "fn": 13,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 0.4090909090909091,
+            "support": 22,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:separate_depths_under_shared_time": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.5806451612903226,
+            "fn": 13,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 0.4090909090909091,
+            "support": 22,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:status_active": {
+      "groups": 8,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.56,
+            "fn": 9,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7777777777777778,
+            "predicted": 9,
+            "recall": 0.4375,
+            "support": 16,
+            "tp": 7
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 16,
+            "recall": 1.0,
+            "support": 16,
+            "tp": 16
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 16,
+            "recall": 1.0,
+            "support": 16,
+            "tp": 16
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 14,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 14,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.896551724137931,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8666666666666667,
+            "predicted": 15,
+            "recall": 0.9285714285714286,
+            "support": 14,
+            "tp": 13
+          },
+          "v34": {
+            "f1": 0.896551724137931,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8666666666666667,
+            "predicted": 15,
+            "recall": 0.9285714285714286,
+            "support": 14,
+            "tp": 13
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.14925373134328357,
+            "fn": 29,
+            "fp": 28,
+            "measured": true,
+            "precision": 0.15151515151515152,
+            "predicted": 33,
+            "recall": 0.14705882352941177,
+            "support": 34,
+            "tp": 5
+          },
+          "candidate": {
+            "f1": 0.5846153846153846,
+            "fn": 15,
+            "fp": 12,
+            "measured": true,
+            "precision": 0.6129032258064516,
+            "predicted": 31,
+            "recall": 0.5588235294117647,
+            "support": 34,
+            "tp": 19
+          },
+          "v34": {
+            "f1": 0.5373134328358209,
+            "fn": 16,
+            "fp": 15,
+            "measured": true,
+            "precision": 0.5454545454545454,
+            "predicted": 33,
+            "recall": 0.5294117647058824,
+            "support": 34,
+            "tp": 18
+          }
+        }
+      },
+      "records": 12
+    },
+    "phenomenon:status_receding": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 3,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.3333333333333333,
+            "predicted": 3,
+            "recall": 0.25,
+            "support": 4,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.6,
+            "predicted": 5,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          }
+        }
+      },
+      "records": 1
+    },
+    "phenomenon:status_rising": {
+      "groups": 2,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 5,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 7,
+            "recall": 0.0,
+            "support": 5,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.36363636363636365,
+            "fn": 3,
+            "fp": 4,
+            "measured": true,
+            "precision": 0.3333333333333333,
+            "predicted": 6,
+            "recall": 0.4,
+            "support": 5,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 0.3076923076923077,
+            "fn": 3,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.25,
+            "predicted": 8,
+            "recall": 0.4,
+            "support": 5,
+            "tp": 2
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:status_subsided": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.5806451612903226,
+            "fn": 13,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 0.4090909090909091,
+            "support": 22,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:status_unknown": {
+      "groups": 2,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "v34": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": null,
+            "fn": 0,
+            "fp": 1,
+            "measured": false,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "v34": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:time_observation": {
+      "groups": 3,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.35294117647058826,
+            "fn": 9,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.6,
+            "predicted": 5,
+            "recall": 0.25,
+            "support": 12,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 12,
+            "recall": 1.0,
+            "support": 12,
+            "tp": 12
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 12,
+            "recall": 1.0,
+            "support": 12,
+            "tp": 12
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 14,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 14,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.896551724137931,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8666666666666667,
+            "predicted": 15,
+            "recall": 0.9285714285714286,
+            "support": 14,
+            "tp": 13
+          },
+          "v34": {
+            "f1": 0.896551724137931,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8666666666666667,
+            "predicted": 15,
+            "recall": 0.9285714285714286,
+            "support": 14,
+            "tp": 13
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.10909090909090909,
+            "fn": 35,
+            "fp": 14,
+            "measured": true,
+            "precision": 0.17647058823529413,
+            "predicted": 17,
+            "recall": 0.07894736842105263,
+            "support": 38,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.6666666666666666,
+            "fn": 17,
+            "fp": 4,
+            "measured": true,
+            "precision": 0.84,
+            "predicted": 25,
+            "recall": 0.5526315789473685,
+            "support": 38,
+            "tp": 21
+          },
+          "v34": {
+            "f1": 0.5806451612903226,
+            "fn": 20,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 24,
+            "recall": 0.47368421052631576,
+            "support": 38,
+            "tp": 18
+          }
+        }
+      },
+      "records": 6
+    },
+    "phenomenon:time_report": {
+      "groups": 6,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5454545454545454,
+            "fn": 4,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.42857142857142855,
+            "support": 7,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 7,
+            "recall": 1.0,
+            "support": 7,
+            "tp": 7
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 7,
+            "recall": 1.0,
+            "support": 7,
+            "tp": 7
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 12,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 12,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 12,
+            "recall": 1.0,
+            "support": 12,
+            "tp": 12
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 12,
+            "recall": 1.0,
+            "support": 12,
+            "tp": 12
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.06666666666666667,
+            "fn": 11,
+            "fp": 17,
+            "measured": true,
+            "precision": 0.05555555555555555,
+            "predicted": 18,
+            "recall": 0.08333333333333333,
+            "support": 12,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.42857142857142855,
+            "fn": 6,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.375,
+            "predicted": 16,
+            "recall": 0.5,
+            "support": 12,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.3870967741935484,
+            "fn": 6,
+            "fp": 13,
+            "measured": true,
+            "precision": 0.3157894736842105,
+            "predicted": 19,
+            "recall": 0.5,
+            "support": 12,
+            "tp": 6
+          }
+        }
+      },
+      "records": 6
+    },
+    "phenomenon:time_unspecified": {
+      "groups": 5,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.6153846153846154,
+            "fn": 4,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8,
+            "predicted": 5,
+            "recall": 0.5,
+            "support": 8,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 1.0,
+            "support": 8,
+            "tp": 8
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 1.0,
+            "support": 8,
+            "tp": 8
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 13,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 13,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8888888888888888,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8571428571428571,
+            "predicted": 14,
+            "recall": 0.9230769230769231,
+            "support": 13,
+            "tp": 12
+          },
+          "v34": {
+            "f1": 0.8888888888888888,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8571428571428571,
+            "predicted": 14,
+            "recall": 0.9230769230769231,
+            "support": 13,
+            "tp": 12
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.16216216216216217,
+            "fn": 15,
+            "fp": 16,
+            "measured": true,
+            "precision": 0.15789473684210525,
+            "predicted": 19,
+            "recall": 0.16666666666666666,
+            "support": 18,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.6486486486486487,
+            "fn": 6,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.631578947368421,
+            "predicted": 19,
+            "recall": 0.6666666666666666,
+            "support": 18,
+            "tp": 12
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 6,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.5454545454545454,
+            "predicted": 22,
+            "recall": 0.6666666666666666,
+            "support": 18,
+            "tp": 12
+          }
+        }
+      },
+      "records": 5
+    },
+    "taglish": {
+      "groups": 10,
+      "metrics": {
+        "BARANGAY": {
+          "baseline": {
+            "f1": 0.8888888888888888,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 0.8,
+            "support": 10,
+            "tp": 8
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          }
+        },
+        "CITY": {
+          "baseline": {
+            "f1": 0.625,
+            "fn": 8,
+            "fp": 4,
+            "measured": true,
+            "precision": 0.7142857142857143,
+            "predicted": 14,
+            "recall": 0.5555555555555556,
+            "support": 18,
+            "tp": 10
+          },
+          "candidate": {
+            "f1": 0.9714285714285714,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 0.9444444444444444,
+            "support": 18,
+            "tp": 17
+          },
+          "v34": {
+            "f1": 0.9714285714285714,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 0.9444444444444444,
+            "support": 18,
+            "tp": 17
+          }
+        },
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5833333333333334,
+            "fn": 8,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7777777777777778,
+            "predicted": 9,
+            "recall": 0.4666666666666667,
+            "support": 15,
+            "tp": 7
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 15,
+            "recall": 1.0,
+            "support": 15,
+            "tp": 15
+          },
+          "v34": {
+            "f1": 0.9655172413793104,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 14,
+            "recall": 0.9333333333333333,
+            "support": 15,
+            "tp": 14
+          }
+        },
+        "LANDMARK": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 6,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 6,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "LOCAL_AREA": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          }
+        },
+        "PROVINCE": {
+          "baseline": {
+            "f1": 0.8333333333333334,
+            "fn": 0,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7142857142857143,
+            "predicted": 7,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          },
+          "candidate": {
+            "f1": 0.9090909090909091,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 0.9090909090909091,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          }
+        },
+        "ROAD": {
+          "baseline": {
+            "f1": 0.5789473684210527,
+            "fn": 13,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.7857142857142857,
+            "predicted": 14,
+            "recall": 0.4583333333333333,
+            "support": 24,
+            "tp": 11
+          },
+          "candidate": {
+            "f1": 0.9795918367346939,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.96,
+            "predicted": 25,
+            "recall": 1.0,
+            "support": 24,
+            "tp": 24
+          },
+          "v34": {
+            "f1": 0.9795918367346939,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.96,
+            "predicted": 25,
+            "recall": 1.0,
+            "support": 24,
+            "tp": 24
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 17,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 17,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.9142857142857143,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8888888888888888,
+            "predicted": 18,
+            "recall": 0.9411764705882353,
+            "support": 17,
+            "tp": 16
+          },
+          "v34": {
+            "f1": 0.9142857142857143,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8888888888888888,
+            "predicted": 18,
+            "recall": 0.9411764705882353,
+            "support": 17,
+            "tp": 16
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.08823529411764706,
+            "fn": 29,
+            "fp": 33,
+            "measured": true,
+            "precision": 0.08333333333333333,
+            "predicted": 36,
+            "recall": 0.09375,
+            "support": 32,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.5757575757575758,
+            "fn": 13,
+            "fp": 15,
+            "measured": true,
+            "precision": 0.5588235294117647,
+            "predicted": 34,
+            "recall": 0.59375,
+            "support": 32,
+            "tp": 19
+          },
+          "v34": {
+            "f1": 0.5142857142857142,
+            "fn": 14,
+            "fp": 20,
+            "measured": true,
+            "precision": 0.47368421052631576,
+            "predicted": 38,
+            "recall": 0.5625,
+            "support": 32,
+            "tp": 18
+          }
+        },
+        "links_access": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 4,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 4,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8571428571428571,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.5714285714285714,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 3,
+            "recall": 0.5,
+            "support": 4,
+            "tp": 2
+          }
+        },
+        "links_depth": {
+          "baseline": {
+            "f1": 0.07692307692307693,
+            "fn": 14,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.09090909090909091,
+            "predicted": 11,
+            "recall": 0.06666666666666667,
+            "support": 15,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.6923076923076923,
+            "fn": 6,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8181818181818182,
+            "predicted": 11,
+            "recall": 0.6,
+            "support": 15,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 0.72,
+            "fn": 6,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9,
+            "predicted": 10,
+            "recall": 0.6,
+            "support": 15,
+            "tp": 9
+          }
+        },
+        "links_status": {
+          "baseline": {
+            "f1": 0.11764705882352941,
+            "fn": 7,
+            "fp": 23,
+            "measured": true,
+            "precision": 0.08,
+            "predicted": 25,
+            "recall": 0.2222222222222222,
+            "support": 9,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 0.3076923076923077,
+            "fn": 5,
+            "fp": 13,
+            "measured": true,
+            "precision": 0.23529411764705882,
+            "predicted": 17,
+            "recall": 0.4444444444444444,
+            "support": 9,
+            "tp": 4
+          },
+          "v34": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 15,
+            "measured": true,
+            "precision": 0.21052631578947367,
+            "predicted": 19,
+            "recall": 0.4444444444444444,
+            "support": 9,
+            "tp": 4
+          }
+        },
+        "links_time": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 4,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 4,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8571428571428571,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 1,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 6,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          }
+        },
+        "locations": {
+          "baseline": {
+            "f1": 0.6238532110091743,
+            "fn": 32,
+            "fp": 9,
+            "measured": true,
+            "precision": 0.7906976744186046,
+            "predicted": 43,
+            "recall": 0.5151515151515151,
+            "support": 66,
+            "tp": 34
+          },
+          "candidate": {
+            "f1": 0.9696969696969697,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.9696969696969697,
+            "predicted": 66,
+            "recall": 0.9696969696969697,
+            "support": 66,
+            "tp": 64
+          },
+          "v34": {
+            "f1": 0.9696969696969697,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.9696969696969697,
+            "predicted": 66,
+            "recall": 0.9696969696969697,
+            "support": 66,
+            "tp": 64
+          }
+        }
+      },
+      "records": 13
+    }
+  },
+  "reference_versions": {
+    "original_24": {
+      "BARANGAY": {
+        "baseline": {
+          "f1": 0.9166666666666666,
+          "fn": 2,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 11,
+          "recall": 0.8461538461538461,
+          "support": 13,
+          "tp": 11
+        },
+        "candidate": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 13,
+          "recall": 1.0,
+          "support": 13,
+          "tp": 13
+        },
+        "v34": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 13,
+          "recall": 1.0,
+          "support": 13,
+          "tp": 13
+        }
+      },
+      "CITY": {
+        "baseline": {
+          "f1": 0.5454545454545454,
+          "fn": 15,
+          "fp": 5,
+          "measured": true,
+          "precision": 0.7058823529411765,
+          "predicted": 17,
+          "recall": 0.4444444444444444,
+          "support": 27,
+          "tp": 12
+        },
+        "candidate": {
+          "f1": 0.9811320754716981,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 26,
+          "recall": 0.9629629629629629,
+          "support": 27,
+          "tp": 26
+        },
+        "v34": {
+          "f1": 0.9811320754716981,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 26,
+          "recall": 0.9629629629629629,
+          "support": 27,
+          "tp": 26
+        }
+      },
+      "DEPTH": {
+        "baseline": {
+          "f1": 0.5098039215686274,
+          "fn": 22,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.8125,
+          "predicted": 16,
+          "recall": 0.37142857142857144,
+          "support": 35,
+          "tp": 13
+        },
+        "candidate": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 35,
+          "recall": 1.0,
+          "support": 35,
+          "tp": 35
+        },
+        "v34": {
+          "f1": 0.9855072463768116,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 34,
+          "recall": 0.9714285714285714,
+          "support": 35,
+          "tp": 34
+        }
+      },
+      "LANDMARK": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 10,
+          "fp": 0,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "support": 10,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.9,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9,
+          "predicted": 10,
+          "recall": 0.9,
+          "support": 10,
+          "tp": 9
+        },
+        "v34": {
+          "f1": 0.9,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9,
+          "predicted": 10,
+          "recall": 0.9,
+          "support": 10,
+          "tp": 9
+        }
+      },
+      "LOCAL_AREA": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 4,
+          "fp": 0,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "support": 4,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.8571428571428571,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 3,
+          "recall": 0.75,
+          "support": 4,
+          "tp": 3
+        },
+        "v34": {
+          "f1": 0.8571428571428571,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 3,
+          "recall": 0.75,
+          "support": 4,
+          "tp": 3
+        }
+      },
+      "PROVINCE": {
+        "baseline": {
+          "f1": 0.9,
+          "fn": 0,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.8181818181818182,
+          "predicted": 11,
+          "recall": 1.0,
+          "support": 9,
+          "tp": 9
+        },
+        "candidate": {
+          "f1": 0.9473684210526315,
+          "fn": 0,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9,
+          "predicted": 10,
+          "recall": 1.0,
+          "support": 9,
+          "tp": 9
+        },
+        "v34": {
+          "f1": 0.9473684210526315,
+          "fn": 0,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9,
+          "predicted": 10,
+          "recall": 1.0,
+          "support": 9,
+          "tp": 9
+        }
+      },
+      "ROAD": {
+        "baseline": {
+          "f1": 0.4722222222222222,
+          "fn": 29,
+          "fp": 9,
+          "measured": true,
+          "precision": 0.6538461538461539,
+          "predicted": 26,
+          "recall": 0.3695652173913043,
+          "support": 46,
+          "tp": 17
+        },
+        "candidate": {
+          "f1": 0.9782608695652174,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9782608695652174,
+          "predicted": 46,
+          "recall": 0.9782608695652174,
+          "support": 46,
+          "tp": 45
+        },
+        "v34": {
+          "f1": 0.9782608695652174,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9782608695652174,
+          "predicted": 46,
+          "recall": 0.9782608695652174,
+          "support": 46,
+          "tp": 45
+        }
+      },
+      "TIME": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 22,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0,
+          "support": 22,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.9333333333333333,
+          "fn": 1,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9130434782608695,
+          "predicted": 23,
+          "recall": 0.9545454545454546,
+          "support": 22,
+          "tp": 21
+        },
+        "v34": {
+          "f1": 0.9333333333333333,
+          "fn": 1,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9130434782608695,
+          "predicted": 23,
+          "recall": 0.9545454545454546,
+          "support": 22,
+          "tp": 21
+        }
+      },
+      "links": {
+        "baseline": {
+          "f1": 0.08633093525179857,
+          "fn": 80,
+          "fp": 47,
+          "measured": true,
+          "precision": 0.11320754716981132,
+          "predicted": 53,
+          "recall": 0.06976744186046512,
+          "support": 86,
+          "tp": 6
+        },
+        "candidate": {
+          "f1": 0.6040268456375839,
+          "fn": 41,
+          "fp": 18,
+          "measured": true,
+          "precision": 0.7142857142857143,
+          "predicted": 63,
+          "recall": 0.5232558139534884,
+          "support": 86,
+          "tp": 45
+        },
+        "v34": {
+          "f1": 0.5128205128205128,
+          "fn": 46,
+          "fp": 30,
+          "measured": true,
+          "precision": 0.5714285714285714,
+          "predicted": 70,
+          "recall": 0.46511627906976744,
+          "support": 86,
+          "tp": 40
+        }
+      },
+      "links_access": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 21,
+          "fp": 0,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "support": 21,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.6,
+          "fn": 12,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 9,
+          "recall": 0.42857142857142855,
+          "support": 21,
+          "tp": 9
+        },
+        "v34": {
+          "f1": 0.5333333333333333,
+          "fn": 13,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.8888888888888888,
+          "predicted": 9,
+          "recall": 0.38095238095238093,
+          "support": 21,
+          "tp": 8
+        }
+      },
+      "links_depth": {
+        "baseline": {
+          "f1": 0.13559322033898305,
+          "fn": 37,
+          "fp": 14,
+          "measured": true,
+          "precision": 0.2222222222222222,
+          "predicted": 18,
+          "recall": 0.0975609756097561,
+          "support": 41,
+          "tp": 4
+        },
+        "candidate": {
+          "f1": 0.7536231884057971,
+          "fn": 15,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9285714285714286,
+          "predicted": 28,
+          "recall": 0.6341463414634146,
+          "support": 41,
+          "tp": 26
+        },
+        "v34": {
+          "f1": 0.7352941176470589,
+          "fn": 16,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9259259259259259,
+          "predicted": 27,
+          "recall": 0.6097560975609756,
+          "support": 41,
+          "tp": 25
+        }
+      },
+      "links_status": {
+        "baseline": {
+          "f1": 0.0784313725490196,
+          "fn": 15,
+          "fp": 32,
+          "measured": true,
+          "precision": 0.058823529411764705,
+          "predicted": 34,
+          "recall": 0.11764705882352941,
+          "support": 17,
+          "tp": 2
+        },
+        "candidate": {
+          "f1": 0.21621621621621623,
+          "fn": 13,
+          "fp": 16,
+          "measured": true,
+          "precision": 0.2,
+          "predicted": 20,
+          "recall": 0.23529411764705882,
+          "support": 17,
+          "tp": 4
+        },
+        "v34": {
+          "f1": 0.17777777777777778,
+          "fn": 13,
+          "fp": 24,
+          "measured": true,
+          "precision": 0.14285714285714285,
+          "predicted": 28,
+          "recall": 0.23529411764705882,
+          "support": 17,
+          "tp": 4
+        }
+      },
+      "links_time": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 7,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0,
+          "support": 7,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.9230769230769231,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 6,
+          "recall": 0.8571428571428571,
+          "support": 7,
+          "tp": 6
+        },
+        "v34": {
+          "f1": 0.46153846153846156,
+          "fn": 4,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.5,
+          "predicted": 6,
+          "recall": 0.42857142857142855,
+          "support": 7,
+          "tp": 3
+        }
+      },
+      "locations": {
+        "baseline": {
+          "f1": 0.5632183908045977,
+          "fn": 60,
+          "fp": 16,
+          "measured": true,
+          "precision": 0.7538461538461538,
+          "predicted": 65,
+          "recall": 0.44954128440366975,
+          "support": 109,
+          "tp": 49
+        },
+        "candidate": {
+          "f1": 0.967741935483871,
+          "fn": 4,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.9722222222222222,
+          "predicted": 108,
+          "recall": 0.963302752293578,
+          "support": 109,
+          "tp": 105
+        },
+        "v34": {
+          "f1": 0.967741935483871,
+          "fn": 4,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.9722222222222222,
+          "predicted": 108,
+          "recall": 0.963302752293578,
+          "support": 109,
+          "tp": 105
+        }
+      }
+    },
+    "revised_23": {
+      "BARANGAY": {
+        "baseline": {
+          "f1": 0.9166666666666666,
+          "fn": 2,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 11,
+          "recall": 0.8461538461538461,
+          "support": 13,
+          "tp": 11
+        },
+        "candidate": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 13,
+          "recall": 1.0,
+          "support": 13,
+          "tp": 13
+        },
+        "v34": {
+          "f1": 1.0,
+          "fn": 0,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 13,
+          "recall": 1.0,
+          "support": 13,
+          "tp": 13
+        }
+      },
+      "CITY": {
+        "baseline": {
+          "f1": 0.5128205128205128,
+          "fn": 15,
+          "fp": 4,
+          "measured": true,
+          "precision": 0.7142857142857143,
+          "predicted": 14,
+          "recall": 0.4,
+          "support": 25,
+          "tp": 10
+        },
+        "candidate": {
+          "f1": 0.9795918367346939,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 24,
+          "recall": 0.96,
+          "support": 25,
+          "tp": 24
+        },
+        "v34": {
+          "f1": 0.9795918367346939,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 24,
+          "recall": 0.96,
+          "support": 25,
+          "tp": 24
+        }
+      },
+      "DEPTH": {
+        "baseline": {
+          "f1": 0.49056603773584906,
+          "fn": 24,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.8125,
+          "predicted": 16,
+          "recall": 0.35135135135135137,
+          "support": 37,
+          "tp": 13
+        },
+        "candidate": {
+          "f1": 0.9444444444444444,
+          "fn": 3,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9714285714285714,
+          "predicted": 35,
+          "recall": 0.918918918918919,
+          "support": 37,
+          "tp": 34
+        },
+        "v34": {
+          "f1": 0.9577464788732394,
+          "fn": 3,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 34,
+          "recall": 0.918918918918919,
+          "support": 37,
+          "tp": 34
+        }
+      },
+      "LANDMARK": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 9,
+          "fp": 0,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "support": 9,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.8888888888888888,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.8888888888888888,
+          "predicted": 9,
+          "recall": 0.8888888888888888,
+          "support": 9,
+          "tp": 8
+        },
+        "v34": {
+          "f1": 0.8888888888888888,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.8888888888888888,
+          "predicted": 9,
+          "recall": 0.8888888888888888,
+          "support": 9,
+          "tp": 8
+        }
+      },
+      "LOCAL_AREA": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 4,
+          "fp": 0,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "support": 4,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.8571428571428571,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 3,
+          "recall": 0.75,
+          "support": 4,
+          "tp": 3
+        },
+        "v34": {
+          "f1": 0.8571428571428571,
+          "fn": 1,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 3,
+          "recall": 0.75,
+          "support": 4,
+          "tp": 3
+        }
+      },
+      "PROVINCE": {
+        "baseline": {
+          "f1": 0.9,
+          "fn": 0,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.8181818181818182,
+          "predicted": 11,
+          "recall": 1.0,
+          "support": 9,
+          "tp": 9
+        },
+        "candidate": {
+          "f1": 0.9473684210526315,
+          "fn": 0,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9,
+          "predicted": 10,
+          "recall": 1.0,
+          "support": 9,
+          "tp": 9
+        },
+        "v34": {
+          "f1": 0.9473684210526315,
+          "fn": 0,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9,
+          "predicted": 10,
+          "recall": 1.0,
+          "support": 9,
+          "tp": 9
+        }
+      },
+      "ROAD": {
+        "baseline": {
+          "f1": 0.4788732394366197,
+          "fn": 28,
+          "fp": 9,
+          "measured": true,
+          "precision": 0.6538461538461539,
+          "predicted": 26,
+          "recall": 0.37777777777777777,
+          "support": 45,
+          "tp": 17
+        },
+        "candidate": {
+          "f1": 0.9777777777777777,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9777777777777777,
+          "predicted": 45,
+          "recall": 0.9777777777777777,
+          "support": 45,
+          "tp": 44
+        },
+        "v34": {
+          "f1": 0.9777777777777777,
+          "fn": 1,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.9777777777777777,
+          "predicted": 45,
+          "recall": 0.9777777777777777,
+          "support": 45,
+          "tp": 44
+        }
+      },
+      "TIME": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 24,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0,
+          "support": 24,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.8936170212765957,
+          "fn": 3,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9130434782608695,
+          "predicted": 23,
+          "recall": 0.875,
+          "support": 24,
+          "tp": 21
+        },
+        "v34": {
+          "f1": 0.8936170212765957,
+          "fn": 3,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9130434782608695,
+          "predicted": 23,
+          "recall": 0.875,
+          "support": 24,
+          "tp": 21
+        }
+      },
+      "links": {
+        "baseline": {
+          "f1": 0.1258741258741259,
+          "fn": 82,
+          "fp": 43,
+          "measured": true,
+          "precision": 0.17307692307692307,
+          "predicted": 52,
+          "recall": 0.0989010989010989,
+          "support": 91,
+          "tp": 9
+        },
+        "candidate": {
+          "f1": 0.631578947368421,
+          "fn": 43,
+          "fp": 13,
+          "measured": true,
+          "precision": 0.7868852459016393,
+          "predicted": 61,
+          "recall": 0.5274725274725275,
+          "support": 91,
+          "tp": 48
+        },
+        "v34": {
+          "f1": 0.5786163522012578,
+          "fn": 45,
+          "fp": 22,
+          "measured": true,
+          "precision": 0.6764705882352942,
+          "predicted": 68,
+          "recall": 0.5054945054945055,
+          "support": 91,
+          "tp": 46
+        }
+      },
+      "links_access": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 20,
+          "fp": 0,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "support": 20,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.6206896551724138,
+          "fn": 11,
+          "fp": 0,
+          "measured": true,
+          "precision": 1.0,
+          "predicted": 9,
+          "recall": 0.45,
+          "support": 20,
+          "tp": 9
+        },
+        "v34": {
+          "f1": 0.5517241379310345,
+          "fn": 12,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.8888888888888888,
+          "predicted": 9,
+          "recall": 0.4,
+          "support": 20,
+          "tp": 8
+        }
+      },
+      "links_depth": {
+        "baseline": {
+          "f1": 0.13793103448275862,
+          "fn": 36,
+          "fp": 14,
+          "measured": true,
+          "precision": 0.2222222222222222,
+          "predicted": 18,
+          "recall": 0.1,
+          "support": 40,
+          "tp": 4
+        },
+        "candidate": {
+          "f1": 0.7647058823529411,
+          "fn": 14,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9285714285714286,
+          "predicted": 28,
+          "recall": 0.65,
+          "support": 40,
+          "tp": 26
+        },
+        "v34": {
+          "f1": 0.746268656716418,
+          "fn": 15,
+          "fp": 2,
+          "measured": true,
+          "precision": 0.9259259259259259,
+          "predicted": 27,
+          "recall": 0.625,
+          "support": 40,
+          "tp": 25
+        }
+      },
+      "links_status": {
+        "baseline": {
+          "f1": 0.17857142857142858,
+          "fn": 18,
+          "fp": 28,
+          "measured": true,
+          "precision": 0.15151515151515152,
+          "predicted": 33,
+          "recall": 0.21739130434782608,
+          "support": 23,
+          "tp": 5
+        },
+        "candidate": {
+          "f1": 0.4878048780487805,
+          "fn": 13,
+          "fp": 8,
+          "measured": true,
+          "precision": 0.5555555555555556,
+          "predicted": 18,
+          "recall": 0.43478260869565216,
+          "support": 23,
+          "tp": 10
+        },
+        "v34": {
+          "f1": 0.40816326530612246,
+          "fn": 13,
+          "fp": 16,
+          "measured": true,
+          "precision": 0.38461538461538464,
+          "predicted": 26,
+          "recall": 0.43478260869565216,
+          "support": 23,
+          "tp": 10
+        }
+      },
+      "links_time": {
+        "baseline": {
+          "f1": 0.0,
+          "fn": 8,
+          "fp": 1,
+          "measured": true,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0,
+          "support": 8,
+          "tp": 0
+        },
+        "candidate": {
+          "f1": 0.42857142857142855,
+          "fn": 5,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.5,
+          "predicted": 6,
+          "recall": 0.375,
+          "support": 8,
+          "tp": 3
+        },
+        "v34": {
+          "f1": 0.42857142857142855,
+          "fn": 5,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.5,
+          "predicted": 6,
+          "recall": 0.375,
+          "support": 8,
+          "tp": 3
+        }
+      },
+      "locations": {
+        "baseline": {
+          "f1": 0.562874251497006,
+          "fn": 58,
+          "fp": 15,
+          "measured": true,
+          "precision": 0.7580645161290323,
+          "predicted": 62,
+          "recall": 0.44761904761904764,
+          "support": 105,
+          "tp": 47
+        },
+        "candidate": {
+          "f1": 0.9665071770334929,
+          "fn": 4,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.9711538461538461,
+          "predicted": 104,
+          "recall": 0.9619047619047619,
+          "support": 105,
+          "tp": 101
+        },
+        "v34": {
+          "f1": 0.9665071770334929,
+          "fn": 4,
+          "fp": 3,
+          "measured": true,
+          "precision": 0.9711538461538461,
+          "predicted": 104,
+          "recall": 0.9619047619047619,
+          "support": 105,
+          "tp": 101
+        }
+      }
+    }
+  },
+  "revised_slices": {
+    "english": {
+      "groups": 5,
+      "metrics": {
+        "BARANGAY": {
+          "baseline": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "CITY": {
+          "baseline": {
+            "f1": 0.3333333333333333,
+            "fn": 7,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 3,
+            "recall": 0.2222222222222222,
+            "support": 9,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 1.0,
+            "support": 9,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 9,
+            "recall": 1.0,
+            "support": 9,
+            "tp": 9
+          }
+        },
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.42857142857142855,
+            "fn": 15,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8571428571428571,
+            "predicted": 7,
+            "recall": 0.2857142857142857,
+            "support": 21,
+            "tp": 6
+          },
+          "candidate": {
+            "f1": 0.975609756097561,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 20,
+            "recall": 0.9523809523809523,
+            "support": 21,
+            "tp": 20
+          },
+          "v34": {
+            "f1": 0.975609756097561,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 20,
+            "recall": 0.9523809523809523,
+            "support": 21,
+            "tp": 20
+          }
+        },
+        "LANDMARK": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 4,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 4,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          }
+        },
+        "LOCAL_AREA": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 1.0,
+            "support": 1,
+            "tp": 1
+          }
+        },
+        "PROVINCE": {
+          "baseline": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 4,
+            "recall": 1.0,
+            "support": 4,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 4,
+            "recall": 1.0,
+            "support": 4,
+            "tp": 4
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 4,
+            "recall": 1.0,
+            "support": 4,
+            "tp": 4
+          }
+        },
+        "ROAD": {
+          "baseline": {
+            "f1": 0.35294117647058826,
+            "fn": 16,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 12,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          },
+          "candidate": {
+            "f1": 0.9767441860465116,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 21,
+            "recall": 0.9545454545454546,
+            "support": 22,
+            "tp": 21
+          },
+          "v34": {
+            "f1": 0.9767441860465116,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 21,
+            "recall": 0.9545454545454546,
+            "support": 22,
+            "tp": 21
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 6,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 6,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.9090909090909091,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 0.8333333333333334,
+            "support": 6,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 0.9090909090909091,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 0.8333333333333334,
+            "support": 6,
+            "tp": 5
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.1095890410958904,
+            "fn": 52,
+            "fp": 13,
+            "measured": true,
+            "precision": 0.23529411764705882,
+            "predicted": 17,
+            "recall": 0.07142857142857142,
+            "support": 56,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 0.5647058823529412,
+            "fn": 32,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.8275862068965517,
+            "predicted": 29,
+            "recall": 0.42857142857142855,
+            "support": 56,
+            "tp": 24
+          },
+          "v34": {
+            "f1": 0.5227272727272727,
+            "fn": 33,
+            "fp": 9,
+            "measured": true,
+            "precision": 0.71875,
+            "predicted": 32,
+            "recall": 0.4107142857142857,
+            "support": 56,
+            "tp": 23
+          }
+        },
+        "links_access": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 17,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 17,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.5217391304347826,
+            "fn": 11,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.35294117647058826,
+            "support": 17,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.5217391304347826,
+            "fn": 11,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.35294117647058826,
+            "support": 17,
+            "tp": 6
+          }
+        },
+        "links_depth": {
+          "baseline": {
+            "f1": 0.18181818181818182,
+            "fn": 23,
+            "fp": 4,
+            "measured": true,
+            "precision": 0.42857142857142855,
+            "predicted": 7,
+            "recall": 0.11538461538461539,
+            "support": 26,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.7906976744186046,
+            "fn": 9,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 0.6538461538461539,
+            "support": 26,
+            "tp": 17
+          },
+          "v34": {
+            "f1": 0.7441860465116279,
+            "fn": 10,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9411764705882353,
+            "predicted": 17,
+            "recall": 0.6153846153846154,
+            "support": 26,
+            "tp": 16
+          }
+        },
+        "links_status": {
+          "baseline": {
+            "f1": 0.10526315789473684,
+            "fn": 9,
+            "fp": 8,
+            "measured": true,
+            "precision": 0.1111111111111111,
+            "predicted": 9,
+            "recall": 0.1,
+            "support": 10,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.15384615384615385,
+            "fn": 9,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.3333333333333333,
+            "predicted": 3,
+            "recall": 0.1,
+            "support": 10,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 0.10526315789473684,
+            "fn": 9,
+            "fp": 8,
+            "measured": true,
+            "precision": 0.1111111111111111,
+            "predicted": 9,
+            "recall": 0.1,
+            "support": 10,
+            "tp": 1
+          }
+        },
+        "links_time": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          }
+        },
+        "locations": {
+          "baseline": {
+            "f1": 0.46153846153846156,
+            "fn": 28,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.6818181818181818,
+            "predicted": 22,
+            "recall": 0.3488372093023256,
+            "support": 43,
+            "tp": 15
+          },
+          "candidate": {
+            "f1": 0.9647058823529412,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9761904761904762,
+            "predicted": 42,
+            "recall": 0.9534883720930233,
+            "support": 43,
+            "tp": 41
+          },
+          "v34": {
+            "f1": 0.9647058823529412,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9761904761904762,
+            "predicted": 42,
+            "recall": 0.9534883720930233,
+            "support": 43,
+            "tp": 41
+          }
+        }
+      },
+      "records": 11
+    },
+    "phenomenon:collective_depth_without_uniform_scalar": {
+      "groups": 2,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.25,
+            "fn": 11,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 3,
+            "recall": 0.15384615384615385,
+            "support": 13,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 13,
+            "recall": 1.0,
+            "support": 13,
+            "tp": 13
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 13,
+            "recall": 1.0,
+            "support": 13,
+            "tp": 13
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 43,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 7,
+            "recall": 0.0,
+            "support": 43,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.5625,
+            "fn": 25,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.8571428571428571,
+            "predicted": 21,
+            "recall": 0.4186046511627907,
+            "support": 43,
+            "tp": 18
+          },
+          "v34": {
+            "f1": 0.5454545454545454,
+            "fn": 25,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.782608695652174,
+            "predicted": 23,
+            "recall": 0.4186046511627907,
+            "support": 43,
+            "tp": 18
+          }
+        }
+      },
+      "records": 5
+    },
+    "phenomenon:depth_collective": {
+      "groups": 4,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.48,
+            "fn": 12,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8571428571428571,
+            "predicted": 7,
+            "recall": 0.3333333333333333,
+            "support": 18,
+            "tp": 6
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 18,
+            "recall": 1.0,
+            "support": 18,
+            "tp": 18
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 18,
+            "recall": 1.0,
+            "support": 18,
+            "tp": 18
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 6,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 6,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.9090909090909091,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 0.8333333333333334,
+            "support": 6,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 0.9090909090909091,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 0.8333333333333334,
+            "support": 6,
+            "tp": 5
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.05333333333333334,
+            "fn": 50,
+            "fp": 21,
+            "measured": true,
+            "precision": 0.08695652173913043,
+            "predicted": 23,
+            "recall": 0.038461538461538464,
+            "support": 52,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 0.575,
+            "fn": 29,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.8214285714285714,
+            "predicted": 28,
+            "recall": 0.4423076923076923,
+            "support": 52,
+            "tp": 23
+          },
+          "v34": {
+            "f1": 0.5238095238095238,
+            "fn": 30,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.6875,
+            "predicted": 32,
+            "recall": 0.4230769230769231,
+            "support": 52,
+            "tp": 22
+          }
+        }
+      },
+      "records": 8
+    },
+    "phenomenon:depth_maximum": {
+      "groups": 4,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5,
+            "fn": 4,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.3333333333333333,
+            "support": 6,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.10526315789473684,
+            "fn": 11,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.14285714285714285,
+            "predicted": 7,
+            "recall": 0.08333333333333333,
+            "support": 12,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.6,
+            "fn": 6,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 8,
+            "recall": 0.5,
+            "support": 12,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.5714285714285714,
+            "fn": 6,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 9,
+            "recall": 0.5,
+            "support": 12,
+            "tp": 6
+          }
+        }
+      },
+      "records": 4
+    },
+    "phenomenon:depth_range": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 1,
+            "tp": 0
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "v34": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          }
+        }
+      },
+      "records": 1
+    },
+    "phenomenon:multi_target_depth": {
+      "groups": 4,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.4166666666666667,
+            "fn": 13,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 6,
+            "recall": 0.2777777777777778,
+            "support": 18,
+            "tp": 5
+          },
+          "candidate": {
+            "f1": 0.9444444444444444,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9444444444444444,
+            "predicted": 18,
+            "recall": 0.9444444444444444,
+            "support": 18,
+            "tp": 17
+          },
+          "v34": {
+            "f1": 0.9714285714285714,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 17,
+            "recall": 0.9444444444444444,
+            "support": 18,
+            "tp": 17
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 6,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 6,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.9090909090909091,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 0.8333333333333334,
+            "support": 6,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 0.9090909090909091,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 0.8333333333333334,
+            "support": 6,
+            "tp": 5
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.02702702702702703,
+            "fn": 52,
+            "fp": 20,
+            "measured": true,
+            "precision": 0.047619047619047616,
+            "predicted": 21,
+            "recall": 0.018867924528301886,
+            "support": 53,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.5609756097560976,
+            "fn": 30,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.7931034482758621,
+            "predicted": 29,
+            "recall": 0.4339622641509434,
+            "support": 53,
+            "tp": 23
+          },
+          "v34": {
+            "f1": 0.5176470588235295,
+            "fn": 31,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.6875,
+            "predicted": 32,
+            "recall": 0.41509433962264153,
+            "support": 53,
+            "tp": 22
+          }
+        }
+      },
+      "records": 9
+    },
+    "phenomenon:multi_target_time": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.3870967741935484,
+            "fn": 16,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 9,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:separate_depths_under_shared_time": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.3870967741935484,
+            "fn": 16,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 9,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:status_active": {
+      "groups": 10,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5789473684210527,
+            "fn": 13,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.7857142857142857,
+            "predicted": 14,
+            "recall": 0.4583333333333333,
+            "support": 24,
+            "tp": 11
+          },
+          "candidate": {
+            "f1": 0.9565217391304348,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 22,
+            "recall": 0.9166666666666666,
+            "support": 24,
+            "tp": 22
+          },
+          "v34": {
+            "f1": 0.9565217391304348,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 22,
+            "recall": 0.9166666666666666,
+            "support": 24,
+            "tp": 22
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 19,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 19,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8947368421052632,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8947368421052632,
+            "predicted": 19,
+            "recall": 0.8947368421052632,
+            "support": 19,
+            "tp": 17
+          },
+          "v34": {
+            "f1": 0.8947368421052632,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8947368421052632,
+            "predicted": 19,
+            "recall": 0.8947368421052632,
+            "support": 19,
+            "tp": 17
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.18556701030927836,
+            "fn": 42,
+            "fp": 37,
+            "measured": true,
+            "precision": 0.1956521739130435,
+            "predicted": 46,
+            "recall": 0.17647058823529413,
+            "support": 51,
+            "tp": 9
+          },
+          "candidate": {
+            "f1": 0.6666666666666666,
+            "fn": 21,
+            "fp": 9,
+            "measured": true,
+            "precision": 0.7692307692307693,
+            "predicted": 39,
+            "recall": 0.5882352941176471,
+            "support": 51,
+            "tp": 30
+          },
+          "v34": {
+            "f1": 0.6105263157894737,
+            "fn": 22,
+            "fp": 15,
+            "measured": true,
+            "precision": 0.6590909090909091,
+            "predicted": 44,
+            "recall": 0.5686274509803921,
+            "support": 51,
+            "tp": 29
+          }
+        }
+      },
+      "records": 15
+    },
+    "phenomenon:status_habitual": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.2,
+            "fn": 3,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.16666666666666666,
+            "predicted": 6,
+            "recall": 0.25,
+            "support": 4,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 1,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 6,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          }
+        }
+      },
+      "records": 1
+    },
+    "phenomenon:status_receding": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.25,
+            "fn": 4,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.3333333333333333,
+            "predicted": 3,
+            "recall": 0.2,
+            "support": 5,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.6666666666666666,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.6,
+            "support": 5,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.6,
+            "predicted": 5,
+            "recall": 0.6,
+            "support": 5,
+            "tp": 3
+          }
+        }
+      },
+      "records": 1
+    },
+    "phenomenon:status_rising": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 1.0,
+            "support": 2,
+            "tp": 2
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.2,
+            "fn": 3,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.16666666666666666,
+            "predicted": 6,
+            "recall": 0.25,
+            "support": 4,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 1,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 6,
+            "recall": 0.75,
+            "support": 4,
+            "tp": 3
+          }
+        }
+      },
+      "records": 1
+    },
+    "phenomenon:status_subsided": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.3870967741935484,
+            "fn": 16,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 9,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:status_unknown": {
+      "groups": 2,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "v34": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 2,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          },
+          "v34": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.5,
+            "support": 2,
+            "tp": 1
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": null,
+            "fn": 0,
+            "fp": 1,
+            "measured": false,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          },
+          "v34": {
+            "f1": null,
+            "fn": 0,
+            "fp": 0,
+            "measured": false,
+            "precision": null,
+            "predicted": 0,
+            "recall": null,
+            "support": 0,
+            "tp": 0
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:time_observation": {
+      "groups": 3,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.4,
+            "fn": 4,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 4,
+            "recall": 0.3333333333333333,
+            "support": 6,
+            "tp": 2
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 11,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 11,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8695652173913043,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 12,
+            "recall": 0.9090909090909091,
+            "support": 11,
+            "tp": 10
+          },
+          "v34": {
+            "f1": 0.8695652173913043,
+            "fn": 1,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 12,
+            "recall": 0.9090909090909091,
+            "support": 11,
+            "tp": 10
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.25806451612903225,
+            "fn": 13,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.2857142857142857,
+            "predicted": 14,
+            "recall": 0.23529411764705882,
+            "support": 17,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 0.7878787878787878,
+            "fn": 4,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.8125,
+            "predicted": 16,
+            "recall": 0.7647058823529411,
+            "support": 17,
+            "tp": 13
+          },
+          "v34": {
+            "f1": 0.7428571428571429,
+            "fn": 4,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.7222222222222222,
+            "predicted": 18,
+            "recall": 0.7647058823529411,
+            "support": 17,
+            "tp": 13
+          }
+        }
+      },
+      "records": 4
+    },
+    "phenomenon:time_recession": {
+      "groups": 1,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.2857142857142857,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 1,
+            "recall": 0.16666666666666666,
+            "support": 6,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 6,
+            "tp": 6
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 22,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "support": 22,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.3870967741935484,
+            "fn": 16,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 9,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          },
+          "v34": {
+            "f1": 0.42857142857142855,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 6,
+            "recall": 0.2727272727272727,
+            "support": 22,
+            "tp": 6
+          }
+        }
+      },
+      "records": 2
+    },
+    "phenomenon:time_report": {
+      "groups": 6,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.5,
+            "fn": 5,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 4,
+            "recall": 0.375,
+            "support": 8,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.9333333333333333,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 7,
+            "recall": 0.875,
+            "support": 8,
+            "tp": 7
+          },
+          "v34": {
+            "f1": 0.9333333333333333,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 7,
+            "recall": 0.875,
+            "support": 8,
+            "tp": 7
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 14,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 14,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.9230769230769231,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 12,
+            "recall": 0.8571428571428571,
+            "support": 14,
+            "tp": 12
+          },
+          "v34": {
+            "f1": 0.9230769230769231,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 12,
+            "recall": 0.8571428571428571,
+            "support": 14,
+            "tp": 12
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.17647058823529413,
+            "fn": 13,
+            "fp": 15,
+            "measured": true,
+            "precision": 0.16666666666666666,
+            "predicted": 18,
+            "recall": 0.1875,
+            "support": 16,
+            "tp": 3
+          },
+          "candidate": {
+            "f1": 0.6875,
+            "fn": 5,
+            "fp": 5,
+            "measured": true,
+            "precision": 0.6875,
+            "predicted": 16,
+            "recall": 0.6875,
+            "support": 16,
+            "tp": 11
+          },
+          "v34": {
+            "f1": 0.6285714285714286,
+            "fn": 5,
+            "fp": 8,
+            "measured": true,
+            "precision": 0.5789473684210527,
+            "predicted": 19,
+            "recall": 0.6875,
+            "support": 16,
+            "tp": 11
+          }
+        }
+      },
+      "records": 6
+    },
+    "phenomenon:time_unspecified": {
+      "groups": 6,
+      "metrics": {
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.6153846153846154,
+            "fn": 4,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8,
+            "predicted": 5,
+            "recall": 0.5,
+            "support": 8,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 1.0,
+            "support": 8,
+            "tp": 8
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 1.0,
+            "support": 8,
+            "tp": 8
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 16,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 16,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8387096774193549,
+            "fn": 3,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8666666666666667,
+            "predicted": 15,
+            "recall": 0.8125,
+            "support": 16,
+            "tp": 13
+          },
+          "v34": {
+            "f1": 0.8387096774193549,
+            "fn": 3,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8666666666666667,
+            "predicted": 15,
+            "recall": 0.8125,
+            "support": 16,
+            "tp": 13
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.2926829268292683,
+            "fn": 15,
+            "fp": 14,
+            "measured": true,
+            "precision": 0.3,
+            "predicted": 20,
+            "recall": 0.2857142857142857,
+            "support": 21,
+            "tp": 6
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 6,
+            "fp": 4,
+            "measured": true,
+            "precision": 0.7894736842105263,
+            "predicted": 19,
+            "recall": 0.7142857142857143,
+            "support": 21,
+            "tp": 15
+          },
+          "v34": {
+            "f1": 0.6976744186046512,
+            "fn": 6,
+            "fp": 7,
+            "measured": true,
+            "precision": 0.6818181818181818,
+            "predicted": 22,
+            "recall": 0.7142857142857143,
+            "support": 21,
+            "tp": 15
+          }
+        }
+      },
+      "records": 6
+    },
+    "taglish": {
+      "groups": 10,
+      "metrics": {
+        "BARANGAY": {
+          "baseline": {
+            "f1": 0.8888888888888888,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 8,
+            "recall": 0.8,
+            "support": 10,
+            "tp": 8
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 10,
+            "recall": 1.0,
+            "support": 10,
+            "tp": 10
+          }
+        },
+        "CITY": {
+          "baseline": {
+            "f1": 0.5925925925925926,
+            "fn": 8,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.7272727272727273,
+            "predicted": 11,
+            "recall": 0.5,
+            "support": 16,
+            "tp": 8
+          },
+          "candidate": {
+            "f1": 0.967741935483871,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 15,
+            "recall": 0.9375,
+            "support": 16,
+            "tp": 15
+          },
+          "v34": {
+            "f1": 0.967741935483871,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 15,
+            "recall": 0.9375,
+            "support": 16,
+            "tp": 15
+          }
+        },
+        "DEPTH": {
+          "baseline": {
+            "f1": 0.56,
+            "fn": 9,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7777777777777778,
+            "predicted": 9,
+            "recall": 0.4375,
+            "support": 16,
+            "tp": 7
+          },
+          "candidate": {
+            "f1": 0.9032258064516129,
+            "fn": 2,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9333333333333333,
+            "predicted": 15,
+            "recall": 0.875,
+            "support": 16,
+            "tp": 14
+          },
+          "v34": {
+            "f1": 0.9333333333333333,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 14,
+            "recall": 0.875,
+            "support": 16,
+            "tp": 14
+          }
+        },
+        "LANDMARK": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 5,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 5,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          }
+        },
+        "LOCAL_AREA": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          },
+          "v34": {
+            "f1": 0.8,
+            "fn": 1,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 2,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          }
+        },
+        "PROVINCE": {
+          "baseline": {
+            "f1": 0.8333333333333334,
+            "fn": 0,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.7142857142857143,
+            "predicted": 7,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          },
+          "candidate": {
+            "f1": 0.9090909090909091,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          },
+          "v34": {
+            "f1": 0.9090909090909091,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.8333333333333334,
+            "predicted": 6,
+            "recall": 1.0,
+            "support": 5,
+            "tp": 5
+          }
+        },
+        "ROAD": {
+          "baseline": {
+            "f1": 0.5945945945945946,
+            "fn": 12,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.7857142857142857,
+            "predicted": 14,
+            "recall": 0.4782608695652174,
+            "support": 23,
+            "tp": 11
+          },
+          "candidate": {
+            "f1": 0.9787234042553191,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9583333333333334,
+            "predicted": 24,
+            "recall": 1.0,
+            "support": 23,
+            "tp": 23
+          },
+          "v34": {
+            "f1": 0.9787234042553191,
+            "fn": 0,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9583333333333334,
+            "predicted": 24,
+            "recall": 1.0,
+            "support": 23,
+            "tp": 23
+          }
+        },
+        "TIME": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 18,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 18,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.8888888888888888,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8888888888888888,
+            "predicted": 18,
+            "recall": 0.8888888888888888,
+            "support": 18,
+            "tp": 16
+          },
+          "v34": {
+            "f1": 0.8888888888888888,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8888888888888888,
+            "predicted": 18,
+            "recall": 0.8888888888888888,
+            "support": 18,
+            "tp": 16
+          }
+        },
+        "links": {
+          "baseline": {
+            "f1": 0.14285714285714285,
+            "fn": 30,
+            "fp": 30,
+            "measured": true,
+            "precision": 0.14285714285714285,
+            "predicted": 35,
+            "recall": 0.14285714285714285,
+            "support": 35,
+            "tp": 5
+          },
+          "candidate": {
+            "f1": 0.7164179104477612,
+            "fn": 11,
+            "fp": 8,
+            "measured": true,
+            "precision": 0.75,
+            "predicted": 32,
+            "recall": 0.6857142857142857,
+            "support": 35,
+            "tp": 24
+          },
+          "v34": {
+            "f1": 0.647887323943662,
+            "fn": 12,
+            "fp": 13,
+            "measured": true,
+            "precision": 0.6388888888888888,
+            "predicted": 36,
+            "recall": 0.6571428571428571,
+            "support": 35,
+            "tp": 23
+          }
+        },
+        "links_access": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 3,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 3,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 1.0,
+            "fn": 0,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 1.0,
+            "support": 3,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.6666666666666666,
+            "fn": 1,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.6666666666666666,
+            "predicted": 3,
+            "recall": 0.6666666666666666,
+            "support": 3,
+            "tp": 2
+          }
+        },
+        "links_depth": {
+          "baseline": {
+            "f1": 0.08,
+            "fn": 13,
+            "fp": 10,
+            "measured": true,
+            "precision": 0.09090909090909091,
+            "predicted": 11,
+            "recall": 0.07142857142857142,
+            "support": 14,
+            "tp": 1
+          },
+          "candidate": {
+            "f1": 0.72,
+            "fn": 5,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.8181818181818182,
+            "predicted": 11,
+            "recall": 0.6428571428571429,
+            "support": 14,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 0.75,
+            "fn": 5,
+            "fp": 1,
+            "measured": true,
+            "precision": 0.9,
+            "predicted": 10,
+            "recall": 0.6428571428571429,
+            "support": 14,
+            "tp": 9
+          }
+        },
+        "links_status": {
+          "baseline": {
+            "f1": 0.21621621621621623,
+            "fn": 9,
+            "fp": 20,
+            "measured": true,
+            "precision": 0.16666666666666666,
+            "predicted": 24,
+            "recall": 0.3076923076923077,
+            "support": 13,
+            "tp": 4
+          },
+          "candidate": {
+            "f1": 0.6428571428571429,
+            "fn": 4,
+            "fp": 6,
+            "measured": true,
+            "precision": 0.6,
+            "predicted": 15,
+            "recall": 0.6923076923076923,
+            "support": 13,
+            "tp": 9
+          },
+          "v34": {
+            "f1": 0.6,
+            "fn": 4,
+            "fp": 8,
+            "measured": true,
+            "precision": 0.5294117647058824,
+            "predicted": 17,
+            "recall": 0.6923076923076923,
+            "support": 13,
+            "tp": 9
+          }
+        },
+        "links_time": {
+          "baseline": {
+            "f1": 0.0,
+            "fn": 5,
+            "fp": 0,
+            "measured": true,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "support": 5,
+            "tp": 0
+          },
+          "candidate": {
+            "f1": 0.75,
+            "fn": 2,
+            "fp": 0,
+            "measured": true,
+            "precision": 1.0,
+            "predicted": 3,
+            "recall": 0.6,
+            "support": 5,
+            "tp": 3
+          },
+          "v34": {
+            "f1": 0.5454545454545454,
+            "fn": 2,
+            "fp": 3,
+            "measured": true,
+            "precision": 0.5,
+            "predicted": 6,
+            "recall": 0.6,
+            "support": 5,
+            "tp": 3
+          }
+        },
+        "locations": {
+          "baseline": {
+            "f1": 0.6274509803921569,
+            "fn": 30,
+            "fp": 8,
+            "measured": true,
+            "precision": 0.8,
+            "predicted": 40,
+            "recall": 0.5161290322580645,
+            "support": 62,
+            "tp": 32
+          },
+          "candidate": {
+            "f1": 0.967741935483871,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.967741935483871,
+            "predicted": 62,
+            "recall": 0.967741935483871,
+            "support": 62,
+            "tp": 60
+          },
+          "v34": {
+            "f1": 0.967741935483871,
+            "fn": 2,
+            "fp": 2,
+            "measured": true,
+            "precision": 0.967741935483871,
+            "predicted": 62,
+            "recall": 0.967741935483871,
+            "support": 62,
+            "tp": 60
+          }
+        }
+      },
+      "records": 12
+    }
+  },
+  "small_training_subset_ai_assisted_silver": true
+}

@@ -37,7 +37,7 @@ def result_rows(db: Session, *, latest_only: bool = False) -> tuple[Select, Call
                    index.label("claim_index"), claim.label("claim"), source("title").label("title"),
                    source("publisher").label("publisher_source_id"), source("published_at").label("published_at"),
                    extracted.label("extracted_at"), version.created_at.label("captured_at"), NewsArticle.first_seen_at.label("saved_at")).select_from(run).join(version).join(NewsArticle, NewsArticle.id == version.article_id).join(rows, true()).where(
-                       run.status == "completed", run.result.is_not(None))
+                       run.status == "completed", run.result.is_not(None), run.mode == "rules_only")
     if latest_only:
         latest = latest_article_runs()
         query = query.join(latest, and_(latest.c.article_id == version.article_id, latest.c.run_id == run.id))
@@ -81,10 +81,12 @@ def readable_run(db: Session) -> ColumnElement:
     if db.get_bind().dialect.name == "postgresql":
         metadata = result["is_metadata_only"].astext
         errors = func.jsonb_array_length(result["errors"])
+        legacy = and_(*(~result.has_key(key) for key in ("schema_version", "processing_method", "native")))
     else:
         metadata = func.json_extract(result, "$.is_metadata_only")
         errors = func.json_array_length(result, "$.errors")
-    return and_(~cast(func.coalesce(metadata, "false"), Text).in_(["true", "1"]), func.coalesce(errors, 0) == 0)
+        legacy = and_(*(func.json_type(result, f"$.{key}").is_(None) for key in ("schema_version", "processing_method", "native")))
+    return and_(legacy, ~cast(func.coalesce(metadata, "false"), Text).in_(["true", "1"]), func.coalesce(errors, 0) == 0)
 
 
 def list_result_rows(db: Session, *, page: int, page_size: int, search: str, publisher: str | None,

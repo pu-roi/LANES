@@ -1,6 +1,34 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 13, 2026, 11:54 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 20, 2026, 10:25 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## C3a native capture/queue — unchanged schema
+
+No model/migration changes; head remains `e8a6f1c2d903`. The unchanged chain is applied to owned disposable PostGIS. Native captures use the existing JSONB fields with C2 capture/publication provenance and their own fingerprints; native and legacy inputs of the same body occupy separate immutable versions. Twenty fixture versions preserve ten legacy/native pairs in the real local run, with no publication/alert/zone rows. Twenty-seven PostgreSQL checks cover ownership, history and native capture/processing. [Verification](../evaluations/rss-ner-native-worker-20261020/README.md). Database snapshot stays private; four owned containers are stopped and the internal network removed. No shared/cloud migration.
+
+**Earlier checkpoints below are historical.**
+
+## Phase C2 — native evidence in existing JSONB
+
+No model/migration change. Head remains `e8a6f1c2d903`; the unchanged chain applies in owned disposable PostGIS. Native `capture_schema`/`publication_evidence` fields and their new fingerprint live in existing input JSON; full native graphs/projection remain in existing result JSON. Legacy snapshots/fingerprints remain unchanged. Fourteen PostgreSQL checks cover C2 round-trip/source proof plus C1/queue ownership/history; no publication records or zones are created. The owned server is stopped. [Report](../evaluations/rss-ner-native-projection-20261020/README.md). Normal writers remain legacy; no shared/cloud migration.
+
+**Earlier checkpoints below are historical.**
+
+## Phase C1 queue consumers — no additional schema change
+
+Head remains `e8a6f1c2d903`; no SQLAlchemy/Alembic definition changes in C1. Queue CRUD binds method, pipeline and immutable version while retaining uniqueness, retries and owned leases. Only fictional native fixtures are written in owned disposable databases; normal writers remain `rules_only`. Twelve PostgreSQL checks include fresh application of the unchanged chain, concurrency/reclaim ownership, persistence and discriminator rejection. Both owned servers are stopped. [93-check compatibility report](../evaluations/rss-ner-method-boundary-20261020/README.md). Shared/cloud schema is unchanged.
+
+**Earlier checkpoints below are historical.**
+
+## NER extraction mode — approved and locally verified
+
+The current source head is `e8a6f1c2d903`, after `d7e4b9a21c60`. The sole SQLAlchemy/DDL change expands the existing `ck_news_extraction_runs_rules_only_mode` check to `mode IN ('rules_only', 'ner_rules_v1')`, using Alembic finalized-name handling. All columns, nullability, application/server defaults, indexes, other checks, foreign keys, triggers, history and `(article_version_id, pipeline_version, mode)` uniqueness remain unchanged. No table or backfill is added; application writers continue with `rules_only`.
+
+Each direction takes `ACCESS EXCLUSIVE` before SQL guards and check replacement in PostgreSQL's migration transaction. Missing/drifted checks fail; upgrade refuses unexpected nonlegacy rows, and downgrade refuses any nonlegacy row including pending/failed/completed runs. Refusal preserves rows, relationships, check and revision. Native history must be retained through roll-forward or a separately approved recovery design.
+
+**66 local checks pass**, including fresh/repeated `alembic upgrade head`, exact fictional legacy row/link preservation, rollback, concurrency, offline SQL and publication/queue regressions. Only guarded disposable PostGIS databases were migrated; the owned container is stopped. **Shared/cloud schema remains unchanged by this task.** Native API readers, worker isolation and automatic-processing/publication integration remain Phase C work. [Indexed verification](../evaluations/rss-ner-mode-schema-20261020/README.md) · [Approved proposal](../plans/rss-ner-processing-mode-schema-proposal.md). No new dependency or neural runtime change.
+
+**Earlier checkpoints below are historical.**
 
 **Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](../evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

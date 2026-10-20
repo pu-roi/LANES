@@ -52,10 +52,21 @@ class NewsCapturedInput(BaseModel):
     published_at: datetime | None = None
 
 
+class NewsPublicationEvidence(BaseModel):
+    raw: str | None
+    timezone_known: bool
+    basis: Literal['publisher_feed', 'legacy_unknown']
+
+
+class NewsNativeCapturedInput(NewsCapturedInput):
+    capture_schema: Literal['lanes-news-ner-input-v1']
+    publication_evidence: NewsPublicationEvidence
+
+
 class NewsArticleVersionSummary(BaseModel):
     id: int
     input_fingerprint: str
-    input_snapshot: NewsCapturedInput
+    input_snapshot: NewsNativeCapturedInput | NewsCapturedInput
     created_at: datetime
 
     model_config = {"from_attributes": True}

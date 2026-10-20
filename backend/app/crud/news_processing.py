@@ -14,6 +14,8 @@ from sqlalchemy.orm import Session
 
 from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.schemas.news_extraction import NewsArticleExtractorInput
+from app.schemas.news_ner_result import ProcessingMode, NewsNerResult, parse_saved_result
+from app.services.news_processing_identity import validate_processing_identity
 from app.services.news_discovery_service import MAX_ARTICLE_CHARS, extraction_input_snapshot
 
 PIPELINE_VERSION = "rules-spatial-preview-v21"
@@ -35,19 +37,26 @@ def current_pipeline_version() -> str:
     return version
 
 
-def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str | None = None) -> int | None:
+def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str | None = None,
+                    mode: ProcessingMode = "rules_only", publication_evidence: object | None = None) -> int | None:
     """Capture valid pending input in the caller's article transaction; no commit."""
+    pipeline_version = processing_identity(mode, pipeline_version)
     if (article.review_state != "pending" or article.article_error or not (article.article_text or "").strip()
             or len(article.article_text or "") > MAX_ARTICLE_CHARS):
         return None
     db.flush()
-    pipeline_version = pipeline_version or current_pipeline_version()
     source = NewsArticleExtractorInput(
         article_id=article.id, canonical_url=article.canonical_url, publisher=article.publisher_source_id,
         title=article.title, excerpt=article.excerpt or "", article_text=article.article_text,
         published_at=article.published_at,
     )
-    snapshot, fingerprint = extraction_input_snapshot(source)
+    if mode == "ner_rules_v1":
+        from app.services.news_ner_durable.contracts import capture_native_input
+        snapshot, fingerprint = capture_native_input(source, publication_evidence=publication_evidence)
+    else:
+        if publication_evidence is not None:
+            raise ValueError("legacy_publication_evidence_not_supported")
+        snapshot, fingerprint = extraction_input_snapshot(source)
     dialect = db.get_bind().dialect.name
     insert = pg_insert if dialect == "postgresql" else sqlite_insert if dialect == "sqlite" else None
     if insert is None:
@@ -60,26 +69,41 @@ def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str 
         version_id = db.scalar(select(NewsArticleVersion.id).where(
             NewsArticleVersion.article_id == article.id, NewsArticleVersion.input_fingerprint == fingerprint))
     run_id = db.scalar(insert(NewsExtractionRun).values(
-        article_version_id=version_id, pipeline_version=pipeline_version, mode="rules_only", status="pending",
+        article_version_id=version_id, pipeline_version=pipeline_version, mode=mode, status="pending",
         attempt_count=0, created_at=now, updated_at=now,
     ).on_conflict_do_nothing(index_elements=["article_version_id", "pipeline_version", "mode"]).returning(NewsExtractionRun.id))
     return run_id if run_id is not None else db.scalar(select(NewsExtractionRun.id).where(
         NewsExtractionRun.article_version_id == version_id, NewsExtractionRun.pipeline_version == pipeline_version,
-        NewsExtractionRun.mode == "rules_only"))
+        NewsExtractionRun.mode == mode))
 
 
-def capture_pending_inputs(db: Session, limit: int, source_ids: tuple[str, ...] | None = None) -> int:
+def processing_identity(mode: ProcessingMode, pipeline_version: str | None) -> str:
+    # Native callers must supply a manifest-bound identity. No implicit mode switch.
+    if pipeline_version is None and mode != "rules_only":
+        raise ValueError("ner_pipeline_identity_required")
+    identity = pipeline_version if pipeline_version is not None else current_pipeline_version()
+    validate_processing_identity(mode, identity)
+    return identity
+
+
+def capture_pending_inputs(db: Session, limit: int, source_ids: tuple[str, ...] | None = None, *,
+                           mode: ProcessingMode = "rules_only", pipeline_version: str | None = None) -> int:
     """Bounded migration/restart handoff; skip captured runs and moderated history."""
+    identity = processing_identity(mode, pipeline_version)
+    if mode == "ner_rules_v1":
+        from app.services.news_ner_durable.capture import capture_native_pending_inputs
+        return capture_native_pending_inputs(db, limit, source_ids, identity)
     captured = exists(select(NewsExtractionRun.id).join(
         NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id,
-    ).where(NewsArticleVersion.article_id == NewsArticle.id, NewsExtractionRun.pipeline_version == current_pipeline_version()))
+    ).where(NewsArticleVersion.article_id == NewsArticle.id, NewsExtractionRun.pipeline_version == identity,
+            NewsExtractionRun.mode == mode))
     articles = db.scalars(select(NewsArticle).where(
         NewsArticle.review_state == "pending", NewsArticle.article_error.is_(None),
         func.length(func.trim(NewsArticle.article_text)) > 0,
         func.length(NewsArticle.article_text) <= MAX_ARTICLE_CHARS, ~captured,
         NewsArticle.publisher_source_id.in_(source_ids) if source_ids is not None else True,
     ).order_by(NewsArticle.id).limit(limit)).all()
-    return sum(enqueue_article(db, article) is not None for article in articles)
+    return sum(enqueue_article(db, article, mode=mode, pipeline_version=identity) is not None for article in articles)
 
 
 @dataclass(frozen=True)
@@ -91,14 +115,19 @@ class ClaimedExtraction:
     input_snapshot: dict
     input_fingerprint: str
     exhausted: bool = False
+    mode: ProcessingMode = "rules_only"
+    pipeline_version: str | None = None
+    article_version_id: int | None = None
 
 
-def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None, source_ids: tuple[str, ...] | None = None) -> ClaimedExtraction | None:
+def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None, source_ids: tuple[str, ...] | None = None,
+                  mode: ProcessingMode = "rules_only", pipeline_version: str | None = None) -> ClaimedExtraction | None:
     """Caller commits the short claim transaction before doing CPU extraction."""
     run = NewsExtractionRun
     due = or_(run.status == "pending", (run.status == "retry_wait") & (run.next_attempt_at <= now),
               (run.status == "processing") & (run.lease_expires_at <= now))
-    query = select(run).join(NewsArticleVersion).where(due, run.pipeline_version == current_pipeline_version())
+    identity = processing_identity(mode, pipeline_version)
+    query = select(run).join(NewsArticleVersion).where(due, run.pipeline_version == identity, run.mode == mode)
     if source_ids is not None:
         query = query.join(NewsArticle, NewsArticle.id == NewsArticleVersion.article_id).where(NewsArticle.publisher_source_id.in_(source_ids))
     if article_id is not None:
@@ -114,7 +143,8 @@ def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None, 
             db.flush()
             version = db.get(NewsArticleVersion, row.article_version_id)
             return ClaimedExtraction(row.id, version.article_id, None, row.attempt_count,
-                                     deepcopy(version.input_snapshot), version.input_fingerprint, exhausted=True)
+                                     deepcopy(version.input_snapshot), version.input_fingerprint, exhausted=True,
+                                     mode=row.mode, pipeline_version=row.pipeline_version, article_version_id=version.id)
         row.status = "processing"
         row.attempt_count += 1
         row.lease_token = uuid4()
@@ -125,7 +155,8 @@ def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None, 
         db.flush()
         version = db.get(NewsArticleVersion, row.article_version_id)
         return ClaimedExtraction(row.id, version.article_id, row.lease_token, row.attempt_count,
-                                 deepcopy(version.input_snapshot), version.input_fingerprint)
+                                 deepcopy(version.input_snapshot), version.input_fingerprint,
+                                 mode=row.mode, pipeline_version=row.pipeline_version, article_version_id=version.id)
 
 
 def finish_owned_run(db: Session, claim: ClaimedExtraction, now: datetime, *, result: dict | None = None,
@@ -140,9 +171,26 @@ def finish_owned_run(db: Session, claim: ClaimedExtraction, now: datetime, *, re
     else:
         if result is None:
             raise ValueError("Completed extraction requires a result")
+        if claim.mode == "ner_rules_v1":
+            native = parse_saved_result(claim.mode, result)
+            body = claim.input_snapshot.get("article_text")
+            if (not isinstance(native, NewsNerResult) or not isinstance(body, str)
+                    or native.article_id != claim.article_id
+                    or native.source.article_version_id != claim.article_version_id
+                    or native.source.input_fingerprint != claim.input_fingerprint
+                    or native.canonical_url != claim.input_snapshot.get("canonical_url")
+                    or native.source.canonical_url != native.canonical_url
+                    or native.processed_text_length != len(body)
+                    or native.source.text_sha256 != hashlib.sha256(body.encode("utf-8")).hexdigest()
+                    or native.native.graph.text_sha256 != native.source.text_sha256):
+                raise ValueError("ner_input_binding_invalid")
+        elif any(key in result for key in ("schema_version", "processing_method", "native")):
+            raise ValueError("extraction_result_method_mismatch")
         values.update(status="completed", result=result, error_code=None, next_attempt_at=None, completed_at=now)
     updated = db.execute(update(NewsExtractionRun).where(
         NewsExtractionRun.id == claim.run_id, NewsExtractionRun.status == "processing",
+        NewsExtractionRun.mode == claim.mode,
+        NewsExtractionRun.pipeline_version == claim.pipeline_version if claim.pipeline_version is not None else True,
         NewsExtractionRun.lease_token == claim.lease_token, NewsExtractionRun.lease_expires_at > now,
     ).values(**values).execution_options(synchronize_session=False))
     return updated.rowcount == 1

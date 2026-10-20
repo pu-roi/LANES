@@ -1,0 +1,50 @@
+{
+  "applicable_fixtures": 418,
+  "article_corrected_occurrences": 8,
+  "article_facts_accounted": 93,
+  "article_restored_facts": 40,
+  "article_unresolved_rows": 11,
+  "automatic_inference_retry": false,
+  "cached_records": 788,
+  "database_access": false,
+  "database_writes": false,
+  "default_feature_disabled": true,
+  "frontend_or_plotting_changed": false,
+  "isolation_and_cleanup_verified": true,
+  "neural_mentions_preserved": 53,
+  "paired_checks": 3,
+  "preservation": {
+    "application_snapshot_files": 20,
+    "environment_and_normal_processing_unchanged": true,
+    "excluded_metadata_unchanged": 82,
+    "historical_metadata_unchanged": 1538,
+    "planned_application_changes": [
+      "backend/app/services/news_ner/projection.py",
+      "backend/app/services/news_ner/promotion.json",
+      "backend/app/services/news_ner/worker.py",
+      "backend/app/services/news_ner_preview_service.py",
+      "backend/tests/test_news_ner_preview.py"
+    ],
+    "predecessor_promotion_changes_reconciled": [
+      "backend/app/services/news_ner/projection.py",
+      "backend/app/services/news_ner/worker.py",
+      "backend/app/services/news_ner_preview_service.py",
+      "backend/tests/test_news_ner_preview.py"
+    ],
+    "preexisting_declared_config_change": [
+      "backend/app/core/config.py"
+    ],
+    "protected_evidence_hashes": 208,
+    "runtime_v44_verbatim": true,
+    "v41_source_test_hashes": 55,
+    "v44_v45_frozen_evidence_unchanged": true,
+    "validation_holdout_content_opened": false
+  },
+  "previous_complete_rows_retained": 8,
+  "proposal_and_graph_binding_verified": true,
+  "real_worker_requests": 1,
+  "response_contract_and_source_link_preserved": true,
+  "runtime_v44_verbatim": true,
+  "saved_context_graphs": 407,
+  "status": "independently_verified"
+}

@@ -132,7 +132,7 @@ def _load(db: Session, evaluation_id: int, policy: EvaluationPolicy, now: dateti
     run = db.get(NewsExtractionRun, source.extraction_run_id)
     version = db.get(NewsArticleVersion, run.article_version_id)
     try:
-        article, extraction = validate_run(run, version)
+        article, extraction = validate_run(run, version, trusted=policy.native_assets)
         claim = extraction.claims[source.claim_ordinal]
     except (ValueError, ValidationError, IndexError, TypeError, KeyError) as exc:
         raise NewsPublicationError("invalid_immutable_evidence") from exc
@@ -142,6 +142,12 @@ def _load(db: Session, evaluation_id: int, policy: EvaluationPolicy, now: dateti
         raise NewsPublicationError("claim_identity_mismatch")
     reason = None
     audit = None
+    if run.mode == 'ner_rules_v1':
+        from app.crud.news_browsing import latest_article_runs
+        latest=latest_article_runs('ner_rules_v1',policy.pipeline_version)
+        latest_id=db.scalar(select(latest.c.run_id).where(latest.c.article_id==version.article_id))
+        if latest_id != run.id:
+            return evaluation,source,run,version,article,claim,None,'source_run_superseded'
     if evaluation.policy_fingerprint != policy.fingerprint or run.pipeline_version != policy.pipeline_version:
         reason = "publication_policy_changed"
     elif not source_is_approved(article, sources):
@@ -171,7 +177,13 @@ def _load(db: Session, evaluation_id: int, policy: EvaluationPolicy, now: dateti
                 elif audit.outcome != "verified" or audit.evidence is None:
                     reason = "independent_audit_not_verified"
                 else:
-                    reason = _validate_evidence(audit.evidence, claim, article, source.claim_sha256)
+                    if run.mode == 'ner_rules_v1':
+                        from app.services.news_ner_durable.source_check import check_native_source
+                        checked = check_native_source(run,version,run.result,source.claim_ordinal,policy.native_assets,
+                                                      now=now,publication_policy=policy)
+                        reason = None if checked.evidence == audit.evidence else 'source_ner_evidence_mismatch'
+                    else:
+                        reason = _validate_evidence(audit.evidence, claim, article, source.claim_sha256)
                     outcome, classification_reason = _classify(audit.evidence, claim)
                     if not reason and outcome != "verified":
                         reason = classification_reason
@@ -298,7 +310,7 @@ def _write(db: Session, case: NewsClaimCase, decision_id: int, request_id: UUID,
 
 
 def _same_observation_reprocessing(db: Session, target: NewsClaimDecision,
-                                  version: NewsArticleVersion, claim: ExtractedClaim, now: datetime) -> bool:
+                                  version: NewsArticleVersion, claim: ExtractedClaim, now: datetime, *, trusted=None) -> bool:
     """Upgrade automatic text evidence without duplicating or renewing an observation."""
     if (target.public_state != "active_alert" or target.actor_kind != "automatic"
             or target.operation != "evaluate" or target.observed_at != claim.event_time_resolved
@@ -309,7 +321,7 @@ def _same_observation_reprocessing(db: Session, target: NewsClaimDecision,
         return False
     original_source = db.get(NewsClaimSource, snapshot.claim_source_id)
     original_run = db.get(NewsExtractionRun, original_source.extraction_run_id)
-    _, original_result = validate_run(original_run, db.get(NewsArticleVersion, original_run.article_version_id))
+    _, original_result = validate_run(original_run, db.get(NewsArticleVersion, original_run.article_version_id), trusted=trusted)
     original = original_result.claims[original_source.claim_ordinal]
     # Placement and advisory output may improve in a new extraction. The
     # source spans, observation, status, depth and access must remain identical.
@@ -372,7 +384,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                 NewsClaimDecision.snapshot["incident_identity"].astext == _incident(claim),
                 NewsClaimDecision.snapshot["article_id"].as_integer() == article.article_id).order_by(NewsClaimCase.id)))
         reprocessed_target = (refresh_targets[0] if len(refresh_targets) == 1 and
-            _same_observation_reprocessing(db, refresh_targets[0], version, claim, now) else None)
+            _same_observation_reprocessing(db, refresh_targets[0], version, claim, now, trusted=policy.native_assets) else None)
         repeated = db.scalar(select(NewsClaimDecision.id).where(NewsClaimDecision.case_id != case.id,
             NewsClaimDecision.public_state.in_(("active_alert", "active_zone")),
             NewsClaimDecision.snapshot["incident_identity"].astext == _incident(claim),
@@ -395,7 +407,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
             target_snapshot = NewsDecisionSnapshot.model_validate(target.snapshot)
             original_source = db.get(NewsClaimSource, target_snapshot.claim_source_id)
             original_run = db.get(NewsExtractionRun, original_source.extraction_run_id)
-            original_article, original_result = validate_run(original_run, db.get(NewsArticleVersion, original_run.article_version_id))
+            original_article, original_result = validate_run(original_run, db.get(NewsArticleVersion, original_run.article_version_id), trusted=policy.native_assets)
             original_claim = original_result.claims[original_source.claim_ordinal]
             if (target_snapshot.public is not None
                     and _supported_section(original_claim, original_article)
@@ -677,7 +689,7 @@ def clear_case_from_evaluation(db: Session, case_id: int, evaluation_id: int, *,
         raise NewsPublicationError("clearance_target_identity_unproven")
     wet_source = db.get(NewsClaimSource, saved.claim_source_id)
     wet_run = db.get(NewsExtractionRun, wet_source.extraction_run_id)
-    wet_article, wet_result = validate_run(wet_run, db.get(NewsArticleVersion, wet_run.article_version_id))
+    wet_article, wet_result = validate_run(wet_run, db.get(NewsArticleVersion, wet_run.article_version_id), trusted=policy.native_assets)
     if not _supported_section(wet_result.claims[wet_source.claim_ordinal], wet_article):
         raise NewsPublicationError("clearance_target_identity_unproven")
     if saved.public is None or saved.public.observed_at is None or claim.event_time_resolved <= saved.public.observed_at:
@@ -793,7 +805,7 @@ def preview_staff_decision(db: Session, case_id: int, request: NewsStaffDecision
             raise NewsPublicationError("clearance_target_identity_unproven")
         wet_source = db.get(NewsClaimSource, saved.claim_source_id)
         wet_run = db.get(NewsExtractionRun, wet_source.extraction_run_id)
-        wet_article, wet_result = validate_run(wet_run, db.get(NewsArticleVersion, wet_run.article_version_id))
+        wet_article, wet_result = validate_run(wet_run, db.get(NewsArticleVersion, wet_run.article_version_id), trusted=policy.native_assets)
         if not _supported_section(wet_result.claims[wet_source.claim_ordinal], wet_article):
             raise NewsPublicationError("clearance_target_identity_unproven")
         if saved.public is None or saved.public.observed_at is None or claim.event_time_resolved <= saved.public.observed_at:
@@ -844,7 +856,7 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
         raise NewsPublicationError("claim_source_missing")
     run = db.get(NewsExtractionRun, source.extraction_run_id)
     version = db.get(NewsArticleVersion, run.article_version_id)
-    article, extraction = validate_run(run, version)
+    article, extraction = validate_run(run, version, trusted=policy.native_assets)
     claim = extraction.claims[source.claim_ordinal]
     saved = NewsDecisionSnapshot.model_validate(previous.snapshot) if previous else None
     public = None
@@ -1226,7 +1238,7 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
                     # Preserve qualified clearance across expiry-only policy edits.
                     # _load still verifies immutable inputs and the current auditor identity.
                     active_policy = EvaluationPolicy(evaluation.policy_fingerprint, policy.pipeline_version,
-                        policy.auditor_identity, policy.expiry_minutes, policy.retention_hours)
+                        policy.auditor_identity, policy.expiry_minutes, policy.retention_hours, native_assets=policy.native_assets)
                 if maintenance_only:
                     _, _, _, _, _, claim, _, reason = _load(db, evaluation_id, active_policy, clock(), load_news_sources() if sources is None else sources)
                     if claim.condition != "subsided" or reason:

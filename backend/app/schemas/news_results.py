@@ -5,7 +5,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from app.schemas.news_browsing import NewsCapturedInput, NewsPublisherOption
+from app.schemas.news_browsing import NewsCapturedInput, NewsNativeCapturedInput, NewsPublisherOption
+from app.schemas.news_ner_result import NewsNerResult, NerProjectedClaim
 from app.schemas.news_extraction import ExtractedClaim, FloodCondition
 from app.schemas.news_presentation import NewsFloodSummary
 from app.schemas.news_placement import NewsPlacementPreview
@@ -40,6 +41,8 @@ class NewsResultClaim(BaseModel):
 
 
 class NewsResultItem(BaseModel):
+    result_kind: Literal['legacy_claim'] = 'legacy_claim'
+    processing_method: Literal['rules_only'] = 'rules_only'
     key: str
     run_id: int
     claim_index: int
@@ -56,8 +59,15 @@ class NewsResultItem(BaseModel):
     summary: NewsFloodSummary
 
 
+class NewsNativeResultItem(NewsResultItem):
+    result_kind: Literal['ner_group'] = 'ner_group'
+    processing_method: Literal['ner_rules_v1'] = 'ner_rules_v1'
+    group_id: str
+    claim_index: int | None
+
+
 class NewsResultPage(BaseModel):
-    items: list[NewsResultItem]
+    items: list[NewsNativeResultItem | NewsResultItem]
     total: int
     page: int
     page_size: int
@@ -67,15 +77,37 @@ class NewsResultPage(BaseModel):
     read_only: Literal[True] = True
 
 
+class NewsResultLifecycle(BaseModel):
+    state: Literal['not_projected','not_evaluated','evaluation_pending','evaluation_failed','evaluated',
+                   'unpublished','active_alert','active_zone','withdrawn','expired']
+    case_id: int | None = None
+    evaluation_id: int | None = None
+    decision_id: int | None = None
+    review_state: str | None = None
+    reason_code: str | None = None
+
+
 class NewsResultDetail(BaseModel):
-    item: NewsResultItem
-    claim: ExtractedClaim
-    captured_input: NewsCapturedInput
+    item: NewsNativeResultItem | NewsResultItem
+    claim: NerProjectedClaim | ExtractedClaim
+    captured_input: NewsNativeCapturedInput | NewsCapturedInput
     input_fingerprint: str
     pipeline_version: str
     extraction_errors: list[str]
     is_metadata_only: bool
     lifecycle_status: Literal["not_available"] = "not_available"
+    lifecycle: NewsResultLifecycle | None = None
+    read_only: Literal[True] = True
+
+
+class NewsNativeGroupDetail(BaseModel):
+    item: NewsNativeResultItem
+    group: dict
+    result: NewsNerResult
+    captured_input: NewsNativeCapturedInput
+    input_fingerprint: str
+    pipeline_version: str
+    lifecycle: NewsResultLifecycle
     read_only: Literal[True] = True
 
 
@@ -86,6 +118,6 @@ class NewsResultPlacementPreview(BaseModel):
     input_fingerprint: str
     evidence_pipeline_version: str
     placement_revision: str
-    claim: ExtractedClaim
+    claim: NerProjectedClaim | ExtractedClaim
     preview: NewsPlacementPreview
     read_only: Literal[True] = True

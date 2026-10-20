@@ -1,6 +1,513 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 19, 2026, 01:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 12:46 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Documentation handoff — October 21, 2026
+
+- [x] Prepare [NER documentation for groupmates](guides/ner-groupmate-handoff.md), including creation, dataset/annotation tables, training settings, validation/holdout results and evidence limitations; inspect [pending `roi-branch` contents](evaluations/ner-handoff-review-20261021/README.md). Completed by [@roicambe](https://github.com/roicambe) (Roi Cambe). No new model/runtime milestone or remote publication is claimed.
+
+## Current milestone: RSS-to-NER integration and News Intelligence
+
+**Status: Phase A, local Phase B, schema prerequisites and controlled local Phase C acceptance are complete through C3b.** The objective remains automatic RSS-to-NER processing and saved results in the existing `/admin/news` interface. C3b connects RSS admission/corrections, original feed provenance, native readers and downstream gates in the guarded disposable-local pipeline. **754 distinct tests pass**, with one real ten-input run matching 4,483 spans/all 53 reviewed predictions; peak 2,492.09 MiB. [C3b report](evaluations/rss-ner-rss-integration-20261021/README.md). Eight inputs enter through mocked RSS; two short pre-existing capture controls correctly fail RSS admission and exercise processing separately. The frontend and scheduled production activation have not shipped.
+
+**Next action: Phase D monitoring/error classification**, including the dated cloud partial-attempt finding. Phase E then integrates the shared-component interface; Phase F investigates 403s last. Shared migration, approved cloud resources, production selection/deployment and actual Cloud Run verification remain release gates. Local acceptance does not qualify the unchanged last-inspected one-GiB cloud job. The original one-/two-GiB failures and all historical receipts remain valid.
+
+Completed prerequisite evidence: [C3a CLI startup fix](evaluations/rss-ner-cli-bootstrap-20261020/README.md), [C3a runtime/queue](evaluations/rss-ner-native-worker-20261020/README.md), [C2 projection/source checking](evaluations/rss-ner-native-projection-20261020/README.md), [C1 method/history](evaluations/rss-ner-method-boundary-20261020/README.md), [schema](evaluations/rss-ner-mode-schema-20261020/README.md), [local 3-GiB runtime](evaluations/rss-ner-runtime-phase-b-3g-20261020/README.md), [Phase A contract](plans/rss-ner-integration-contract.md). V46 remains a completed backend-preview milestone; its earlier preview-only next-step description is historical.
+
+**Owner of every phase, task and gate below:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The user approved this roadmap on October 20, 2026, the original Phase B plan, and separately the local two-GiB and three-GiB follow-ups. Each profile receives one frozen attempt. The user separately approved the minimal SQLAlchemy/migration change and disposable local verification, now delivered. That authorization does not cover shared/cloud migration, cloud resources or production deployment. Keep gate and implementation checkboxes open until the corresponding evidence exists.
+
+**Target workflow:** adaptive cloud scheduling → RSS discovery → article shortlisting → full-body capture → trained NER locations → qualified location repairs → depth/time/status/access grouping → evidence and placement checks → saved results → existing publication workflow and admin interface. Preserve the current durable extraction-before-evaluation transaction boundary when implementing this logical flow; the UI must not trigger collection or inference by reading saved results.
+
+### Agreed boundaries and decision controls
+
+- Preserve trained **v19 control seed 0** and qualified **v40 → v44 combined → v42 grouping** behavior. DEPTH/TIME recognition and grouping remain rule based; do not describe them as learned NER capabilities.
+- Preserve original neural predictions separately from effective mentions and labeled rule repairs. Retain exact source offsets, evidence, qualifiers, temporal roles, collective scope, uncertainty and unassigned facts. Never borrow a broader location's facts to complete a road.
+- Retain existing publisher, locality, body-completeness, actual-flood-evidence, publication, geometry, freshness, conflict, expiry and vehicle-policy gates. Recognition alone cannot establish current flooding, verified geometry or routing eligibility.
+- Preserve observation, onset, report, publication, recession and clearance meanings. Subsided evidence remains available in history without becoming current plotted flooding; receding water does not itself establish clearance.
+- No retraining, new dataset collection, reference revisions, validation/holdout reuse, further October flood-event research or unrelated interface improvements. Normal approved RSS collection is the intended integration target; the dataset-collection exclusion is not an instruction to disable the collector.
+- Keep the 11 unresolved reviewed-article rows, three reference holds, type-family real-evidence limitation, non-flood access omission and language/training limitations explicit. Do not impose another research/training cycle before interface work or silently call those limitations resolved.
+- Database model/migration changes require a separate concrete proposal and explicit human approval. Production deployment is a later release gate. Until then, retain the existing default-disabled local preview and serving production behavior.
+- Work in order: **A contract → B runtime qualification → C automatic processing → D monitoring corrections → E interface acceptance → F 403 investigation → release decision**. A failed gate produces a documented blocker and concrete follow-up within that phase, not an unrelated research detour. Implementation records must name the requirement advanced and the evidence for completion.
+
+### Verified cloud and backend baseline — October 20, 2026
+
+These findings were obtained through read-only Google Cloud inspection and backend checks in the planning conversation, rather than inferred only from older deployment documentation. They are a dated baseline, not a continuing health guarantee.
+
+| Item | Inspected baseline |
+|---|---|
+| Project / region | `lanes-project-508809` / `asia-east1` |
+| Cloud Scheduler | `lanes-news-discovery-every-3-hours` is enabled; despite its legacy name, its schedule is `*/15 * * * *`, Asia/Manila, targeting the authenticated controller `/api/v1/internal/news-scheduler/tick` |
+| Authentication | OIDC uses the configured scheduler service account and exact API audience |
+| Actual collection policy | Backend chooses **60 / 15 / 30 minutes**; a 15-minute controller check is not a promise to collect every 15 minutes |
+| Quiet conditions | **60 minutes** when both fresh weather sources support quiet conditions |
+| Risk monitoring | **15 minutes** for relevant risk, active flood evidence or the existing recent-risk monitoring period |
+| Incomplete weather coverage | **30 minutes** for incomplete, stale or unavailable coverage |
+| Recent controller requests | Latest 12 inspected requests returned HTTP 200 |
+| Recent worker executions | Latest six inspected executions succeeded at the Cloud Run execution level |
+| API / worker image | Both referenced `gcr.io/lanes-project-508809/github.com/pu-roi/lanes:2ad49665b84ca97880781837d234d896c542848f` |
+| Serving API | `lanes-api-build-ef4389a5-500c-405a-a594-012b9cee59d2` held 100% inspected traffic |
+| News worker | Existing job runs `scripts.run_news_discovery --discover --pipeline --scheduled --limit 50`; inspected limits are one CPU, 1 GiB RAM, a 600-second task timeout and one configured task retry |
+| Backend verification | **71 weather and cadence checks passed** using an isolated process-only valid auditor batch-size setting; no environment file or cloud setting changed |
+
+**Open operational finding:** execution `lanes-news-discovery-mnmjd` logged `requires_attention` at **2:00:49 AM PHT** and a later `completed` outcome at **2:01:17 AM PHT** on October 20. The final execution succeeded, but individual attempt/stage reconciliation remains open. Do not infer that every stage was clean from job success, HTTP 200, or the absence of ERROR-severity logs. Record the cause, affected stage and retry effect before closing this finding.
+
+Preserve **60/15/30**. Do not change collection to a fixed 15-minute interval or alter cloud settings during read-only investigation. [Existing scheduling release](evaluations/news-adaptive-scheduler-release-20261013.md) · [Cadence policy and rollout](guides/news-weather-scheduling-rollout.md) · [Qualified V46 preview](evaluations/flood-ner-backend-location-v46-20261020/README.md).
+
+### Phase A — Establish the integration contract
+
+- [x] Trace RSS metadata filtering, retrieval, body-based admission, immutable capture, extraction, placement, evaluation, publication and admin readers. Record the actual call chain and all relevant consumers before changing wiring.
+- [x] Identify filters that can reject useful articles before NER receives them, including title/excerpt and body-based checks. Define supported admission behavior without weakening publisher, locality, completeness or actual-flood-evidence requirements.
+- [x] Specify durable V46 output: original neural mentions, effective mentions, ordered repairs, grouped facts, unresolved facts/reasons, source identity, and model/tokenizer/rule provenance. Bind exact Unicode source offsets to the unchanged captured body; title/excerpt offsets must not be treated as body offsets.
+- [x] Specify compatibility with existing `ExtractedClaim` consumers, including joint intersections, collective measurements, ranges, repeated names, LOCAL_AREA mentions and incomplete targets. Do not flatten shared evidence into invented individual depths or discard facts that cannot be projected safely.
+- [x] Define how saved runs and the admin distinguish legacy rules-only output from NER-backed output, and how existing historical runs remain readable.
+- [x] Prepare the smallest necessary schema/interface proposal, with compatibility and migration verification requirements, for explicit approval before any SQLAlchemy model or Alembic edit.
+
+**Gate A:** the contract identifies inputs, outputs, source coordinates, storage, consumers, error behavior and backward compatibility. At contract delivery the extraction-run constraint accepted only `rules_only`; the separately approved schema step now also permits explicit `ner_rules_v1`. Never store neural runs under the legacy label. Contract work alone was not schema approval. Do not start extraction-wiring changes until this gate passes.
+
+**Gate A passed for documentation/specification only:** [contract and task-to-section reconciliation](plans/rss-ner-integration-contract.md#7-acceptance-matrix-and-phase-a-reconciliation) and [schema proposal](plans/rss-ner-processing-mode-schema-proposal.md) are delivered. The contract retains native joint/collective/LOCAL_AREA groups rather than forcing them into scalar operational claims; unknown absolute times remain publication-ineligible. Its 23 complete integration acceptance scenarios remain open: C1/C2 cover isolated library/storage subsets, not RSS-to-publication acceptance. Phase A itself made no inference, application/schema change, database access or cloud change. The later explicit schema authorization and 66-check local verification close only the schema foundation below; the full integration scenarios and remaining Phase C–F implementation stay open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### Phase B — Qualify the production inference runtime
+
+- [x] Reuse authenticated inference assets and qualified behavior; implement a separate supervised Linux subprocess that does not depend on nested Docker execution or the local-only preview endpoint. Local architecture is implemented; actual Cloud Run compatibility remains unmeasured.
+- [x] Freeze model/tokenizer/code/dependency/asset identities and execute one controlled attempt per explicitly approved local profile: one CPU / 1 GiB, 2 GiB and 3 GiB. Preserve all source snapshots/claims/receipts. The first two fail their memory gates; the approved third passes. No automatic resource escalation, inference retry or production-resource pass is implied.
+- [x] Define and test model loading, bounded concurrency, startup/extraction deadlines, cleanup, crash handling, no hidden inference retries and explicit failure reporting. Qualify actual child syscall denial/parent-death containment and clean loaded-model shutdown; keep unnecessary credentials/network out of the child.
+- [x] Verify exact prediction and qualified grouped-output parity on the complete retained development workload under the approved one-CPU / 3-GiB profile. Measure cold/warm/article/stress latency, total cgroup memory and RSS independently against frozen limits. Preserve failed receipts and unchanged model/rules; no retraining or post-result tuning occurs.
+
+**Gate B:** authenticated runtime and exact output parity pass under the declared resource envelope; missing assets, malformed/oversized inputs, Unicode offsets, timeouts, crashes and cleanup failures have visible outcomes. Do not alter the model or rules to make runtime qualification succeed. No production activation follows automatically.
+
+**Current Gate B: passed locally at one CPU / 3 GiB.** The explicit third-profile authorization results in one frozen complete run: **355 requests**, **352 exact retained prediction records**, all **53 reviewed-article predictions plus its saved proposal/graph**, 788 cached inputs / 407 saved graphs and 355 live graph bindings match. Peak **1,972.21 MiB** passes below **2,688 MiB**; cold **2.28559 s**, passage p95 **0.04511 s**, prior complete-article maximum **0.65357 s**, reviewed article **0.17172 s**, stress maximum **12.27257 s**, cleanup **0.33864 s** and complete session **28.60577 s** pass. Thirty-one constructed checks, eight real fictional subprocess checks, actual syscall denial and separate deliberate OOM containment pass. Independent verification performs no additional inference. [Measured report](evaluations/rss-ner-runtime-phase-b-3g-20261020/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+This passes the approved **local** resource/runtime gate only. The previously inspected one-GiB cloud job is unchanged and is not qualified by the three-GiB result. Actual Cloud Run asset delivery/isolation, full-job memory/latency, deployment resources and release remain separate verification/approval gates. Phase C must integrate queue/session budgets under controlled acceptance. The minimal schema change is separately approved and locally verified; shared/cloud migration remains a later release gate.
+
+**Historical one-GiB result: failed; preserved.** The [measured report](evaluations/rss-ner-runtime-phase-b-20261020/README.md) and [runtime guide](guides/ner-subprocess-runtime.md) record 19 passing constructed checks, eight real fictional subprocess checks, real syscall denial and separate container-OOM containment. All 345 training passages and six retained complete articles match neural spans exactly; 353 completed live graphs and 788 cached inputs / 407 saved graphs reconcile. Cold readiness is 2.298 s, passage p95 0.04272 s and slowest completed article 0.63465 s. The 100,000-character fictional case reached **1,024 MiB**, violating the **below-896-MiB** headroom gate, and the child was killed/reaped. The reviewed 53-prediction article and successful complete model-session shutdown were not reached in that attempt. V46, schemas, normal processing/cloud/scheduling and model/rules remain unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Agree and execute the bounded one-CPU / 2-GiB **local** follow-up. The user's instruction to proceed authorized this proposed test, not Google Cloud changes. Preserve the original one-GiB claim/code/receipts and the exact model/rules/workload; use new versioned qualification tooling.
+
+**Historical two-GiB result: failed headroom; preserved.** It completes the 100,000-character case in 11.27966 s, but combined peak reaches **2,048 MiB** against a **below-1,792-MiB** threshold. The guard stops before the reviewed 53-prediction article. The loaded worker shuts down cleanly in 0.35039 s (child exit 0); the qualification container exits 2 with no measurement OOM. Independent verification reconciles **354 graphs**, **351 saved neural comparisons**, 788 cached inputs / 407 saved graphs, **25 constructed checks** and eight real fictional subprocess checks. No runtime/model/rule/schema/cloud/normal-processing change or automatic escalation follows. [Detailed result](evaluations/rss-ner-runtime-phase-b-2g-20261020/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Obtain explicit authorization and execute one CPU / 3 GiB locally with below-2,688-MiB peak, unchanged behavior/workload and one frozen attempt. This local qualification passes without lowering headroom, truncating/splitting input, modifying model/rules or changing cloud resources. Preserve both earlier failures.
+
+### Phase C — Connect automatic article processing
+
+- [x] Obtain explicit approval and implement the minimal `ner_rules_v1` mode check. Revision `e8a6f1c2d903` after `d7e4b9a21c60` passes **66 local checks**, including fresh/repeated upgrade, complete legacy preservation, rollback guards, concurrency and existing publication/queue regressions. [Verification and approved current-source delta](evaluations/rss-ner-mode-schema-20261020/README.md). Shared/cloud migration and production switching remain separate decisions.
+- [x] **C1 compatibility boundary:** isolate queue claims/completion by method and pipeline, preserve native/legacy saved history, return bounded unsupported-result errors and keep native data outside unqualified scalar/evaluation consumers. **93 checks pass** (81 software / 12 PostgreSQL). [Evidence/current-source deltas](evaluations/rss-ner-method-boundary-20261020/README.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- [x] **C2 native projection and proof:** independently bind assets/input/publication provenance; recompute exact native output; qualify occurrence-based groups, conservative nullable-confidence compatibility claims, complete dispositions and `source-ner-v1` checking. **225 checks pass** (211 software / 14 PostgreSQL); 355 retained outputs, 352 saved prediction records, all 53 reviewed predictions and 788 cached inputs / 407 saved graphs reconcile without inference. The maximum durable result fits the unchanged 8 MiB bound. [Report and preserved failures](evaluations/rss-ner-native-projection-20261020/README.md). This completes the isolated library, not downstream consumer activation. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- [x] **C3a native runtime/queue boundary:** separate disposable-local worker; complete native capture and independently trusted identity; one lazy sequential model session; owned immutable saves; 450-second invocation / 125-second article / 300-second lease budgets; bounded SQL/CPU deadlines and failure cleanup. **251 checks pass** (224 software / 27 PostgreSQL), plus Linux preflight/eight fictional subprocess probes. One one-CPU / 3-GiB attempt completes ten retained inputs, matches 4,483 neural spans/all 53 reviewed predictions and full graph/projection output, and adds no duplicate inference. Peak 2,339.29 MiB; longest operation 62.238 s; job 70.074 s; cleanup 0.515 s. [Evidence, preserved preparation and separately tested CLI delta](evaluations/rss-ner-native-worker-20261020/README.md). No automatic/scheduled activation. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- [x] **C3a startup error-handling follow-up:** protect imports/settings initialization before processing handlers exist; preserve configuration/runtime/cancellation codes, exits and existing guards. Sixteen focused CLI checks pass (seven existing, nine fresh-interpreter cases). [Separate source-delta verification](evaluations/rss-ner-cli-bootstrap-20261020/README.md); no inference or historical-receipt rewrite. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- [x] **C3b controlled local integration:** RSS admission/corrections and original publication proof; exact native whitespace capture; intended-method group readers/counts/details; nullable-confidence placement, native evaluation and existing publication compatibility. Full invocation 580 s, bounded discovery, extraction ceiling 450 s with downstream/final reserves and unchanged 125-second article/300-second lease. [754 checks and single real-model acceptance](evaluations/rss-ner-rss-integration-20261021/README.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- [x] Preserve immutable snapshots, extraction-before-evaluation transactions, leases, attempts, idempotency and historical runs across controlled RSS/correction processing. Changed-body/failure tests and actual fresh-session JSONB/history/duplicate checks pass; no old result is overwritten.
+- [x] Preserve temporal roles, exact wording, qualifiers, uncertainty, joint/collective targets and unresolved facts. Pure retained replay and independent real-result recomputation preserve original predictions separately from repairs; no broader-locality borrowing.
+- [x] Keep geography/publication downstream. Native evidence checking accepts only supported compatibility claims; source, geometry, freshness, conflict, expiry and citizen-moderation gates remain authoritative. Native-only groups do not invent individual road measurements or new geometry capabilities.
+- [x] Surface bounded configuration/input/asset/runtime/storage failures without silent legacy fallback. Targeted failures, Linux timers and eight subprocess probes pass.
+- [x] Complete controlled RSS-to-saved-reader/downstream acceptance. Eight mocked-RSS admissions plus two pre-existing short runtime controls complete in one model session with exact 4,483-span/53-reviewed parity and zero duplicate inference. Corrections/retries/failures and positive publication use fictional tests; retained historical publication is paused and creates no alerts/zones.
+- [ ] **Production release gate remains open:** explicitly approve/apply shared migration and qualified resources, integrate production asset delivery/method selection, deploy and verify actual Cloud Run behavior. Current guarded test/disposable-only entrypoints and default legacy scheduling must not be treated as production activation. Complete D/E/F and their release checks first.
+
+**Gate C: passed for controlled local acceptance.** NER participates in the full guarded collection pipeline, persisted evidence and readers reconcile, unsupported facts remain visible, duplicates add no inference and downstream safety regressions pass. Local memory/latency pass at one CPU / 3 GiB. This does not activate scheduled production NER or complete interface/browser acceptance. [Exact scope, failed preparations and preservation evidence](evaluations/rss-ner-rss-integration-20261021/README.md).
+
+### Phase D — Correct monitoring and error classification
+
+- [ ] Distinguish registry eligibility, selection for collection and retrieval health in source responses and presentation; an enabled registry entry must not imply it is selected in System Settings.
+- [ ] Replace outdated wording that publication records do not exist. State which lifecycle/collection-to-alert metrics are not calculated by the current reader; do not invent a metric or infer publication from extraction completion.
+- [ ] Replace the misleading saved-candidate label with wording matching articles saved/seen, including rediscoveries and commuter updates. Preserve distinct flood-candidate counts.
+- [ ] Separate retrieval health from flood eligibility so excluded articles still expose missing-body/retrieval problems without being promoted into flood results.
+- [ ] Distinguish configuration/runtime failures from invalid article input. Malformed auditor configuration must not be reported as a malformed article snapshot; automation status must surface service configuration problems explicitly.
+- [ ] Reconcile the inspected `requires_attention` → `completed` execution at attempt and stage level. Preserve the earlier issue when a later attempt succeeds and verify duplicate/partial-failure behavior.
+- [ ] Verify these corrections with targeted backend tests and retain the established weather/controller/cadence behavior.
+
+**Gate D:** readers accurately distinguish selected sources, saved/seen articles, flood candidates, extraction status, publication status, retrieval issues and configuration errors. The live operational finding has a documented disposition; final job success alone cannot close it. Detailed 403 diagnosis remains Phase F.
+
+### Phase E — Integrate the existing News Intelligence interface
+
+**Structure and shared components**
+
+- [ ] Retain `/admin/news`, Overview and Flooded Areas. Rename **Collection Status → Articles & processing** and **Pipeline → Processing health**, with short purpose explanations.
+- [ ] Keep Articles & processing compact and available for failed/unprocessed articles with no flood card. Reuse the existing article-detail workflow rather than creating duplicate detail screens or a separate inspector page.
+- [ ] Strictly reuse shared controls, badges, dialogs, typography, spacing and established severity colors. Put reusable extensions in the shared component system; do not create feature-specific copies of the same visual components.
+- [ ] Verify both mobile and desktop behavior, touch targets, keyboard/focus behavior, safe-area spacing and narrow-screen overflow.
+
+**Cards and extraction details**
+
+- [ ] Keep cards focused on location, reported depth, condition, publisher and observation time. Add compact severity, observation-age and passability indicators using backend-provided meaning and existing shared styling.
+- [ ] Preserve Unknown/Unassessed for insufficient evidence. Observation age, severity and publisher identity must not imply that a road is currently safe or flooded; keep observation and publication clocks distinct.
+- [ ] Expose original neural predictions, labeled rule repairs, grouped facts and unresolved facts with reasons/supporting evidence inside existing detail views. Retain the article link and distinguish new NER output from legacy processing history.
+- [ ] Keep technical hashes, versions and diagnostics in existing detailed views; no unrelated diagnostics redesign or unannotated optional improvements.
+
+**Automatic saved-data updates — normal Refresh controls removed**
+
+- [ ] Remove normal Refresh buttons throughout this News Intelligence workflow, including history/monitoring refresh controls. Retain Retry actions for failed requests; do not add Collect now.
+- [ ] Automatically reload saved information when relevant views open, filters change, focus returns or a completed worker cycle invalidates their data. Reuse the status heartbeat and query cache; avoid duplicate polling and stop unnecessary polling while the document is hidden.
+- [ ] Preserve filters, pagination, focus and open details during updates. Surface stale-data/error states while retaining previously loaded content. Reading a view must never initiate collection, live source probes, inference or publication.
+- [ ] Run desktop/mobile browser acceptance for cards, articles without cards, article/evidence inspection, unresolved facts, source selection/health, automatic updates, errors, keyboard use and overflow.
+
+**Gate E:** the existing page displays saved NER-backed results through consistent shared components; normal Refresh controls are absent, automatic reads work, Retry remains available on failure, and both screen sizes pass acceptance. No extra screen, manual collection control or unrelated UI improvement is included.
+
+### Phase F — Investigate HTTP 403 errors last
+
+Begin detailed 403 investigation only after the preceding integration and interface checks; do not allow it to displace the agreed primary work.
+
+- [ ] Capture the exact failing URL, response, timestamp and affected stage. Distinguish publisher/feed denial, LANES authorization failure and map-provider failure, including map requests made by the persistent admin map.
+- [ ] Establish whether each error blocks discovery, article-body retrieval, extraction, publication or only map rendering. Keep saved audit evidence separate from current observed requests; do not infer the user's exact error from historical Inquirer or MapTiler failures.
+- [ ] Apply only evidence-supported fixes while preserving publisher access restrictions and application authorization. Do not bypass access challenges, weaken authorization or treat feed excerpts as complete reporting bodies.
+- [ ] Verify recovery, or record an external blocker, affected coverage and next responsible action. A publisher block may remain external; it must not be hidden or classified as an empty successful article.
+
+**Gate F:** every investigated 403 has an origin, operational effect and verified fix or explicit external-blocker disposition. Do not expand into unrelated infrastructure work without recording the specific requirement and evidence.
+
+### Completion and release decision
+
+- [ ] NER participates in automatic article processing; saved results preserve evidence, provenance, uncertainty, unresolved facts and previous extraction runs.
+- [ ] Existing News Intelligence views display those saved results using shared components; accepted monitoring fixes and automatic reads pass targeted backend and desktop/mobile tests.
+- [ ] Reverify the **60/15/30** collection policy and distinguish controller heartbeat, collection attempts, pipeline outcomes and final Cloud Run execution status.
+- [ ] Record explicit dispositions for the cloud attempt-level finding and Phase F errors, including any external blockers and their effect on release readiness.
+- [ ] Complete any separately approved schema migration checks, including `alembic upgrade head` in the intended controlled environment, dependency synchronization and updated schema documentation before release work.
+- [ ] Prepare matching API/worker/frontend release artifacts, authenticated model-asset delivery, deployment verification and rollback instructions for a separate production release decision. No cloud mutation, push or deployment is authorized merely by this roadmap.
+- [ ] As each phase is actually delivered, record its evidence, update this checklist and the reverse-chronological progress record, and synchronize affected system/stack/roadmap/issue documents. Preserve frozen research reports and original completed milestones; a documentation update alone does not mean integration shipped.
+
+**Earlier checkpoints below are historical.** Their recorded measurements and completion states remain intact. Older unchecked next steps are historical proposals unless explicitly carried into this current milestone; use the ordered phases above rather than restarting superseded studies.
+
+## V46 backend location repair integration — complete and verified
+
+The selected **v40 → v44 combined → v42 grouping** adapter is wired into the backend preview. **1,281 tests**, all 788 cached inputs / 407 saved graphs / 418 applicable fixtures / three repaired-view checks, and **one real isolated-worker API request** pass. All 53 original article neural mentions and grouped output match saved qualified results. [Outcome](evaluations/flood-ner-backend-location-v46-20261020/README.md) · [Verification](evaluations/flood-ner-backend-location-v46-20261020/verification.json) · [Backend guide](guides/ner-backend-preview.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Promote authenticated v44 copy, compose both proposal stages, recompute chain/graph on the host, and retain the v1 response/link with explicit provenance and limitations. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify cached parity, real API/worker isolation/cleanup, preservation and the exact five planned application/test changes; leave the default flag off. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Historical pending interface task, now incorporated into [Phase E of the current RSS-to-NER milestone](#phase-e--integrate-the-existing-news-intelligence-interface). The expanded automatic-processing scope starts with Phase A; interface implementation has not started. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Historical preview-only next step, superseded October 20:** the remaining work was previously described as one interface task. The [current milestone](#current-milestone-rss-to-ner-integration-and-news-intelligence) now includes automatic RSS-to-NER processing, the necessary runtime/storage contract, monitoring corrections and the existing admin interface. V46's backend-preview milestone remains complete; the 11 unresolved rows and language/training limitations remain documented without imposing another research/retraining cycle. Schema changes and production release retain separate approval gates. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Backend-preview task is complete; its earlier remaining interface task is carried into the expanded roadmap above. Combined source findings remain eight corrected occurrences / 40 restored facts / 11 unresolved rows, with all 93 affected facts and eight earlier complete rows retained. The V46 delivery made no model/rule tuning, database access/write, environment-file change, normal-processing activation, frontend or plotting change. Type-family, three-reference-hold, non-flood access and language/training limits remain explicit.
+
+**Earlier checkpoints below are historical.**
+
+## V45 saved-output scoring — qualified views; no application promotion
+
+The separately frozen reassessment of all **788 saved inputs** passes **176 scoring tests, 418 applicable cases and three conditional original/repaired checks per method**. Original-control expectations remain intact. Missing-junction, boundary-replacement and combined views qualify for a later proposal; type correction remains unqualified without real correction evidence. [Outcome](evaluations/flood-ner-location-scoring-v45-20261020/README.md) · [Verification](evaluations/flood-ner-location-scoring-v45-20261020/verification.json) · [Guide](guides/ner-location-scoring-v45.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Qualify JSON round-trip scoring, freeze three source-authored repaired expectations and reassess saved evidence; preserve original checks and historical v44 artifacts/results. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Independently recompute training/association counts and verify source offsets, provenance, all 34 targets / 19 rows / 93 facts / seven historical misses and preservation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Separately scope a backend-preview implementation proposal for qualified saved views, retaining type-family and unresolved-field limits. No automatic activation or untested combination follows. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The same saved combined result corrects eight article occurrences and restores 40 facts; 11 rows remain unresolved. Training remains 823 TP / 12 FP / 17 FN and contextual references 104 TP / 0 FP / 1 FN, with no introduced errors/losses. Zero extraction calls, inference or worker rerun; model, rules, references and v42 backend remain unchanged. Preview stays disabled. Three holds, non-flood access, learned DEPTH/TIME and real pure-Tagalog measurement remain open.
+
+**Earlier checkpoints below are historical.**
+
+## V44 location-proposal feasibility — complete; acceptance blocked
+
+One frozen **788-input** isolated study completes with original model, v40/v42, predictions and references preserved. Combined proposals correct eight article occurrences and restore **40 facts across eight measured rows**; 11 rows remain unresolved. Existing scored training/context controls suffer no new strict errors or supported losses. [Outcome](evaluations/flood-ner-location-repair-v44-20261020/README.md) · [Verification](evaluations/flood-ner-location-repair-v44-20261020/verification.json) · [Guide](guides/ner-location-repair-v44.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Implement/freeze separate junction additions, boundary/type proposals, 36 new scenarios and one isolated comparison; reconcile all 34 targets, 19 rows, 93 facts and seven historical misses. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Independently verify saved counts, source offsets/provenance, isolation and preservation; retain the blocked frozen result without tuning or retry. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Separately qualify serialized scoring and original-control/repaired-view fixture contracts before any future study. Preserve old expectations; do not automatically broaden rules or promote v44. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+560 bound software checks pass. The frozen new-case scorer has a JSON list/tuple defect; an independent representation-only diagnostic matches all 36 expected cases, without replacing frozen scores. Three unchanged v42 incomplete-target expectations conflict with the combined view; the type family has no real correction. All methods remain unqualified. Preview stays disabled; no backend, frontend, database, model or map changes.
+
+**Earlier checkpoints below are historical.**
+
+## Saved-article recognition assessment — complete; repair study remains
+
+Reviewed all **19 unresolved rows / 34 required location occurrences**: **17 missing mentions, two incomplete boundaries, one overlong boundary and one incompatible type**; 13 other spans are individually consumer-compatible. The private ledger reconciles all 93 retained unassigned facts and flags six overlapping meaning/type uncertainties. [Assessment and next task](evaluations/flood-ner-recognition-gaps-20261020/README.md) · [Verification](evaluations/flood-ner-recognition-gaps-20261020/verification.json). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Assess every remaining article location gap from authenticated saved evidence; preserve original mentions, model, proposals, v42 and references. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Separately freeze and study source-supported location additions/boundary/type proposals. Keep ambiguous abbreviations/addresses unresolved until their conventions and evidence are specified; require location and downstream retention checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+No extraction rerun or accuracy measurement occurred. Three held references, non-flood access, learned DEPTH/TIME and real pure-Tagalog measurement remain open. Backend preview stays disabled; no frontend, database or plotting changes.
+
+**Earlier checkpoints below are historical.**
+
+## V42 junction, clock and article-context repair — bounded acceptance passed
+
+One frozen isolated comparison processes **371 raw inputs / 1,419 graphs** using saved locations only. All 36 new scenarios and 310 preserved context/temporal expectations pass in their prescribed views. All 120 old contextual view link/expression sets remain unchanged; combined counts retain 104 TP / 0 FP / 1 FN on the same 23 exposed silver training references. Five complete article junction rows now retain joint depths, the list clock/access/caution is preserved, and unsupported dateline relations are removed. [Outcome](evaluations/flood-ner-context-repair-v42-20261019/README.md) · [Verification](evaluations/flood-ner-context-repair-v42-20261019/verification.json) · [Guide](guides/ner-context-repair-v42.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+All 26 measured rows and 59 earlier facts are reconciled; all 52 depth spans and source qualifiers remain. **18 measured rows remain recognition-limited**, with one additional incomplete unmeasured junction. Abstentions are not counted as recovery. Three holds, the separate non-flood access omission, learned DEPTH/TIME and real pure-Tagalog measurement remain open.
+
+- [x] Implement/freeze v42, preserve predecessor evidence, complete the single comparison and independent verification; no retry or post-result extractor tuning. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Promote the accepted context version to worker/validators/provenance; preserve article URL/response shape and verify with cached predictions. 1,158 pre-freeze and 1,195 post-promotion tests pass; preview stays disabled. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Separately scope recognition-gap assessment for missing, partial and mistyped locations. No guessing, automatic retraining, frontend or plotting follows this bounded repair. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+All 55 frozen v41 and 208 protected evidence hashes match; 1,538 historical metadata entries match plus the prior declared config change, and all 82 excluded metadata entries match. No neural inference, proposal regeneration, database access/write, source fetch, validation/holdout contents, new articles, uploads, commits or pushes.
+
+**Earlier checkpoints below are historical.**
+
+## Saved-article source link and correctness review — complete; extraction gaps found
+
+Added `source.canonical_url` to the temporary backend response. **379 preview checks pass** and one actual saved-article API call succeeds through a read-only database transaction and the real isolated worker. Manual source review accounts for all 59 facts and 26 measured rows: source-exact depth recognition survives, but junction/value pairing, a list clock, header access, dateline scope and location specificity remain incorrect or incomplete. This is a source-backed diagnostic, not a new accuracy score. [Review](evaluations/flood-ner-saved-article-review-20261019/README.md) · [Guide](guides/ner-backend-preview.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Return the original article link and compare one real saved article's extraction with its exact stored text; preserve individual evidence privately. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately scope full-article junction/equivalent-depth, clock/list-header and dateline repairs, keeping missing neural mentions distinct. Preserve v41 controls and historical references; no automatic rule/model tuning. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+No database writes, source fetch, frontend, map, model or extraction-rule changes. The normal feature flag remains off. Previous local-connection verification remains valid within its bounded workload; it did not establish these full-article behaviors.
+
+**Earlier checkpoints below are historical.**
+
+## Extraction-only backend preview — implemented; default disabled
+
+Delivered the [specified](plans/ner-extraction-only-backend-preview.md) local active-admin endpoint for exact saved bodies, grouped facts/evidence, original neural mentions, labeled v40 proposals and v41 context. The feature remains disabled in the unchanged local configuration; frontend, database history, normal processing and map behavior are unchanged. **798 tests**, nine real-worker API responses, six training-article neural parity checks and 120 cached context-view checks pass. A live container inspection confirms isolation and cleanup. [Outcome](evaluations/flood-ner-backend-preview-20261019/README.md) · [Guide](guides/ner-backend-preview.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+All 208 protected evidence hashes and 55 v41 frozen files match. Of 1,539 historical metadata entries, 1,538 match and the planned four-setting `config.py` change is independently reconciled; all 82 excluded metadata entries match. The initial audit failure is preserved, with no inference retry or post-result extractor tuning. Three holds, the non-flood access omission and language/training limits remain.
+
+- [x] Scope the extraction-only backend connection and its verification requirements; preserve the three holds, non-flood access omission and language/training limitations. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement and verify the specified local backend preview, preserving frozen research and existing operational paths; keep the flag off by default. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately discuss admin-interface design and later persistence/plotting requirements. No UI, migration or production activation is authorized by these checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V41 time-role and collective-location repair — bounded acceptance passed
+
+One frozen context-only Linux attempt processes **334 raw inputs**: 24 contextual, 238 preserved context fixtures, 36 preserved temporal cases and 36 new regressions. **36/36 temporal, 36/36 new and 238/238 existing context cases pass** in their prescribed views. Combined unchanged v40 proposals yield **104 TP / zero FP / one FN**, recovering six of seven old links. Both collective misses and the previous scope FP are repaired; all four transport recoveries and supported predecessor-correct links remain retained. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Verification:** 419 bound software checks pass; independent saved-output checks reconcile all views, counts, source slices, provenance and isolation. All 55 frozen source/test hashes and 208 protected evidence hashes match. Historical/excluded size/mtime checks remain 1,539/82 entries (overlapping sets). No post-result tuning, retry, neural inference, study-data location recognition or validation/holdout content. V19, original proposals, references, 345/60/60 and three reference holds remain unchanged. The remaining miss is non-flood access; real pure-Tagalog performance and learned DEPTH/TIME remain unfinished. [Outcome](evaluations/flood-ner-context-repair-v41-20261019/README.md) · [Metrics](evaluations/flood-ner-context-repair-v41-20261019/metrics.json) · [Verification](evaluations/flood-ner-context-repair-v41-20261019/verification.json) · [Guide](guides/ner-context-repair-v41.md).
+
+Observation/report/publication clocks do not establish onset. Subsided status/time remain evidence; the desired future history-without-current-plotting behavior is not implemented here. No connection, database/API/UI change, upload, commit or push occurs.
+
+- [x] Complete the separately versioned time/collective successor, frozen fixtures, one isolated comparison and independent verification. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately scope an extraction-only backend connection with explicit unresolved-field/provenance/error handling and the retained limitations; no automatic integration or retraining. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V40 location-repair feasibility — complete; acceptance blocked
+
+One frozen Linux study processed **345 training + 24 context + 36 location + 36 temporal + 238 preserved fixture inputs (679 total)**. Transport proposals recover four of seven old links with zero new strict errors on the reviewed subset. Shared-locality correction introduces one collective/shared scope error; exact road typing yields no correction. All original correct locations and supported v38 links remain retained. No method meets the full acceptance criteria. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Time clarification checked:** unchanged v38 passes **29/36** cases. Three time-first onset statements and four report statements are mislabeled observation. All seven failures are retained; no post-result tuning or retry occurred. Observation/report/publication time does not establish onset. The requested future policy retains subsided reports as history without plotting them as current flooding; no database/map change occurs here.
+
+**Verification:** 347 pre-execution software checks pass; all 36 location cases and all 238 preserved context cases pass in their defined views. Independent output/count/provenance/mount checks pass; 50 frozen code/test files and 208 protected evidence hashes remain unchanged. Historical/excluded preservation uses size/mtime for 1,539 and 82 entries respectively (overlapping sets). No validation/holdout content or neural inference. V19 seed 0, 345/60/60 and all three reference holds remain unchanged. Real pure-Tagalog performance and learned DEPTH/TIME remain unfinished. [Outcome](evaluations/flood-ner-location-repair-20261019/README.md) · [Metrics](evaluations/flood-ner-location-repair-20261019/metrics.json) · [Verification](evaluations/flood-ner-location-repair-20261019/verification.json) · [Guide](guides/ner-location-repair-v40.md).
+
+- [x] Implement/freeze the separate prototype and oracles, complete one isolated study, retain all failures and reconcile the seven previous misses. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately scope time-role word-order/reporting repairs and collective association handling after location correction; preserve v40 as a control, with no automatic integration or retraining. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Remaining extraction-gap assessment — complete; connection not cleared
+
+**Seven missed links across three passages reviewed:** two exact-boundary location mistypes and one absent mention; three depth, two status and two access links. Depth text survives in the two affected flood examples but cannot be grouped with the required target set. The third example is a non-flood access closure. Its missing access fact and a separate absent status/inventory show that correcting target types alone is not proven sufficient. All three reference holds remain held, with separate clarification proposals. Pure-Tagalog real performance stays unmeasured. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Verified:** 208 hash-bound files unchanged; 1,539 historical metadata entries and 82 validation/holdout metadata entries unchanged (sets overlap). Seven individual link dispositions and three hold dispositions reconcile. No validation/holdout content, inference, extractor rerun, reference changes or new test suite. Existing 345/60/60 membership, model and scores remain unchanged. [Assessment](evaluations/flood-ner-extraction-gap-assessment-20261019/README.md) · [Verification](evaluations/flood-ner-extraction-gap-assessment-20261019/verification.json).
+
+**Next:** separately scope training-only recognition feasibility for missed transport assets and shared locality typing, retaining exact road typing and general access cues as distinct issues. Use frozen downstream acceptance checks before any later repair comparison; do not automatically retrain or connect. Resolve reference conventions through separate proposals and carry the language limitation forward. Learned DEPTH/TIME remains unfinished. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Assess all seven links, three target occurrences, three reference holds and language limitations using authenticated saved evidence. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately specify recognition feasibility and required downstream recovery/retention checks; connection and interface work remain later tasks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V38 fixed-reference repair — contextual gate passed, connection blocked
+
+**Four incorrect links removed; eight contextual misses recovered**, including the lost baseline-correct status. One frozen Linux comparison processed 24 unchanged training inputs + 238 fictional cases. All **238 cases and 1,158 fresh affected tests (298 new)** pass. References, model and 345/60/60 membership remain unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Fixed-reference result: 98 TP / zero FP / seven FN; 96.55% association F1**, versus saved v37's 90.45% on the same 23 silver training references. All 90 v37-correct, 14 original-rules-correct and 70 mapped associations are retained. No new strict DEPTH/TIME span errors or qualifier losses. This exposed training-subset result is not independent system accuracy.
+
+**Next gate:** separately assess seven missing/mistyped-neural-target links, three reference holds and unmeasured real-world Tagalog performance before proposing a read-only LANES demonstration. Contextual repair passes; overall connection remains blocked. Learned DEPTH/TIME stays unfinished. No new data, neural inference, training, integration, upload, commit or push occurred. [Outcome](evaluations/flood-ner-context-fixed-links-20261019/README.md) · [Metrics](evaluations/flood-ner-context-fixed-links-20261019/metrics.json) · [Verification](evaluations/flood-ner-context-fixed-links-20261019/verification.json) · [Guide](guides/ner-context-association-v38.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Complete fixed-reference contextual repair and one frozen comparison. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Resolve recognition/reference/language limitations before separately proposing a read-only connection. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V37 grouping clarification and repair — complete, acceptance blocked
+
+**Current stage remains offline context acceptance.** A uniform source-only review froze 14 retained/nine corrected proposals, all 168 entities and three prior holds unchanged. All 103 old relations and 70 previously correct associations are mapped. One frozen Linux successor processed **24 unchanged real inputs + 208 fictional cases**. All 208 cases and **860 fresh affected tests (299 new)** pass. No post-result tuning or retry occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Revised-reference result:** **90 TP / four FP / 15 FN; 90.45% association F1**. All 70 pre-frozen source-supported mappings and all 61 revised-reference v36-correct links are retained. One additional original-rules-correct local status under revised references is missed, so retention and zero-incorrect gates fail. Seven misses require absent/mistyped neural targets; eight are contextual omissions. TIME-span checks introduce zero FP/FN and recognition F1 is 95.65%. These are exposed silver training-subset results, not independent accuracy or learned DEPTH/TIME performance.
+
+**Reference encodings stay separate:** saved v36 scores 66.67% and the successor 90.45% on the clarified references; under unchanged v36 references the successor scores **69.74%**, versus saved v36's 78.21%. Representation revisions are not model improvement. The isolated review's incidental generic-code/filename exposure is recorded; no actual prediction/output/score data was exposed. Pure-Tagalog real performance remains **unmeasured** despite 48 passing Tagalog fixtures.
+
+**Next proposal:** separately repair the four wrong links and eight contextual misses, including the lost baseline-correct status; keep seven recognition-dependent misses and three contextual holds explicit. No LANES connection is cleared. Preserve **345/60/60**, trained models and completed holdout exclusion. Learned DEPTH/TIME remains unfinished; no new data, neural inference, training, integration, upload, commit or push occurred. October 25 readiness is unestablished. [Outcome](evaluations/flood-ner-context-grouping-20261019/README.md) · [Metrics](evaluations/flood-ner-context-grouping-20261019/metrics.json) · [Verification](evaluations/flood-ner-context-grouping-20261019/verification.json) · [Guide](guides/ner-context-association-v37.md) · [Representation](plans/ner-context-representation-v37.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Clarify grouping source-first, preserve all 39 error dispositions and previous-correct mappings, qualify 208 cases and complete one bounded Linux comparison. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Clear remaining contextual/recognition/reference and language limitations before separately proposing a read-only LANES demonstration. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V36 comprehensive association review — task complete, connection blocked
+
+**Current stage: offline flood-context acceptance.** Runtime qualification and the location-only shadow comparison are complete; the association method is still not cleared for a LANES connection. One frozen successor processed **24 real training inputs + 160 fictional cases**. All 160 behavior cases pass; **561 fresh affected tests pass (295 new)**. Independent review retained 14/corrected nine proposals and preserved all three holds. All **13 incorrect + 43 missed** old links have evidence-bound dispositions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Real result:** eight incorrect / 31 missed associations on 23 revised references, **78.21% association F1**. All 48 revised-reference v35-correct links are retained and 22 are gained. On unchanged v35 references, successor F1 is 78.11%; reference revisions are reported separately. There is **one newly introduced wrong link versus v35** despite six removed. TIME expression recognition declines to 84.00% F1, so aggregate association gains do not mean every component improved. Seven misses require absent exact neural targets. Passing fixtures does not override the zero-total-incorrect gate or the three reference holds.
+
+**Language scope:** all software checks pass (English 64, Tagalog 32, Taglish 64); real references are English/Taglish only. Pure-Tagalog empirical/neural performance remains **unmeasured**, with AI-assisted language/borrowing uncertainty. Preserve **345/60/60**, saved six-class model mentions and completed holdout exclusion. Learned DEPTH/TIME remains unfinished; no neural inference, training or integration ran. No post-result tuning occurred.
+
+**Next proposal:** separately address the eight wrong resolved links, the remaining code omissions, required missing neural targets and contextual holds. Freeze any later repair before another authorized comparison; do not silently add/resize/retag mentions or introduce fallback. A read-only LANES demonstration and its language limitations remain a later gate, not automatic next execution. October 25 readiness is unestablished. [Outcome](evaluations/flood-ner-context-three-language-20261019/README.md) · [Metrics](evaluations/flood-ner-context-three-language-20261019/metrics.json) · [Verification](evaluations/flood-ner-context-three-language-20261019/verification.json) · [Operator guide](guides/ner-context-association-v36.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Account for all 56 old errors; complete isolated source-only review, three-language fixtures and one frozen successor comparison. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Clear remaining association errors, required neural-target/reference blockers and language limitations before separately proposing a read-only connection. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## V35 source-only review and repair checkpoint — acceptance remains open
+
+**Review-first v35 task complete; read-only LANES connection is not qualified.** An isolated source-only reviewer froze nine retained / fourteen corrected / one newly held contextual proposals; two earlier holds remain unchanged. Schema/frozen-tokenizer qualification passes. One candidate worker processed 24 raw training passages plus 64 fictional inputs. **64/64 behavior cases pass; 39 correct links gained, zero supported baseline-correct links lost, seven introduced strict disagreements on 23 revised references.** All 46 revised-reference v34-correct links and all 40 previously original-reference-correct links are retained. **470 fresh tests pass (111 new)**. No post-result tuning occurred.
+
+**Next proposal:** narrowly repair recession-time precedence and collective/gauge semantics, with independent source-only disposition of remaining status-reference coverage questions before another freeze. Preserve the three contextual holds, original and revised score reports, all 345/60/60 membership and completed holdout exclusion. No LANES connection, new data or retraining is authorized by this failed gate. Learned DEPTH/TIME remains unfinished; October 25 readiness is unestablished. [Outcome](evaluations/flood-ner-context-repair-20261019/README.md) · [Operator guide](guides/ner-context-association-v35.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Complete source-only reference review/freeze, versioned repairs, 64 fictional cases and one guarded v35 comparison; retain all predecessor bytes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Clear remaining contextual association acceptance in a separately scoped successor task; v35 remains not qualified. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Offline context association checkpoint — not qualified
+
+**Offline association implementation and one comparison are complete; acceptance failed.** All 24 eligible training proposals and 40 fictional cases were processed with references outside extraction; the two held records remain unscored. **36/40 behavior cases pass; 34 correct links gained, zero baseline-correct links lost and 20 new strict silver-reference disagreements.** Those disagreements include demonstrated scope/time errors and separately recorded reference/grouping concerns; none was relabeled or hidden. **277 fresh tests pass (61 new)**; a broader timed-out test attempt remains incomplete. No empirical retuning occurred.
+
+**Next proposal:** separately repair clause/time updates, collective/list scope and nearby-facility abstention, and independently resolve the recorded reference questions. Freeze a successor before a separately authorized comparison. **Read-only LANES connection is not cleared.** Preserve 345/60/60, the two holds and completed holdout exclusion; no retraining/new data is needed for this repair proposal. Learned DEPTH/TIME remains unfinished; October 25 readiness is unestablished. [Outcome](evaluations/flood-ner-context-association-20261019/README.md) · [Operator guide](guides/ner-context-association.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Implement the standalone prototype, freeze inputs/tests and complete one guarded baseline/candidate comparison; preserve every failed behavior and all predecessors. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Clear contextual association acceptance in a separately scoped successor task; current v34 is not qualified. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
+
+## Current NER scope and defense checkpoint
+
+**Current-scope reconciliation — October 20:** use the [RSS-to-NER integration milestone](#current-milestone-rss-to-ner-integration-and-news-intelligence) for execution order. V46 is complete for the local backend preview; automatic durable NER processing and the admin interface remain pending. The v34 result and initial defense-priority preparation below are historical checkpoints, not the current repair gate or an instruction to repeat completed studies. The original learned DEPTH/TIME objective remains unfinished and outside this no-retraining integration milestone. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Original user goal remains open:** train recognition of **locations, DEPTH and TIME expressions**, then correctly associate each location with its supported depth, condition, access and time. Several locations can share a supported depth/time; different depths must not leak between roads. Observation time is not automatically onset, and receding water is not automatically clearance. This requirement comes from the user; it is not conditional on an adviser request.
+
+| Capability | Actual status |
+|---|---|
+| Trained location recognition | V19 control seed 0 learns ROAD, LANDMARK, LOCAL_AREA, BARANGAY, CITY and PROVINCE. Linux qualification and offline location comparison are complete. |
+| Trained DEPTH recognition | **Not trained in the current neural model.** Existing depth rules are separate. |
+| Trained TIME recognition | **Not trained in the current neural model.** Existing time extraction/resolution rules are separate. |
+| Correct per-location/shared facts | Qualified v40/v44/v42 behavior is connected to the V46 local preview; unresolved facts and documented limitations remain. Automatic durable claim extraction is not yet connected. |
+| Complete automatic system | Neural integration, isolated end-to-end acceptance and operational release remain separate unfinished gates. |
+
+**Score interpretation:** existing NER F1 scores measure the six location labels, not DEPTH/TIME or full flood-information extraction. The completed 14-input comparison verifies runtime behavior and disagreements, not accuracy.
+
+**Sunday, October 25, 2026 defense — interim priority selected:** the user chose a limited demonstration using the trained location model plus depth/time rules. Prioritize its bounded offline acceptance before a read-only LANES connection; no additional neural training runs in this preparation path. Learned DEPTH/TIME remains an unfinished later annotation/training/evaluation requirement, not cancelled or fulfilled by rules. No complete-system or October 25 readiness promise follows. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Existing-data review completed:** all 405 records are inventoried; 26 exact contextual pilot counterparts exist, all in training. Five are held and 21 support limited diagnostics; 379 records, including all 60 validation passages, lack matching contextual references. One guarded rules pass completed on all 405 passages; no neural inference or training ran. **659 fresh tests pass, including 48 new checks.** [Gap assessment](evaluations/flood-ner-context-gaps-20261019/README.md).
+
+**Interim acceptance package prepared:** all 26 training counterparts have source-bound proposals: **20 retain / four corrected / two held**. The 24 eligible proposals contain 35 DEPTH / 22 TIME spans; unknown/unassigned associations remain explicit. **40 fictional cases** and a fixed behavior contract are frozen; **753 fresh regressions pass (94 new)** and guarded CPU schema/tokenizer qualification passes. No extraction repair or neural inference occurred. [Outcome](evaluations/flood-ner-context-acceptance-20261019/README.md).
+
+**Historical v34 result, superseded by subsequent qualified preview work:** the v34 offline prototype and one comparison are complete, but acceptance was not cleared. See the [executed findings](evaluations/flood-ner-context-association-20261019/README.md). The next proposal at that checkpoint was a bounded successor repair plus independent reference-issue adjudication; that failed result did not authorize a LANES connection. Later V46 preview acceptance and the current ordered integration roadmap are recorded above.
+
+- [x] Record the original learned-location/DEPTH/TIME goal separately from delivered six-class location training. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Review existing context-reference completeness and depth/time/association gaps on all 345 training / 60 validation records; complete one guarded rules diagnostic and preserve missing/held references as unscored. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Freeze contextual annotation/association conventions, all 26 separate reference dispositions and 40 fictional cases; three prior holds have supported proposals, two remain held. Preserve admitted references and partitions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Record the user-selected interim demonstration priority; learned DEPTH/TIME remains unfinished and no additional training occurs on this preparation path. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement/test the first frozen interim offline neural-location + depth/time-rule association path and execute its bounded comparison. V34 did not qualify; correcting its failed scope/time behaviors and clearing acceptance remain separate open work. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Preserve the original learned DEPTH/TIME objective: propose source-bound labels and an explicit annotation/profile revision, qualify a bounded training experiment and define appropriate evaluation. The interim hybrid does not close this item. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Complete separately scoped live integration and operational acceptance; preserve the existing `rules_only` persistence constraint until approved migration work. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Continuity boundaries:** no new article collection or additional passages are requested. Start from existing saved sources; DEPTH/TIME coverage is sparse and incomplete; sufficiency for a learned model is unestablished. Preserve current text, membership, 345/60/60 partitions, labels, models and results. Keep the completed research holdout closed during further tuning; any future evaluation must acknowledge its prior exposure. No applied corpus corrections, training, replacement export, production connection, upload or push follows from this acceptance preparation. Retain AI-assisted silver and incomplete-history limitations.
+
+**Scope guard for future agents:** state which open requirement each task advances. Do not silently substitute rules for a claimed trained capability, narrow labels, or mark full extraction complete from location F1/runtime tests. Surface a proposed change to the user and record its decision/status before adopting it. Older location-only descriptions record historical implementation choices, not abandonment of the original goal.
+
+[Detailed requirements](plans/lanes-ner-training-plan.md#current-requirements-and-deadline-status) · [Completed offline comparison](evaluations/flood-ner-shadow-execution-20261019/README.md).
+
+**Earlier execution checkpoints below remain historical.**
+
+**Repaired offline location comparison completed.** One explicitly authorized new Linux attempt processed all **six saved training articles and eight fictional cases**. Independent verification reconciles every input/hash, Unicode span, label and comparison count. Startup **5.688 s**, slowest input **0.666 s**, peak worker RSS **450.79 MiB** and wall time **9.206 s** all pass unchanged limits. The previous failed attempt, source bindings and claim are preserved; its verified stopped-owner lock was archived. The successful attempt is stopped and its active lease is cleared. [Executed outcome](evaluations/flood-ner-shadow-execution-20261019/README.md).
+
+**Next:** separately design and test how location mentions associate with clause-local flood status, time, depth and uncertainty. No live processing is connected. Preserve all **345 training / 60 validation / 60 research-holdout passages**; no new data, retraining or validation/holdout evaluation occurred. The 604 passing software checks remain preparation evidence; this task adds actual execution and independent verification, with no source change or suite rerun. [Operator guide](guides/ner-shadow-comparison.md).
+
+- [x] Preserve the failed attempt and verify one new repaired Linux comparison on all 14 inputs. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Independently verify offsets/counts, runtime/isolation and 1,245 protected file hashes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately design claim-context association; live integration and durable modes remain outside this task. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Offline location shadow adapter implemented; comparison execution remains pending.** The single Linux attempt stopped during startup before processing any article. An ORM-import/engine-construction conflict is reproduced with a constructed probe. The repaired offline import boundary passes **604 checks / 62 new checks** and read-only preparation verification, but has not been rerun in Linux. Failed receipts, original source bindings, stopped container and lease remain preserved; no automatic retry occurred. [Outcome](evaluations/flood-ner-shadow-comparison-20261019/README.md).
+
+**Next:** explicitly reconcile the stopped failed attempt and execute one new offline comparison with the repaired grant and an absent destination. Only after that comparison completes should claim-context integration be scoped. Gate 3 remains passed for its earlier frozen Linux profile; the shadow-comparison gate is still open. No new data, training, validation/holdout evaluation or live connection occurred. Membership remains **345/60/60**. [Operator guide](guides/ner-shadow-comparison.md).
+
+- [x] Implement the independent location adapter and qualify the startup repair. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Complete one explicit repaired Linux comparison; preserve the failed attempt. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately design claim-context integration after completed comparison review. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Gate 3 Linux CPU qualification passes for the frozen local profile.** Retained v19 control seed 0 runs in the unchanged backend image on Linux/Python 3.12.15/spaCy 3.7.5. All 345 saved training predictions match exactly; tokenizer parity, runtime limits and eight executed fictional fault-containment checks pass. **475 fresh regressions pass**, including 82 versioned-runner checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Measured:** cold readiness 4.078 s, passage p95 36.23 ms, slowest selected article 0.507 s, 100,000-character stress 5.368 s and peak worker RSS 1.839 GiB under two CPUs / 4 GiB. These are single-worker local measurements, not deployment performance or improved accuracy. All 633 protected file hashes and stat-only validation/holdout entries remain unchanged. V19 and 345/60/60 membership are unchanged.
+
+**Next:** separately implement the read-only shadow adapter. No retraining, new data, completed-holdout evaluation or live connection is needed for this next scope. Keep context/evidence/placement gates; durable neural processing remains separately gated by the existing `rules_only` database constraint. The desktop GPU can remain off.
+
+[Linux execution and qualification](evaluations/flood-ner-linux-execution-20261019/README.md) · [Runtime guide](guides/ner-runtime-qualification.md). No production API, dependency or schema changes; no integration, deployment, upload, commit or push.
+
+- [x] Authenticate/freeze saved workload and unchanged image; complete 345-record Linux parity, performance and actual fault probes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Reconcile protected artifacts and publish aggregate evidence for the qualified local profile. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately implement and test the read-only shadow adapter; no durable neural mode or deployment in this task. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Clean-launch task stopped at failed graceful exit.** One normal Docker Desktop stop timed out and reported failure; six Desktop/backend processes remain, while its WSL distribution is stopped. The Linux API is unavailable. **No independent Start-menu launch occurred**, so the launch-environment hypothesis and ordinary PowerShell connectivity remain untested. Gate 3 is open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next user action:** use Docker Desktop's normal **Quit** action (tray menu or error-window Quit), then report that it has closed. Verify process exit before one independent Windows Start-menu launch. No force-stop, reset, update, socket cleanup or reboot is authorized. Stop before image builds or model execution.
+
+[Clean-launch outcome](evaluations/flood-ner-docker-clean-launch-20261019/README.md) · [Runtime guide](guides/ner-runtime-qualification.md). All 564 protected hashes and stat-only validation/holdout entries remain unchanged. No new software tests ran; the prior 393-pass result remains historical. V19 and 345/60/60 membership are unchanged.
+
+- [x] Preserve diagnostics and document the failed normal exit without force-stopping Docker. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Obtain and verify normal Docker Desktop exit; then perform one user Start-menu launch and independent/agent connectivity checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Linux qualification attempted: blocked before image build.** Docker's backend records an inaccessible `sailor-ingest.sock` rename, its Linux API is absent and WSL reports the engine stopped. Normal start reports already running; the single restart attempt did not return a completed receipt and was interrupted. No reset, socket deletion, reinstall, security change or reboot occurred. **Gate 3 remains open; compatibility and performance are unmeasured.** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Delivered:** separate Linux measurement helpers, an authenticated raw-only projection of all 345 training records with expected predictions kept separate, frozen local limits and **393 fresh passing regressions / 71 new Linux checks**. These are constructed tests, not a Linux execution. The full article-use workload and actual operational fault/restart qualification remain pending. V19 control seed 0 and 345/60/60 membership remain unchanged.
+
+**Next:** restore normal Docker Desktop startup on the laptop, then resume this qualification scope: supported article workload, pinned image, parity, latency/RSS and operational failure checks. Do not move to the shadow adapter until evidence passes. No retraining, new data or completed-holdout reuse is needed; the desktop GPU can remain off.
+
+[Linux outcome](evaluations/flood-ner-linux-qualification-20261019/README.md) · [Operator guide](guides/ner-runtime-qualification.md). No Linux inference, production connection, deployment, upload, commit or push.
+
+- [x] Diagnose and preserve the exact engine blocker; implement/test the separate measurement harness and raw training projection. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Restore the Linux engine and finish image/workload/parity/performance/operational-failure qualification. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Implement the separately scoped read-only shadow adapter after Gate 3 clears. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Gate 3 runtime preflight completed; Linux qualification remains blocked.** The retained v19 control seed-0 checkpoint (11 files) and pinned resources (23 files) authenticate. Existing Windows/Python 3.12.14/spaCy 3.7.5 CPU inference passes four fictional probes and 40 warm calls with deterministic predictions and frozen-tokenizer parity. Docker's Linux engine is unavailable; Linux inference, representative article latency, peak RAM and failure/restart qualification remain pending. **Gate 4 live integration has not started.** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** finish isolated Linux CPU qualification, then separately implement a read-only shadow adapter. The [integration design](plans/ner-v19-shadow-integration.md) preserves context/placement gates, original-body offsets and six-class mapping. Durable processing currently has a `rules_only` database constraint; do not bypass it. No retraining, data collection or completed-holdout reuse is needed. The desktop GPU can remain off.
+
+[Runtime preflight report](evaluations/flood-ner-runtime-preflight-20261019/README.md) · [Operator guide](guides/ner-runtime-qualification.md). Fresh **322 tests pass, including 54 new runtime checks**. V19 remains retained; 345/60/60 membership is unchanged. No dependency installation, production connection, upload, commit or push.
+
+- [x] Authenticate retained-model resources, qualify the Windows CPU smoke probe and complete the integration design. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Complete Linux CPU/resource/latency/failure qualification before Gate 4. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Separately implement and test the offline shadow adapter; no durable-processing or deployment changes in this task. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Training-only road-boundary study completed: no qualifying rules.** Trimming and explicit crossing separation pass fictional checks, but all 345 original control prediction records remain unchanged. Descriptor trimming abstains twice; directional trimming and explicit splitting have no observed corrective applicability. Both families are partially supported and empirically unproven. **V19 corrected control seed 0 remains retained.** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current disposition:** close this bounded feasibility study without a validation comparison or integration proposal. An empty qualifying subset is not evidence of improvement; do not tune rules from exposed findings or combine rejected prototypes automatically. Any future development direction requires a separate scope. The desktop can remain off.
+
+[Boundary study](evaluations/flood-ner-road-boundaries-20261019/README.md) · [Boundary operator guide](guides/ner-road-boundary-study.md). All seven training ROAD-error records and five complete saved articles were reviewed. Fresh **269 tests** pass, including **71 new checks**; 24 fictional core cases remain outside membership. Ten replay files reproduce byte-for-byte. Protected 507 hashes, prior-validation metadata and 55 stat-only holdout entries remain unchanged; no validation or holdout content was supplied to this study.
+
+- [x] Study conservative ROAD trimming and explicit crossing splits against original saved training predictions, without type-safeguard composition. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Record partially supported families, zero qualifying rules, immutable evidence and unchanged v19 retention; no later evaluation is authorized by this study. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Frozen validation comparison completed: retain v19 corrected control, seed 0 primary.** The two-rule shadow method increases strict validation F1 from 71.60% to 76.54% on unchanged 60 validation passages, but **does not qualify** under the prospectively frozen zero-new-strict-FP gate. Four correct entities are gained, none lost; five typed FPs are resolved and one typed FP is introduced when an already-truncated road span changes type but remains incomplete. No new textual entity or boundary is added. References, model selection and the prototype remain unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current disposition:** keep the prototype separate from production and close this bounded comparison. Any future method, revised policy or integration proposal needs a separate scope; no automatic rule tuning, retraining or completed-holdout evaluation follows. The desktop can remain off.
+
+[Validation comparison](evaluations/flood-ner-context-validation-20261019/README.md) · [Validation operator guide](guides/ner-context-safeguard-validation.md). All 60 records are accounted for; three changed passages and complete saved articles were reviewed. Fresh **250 tests** pass, including **52 new checks**. One comparison consumed one persistent claim; no replay or retry occurred. Protected 505 hashes and 55 stat-only holdout entries remain unchanged.
+
+- [x] Freeze and execute the single validation-only comparison of the qualifying rule subset; preserve the does-not-qualify decision and unchanged v19 retention. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Publish local aggregate evidence and synchronize documentation; no upload, commit, push or integration. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Training-only context-safeguard study completed.** V19 corrected control seed 0 remains retained. The unchanged 345 training passages support two frozen rules for a later validation proposal: named-asset typing and bounded shared identifiers. Three shadow retags resolve three typed FPs and gain three TPs, with zero introduced training FP/FN; training F1 changes from 98.09% to 98.45%. Organization/role exclusions and direct designator corrections remain empirically unproven. No validation comparison, holdout content access, neural inference, training or integration occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** separately scope a frozen validation-only comparison of the two qualifying rules using saved predictions. Do not tune further rules against validation or reopen the completed holdout. Data, annotations and the retained model stay unchanged; the desktop can remain off.
+
+[Training-only study](evaluations/flood-ner-context-safeguards-20261019/README.md) · [Context-safeguard operator guide](guides/ner-context-safeguards.md). Fresh checks: **198 passing tests**, including **94 new context checks**; the 48 fictional cases stay outside corpus membership. Eleven output files reproduce byte-for-byte; 451 protected hashes and 55 stat-only holdout entries remain unchanged.
+
+- [x] Complete the separately authorized training-only context-safeguard prototype, 48 fictional contrasts, frozen study and preservation checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prepare and complete the separately authorized frozen validation comparison; the original training study alone did not authorize evaluation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Current NER diagnosis completed: retain corrected v19 control, seed 0 primary.** Saved predictions reproduce candidate validation F1 69.71% versus control 71.60%. All 405 records are accounted for; 22 affected validation passages/18 complete saved captures and 33 training contexts were reviewed. Candidate gains seven correct entities, loses four, introduces eighteen FPs and resolves eight. No supported reference correction or training/scoring defect was found; one inherited boundary question remains unresolved. Fresh 197 tests/20 subtests pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** a separately scoped development-only feasibility task for convention/training-derived context safeguards and constructed contrasts. No additional optimizer search, data collection, model selection or training is authorized. The completed holdout stays excluded; the desktop can remain off.
+
+[Diagnosis report](evaluations/flood-ner-regularization-diagnosis-20261019/README.md) · [Comparison guide](guides/ner-regularization-comparison.md)
+
+- [x] Diagnose saved candidate/control prediction transitions and source evidence without changing data or training. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Define and complete the context-safeguard feasibility task under the subsequent training-only authorization; earlier no-implementation status is historical. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
 
 **Publication checkpoint:** Matching public v21 execution/scoring code and metadata accompany this roi-branch update. The [new private result backup](https://drive.google.com/drive/folders/14A4kgWRH0LNay8My9vCutIQp_ro-ezTl) has nine fully byte-verified, owner-only files; older handoffs are unchanged. Corrected v19 control seed 0 remains primary, and no further runs or holdout evaluation occurred. [Publication report](evaluations/flood-ner-regularization-publication-20261019/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

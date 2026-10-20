@@ -175,3 +175,86 @@
 # Desktop execution evidence binds these test bytes across Windows/Linux checkouts.
 /backend/tests/test_flood_ner_regularization_execution.py -text
 /backend/tests/test_flood_ner_corrected_development_languages.py -text
+
+# Saved-development comparison grants and dated aggregate evidence bind exact bytes.
+/backend/tests/test_flood_ner_regularization_comparison.py -text
+/docs/evaluations/flood-ner-regularization-diagnosis-20261019/** -text
+
+# Training-only context-study grants bind exact helper/test/aggregate bytes.
+/backend/training/flood_ner/context_safeguards.py -text
+/backend/training/flood_ner/context_safeguard_cases.py -text
+/backend/training/flood_ner/context_safeguard_study.py -text
+/backend/tests/test_flood_ner_context_safeguards.py -text
+/docs/evaluations/flood-ner-context-safeguards-20261019/** -text
+
+# Frozen validation-only comparison bindings preserve exact checkout bytes.
+/backend/training/flood_ner/context_safeguard_validation.py -text
+/backend/tests/test_flood_ner_context_safeguard_validation.py -text
+/docs/evaluations/flood-ner-context-validation-20261019/** -text
+
+# Frozen training-only boundary-study grants bind these exact bytes.
+/backend/training/flood_ner/road_boundary_rules.py -text
+/backend/training/flood_ner/road_boundary_cases.py -text
+/backend/training/flood_ner/road_boundary_study.py -text
+/backend/tests/test_flood_ner_road_boundary_study.py -text
+/docs/evaluations/flood-ner-road-boundaries-20261019/** -text
+
+# Runtime qualification binds research helper/test bytes; no production hook.
+/backend/training/flood_ner/runtime_preflight.py -text
+/backend/training/flood_ner/runtime_probe_worker.py -text
+/backend/tests/test_flood_ner_runtime_preflight.py -text
+/docs/evaluations/flood-ner-runtime-preflight-20261019/** -text
+
+# Linux qualification receipts bind these new research bytes separately.
+/backend/training/flood_ner/linux_runtime_qualification.py -text
+/backend/training/flood_ner/linux_runtime_worker.py -text
+/backend/tests/test_flood_ner_linux_runtime.py -text
+/docs/evaluations/flood-ner-linux-qualification-20261019/** -text
+
+# Preserve the clean-launch diagnostic aggregate when later published.
+/docs/evaluations/flood-ner-docker-clean-launch-20261019/** -text
+
+# v29 qualification preserves earlier Linux helpers and binds new exact bytes.
+/backend/training/flood_ner/linux_runtime_v29.py -text
+/backend/training/flood_ner/linux_runtime_worker_v29.py -text
+/backend/tests/test_flood_ner_linux_runtime_v29.py -text
+/docs/evaluations/flood-ner-linux-execution-20261019/** -text
+
+# Internal shadow comparison bindings preserve literal source bytes.
+/backend/app/services/ner_shadow_service.py -text
+/backend/training/flood_ner/shadow_comparison.py -text
+/backend/training/flood_ner/shadow_worker.py -text
+/backend/tests/test_ner_shadow_service.py -text
+/backend/tests/test_flood_ner_shadow_comparison.py -text
+/docs/evaluations/flood-ner-shadow-comparison-20261019/** -text
+/docs/evaluations/flood-ner-shadow-execution-20261019/** -text
+
+# Context-gap research audit and aggregate report bind literal bytes.
+/backend/training/flood_ner/context_gap_audit.py -text
+/backend/training/flood_ner/context_gap_worker.py -text
+/backend/training/flood_ner/context_gap_runner.py -text
+/backend/tests/test_flood_ner_context_gap_audit.py -text
+/docs/evaluations/flood-ner-context-gaps-20261019/** -text
+/backend/training/flood_ner/context_acceptance.py -text
+/backend/training/flood_ner/context_acceptance_cases.py -text
+/backend/tests/test_flood_ner_context_acceptance.py -text
+/docs/plans/ner-interim-context-acceptance.md -text
+/docs/evaluations/flood-ner-context-acceptance-20261019/** -text
+/backend/training/flood_ner/context_association.py -text
+/backend/training/flood_ner/context_association_scoring.py -text
+/backend/training/flood_ner/context_association_worker.py -text
+/backend/training/flood_ner/context_association_run.py -text
+/backend/tests/test_flood_ner_context_association.py -text
+/docs/evaluations/flood-ner-context-association-20261019/** -text
+
+# Preserve versioned offline context repair qualification bytes.
+/backend/training/flood_ner/context_revision_v35.py -text
+/backend/training/flood_ner/context_association_v35.py -text
+/backend/training/flood_ner/context_association_cases_v35.py -text
+/backend/training/flood_ner/context_association_worker_v35.py -text
+/backend/training/flood_ner/context_association_run_v35.py -text
+/backend/training/flood_ner/context_association_scoring_v35.py -text
+/backend/tests/test_flood_ner_context_revision_v35.py -text
+/backend/tests/test_flood_ner_context_association_v35.py -text
+/backend/tests/test_flood_ner_context_association_v35_execution.py -text
+/docs/evaluations/flood-ner-context-repair-20261019/** -text

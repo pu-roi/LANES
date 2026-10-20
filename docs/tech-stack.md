@@ -1,6 +1,36 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 18, 2026, 4:39 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 20, 2026, 10:25 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## C3a — existing packages, actual local worker measurement
+
+The new native worker uses existing SQLAlchemy/psycopg and Python asyncio/signal facilities. No requirements/package, model, tokenizer, qualified inference code or normal build-pipeline change. One CPU / 3 GiB completes ten retained inputs with 2,339.29-MiB container peak, below 2,688 MiB; this includes actual native normalization and SQL persistence. [Measured report and source deltas](evaluations/rss-ner-native-worker-20261020/README.md). Cloud/full-RSS verification remains separate.
+
+**Earlier checkpoints below are historical.**
+
+## Phase C2 — existing dependencies and unchanged inference
+
+`services/news_ner_durable/` uses existing standard-library, Pydantic, geographic-reference and audit components. No dependency, model, tokenizer, qualified rule or runtime change occurs. Independently pinned assets authenticate saved predictions; replay never starts neural inference. [Evidence and limits](evaluations/rss-ner-native-projection-20261020/README.md).
+
+**Earlier checkpoints below are historical.**
+
+## Phase C1 compatibility — existing dependencies only
+
+Explicit identities and native saved-result types use existing Python standard libraries, Pydantic and SQLAlchemy; no requirements/package change. [93 checks](evaluations/rss-ner-method-boundary-20261020/README.md) pass. Runtime/model/rules and cloud limits remain unchanged. Eight current-source differences from the old runtime freeze are recorded separately; historical receipts remain immutable. Automatic native processing and full-job/cloud verification remain pending.
+
+**Earlier checkpoints below are historical.**
+
+## Supervised NER runtime — locally qualified at one CPU / 3 GiB
+
+The separate Linux amd64 / Python 3.12 runtime uses existing spaCy 3.7.5 plus Python standard-library asyncio/subprocess/ctypes for sequential inference, IPC/deadlines and Linux seccomp network denial. **No external package or requirements change.** It reuses the authenticated retained model/tokenizer/rules and a separate local image derived from the existing qualified image. The explicitly approved one-CPU / three-GiB profile passes all local checks, 355 requests, 352 retained prediction comparisons and total-memory headroom (1,972.21 MiB peak below 2,688 MiB). Original one-GiB/two-GiB failures remain preserved. Only versioned qualification tooling/profile tests are added; runtime/model/rules, normal build and cloud resources are unchanged. [Latest evidence](evaluations/rss-ner-runtime-phase-b-3g-20261020/README.md) · [Guide](guides/ner-subprocess-runtime.md). The separately approved minimal mode-check migration uses existing SQLAlchemy/Alembic/psycopg and pinned local PostGIS 15/3.4; [66 schema checks pass](evaluations/rss-ner-mode-schema-20261020/README.md), with no dependency additions. Automatic processing, shared/cloud migration, actual Cloud Run verification and deployment remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Local extraction-only NER preview runtime
+
+The local backend preview runs v19 neural location recognition → v40 proposals → v44 combined repairs → `lanes-context-association-v42` grouping. The v46 shared adapter is used by worker and host validation; original neural mentions remain separate from rule proposals. Existing dependencies and the qualified runtime image remain unchanged, with no new library or migration. The preview remains disabled by default; its admin interface is pending. [V46 verification](evaluations/flood-ner-backend-location-v46-20261020/README.md) · [V42 verification](evaluations/flood-ner-context-repair-v42-20261019/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The default-disabled saved-article preview uses existing Python/spaCy dependencies and the qualified Linux Python 3.12 / spaCy 3.7.5 image `sha256:a51ce2a6b0f19f382ce96bf63c265e060b37112098176c97c66c23e887794680` through Docker Desktop. It mounts only a private inference bundle and inference-only code, read-only, with no network, two CPUs and 4 GiB memory/swap. No Python/Node dependency or cloud deployment is added. The retained v19 six-class model remains unchanged; depth/time and matching remain rules. [Local setup](guides/ner-backend-preview.md) · [Verification](evaluations/flood-ner-backend-preview-20261019/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
 
 **Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

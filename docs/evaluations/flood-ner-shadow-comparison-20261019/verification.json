@@ -1,0 +1,56 @@
+{
+  "dataset_counts": {
+    "research_holdout": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "execution": {
+    "attempts": 1,
+    "comparison_disagreements": "unmeasured",
+    "comparison_performance": "unmeasured",
+    "container_stopped": true,
+    "exit_code": 2,
+    "oom_killed": false,
+    "readiness_reached": false,
+    "retries": 0
+  },
+  "hashes": {
+    "attempted_grant": "cba884f2919457978d2033b52bb009b851266f3a8d38524844c5bf403a2fc30a",
+    "attempted_worker_failure": "6ff306ab6a0846dd2856a68950412fde1681e9415df82c2d7feb993d504712c0",
+    "constructed_import_probe": "7f0899cb5eb705a4103defa824dabb4cd383dd102fcaeb615bd7c97e386a203b",
+    "failed_container_state": "681146f1917ca62335274339cc3116035040569a89a01fc8183100cfc8606c00",
+    "post_repair_tests": "eba1cc3a173a6c803c6889f5f0f5e6e99b7a0a82652d0268eccdcc04f147ae4b",
+    "preservation_verification": "b89cdab4c894819c8d002185680c1117b7bc8c2d9ae39d37eba341f622b2c381",
+    "repair_qualification": "d48bdb991f372e20c7b381fef044a8c714b5b442a1f6371b79977695de1c3c87",
+    "repaired_grant": "01cb7f07b03ca17455e6af3a6d174c12f3dc586f451c86d401ed0923eb78a35e"
+  },
+  "next": "Explicit new offline comparison attempt after stopped-container and failed-lease reconciliation; no live integration.",
+  "preservation": {
+    "holdout_metadata_only": 55,
+    "preserved": true,
+    "protected_file_hashes": 1099,
+    "validation_metadata_only": 27
+  },
+  "schema": "lanes-shadow-outcome-v30-v31",
+  "scope": {
+    "accuracy_measured": false,
+    "application_connected": false,
+    "holdout_accessed": false,
+    "model_retained": "v19 corrected control seed 0",
+    "training_started": false,
+    "validation_evaluated": false
+  },
+  "status": "adapter_implemented_repaired_comparison_pending",
+  "verification": {
+    "new_checks": 62,
+    "post_repair_tests": 604,
+    "pre_attempt_tests": 602,
+    "repaired_linux_execution": false,
+    "repaired_read_only_verified": true
+  },
+  "workload": {
+    "completed_article_comparisons": 0,
+    "fictional_cases": 8,
+    "saved_training_articles": 6
+  }
+}

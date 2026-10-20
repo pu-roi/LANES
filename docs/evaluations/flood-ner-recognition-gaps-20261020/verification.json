@@ -1,0 +1,29 @@
+{
+  "status": "verified",
+  "input_bindings": 8,
+  "source_occurrence_slices": 34,
+  "unique_affected_facts": 93,
+  "rows_with_dispositions": 19,
+  "no_missing_or_duplicate_counting": true,
+  "assessment_sha256": "1d7791f3186276623c2a18b43c0815e45cc8a82ae5a5fe39870dbc582ffca896",
+  "case_ledger_sha256": "d0ab09761726635141e967f82390594fb6142fdb44a62154189527160adac90a",
+  "input_bindings_sha256": "a829f466f9a6ccacf5bae7e47a7fa08926837b6143297c563ac59d31e1d2039f",
+  "protected_hashes": 208,
+  "v41_frozen_files": 55,
+  "v42_bindings_and_promoted_sources": true,
+  "historical_metadata_unchanged": 1538,
+  "prior_declared_config_change": [
+    "backend/app/core/config.py"
+  ],
+  "excluded_metadata_unchanged": 82,
+  "validation_holdout_contents_opened": false,
+  "independent_recount": {
+    "status": "passed",
+    "input_and_manifest_hashes": true,
+    "source_slices": 34,
+    "rows": 19,
+    "unique_facts": 93,
+    "application_tests_run": false,
+    "extraction_or_inference_run": false
+  }
+}

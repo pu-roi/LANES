@@ -21,9 +21,13 @@ COLLECTION_LABELS = {
 
 
 def browse_news_collection(db: Session, *, page: int, page_size: int, search: str,
-                           publisher: str | None, status: CollectionFilter) -> NewsCollectionPage:
+                           publisher: str | None, status: CollectionFilter, processing_context=None) -> NewsCollectionPage:
+    if processing_context is not None:
+        from app.services.news_ner_durable.readers import validate_read_context
+        validate_read_context(db,processing_context)
     rows, total, actual_page, counts, publishers = list_collection(db, page=page, page_size=page_size,
-        search=search, publisher=publisher, status=status)
+        search=search, publisher=publisher, status=status,
+        pipeline_version=processing_context.pipeline_version if processing_context is not None else None)
     labels = publisher_labels()
     items = []
     for article, body, processing, run_id, state, locations, questionable in rows:

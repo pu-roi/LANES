@@ -110,6 +110,14 @@ class OperationalFootprintProvenance(NewsPublicationModel):
     binding: OperationalFootprintBinding | None = None
 
 
+class NativeReconciliationReference(NewsPublicationModel):
+    run_id: int = Field(gt=0)
+    article_version_id: int = Field(gt=0)
+    input_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+    group_ids: list[str] = Field(default_factory=list)
+    disposition: Literal['native_only', 'no_eligible_observations', 'processing_failed', 'changed_observation']
+
+
 class NewsDecisionSnapshot(NewsPublicationModel):
     schema_version: Literal["news-publication-v1"] = "news-publication-v1"
     request_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -137,6 +145,7 @@ class NewsDecisionSnapshot(NewsPublicationModel):
     linked_zone_ids: list[int] = Field(default_factory=list)
     operational_provenance: OperationalFootprintProvenance | None = None
     estimated_road_review_revision: str | None = Field(default=None, max_length=500)
+    native_reconciliation: NativeReconciliationReference | None = None
 
 
 class NewsStaffDecisionRequest(NewsPublicationModel):

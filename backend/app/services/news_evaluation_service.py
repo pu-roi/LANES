@@ -46,6 +46,7 @@ class EvaluationPolicy:
     expiry_minutes: dict[str, int] | None = None
     retention_hours: int | None = None
     publication_admission_at: datetime | None = None
+    native_assets: object | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         if self.publication_admission_at is None:

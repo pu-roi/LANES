@@ -1,6 +1,51 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 12:36 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## C3b — controlled native pipeline and saved-result APIs
+
+`news_ner_durable.pipeline.run_native_news_pipeline` and the separate Linux `scripts.run_news_ner_pipeline` connect RSS admission/corrections, exact native captures/publication evidence, supervised extraction, saved read projections, placement, native source evaluation and existing publication/reconciliation. They require test configuration and an actual `lanes_p3_verify_*` database; scheduled production defaults remain legacy. Budgets are 580-second invocation, at most 120-second discovery, 100-second downstream/ten-second final reserves, and the existing 450/125/300 extraction/article/lease ceilings.
+
+Existing admin result/article/collection readers accept an internally supplied intended-method context. That dependency defaults to legacy; there is no public processing switch. `NewsResultPage` items distinguish legacy claims and native groups. Native projection counts/filters/pagination are SQL-backed, preserve null confidence and show a joint/collective observation once. A newer failed/pending intended run hides older main-list results. Missing historical operational evidence remains unsupported rather than silently repaired.
+
+The additive active-admin GET `/api/v1/admin/news/results/{run_id}/groups/{group_id}` binds exact saved group evidence. Group/claim details expose actual linked lifecycle records without inferring publication from extraction. Existing claim/placement routes and role checks remain. GETs perform no collection, inference or writes. No frontend UI/types change is included; frontend consumption is Phase E.
+
+Zero-claim/new-failure correction reconciliation appends review to linked cases without clearing/refreshing old flooding from absence. Source checks use `source-ner-v1` and trusted native evidence; existing geometry/freshness/expiry/conflict gates remain. [754-check and controlled real-runtime report](../evaluations/rss-ner-rss-integration-20261021/README.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Earlier checkpoints below are historical.**
+
+## C3a — internal native worker, no new route
+
+`news_ner_durable.processing.process_native_saved_news` authenticates assets, captures native input, claims explicit native/pipeline leases, lazily starts one sequential Linux subprocess, normalizes through C2 and commits owned results. Scoped CPU/SQL budgets include normalization and persistence. `scripts.run_news_ner_processing` is a thin test/disposable-only entrypoint; it never evaluates, places or publishes, and returns bounded errors/interrupt exit 130. Existing scheduled/legacy workers and HTTP authorization/routes are unchanged. Saved history uses C1 serialization; no card/native-reader activation. [251 checks and one actual local run](../evaluations/rss-ner-native-worker-20261020/README.md).
+
+**Earlier checkpoints below are historical.**
+
+## Phase C2 — projection/source library, no route activation
+
+`news_ner_durable.adapter.build_native_result` binds native input, saved original predictions and independently authenticated assets, preserving complete graph/provenance. `verify_saved_result` recomputes exact extraction content while permitting separately gated placement enrichment. `source_check.check_native_source(s)` provides distinct `source-ner-v1` audits without the old recognizer. Errors are bounded; valid native-only results have reasons. [Contract, behavior and verification](../evaluations/rss-ner-native-projection-20261020/README.md). Existing routes, authorization, scheduled evaluator and default legacy writers are unchanged; intended-method/current-native readers and runtime/RSS wiring remain C3.
+
+**Earlier checkpoints below are historical.**
+
+## Phase C1 saved-run compatibility — existing admin routes
+
+`news_candidate.NewsExtractionRunSummary` dispatches persisted `rules_only` versus `ner_rules_v1` through `schemas/news_ner_result.py`. Existing article-detail and candidate-processing GETs preserve the native graph, grouped evidence, proposals/abstentions, source/provenance/projection metadata and null confidence without inference or writes. Unsupported/mismatched saved versions return bounded HTTP 409 through `services/news_saved_run_service.py`. Existing authentication/role dependencies remain unchanged.
+
+No frontend change or new route is delivered. Existing scalar result list/detail/placement consumers exclude or explicitly reject native data until projection/cards qualify. Backend native history remains inspectable; completed native runs stay Needs checking in collection attention. Native group routes, frontend method types/inspector and intended-method selection remain pending. Default writers remain legacy. [93-check verification](../evaluations/rss-ner-method-boundary-20261020/README.md).
+
+**Earlier checkpoints below are historical.**
+
+## Local extraction-only NER preview
+
+The current pipeline is v19 neural locations → v40 proposals → v44 combined repairs → unchanged `lanes-context-association-v42` grouping. The shared `news_ner/location_pipeline.py` adapter serves worker and host validation; original predictions and ordered rule changes remain separate, and host recomputation rejects chain/graph mismatches. V1 endpoint/response fields and source URL are retained. Provenance identifies both location stages and the combined method. [V46 outcome](../evaluations/flood-ner-backend-location-v46-20261020/README.md): 1,281 tests, full cached parity and one real-worker API request pass, with independent preservation/isolation/cleanup verification. Flag remains off; admin-panel display is next.
+
+The response's `source.canonical_url` is the saved article link, copied from the same immutable snapshot as its request hash. A [real saved-article review](../evaluations/flood-ner-saved-article-review-20261019/README.md) confirms the database/API handoff and exposes full-article extraction gaps; connection success is separate from semantic correctness.
+
+`POST /api/v1/admin/news/articles/{article_id}/ner-preview` is an active-admin, default-disabled local backend endpoint. It reads an already saved body and returns exact-source grouped location/depth/time/status/access evidence, original neural mentions, separate rule proposals, unresolved fields and model/runtime provenance. The router is `backend/app/api/v1/endpoints/admin_news_ner.py`; orchestration is in `backend/app/services/news_ner_preview_service.py`, with an inference-only `news_ner/` package and dedicated `news_ner_preview.py` schemas. [Guide](../guides/ner-backend-preview.md) · [Verification](../evaluations/flood-ner-backend-preview-20261019/README.md).
+
+This adds no frontend screen, database table/run/history, placement, map or automatic-processing change. It runs on the local API host through the qualified isolated Linux Docker worker and rejects production environments. The four preview settings default to off/unconfigured. Observation/report/publication time does not establish onset; subsided evidence is retained without implementing plotting/history policy. Existing rules-only extraction remains separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier checkpoints below are historical.**
 
 **Current Gate 3 status:** Improvement preparation is complete; additional-dataset readiness/admission remains open. Development has 244 drafts (179 candidates / 65 holds); isolated test curation has 56 prospective entries, zero admitted independent test records and no seal. Resolve coverage, reference/language, source-use, historical-overlap and the single development tokenizer-alignment failure before corpus admission/export or further training. Original 400-sample results and model roles remain frozen. [Readiness report](../evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -430,7 +475,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of standalone `PostItem` cards separated by clean whitespace (`space-y-3 sm:space-y-4`) with responsive mobile edge margins (`px-3 sm:px-0 pt-3 sm:pt-4`), composer placeholder (`"What's happening?"` on mobile vs `"What's happening in your area?"` on desktop), and standalone loading/empty cards. Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
+| `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the continuous scrollable list of standalone `PostItem` cards (`useInfiniteQuery` infinite stream across desktop and mobile without traditional numbered pagination) separated by clean whitespace (`space-y-3 sm:space-y-4`) with responsive mobile edge margins (`px-3 sm:px-0 pt-3 sm:pt-4`), composer placeholder (`"What's happening?"` on mobile vs `"What's happening in your area?"` on desktop), continuous sentinel auto-fetching with fallback "Load more posts" button, and standalone loading/empty cards. Left and right sidebars are pinned on desktop. Navigation Feed button reloads and smoothly returns to the top of the feed. |
 | `FeedLayout` | `src/app/feed/layout.tsx` — Full-width shell with a 24-pixel outer gutter from 1280 pixels and 16 pixels on smaller non-mobile screens. Navigation sits near the left edge; a responsive grid gives the feed its own centered column capped at 720 pixels and reserves 376 pixels for the large-screen updates panel. Local preview verified; production remains on rollout 004. |
 | `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Desktop navigation, shared recent Trending Hotspots, saved places and emergency hotlines. Width is 280 pixels from 1280 pixels and 256 pixels on tablets. The same hotspot component appears in the existing mobile navigation drawer in `FeedPage.tsx`. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — 376-pixel right panel with 16-pixel side padding (344-pixel cards), from the 1280-pixel breakpoint, with Current Weather, API-backed Local Updates and Top Reporters. Its thin scrollbar is transparent until hover/focus; the labeled panel accepts keyboard focus and contains wheel scrolling. Below 1280 pixels, Local Updates is available above the feed composer through the shared expandable card. |

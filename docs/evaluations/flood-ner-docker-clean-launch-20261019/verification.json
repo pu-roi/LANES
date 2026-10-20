@@ -1,0 +1,63 @@
+{
+  "evidence_sha256": {
+    "after-agent-engine-reservation.json": "c13d02a7655c540542808c8edf655c52fc97a4faf44b0c63abb5bb0ed2790d40",
+    "after-agent-engine.json": "b133d02e1411bd40d99b3457c838a6e16b810d7b997d55b09b977fd6d59575fa",
+    "after-processes-reservation.json": "7d808a2150387aa8e5ab87ed995acb8edf7544c058347d38603b9e79108e3fec",
+    "after-processes.json": "76f7e680a58be30cb9d4524af4cfce21132b2d8d52ed00b425d0aa08f6b8859d",
+    "after-wsl-reservation.json": "aaeb558980c602b40aec07e92eb571172c7a2ebaf28b770b8b24c3d3bea6917b",
+    "after-wsl.json": "d3eeec21dcd2eb89c283ba280aabc030dab660bf1f125ed3317f074e8534621e",
+    "before-engine-reservation.json": "87fdd941d4e0455fd6f1d77e0e7489bb186ee8d8812ea87815576bd1e4a7aab7",
+    "before-engine.json": "30c6a72cace8b9f8dda19279eac668de7503e0250ee3aceb2469d2f6d117b43e",
+    "before-processes-reservation.json": "b4d7b8ea3c7801eeddf52ce13e7c09e74bf9ee027e82c22af774f1a67298986a",
+    "before-processes.json": "60ae87bcf073fb9ad0bd7a54c909c54036c6b94b5ff7a93c915c40078325756f",
+    "before-startup-errors.json": "16d0459c5e1235e60266605f1f3b55dfbb52c1ace634a8fa08d8649a18cb5fb5",
+    "before-wsl-reservation.json": "3a4efeb8fdbd9448d16fd3aeda0bc57265361d2be01b00b09e6e04fd2c4ace95",
+    "before-wsl.json": "e478c8ab9aa12ebe1b7ae637b8e0f01d5dfed2242fd2a27fec17f82021a4107c",
+    "installed-version-reservation.json": "c409734e499fa3d63b2381e7c2940b904fb886329bbe05a05d4391ce00dd8c5d",
+    "installed-version.json": "c9929865adce7da7e7866da49e12218603c39f493fc112e3c7a2c66a8debeafe",
+    "normal-stop-reservation.json": "8ac2ef715d6f11a13641aff9260f978c8c6aada3d43ec2c242d56f9d73dd4133",
+    "normal-stop.json": "eec2348eda9b4613ade75ee286569834fcd7324de5de61d691143668265dcec2",
+    "preservation-verification.json": "bda8b8a842db6b2b6ca30b64a08745424c059c7266812d14867a397705100fb1",
+    "scope.json": "205f6ef9dc9bb2d4dd17dad878c17b014ddf21b50852463ab48402aa3b83ca7c",
+    "status.json": "ae68ae02c627d11d8582774066d8800e9369881effa05eee60119013aab81797"
+  },
+  "new_software_tests_run": false,
+  "outcome": {
+    "agent_server_query_succeeded": false,
+    "desktop_backend_processes_remaining": 6,
+    "force_kill_backend": false,
+    "gate_3_cleared": false,
+    "images_built": false,
+    "independent_windows_launch_attempts": 0,
+    "installed_desktop_version": "4.91.0.239619",
+    "launch_environment_hypothesis": "untested",
+    "model_execution": false,
+    "next_requirement": "User normal Quit from Docker tray menu or Quit in error window; verify process exit before an independent Start-menu launch.",
+    "normal_stop_attempts": 1,
+    "normal_stop_cli_timeout_seconds": 30,
+    "normal_stop_timed_out": true,
+    "normal_stop_wrapper_timeout_seconds": 35,
+    "ordinary_windows_powershell_query": "not_performed",
+    "outcome": "blocked_graceful_exit_failed",
+    "reset": false,
+    "schema": "lanes-docker-clean-launch-v1",
+    "socket_cleanup": false,
+    "system_reboot": false,
+    "training_started": false,
+    "updates": false,
+    "wsl_docker_distribution": "Stopped"
+  },
+  "preservation": {
+    "counts": {
+      "file_hashes": 564,
+      "holdout_metadata_only": 55,
+      "validation_metadata_only": 27
+    },
+    "helper_implementation_unchanged": true,
+    "preserved": true,
+    "reason": "No source-code changes; this task performs Docker stop/status diagnostics and documentation only.",
+    "tests_rerun": false
+  },
+  "previous_393_pass_result": "historical_not_rerun",
+  "schema": "lanes-docker-clean-launch-verification-v1"
+}

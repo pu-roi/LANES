@@ -1,0 +1,37 @@
+{
+  "article_facts": 141,
+  "article_unassigned": 101,
+  "backend_context_rules": "lanes-context-association-v42",
+  "cached_response_contract_checks": 1,
+  "complete_junction_rows": 5,
+  "complete_measured_rows": 8,
+  "database_access": false,
+  "default_preview_enabled": false,
+  "freeze_sha256": "0173994e0e6851ec3896f47138d45387d3dae2d732072b9a940374d8b9b58009",
+  "graphs": 1419,
+  "isolation_verified": true,
+  "location_proposal_regeneration": false,
+  "neural_inference": false,
+  "new_accuracy_measurement": false,
+  "post_promotion_tests": 1195,
+  "pre_freeze_tests": 1158,
+  "preservation": {
+    "excluded_metadata_unchanged": 82,
+    "historical_metadata_unchanged": 1538,
+    "preexisting_declared_config_change": [
+      "backend/app/core/config.py"
+    ],
+    "protected_evidence_hashes": 208,
+    "v41_source_test_hashes": 55,
+    "validation_holdout_content_opened": false
+  },
+  "previous_facts_accounted": 59,
+  "previous_source_facts_independently_verified": 59,
+  "raw_records": 371,
+  "recognition_unresolved_measured_rows": 18,
+  "source_depth_facts": 52,
+  "source_url_and_input_hashes_preserved": true,
+  "status": "independently_verified",
+  "unchanged_context_view_link_and_expression_sets": 120,
+  "worker_stopped": true
+}

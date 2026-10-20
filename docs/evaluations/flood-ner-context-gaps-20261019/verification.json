@@ -1,0 +1,61 @@
+{
+  "hashes": {
+    "actual_test_receipt": "bbc095dc0e7bf284b178410726f7fed2fb6df0db62ad208401efac2c5580fa4b",
+    "execution_grant": "d8c204c716c2559a20f7f8da008bfa627f2ecc74272a6b866196c3adb1a38352",
+    "final_analysis_manifest": "c2e467813608a6bc5bfbedbfd52fd986ed9cffb02a29555e905fbd9c94432e32",
+    "post_execution_container_receipt": "28136db0c047aee8f809f6c4ea82572134abdb575511bc205090100421389b8c",
+    "preservation_verification": "d5806786b9a1fcc0141ad0ab6318c9a5e45e274e0cc5f40395688029cc7e7006",
+    "private_package_manifest": "5e6d7a081b9558fc4cc6111a56ce2b5f081e3018037f9cf05ac6ac77ae308587",
+    "source_bound_findings": "f5a42083537d72f2dea74f7e7082b594a3a7b2dd485416b32c146ca1b1d757ce",
+    "test_binding": "9ce992b8c23a308d48ded6fa7b54812ca8449bb4ce6500549eb0adeaa6e84743"
+  },
+  "history_limitations_retained": true,
+  "human_gold_verified": false,
+  "inventory": {
+    "contextual_validation_reference_records": 0,
+    "held_context_records": 5,
+    "matched_context_records": 26,
+    "missing_context_records": 379,
+    "records": 405,
+    "supported_pilot_records": 21,
+    "unmatched_active_pilot_records": 14
+  },
+  "learned_depth_time_ready": false,
+  "membership": {
+    "research_holdout_preserved": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "next_scope": "contextual_annotation_and_association_specification_on_existing_texts",
+  "preserved_boundaries": {
+    "annotations_applied": false,
+    "dataset_membership_changed": false,
+    "holdout_content_read": false,
+    "neural_inference": false,
+    "production_changed": false,
+    "training_started": false
+  },
+  "rules_diagnostic": {
+    "accuracy_claim": false,
+    "claims": 567,
+    "depth_claims": 108,
+    "executions": 1,
+    "offset_failures": 0,
+    "processed": 405,
+    "resolved_time_claims": 9,
+    "time_claims": 27
+  },
+  "schema": "lanes-context-gap-safe-aggregate-v32",
+  "status": "gap_assessment_complete",
+  "verification": {
+    "earlier_validation_study_stat_only_verified": 27,
+    "fresh_tests_passed": 659,
+    "holdout_content_read": false,
+    "holdout_stat_only_verified": 55,
+    "new_audit_tests": 48,
+    "protected_hashes_verified": 1383,
+    "saved_output_analysis_reproduced": true,
+    "saved_output_finding_checks": 8,
+    "status": "preserved"
+  }
+}

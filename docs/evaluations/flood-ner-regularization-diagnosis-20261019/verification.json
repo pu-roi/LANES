@@ -1,0 +1,44 @@
+{
+  "all_strict_counts_reproduced": true,
+  "annotation_changes": 0,
+  "counts": {
+    "dev": 60,
+    "focused_validation_passages": 22,
+    "full_saved_sources_read": 18,
+    "prediction_records_per_model": 405,
+    "train": 345,
+    "training_context_passages_reviewed": 33,
+    "validation_dispositions": 60
+  },
+  "demonstrated_training_scoring_defects": 0,
+  "holdout_accessed": false,
+  "holdout_metadata_only_unchanged": 55,
+  "inference": false,
+  "metric_tolerance": 1e-12,
+  "model_loading": false,
+  "new_training_authorization": false,
+  "outputs": {
+    "README.md": "6a06a63893e1969e16bf1a90bed3867657478deb7f2cda90f3c0b737eba90146",
+    "aggregate.json": "ec105a9f436ac7179cb9c0f44ec24282b8feb1cabc77c7a8435df095b6a5b3c6",
+    "coverage.json": "f6918653482784669a070ed4d1f9f6644f3c71882e6a58e046c3f93d0086f9f5",
+    "gaps.json": "e09f77c1e2d7f515a1ce09ff2720a192f1d0fbbb069256a5e3d5416aa3be1745",
+    "metrics.json": "7bf942a6b3b7c98361beb0b7ccc406bbc358af0635c330be5c66de9befc455ef",
+    "proposals.json": "27a62ce94432b862cf16464f73a08cfee91fa652c15784ded718ef8c713dbb02"
+  },
+  "primary_seed": 0,
+  "private_manifest_sha256": "f01426c2f367bb2f9a8c398c3d1d62b370609a7107aa1a3de43c3c5232c0cf32",
+  "protected_files_unchanged": 416,
+  "public_apis_dependencies_schema_changed": false,
+  "real_outputs_unchanged_after_evidence_guard_qualification": 7,
+  "request_sha256": "992c8d8fcd9da4168afa67e5f5e8b1fcde2f4d5b89322f4df440cfd21507c0a2",
+  "retained": "v19_corrected_control",
+  "schema": "lanes-regularization-diagnosis-verification-v1",
+  "tests": {
+    "fresh_passed": 197,
+    "new_constructed_tests": 51,
+    "subtests_passed": 20,
+    "warnings": 1
+  },
+  "training": false,
+  "unresolved_reference_questions": 1
+}

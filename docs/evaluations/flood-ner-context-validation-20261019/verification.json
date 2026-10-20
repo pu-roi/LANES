@@ -1,0 +1,89 @@
+{
+  "aggregate_privacy_check": "passed",
+  "annotations_changed": false,
+  "attempt_claim_sha256": "44fe6f74fc0490d3b9937462c21f7dd180703020ddf4750174f6ceee5f8dce90",
+  "automatic_retry": false,
+  "complete_changed_articles_reviewed": 3,
+  "disposition": "does_not_qualify",
+  "documentation_links": "checked",
+  "fresh_tests": {
+    "command": "backend/.venv/Scripts/python.exe -B -m pytest --noconftest backend/tests/test_flood_ner_context_safeguard_validation.py backend/tests/test_flood_ner_context_safeguards.py backend/tests/test_flood_ner_regularization_comparison.py backend/tests/test_flood_ner_development_error_audit.py -q",
+    "frozen_core_cases": 48,
+    "new_validation_tests": 52,
+    "passed": 250,
+    "runtime": "3.12.14"
+  },
+  "frozen_protocol_sha256": "a51b75ee1de443789573086f3031a0d63c26a827c8d5f7eaf7ea5572e1fd3544",
+  "git_diff_check": "passed",
+  "grant_sha256": "78bb609643b5cc31381938986d2c1c808e620b159cde880610db368771f73bd4",
+  "holdout_content_opened": false,
+  "implementation": [
+    {
+      "path": "backend/training/flood_ner/context_safeguards.py",
+      "sha256": "1d73e8431100e7bb828fb435d423a0d601571d14dbba2ba28220509fe95b8e51"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguard_cases.py",
+      "sha256": "17e92628b99918eec9a1fafc3d48c4cbec16e5328573fd35aa1b1a9f4516cea2"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguard_study.py",
+      "sha256": "55198b0f04012c926236de649f06c4e5075e5089284948f687e48dacabf55cfa"
+    },
+    {
+      "path": "backend/training/flood_ner/development_error_audit.py",
+      "sha256": "2e15193e95aec10a3360ef1bb0cee31427f06790b92d197e7f691fc8e0df0cbb"
+    },
+    {
+      "path": "backend/training/flood_ner/regularization_comparison.py",
+      "sha256": "10acef9ada697a0988d6006d4f6eea9fccb3dc44d031cbcb7cefa175c602c550"
+    },
+    {
+      "path": "backend/training/flood_ner/evaluation/contract.py",
+      "sha256": "f779be24936ecd5a625d31f2f8f60efb7578c7fbee73fa4ff30b77c74fac4ff7"
+    },
+    {
+      "path": "backend/training/flood_ner/annotation/schema.py",
+      "sha256": "f43c50101c729ccae1d01036760289b865be6b2fdfba168173046e27932954a2"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguard_validation.py",
+      "sha256": "d273ae7d3476ab94beb1ac54ed02510e846bbd32ed05cfbfc0a7c93ff352860d"
+    }
+  ],
+  "limitations": [
+    "Reused-validation study motivated by exposed validation findings, not blinded evaluation.",
+    "AI-assisted silver references; incomplete-history/accounting limitations remain.",
+    "Shadow metrics do not change the retained neural model or authorize integration."
+  ],
+  "model_selection_changed": false,
+  "neural_inference": false,
+  "neural_model_loaded": false,
+  "new_bound_checkout_files": 2,
+  "number_of_evaluations": 1,
+  "partitions_changed": false,
+  "post_result_criteria_changes": false,
+  "post_result_rule_changes": false,
+  "preservation": {
+    "hashed_files": 505,
+    "holdout_stat_only": 55,
+    "status": "passed"
+  },
+  "private_packages_ignored": true,
+  "production_api_dependencies_schema_changes": false,
+  "production_integration": false,
+  "reason": "One introduced strict typed FP from an already-incorrect truncated boundary; frozen zero-new-FP gate remains unchanged.",
+  "records_accounted": 60,
+  "replay": false,
+  "result_manifest_sha256": "b5b35707f38097731e0358b20cb4ccc73f56a954da54f5852df6572038a778df",
+  "schema": "lanes-context-validation-verification-v1",
+  "scope": "frozen_context_safeguard_validation_only",
+  "tests": {
+    "path": "backend/tests/test_flood_ner_context_safeguard_validation.py",
+    "sha256": "6f415ece73f6ff7252662b9020f73dd480922435474bf8a85210d6fa71760e79"
+  },
+  "training": false,
+  "training_study_manifest_sha256": "755e8dd1052a6b2aa359a01a9f3e4e10f4ad14b48c7405465cd8696bc6c33be7",
+  "upload_commit_push": false,
+  "validation_view_manifest_sha256": "1547a6b5bc96604ddc79c57d08426f45f064bd5fd85a315cfe17e8d572be7155"
+}

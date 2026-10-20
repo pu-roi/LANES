@@ -1,0 +1,185 @@
+{
+  "combined_counts": {
+    "abstentions": 18,
+    "changed_spans": 3,
+    "drops": 0,
+    "gained_TP": 3,
+    "introduced_FN": 0,
+    "introduced_FP": 0,
+    "matched_spans": 213,
+    "resolved_FP": 3,
+    "retags": 3
+  },
+  "counts": {
+    "train": 345
+  },
+  "eligible_subset_counts": {
+    "abstentions": 17,
+    "changed_spans": 3,
+    "drops": 0,
+    "gained_TP": 3,
+    "introduced_FN": 0,
+    "introduced_FP": 0,
+    "matched_spans": 128,
+    "resolved_FP": 3,
+    "retags": 3
+  },
+  "eligible_subset_safe": true,
+  "families": {
+    "administrative_locality": {
+      "disposition": "partially_supported",
+      "qualifying_rules": [
+        "shared_identifier"
+      ],
+      "rules": [
+        "explicit_barangay",
+        "explicit_locality",
+        "shared_identifier"
+      ]
+    },
+    "organization_role": {
+      "disposition": "partially_supported",
+      "qualifying_rules": [],
+      "rules": [
+        "agency_actor",
+        "attribution_role"
+      ]
+    },
+    "road_facility": {
+      "disposition": "feasible",
+      "qualifying_rules": [
+        "named_asset"
+      ],
+      "rules": [
+        "named_asset"
+      ]
+    }
+  },
+  "fixtures": {
+    "ambiguous_unscored": 12,
+    "definitive": 36,
+    "passed": 48
+  },
+  "holdout_accessed": false,
+  "languages": {
+    "english": 170,
+    "taglish": 175
+  },
+  "limitations": [
+    "Motivated by exposed validation findings; not blinded rule discovery.",
+    "Training fit and constructed agreement do not establish generalization.",
+    "Same-AI silver, reused validation, incomplete history/accounting limitations remain.",
+    "No entity additions or boundary repairs; unsupported complex/multiword lists abstain."
+  ],
+  "model_selection_changed": false,
+  "neural_inference": false,
+  "per_rule": {
+    "agency_actor": {
+      "counts": {
+        "abstentions": 1,
+        "changed_spans": 0,
+        "drops": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "matched_spans": 1,
+        "resolved_FP": 0,
+        "retags": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    },
+    "attribution_role": {
+      "counts": {
+        "abstentions": 0,
+        "changed_spans": 0,
+        "drops": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "matched_spans": 0,
+        "resolved_FP": 0,
+        "retags": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    },
+    "explicit_barangay": {
+      "counts": {
+        "abstentions": 0,
+        "changed_spans": 0,
+        "drops": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "matched_spans": 75,
+        "resolved_FP": 0,
+        "retags": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    },
+    "explicit_locality": {
+      "counts": {
+        "abstentions": 0,
+        "changed_spans": 0,
+        "drops": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "matched_spans": 9,
+        "resolved_FP": 0,
+        "retags": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    },
+    "named_asset": {
+      "counts": {
+        "abstentions": 17,
+        "changed_spans": 2,
+        "drops": 0,
+        "gained_TP": 2,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "matched_spans": 126,
+        "resolved_FP": 2,
+        "retags": 2
+      },
+      "disposition": "feasible",
+      "qualifies_for_later_proposal": true,
+      "reason": "Constructed checks pass and observed training actions introduce no FP/FN."
+    },
+    "shared_identifier": {
+      "counts": {
+        "abstentions": 0,
+        "changed_spans": 1,
+        "drops": 0,
+        "gained_TP": 1,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "matched_spans": 2,
+        "resolved_FP": 1,
+        "retags": 1
+      },
+      "disposition": "feasible",
+      "qualifies_for_later_proposal": true,
+      "reason": "Constructed checks pass and observed training actions introduce no FP/FN."
+    }
+  },
+  "primary_seed": 0,
+  "production_integration": false,
+  "qualifying_rule_ids": [
+    "named_asset",
+    "shared_identifier"
+  ],
+  "retained": "v19_corrected_control",
+  "schema": "lanes-context-safeguard-study-v1",
+  "scope": "training_only_context_safeguard_feasibility",
+  "training": false,
+  "validation_evaluated": false
+}

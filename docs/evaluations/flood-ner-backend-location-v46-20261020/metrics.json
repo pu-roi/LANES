@@ -1,0 +1,36 @@
+{
+  "backend_preview_ready": true,
+  "tests_passed": 1281,
+  "cached": {
+    "cached_records": 788,
+    "saved_context_graphs_matched": 407,
+    "applicable_fixtures": 418,
+    "paired_checks": 3,
+    "neural_inference": false
+  },
+  "live": {
+    "api_responses": 1,
+    "real_worker_requests": 1,
+    "neural_mentions_preserved": 53,
+    "cached_combined_graph_matched": true,
+    "article_corrected_occurrences": 8,
+    "article_restored_facts": 40,
+    "article_unresolved_rows": 11,
+    "default_flag_restored": true,
+    "database_access": false,
+    "database_writes": false,
+    "source_fetch": false,
+    "automatic_retry": false
+  },
+  "runtime_measurements": {
+    "cold_seconds": 9.74596424500487,
+    "extraction_seconds": 4.107295652000175,
+    "peak_worker_rss_bytes": 254472192
+  },
+  "location_rules": "lanes-location-repair-v40+v44",
+  "location_method": "combined",
+  "context_rules": "lanes-context-association-v42",
+  "model": "v19-control-seed-0",
+  "independent_accuracy_measurement": false,
+  "frontend_implemented": false
+}

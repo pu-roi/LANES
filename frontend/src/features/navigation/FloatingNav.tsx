@@ -20,8 +20,23 @@ export default function FloatingNav() {
   const { user, logout } = useAuth();
   const isMapPage = pathname === "/map";
   
-  const u = user as any;
+  const u = user as { role?: { name?: string } } | null;
   const showAdminButton = u && u.role?.name !== "Commuter" && u.role?.name !== "Super Admin";
+
+  const handleFeedClick = () => {
+    if (pathname.startsWith("/feed")) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+      document.body.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (pathname === "/feed") {
+        if (typeof window !== "undefined" && window.location.search) {
+          router.push("/feed");
+        }
+        window.dispatchEvent(new CustomEvent("lanes:refresh-feed"));
+      }
+    }
+  };
 
   return (
     <header className={cn(
@@ -48,6 +63,7 @@ export default function FloatingNav() {
             <Link
               key={item.href}
               href={actualHref}
+              onClick={item.href === "/feed" ? handleFeedClick : undefined}
               className={cn(
                 "group relative flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1",
                 isMapPage ? "rounded-xl px-3 py-1.5 gap-0" : "rounded-full px-3 py-1.5 gap-0 md:gap-2",

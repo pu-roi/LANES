@@ -1,0 +1,54 @@
+{
+  "demonstrated_training_scoring_defects": 0,
+  "limitations": [
+    "AI-assisted silver references, not human gold.",
+    "Incomplete external history and acquisition accounting.",
+    "One candidate seed; no candidate three-seed confirmation.",
+    "Reused validation and unsupported Taglish ROAD slices prevent broad improvement claims.",
+    "Observational error categories do not establish a unique causal mechanism for optimizer behavior."
+  ],
+  "permissions": {
+    "annotation_changes": false,
+    "holdout_access": false,
+    "inference": false,
+    "integration": false,
+    "model_selection_change": false,
+    "new_articles": false,
+    "new_passages": false,
+    "push": false,
+    "training": false,
+    "upload": false
+  },
+  "primary_seed": 0,
+  "priorities": [
+    {
+      "category": "context_and_entity_role",
+      "evidence": "Introduced false positives include professional attribution, organization-only actors and unsupported six-class geographic scope. Existing training contains corresponding negatives; no missing-example explanation is sufficient.",
+      "next_task_proposal": "Specify conservative organizational-role/scope checks from existing training and conventions, with abstention for ambiguous physical facilities. Prototype only on constructed and training examples; preserve model outputs and report it as a separate derived method, not a correction to the neural model.",
+      "priority": 1
+    },
+    {
+      "category": "shared_designator_and_span_context",
+      "evidence": "Shared locality antecedents, hyphenated suffixes, compound road segments, crossing roads and directions remain error sources despite represented training examples.",
+      "next_task_proposal": "Expand constructed positive/negative contrasts for explicit shared designators, standalone counts, road crossings/compounds/directions and physical facilities. Existing examples remain outside dataset membership; no automatic rule repairs or label copying.",
+      "priority": 2
+    },
+    {
+      "category": "unresolved_reference",
+      "evidence": "The inherited school/center versus gymnasium proper-name boundary remains unresolved in both models.",
+      "next_task_proposal": "Keep the frozen validation reference and current score. Any future adjudication needs source-bound independent convention evidence and a separate prospective protocol, not model agreement.",
+      "priority": 3
+    },
+    {
+      "category": "measurement_and_groups",
+      "evidence": "Validation has 20 connected groups; introduced errors concentrate within reporting groups. Raw candidate curves are rounded; control raw curves remain unavailable locally.",
+      "next_task_proposal": "Keep group-aware interpretation and preserve actual raw logs. Do not use completed holdout results or invent control curves. Stop tuning if no supported conservative proposal remains.",
+      "priority": 4
+    }
+  ],
+  "recommendation": "No additional optimizer search or retraining is justified by this single failed screen. A separately scoped offline feasibility study may test source/convention-derived contextual safeguards on existing training examples and constructed contrasts before any validation experiment or integration.",
+  "retained": "v19_corrected_control",
+  "schema": "lanes-v21-diagnosis-proposals-v1",
+  "supported_annotation_corrections": 0,
+  "unresolved_reference_questions": 1
+}
