@@ -1,6 +1,31 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Chris integration — legal notice focus on touch devices
+
+**Status:** Resolved; desktop/mobile browser acceptance passed. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** After opening a legal notice with touch and closing with Escape, focus does not return to its opening control. A mobile-browser regression reproduces the problem before the fix.
+
+**2. Root cause:** The shared dialog restores the element focused when it opens. Touch activation does not consistently focus the legal trigger, so it can capture the document body instead.
+
+**3. Solution:** Explicitly focus the existing legal trigger before opening the shared dialog. Keep the shared dialog, its focus trap and its close handling unchanged.
+
+**4. Files/evidence:** `frontend/src/features/legal/LegalNoticeTrigger.tsx` and fictional browser coverage in `frontend/tests/chris-integration.spec.ts`. [Integration evidence](../evaluations/chris-integration-20261021/README.md). Earlier Phase D audit-configuration/expiry maintenance remains a separate unresolved finding; this frontend merge does not change it.
+
+
+## Independent baseline findings retained during Chris integration
+
+**Status:** Investigating / outside this merge. **Severity:** Medium for maintenance; low for mobile entry acceptance. **Reviewer:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The earlier Phase D review found invalid auditor configuration can prevent otherwise independent publication/expiry maintenance. An early mobile fixture run also observed the report panel resetting after direct `/map?action=report` entry; the normal menu-driven picker flow passes.
+
+**2. Root cause / limits:** `news_pipeline_service.py` constructs/validates the auditor before `process_news_publications`, including maintenance-only execution. That baseline backend ordering is unchanged. The map context restores/collapses mobile panels on hydration while GlobalMap opens query-selected panels; the direct-entry symptom needs a separate focused reproduction before a code correction is claimed.
+
+**3. Disposition:** Keep the Phase D maintenance correction separate as instructed. No backend change is included. Direct-entry mobile hydration is not claimed qualified or repaired by the incoming map fixes.
+
+**4. Files/evidence:** Unchanged `backend/app/services/news_pipeline_service.py`, `frontend/src/features/map/MapContext.tsx` and `GlobalMap.tsx` initialization paths; [integration limits](../evaluations/chris-integration-20261021/README.md). No database or worker was started to investigate these findings during this merge.
 
 ## Phase D — misleading monitoring and configuration failure attribution
 
@@ -18,7 +43,7 @@
 
 ## Feed browser pagination expectations — push preflight October 21, 2026
 
-**Status:** Investigating. **Severity:** Medium for browser acceptance; no production incident established. **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Resolved for the tested desktop/mobile continuation flows; earlier diagnostics retained. **Severity:** Medium for browser acceptance; no production incident established. **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 **1. Problem:** The existing desktop/mobile `community-feed-filters.spec.ts` run is not fully green. A mobile Today pagination case expects exactly 40 rendered posts after manual continuation but observes 43. A desktop Last 7 Days case also fails in the partial run; its cause remains unconfirmed. Initial default-order loading times out on both profiles, then both pass in an isolated warmed-server rerun. The broader run is interrupted with diagnostics preserved.
 
@@ -27,6 +52,8 @@
 **3. Strategy:** Reconcile pagination acceptance with both automatic and explicit continuation, checking retained filters, ordering, duplicate prevention and failure visibility on desktop/mobile. Rerun the complete browser suite after a separately scoped correction. No assertion was weakened or failing test removed during this push task.
 
 **4. Files and evidence:** Investigated existing changes in `frontend/src/features/feed/FeedPage.tsx` and `frontend/tests/community-feed-filters.spec.ts`. Only three trailing spaces were removed from the component in this push task. Raw diagnostics stay in ignored `frontend/test-results/` and `frontend/test-results-prepush-initial/`; the latter records both successful default-order reruns. [Preflight record](../evaluations/ner-handoff-review-20261021/README.md#follow-up-explicitly-authorized-branch-push-preflight).
+
+**Integration follow-up:** `community-feed-filters.spec.ts` now scrolls to the continuation control, allowing the existing sentinel to request the next page without racing a simultaneous manual click. All 22 desktop/mobile feed cases pass with the original ordering, exact counts, filter retention, refresh and voting assertions intact. This is test synchronization; no feed query or pagination behavior changed. [Integration report](../evaluations/chris-integration-20261021/README.md).
 
 
 ## C3b — pre-NER exclusion, provenance loss and stale native consumers

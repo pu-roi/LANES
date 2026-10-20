@@ -1,6 +1,18 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Chris frontend integration — completed locally
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verification report](evaluations/chris-integration-20261021/README.md).
+
+- [x] Checkpoint all 29 reviewed Phase D files in `64c49413`; exclude private artifacts and credentials.
+- [x] Recheck `origin/chris`; integrate only reviewed `5aeaafc9` with a non-fast-forward merge and preserve Roi's continuous feed and completed backend/NER work.
+- [x] Retain Chris's frontend fixes; repair touch-dialog focus; update Flood History labels/roles and add fictional desktop/mobile interaction coverage.
+- [x] Verify backend/migrations/News Intelligence preservation, isolated lockfile installation, optional environment loading, TypeScript and targeted lint. Browser checks: 41 pass, three desktop mobile-only skips, zero failures.
+- [x] Update progress, system documentation, dependency notes, bug log and indexed verification evidence; retain a local merge commit.
+
+The independent pre-existing Phase D auditor-configuration/maintenance finding remains open and outside this frontend integration. **Next frontend milestone remains Phase E** in the roadmap below; this merge does not implement its NER presentation work. No push, deployment, shared migration, worker launch or production activation.
 
 ## Documentation handoff — October 21, 2026
 

@@ -795,7 +795,7 @@ export function FeedPage() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
-              className="relative flex w-72 sm:w-80 flex-col bg-white shadow-xl h-full"
+              className="relative flex w-72 sm:w-80 flex-col bg-white shadow-xl h-[calc(100dvh-var(--bottom-nav-height)-env(safe-area-inset-bottom))] sm:h-dvh"
               onTouchStart={(e) => {
                 drawerTouchStartX.current = e.touches[0].clientX;
               }}
@@ -816,7 +816,7 @@ export function FeedPage() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 space-y-6" data-lenis-prevent>
               {/* Navigation */}
               <div className="space-y-1">
                 <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Navigation</h3>

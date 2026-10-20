@@ -881,7 +881,7 @@ export default function ProfileView() {
   }
 
   return (
-    <div className="flex-1 bg-slate-50 flex flex-col min-h-screen relative pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] lg:pb-8">
+    <div className="flex-1 bg-slate-50 flex flex-col relative lg:pb-8">
       {/* Common Header / Cover */}
       <div className="transition-all block">
         <div 
@@ -1023,7 +1023,7 @@ export default function ProfileView() {
         </div>
       </div>
 
-      <div className="max-w-6xl w-full mx-auto px-0 sm:px-6 lg:px-8 pb-12 flex-1 pt-2 sm:pt-4">
+      <div className="max-w-6xl w-full mx-auto px-0 sm:px-6 lg:px-8 pb-0 lg:pb-12 flex-1 pt-2 sm:pt-4">
         
         {/* DESKTOP LAYOUT */}
         <div className="hidden lg:grid lg:grid-cols-3 gap-8">
@@ -1089,7 +1089,7 @@ export default function ProfileView() {
           </div>
 
           {/* Mobile Tab Content */}
-          <div className={activeTab === "posts" ? "min-h-[50vh] pb-[calc(1.5rem+env(safe-area-inset-bottom))] px-3 sm:px-0 w-full" : "bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-sm border-y sm:border border-slate-100 min-h-[50vh] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-hidden w-full"}>
+          <div className={activeTab === "posts" ? "px-3 sm:px-0 w-full" : "bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-sm border-y sm:border border-slate-100 overflow-hidden w-full"}>
             <TabContentPanel tabKey={activeTab} direction={tabDirection}>
               {activeTab === "stats" && (
                 <div className="p-4 sm:p-6">

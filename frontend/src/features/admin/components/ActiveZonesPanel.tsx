@@ -27,6 +27,7 @@ interface ActiveZonesPanelProps {
   isPlaceholderData: boolean;
   totalPages: number;
   flyToZone: (zone: AvoidanceZone) => void;
+  onViewZoneOnMap: (zone: AvoidanceZone) => void;
   setConfirmId: (id: number | null) => void;
   onCreateOfficialZone?: () => void;
   onEditZone?: (zone: AvoidanceZone, proposal?: ZoneEditorProposal) => void;
@@ -49,6 +50,7 @@ export function ActiveZonesPanel({
   isPlaceholderData,
   totalPages,
   flyToZone,
+  onViewZoneOnMap,
   setConfirmId,
   onCreateOfficialZone,
   onEditZone,
@@ -209,7 +211,7 @@ export function ActiveZonesPanel({
                     ...(zone.admin_notes ? [{ label: "Admin notes", value: zone.admin_notes }] : []),
                   ]}
                   actions={<>
-                    <Button variant="outline" onClick={() => { setSelectedZoneId(zone.id); setSelectedContributorId?.(null); flyToZone(zone); }}>View on map</Button>
+                    <Button variant="outline" onClick={() => onViewZoneOnMap(zone)}>View on map</Button>
                   {onEditZone && (
                     <Button
                       variant="outline"
@@ -247,6 +249,6 @@ export function ActiveZonesPanel({
       <div className="p-3 border-t border-gray-200 bg-white">
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
-    </section>{showing && details && <ActiveZoneDetails key={details.zone.id} zone={details.zone} initialTab={details.tab} onClose={closeDetails} onEdit={onEditZone} editorOpen={zoneEditorOpen} onViewMap={flyToZone} onDeactivate={() => { closeDetails(); setConfirmId(details.zone.id); }} />}</>
+    </section>{showing && details && <ActiveZoneDetails key={details.zone.id} zone={details.zone} initialTab={details.tab} onClose={closeDetails} onEdit={onEditZone} editorOpen={zoneEditorOpen} onViewMap={onViewZoneOnMap} onDeactivate={() => { closeDetails(); setConfirmId(details.zone.id); }} />}</>
   );
 }

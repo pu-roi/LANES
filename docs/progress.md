@@ -1,6 +1,12 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Chris frontend changes integrated into roi-branch
+
+Preserved the Phase D checkpoint `64c49413` and integrated Chris's reviewed `5aeaafc9` without conflicts. Legal dialogs, admin map focus, Flood Events dialog, saved-place controls, mobile route/report behavior, profile spacing and drawer scrolling are retained alongside Roi's continuous feed. Fixed touch-trigger focus restoration and aligned browser fixtures/selectors with the merged UI.
+
+**41 browser checks pass across desktop/mobile Chromium; three desktop cases are intentionally skipped because their controls are mobile-only.** TypeScript passes, isolated lockfile installation succeeds, and changed legal/test files have zero lint errors. Changed production files retain 95 baseline lint errors with no new error signatures. Backend, migrations, NER assets and News Intelligence UI match the checkpoint. [Evidence and limits](evaluations/chris-integration-20261021/README.md). No push, deployment or Phase E implementation. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Phase D — backend monitoring and error classification passed locally
 

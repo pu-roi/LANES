@@ -1,26 +1,24 @@
 import { expect, test } from "@playwright/test";
-
-const storageState = process.env.PLAYWRIGHT_STORAGE_STATE;
+import { installChrisFixtures } from './helpers/chrisIntegration';
+test.setTimeout(90_000);
+test.use({ browserName: 'chromium' });
 
 test.describe("Flood History & Analytics administrator workspace", () => {
-  // An authenticated staff state is intentionally supplied by the operator,
-  // never checked in as a token or credential fixture.
-  test.skip(!storageState, "Set PLAYWRIGHT_STORAGE_STATE to an authenticated staff storage-state file.");
-  test.use({ storageState: storageState! });
+  test.beforeEach(async ({ page }) => { await installChrisFixtures(page, 'Admin'); });
 
   test("shows distinct-event analytics and safe planning export controls", async ({ page }) => {
     await page.goto("/admin/flood-history");
 
     await expect(page.getByRole("heading", { name: "Flood History & Analytics" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "City planning analytics" })).toBeVisible();
-    await expect(page.getByText("Approved reports are shown only as a separate confidence signal.")).toBeVisible();
+    await expect(page.getByText(/Approved reports are a separate confidence signal\./)).toBeVisible();
     await expect(page.getByRole("button", { name: "Records CSV" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Analytics JSON" })).toBeVisible();
   });
 
   test("filters the protected event records workspace", async ({ page }) => {
     await page.goto("/admin/flood-history");
-    await page.getByRole("button", { name: "Flood Event Records" }).click();
+    await page.getByRole("button", { name: "Flood Events", exact: true }).click();
 
     await expect(page.getByRole("heading", { name: "Flood Event Records" })).toBeVisible();
     await page.getByRole("button", { name: "Event status" }).click();
@@ -34,7 +32,7 @@ test.describe("Flood History & Analytics administrator workspace", () => {
   test("offers an explicit mobile map/list switcher", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "mobile-chromium", "This interaction is mobile-specific.");
     await page.goto("/admin/flood-history");
-    await page.getByRole("button", { name: "Flood Event Records" }).click();
+    await page.getByRole("button", { name: "Flood Events", exact: true }).click();
 
     await expect(page.getByRole("button", { name: "List" })).toBeVisible();
     await page.getByRole("button", { name: "Map" }).click();

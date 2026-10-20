@@ -1,6 +1,16 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Chris frontend integration — October 21, 2026
+
+- Registration, Contact and Footer open Privacy Policy / Terms of Service through `features/legal/LegalNoticeTrigger.tsx` and the shared `RecordDetailsDialog`. Legal content scrolls inside the dialog; Escape closes it, and focus returns to the opening control, including touch activation.
+- `/admin/map`: Active Zones **View on map** selects the zone, opens the mobile map when necessary, resizes it and focuses its geometry. Missing or invalid geometry produces a visible error.
+- `/admin/flood-history`: the workspace buttons are **Analytics** and **Flood Events**. The event detail dialog mounts into `document.body` above the page stacking context. Shared Tabs renders buttons on this page; test selectors follow its actual accessible roles.
+- `/map`: Saved Places starts with pins hidden. Its visibility control shows all saved pins; selecting a place shows that pin and focuses the map. Closing the saved-place panel or opening another exclusive panel clears the selection; logout clears the saved-place state and pins. On mobile, selecting a route instruction retains its segment highlight while collapsing the panel, and selecting the flood end returns to the report panel.
+- `/feed` retains Roi's continuous pagination, filters and navigation refresh while the mobile drawer has independent scrolling and bottom navigation clearance. `/profile` removes duplicate bottom padding while retaining the layout's navigation clearance.
+
+The existing API, database and NER contracts are unchanged. Backend/expiry VS Code tasks now load `.env.local` before `.env`; only synthetic environment loading was tested, with no worker launch. [Integration verification](../evaluations/chris-integration-20261021/README.md). Integration owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Phase D — saved health and bounded worker history
 

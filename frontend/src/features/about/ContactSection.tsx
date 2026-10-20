@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { LegalNoticeTrigger } from "@/features/legal/LegalNoticeTrigger";
 import { Mail, Send, CheckCircle2, AlertCircle, Copy, Check, Loader2 } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 
@@ -210,6 +211,11 @@ export function ContactSection() {
                   className="w-full px-3.5 py-2.5 text-sm bg-white rounded-xl border border-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none"
                 />
               </div>
+
+              <p className="text-xs leading-5 text-slate-600">
+                We use these details to respond to your message. Read our{" "}
+                <LegalNoticeTrigger notice="privacy" className="font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-800">Privacy Policy</LegalNoticeTrigger>.
+              </p>
 
               <div className="flex justify-end pt-1">
                 <button

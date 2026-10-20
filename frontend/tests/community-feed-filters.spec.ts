@@ -127,7 +127,7 @@ for (const [option, value] of [['Today (UTC)', 'today'], ['Last 24 Hours', '24h'
     await select(page, 'Date posted', option);
     expect(state.requests.at(-1)!.get('date_range')).toBe(value);
     await expect(page.getByRole('button', { name: 'Load more posts', exact: true })).toBeVisible();
-    await page.getByRole('button', { name: 'Load more posts', exact: true }).click();
+    await page.getByRole('button', { name: 'Load more posts', exact: true }).scrollIntoViewIfNeeded();
     await expect(contents(page)).toHaveCount(40);
     expect(state.requests.at(-1)!.get('date_range')).toBe(value);
     expect(state.requests.at(-1)!.get('skip')).toBe('20');
@@ -144,7 +144,7 @@ test('combined filters survive continuous loading, hard refresh, voting and live
   await select(page, 'Flood status', 'Active Floods');
   await select(page, 'Flood severity', 'High');
   await expect(page.getByRole('button', { name: 'Load more posts', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Load more posts', exact: true }).click();
+  await page.getByRole('button', { name: 'Load more posts', exact: true }).scrollIntoViewIfNeeded();
   await expect(contents(page)).toHaveCount(21);
   await expect(contents(page).last()).toHaveText('Public update 5');
   await page.reload();
@@ -233,8 +233,8 @@ test('Feed button in navigation bar refreshes feed and returns to top', async ({
   await page.goto('/feed');
   await expect(contents(page)).toHaveCount(20);
 
-  // Click load more to fetch next batch
-  await page.getByRole('button', { name: 'Load more posts', exact: true }).click();
+  // Scrolling toward Load more also activates the continuous-feed sentinel.
+  await page.getByRole('button', { name: 'Load more posts', exact: true }).scrollIntoViewIfNeeded();
   await expect(contents(page)).toHaveCount(40);
 
   // Scroll down

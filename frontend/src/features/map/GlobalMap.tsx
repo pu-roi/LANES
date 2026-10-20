@@ -83,6 +83,8 @@ function MapLayout() {
     activePoint,
     setActivePoint,
     setSavedPlaces,
+    setShowSavedPlaces,
+    setSelectedSavedPlaceId,
     isSavePlacePanelOpen,
     setIsSavePlacePanelOpen,
     is3DMode,
@@ -111,8 +113,10 @@ function MapLayout() {
       });
     } else {
       setSavedPlaces([]);
+      setShowSavedPlaces(false);
+      setSelectedSavedPlaceId(null);
     }
-  }, [isAuthenticated, setSavedPlaces]);
+  }, [isAuthenticated, setSavedPlaces, setShowSavedPlaces, setSelectedSavedPlaceId]);
 
   // -- Event Handlers --
   // Automatically open the report panel if navigated with ?action=report, or saveplace with ?panel=saveplace
