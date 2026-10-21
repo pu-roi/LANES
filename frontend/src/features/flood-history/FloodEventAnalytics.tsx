@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Download, FileJson, FileSpreadsheet, RefreshCw } from "lucide-react";
 import { Button, Card, CardContent, DatePicker, Input, Select, useToast } from "@/shared/ui";
@@ -28,15 +28,26 @@ function FilterControls({ filters, onChange }: { filters: FloodHistoryFilters; o
   </div>;
 }
 
-export function FloodEventAnalytics() {
+export function FloodEventAnalytics({ active = true }: { active?: boolean }) {
   const [filters, setFilters] = useState(initialFilters);
+  const [textFilters, setTextFilters] = useState({ search: "", road: "", barangay: "" });
   const [isExporting, setIsExporting] = useState(false);
   const toast = useToast();
-  const analyticsQuery = useQuery({ queryKey: ["flood-event-planning-analytics", filters], queryFn: () => getFloodEventPlanningAnalytics(filters) });
+  useEffect(() => {
+    if (textFilters.search === filters.search && textFilters.road === filters.road && textFilters.barangay === filters.barangay) return;
+    const timer = setTimeout(() => setFilters(current => ({ ...current, ...textFilters })), 300);
+    return () => clearTimeout(timer);
+  }, [textFilters, filters.search, filters.road, filters.barangay]);
+  const changeFilters = (next: FloodHistoryFilters) => {
+    setTextFilters({ search: next.search, road: next.road, barangay: next.barangay });
+    setFilters(current => ({ ...next, search: current.search, road: current.road, barangay: current.barangay }));
+  };
+  const analyticsQuery = useQuery({ queryKey: ["flood-event-planning-analytics", filters],
+    queryFn: ({ signal }) => getFloodEventPlanningAnalytics(filters, signal), staleTime: 30_000, enabled: active });
   const exportData = async (exportType: "records" | "analytics", exportFormat: "csv" | "json") => {
     setIsExporting(true);
     try {
-      await downloadFloodEventPlanningData(filters, exportType, exportFormat);
+      await downloadFloodEventPlanningData({ ...filters, ...textFilters }, exportType, exportFormat);
       toast.success("Planning export downloaded", "The file contains approved event-level planning data only.");
     } catch (error) {
       toast.error("Export failed", error instanceof Error ? error.message : "Please try again.");
@@ -46,7 +57,7 @@ export function FloodEventAnalytics() {
   };
 
   return <section className="space-y-4">
-    <Card className="shadow-sm"><CardContent className="space-y-4 p-4"><div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">City planning analytics</h2><p className="mt-1 text-xs text-slate-500">Every value counts distinct verified Flood Events. Approved reports are a separate confidence signal.</p></div><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" onClick={() => void exportData("records", "csv")} disabled={isExporting}><FileSpreadsheet className="mr-1 h-4 w-4" />Records CSV</Button><Button size="sm" variant="outline" onClick={() => void exportData("records", "json")} disabled={isExporting}><FileJson className="mr-1 h-4 w-4" />Records JSON</Button><Button size="sm" variant="outline" onClick={() => void exportData("analytics", "csv")} disabled={isExporting}><Download className="mr-1 h-4 w-4" />Analytics CSV</Button><Button size="sm" variant="outline" onClick={() => void exportData("analytics", "json")} disabled={isExporting}><FileJson className="mr-1 h-4 w-4" />Analytics JSON</Button><Button size="sm" variant="ghost" onClick={() => void analyticsQuery.refetch()} disabled={analyticsQuery.isFetching}><RefreshCw className="mr-1 h-4 w-4" />Refresh</Button></div></div><FilterControls filters={filters} onChange={setFilters} /><Button size="sm" variant="ghost" onClick={() => setFilters(initialFilters)}>Clear filters</Button></CardContent></Card>
+    <Card className="shadow-sm"><CardContent className="space-y-4 p-4"><div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><h2 className="text-sm font-bold uppercase tracking-wider text-slate-900">City planning analytics</h2><p className="mt-1 text-xs text-slate-500">Every value counts distinct verified Flood Events. Approved reports are a separate confidence signal.</p></div><div className="flex flex-wrap gap-2"><Button size="sm" variant="outline" onClick={() => void exportData("records", "csv")} disabled={isExporting}><FileSpreadsheet className="mr-1 h-4 w-4" />Records CSV</Button><Button size="sm" variant="outline" onClick={() => void exportData("records", "json")} disabled={isExporting}><FileJson className="mr-1 h-4 w-4" />Records JSON</Button><Button size="sm" variant="outline" onClick={() => void exportData("analytics", "csv")} disabled={isExporting}><Download className="mr-1 h-4 w-4" />Analytics CSV</Button><Button size="sm" variant="outline" onClick={() => void exportData("analytics", "json")} disabled={isExporting}><FileJson className="mr-1 h-4 w-4" />Analytics JSON</Button><Button size="sm" variant="ghost" onClick={() => void analyticsQuery.refetch()} disabled={analyticsQuery.isFetching}><RefreshCw className="mr-1 h-4 w-4" />Refresh</Button></div></div><FilterControls filters={{ ...filters, ...textFilters }} onChange={changeFilters} /><Button size="sm" variant="ghost" onClick={() => { setFilters(initialFilters); setTextFilters({ search: "", road: "", barangay: "" }); }}>Clear filters</Button></CardContent></Card>
     {analyticsQuery.isLoading ? <Card><CardContent className="py-16 text-center text-sm text-slate-500">Calculating distinct-event planning analytics…</CardContent></Card> : analyticsQuery.isError || !analyticsQuery.data ? <Card className="border-red-200 bg-red-50"><CardContent className="py-8 text-sm text-red-800">Planning analytics could not be loaded. Please refresh and try again.</CardContent></Card> : <FloodEventVisualizations analytics={analyticsQuery.data} />}
   </section>;
 }

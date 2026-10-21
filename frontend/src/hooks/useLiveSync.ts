@@ -46,6 +46,8 @@ export function useLiveSync() {
             void queryClient.invalidateQueries({ queryKey: ['activeZones'] });
             void queryClient.invalidateQueries({ queryKey: ['activeZonesMap'] });
             void queryClient.invalidateQueries({ queryKey: ['adminZones'] });
+            void queryClient.invalidateQueries({ queryKey: ['flood-event-history'] });
+            void queryClient.invalidateQueries({ queryKey: ['flood-event-planning-analytics'] });
             void queryClient.invalidateQueries({ queryKey: ['publicNewsAlerts'] });
             void queryClient.invalidateQueries({ queryKey: ['publicStats'] });
           }

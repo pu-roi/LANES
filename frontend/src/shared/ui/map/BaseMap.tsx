@@ -569,6 +569,7 @@ function redactMapTilerKey(value: string | undefined): string | undefined {
 }
 
 interface BaseMapProps {
+  preloadRouting?: boolean;
   onMapInit?: (map: Map) => void;
   onMapLoad?: (map: Map) => void;
   className?: string;
@@ -580,6 +581,7 @@ interface BaseMapProps {
 }
 
 export default function BaseMap({
+  preloadRouting = true,
   onMapInit,
   onMapLoad,
   className = "w-full h-full relative",
@@ -606,14 +608,14 @@ export default function BaseMap({
   useEffect(() => {
     // Render the map first, then warm the offline worker during browser idle
     // time. A timeout preserves offline readiness on busy or older browsers.
-    if (!isLoaded) return;
+    if (!isLoaded || !preloadRouting) return;
     if (typeof window.requestIdleCallback === "function") {
       const idleId = window.requestIdleCallback(() => preloadOfflineEngine(), { timeout: 2000 });
       return () => window.cancelIdleCallback(idleId);
     }
     const timer = setTimeout(() => preloadOfflineEngine(), 500);
     return () => clearTimeout(timer);
-  }, [isLoaded]);
+  }, [isLoaded, preloadRouting]);
 
   // Map creation intentionally uses the initial viewport only. Updating these
   // props must not recreate the WebGL map; callback props are read via refs.

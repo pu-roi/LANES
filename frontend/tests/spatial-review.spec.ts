@@ -1,3 +1,5 @@
+import { zoneMapResponse } from "./helpers/chrisIntegration";
+import { inspectZoneGroup } from "./helpers/zoneQueue";
 import { expect as baseExpect, test, type Page } from "@playwright/test";
 const expect = baseExpect.configure({ timeout: 30_000 });
 
@@ -138,7 +140,7 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
     else if (path.endsWith("/admin/zones/queue")) {
       const hasZone = ["panel_details", "news_zone"].includes(mode);
       const history = url.searchParams.get("active_only") === "false";
-      body = { items: hasZone ? [{ zone_id: 9, member_count: 1, location: zone.name, area_summary: "Maybunga, Pasig", sources: [mode === "news_zone" ? "news" : "user_reports"], severity_levels: [zone.severity], depth_levels: [zone.depth], evidence: zone.report_text, queued_at: zone.created_at, group_reason: "Nearby active zones" }] : [],
+      body = { items: hasZone ? [{ zone_id: 9, member_count: 1, location: zone.name, bounds: [121.08, 14.57, 121.081, 14.571], area_summary: "Maybunga, Pasig", sources: [mode === "news_zone" ? "news" : "user_reports"], severity_levels: [zone.severity], depth_levels: [zone.depth], evidence: zone.report_text, queued_at: zone.created_at, group_reason: "Nearby active zones" }] : [],
         zones: history && hasZone ? [zone] : [], total: hasZone ? 1 : 0, item_total: hasZone ? 1 : 0,
         counts: { all: hasZone ? 1 : 0, user_reports: hasZone && mode !== "news_zone" ? 1 : 0, news: mode === "news_zone" ? 1 : 0, official: 0, other: 0 },
         facets: { cities: ["Pasig"], barangays: ["Maybunga"] }, page: 1, pages: 1, page_size: 20, read_only: true };
@@ -146,6 +148,8 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
     else if (path.endsWith("/admin/zones/groups/9/members")) body = { zone_id: 9, zones: [zone], total: 1, page: 1, pages: 1, page_size: 20, group_reason: "Nearby active zones", read_only: true };
     else if (path.endsWith("/admin/zones/all") && ["panel_details", "news_zone"].includes(mode)) body = { zones: [zone], total: 1 };
     else if (path.endsWith("/reports/active-zones") && ["panel_details", "news_zone"].includes(mode)) body = [zone];
+    else if (path.endsWith("/admin/zones/map")) body = zoneMapResponse(["panel_details", "news_zone"].includes(mode) ? [zone] : [], url.href);
+    else if (path.endsWith("/admin/zones/count")) body = { total: ["panel_details", "news_zone"].includes(mode) ? 1 : 0 };
     else if (path.endsWith("/admin/zones")) body = { items: [], total: 0, page: 1, limit: 10, pages: 1 };
     else if (path.endsWith("/admin/reports/pending") && mode === "separate_group") body = groupedMembers.map((member) => fullReport(member.report_id));
     else if (path.includes("/admin/reports/detail/")) body = fullReport(Number(path.split("/").pop()));
@@ -311,9 +315,11 @@ test("related reports open inside evidence without a queue dropdown", async ({ p
     await page.setViewportSize({ width: 320, height: 740 });
     await fourth.scrollIntoViewIfNeeded();
     expect(await related.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
-    await page.setViewportSize({ width: 844, height: 390 });
     await page.getByRole("button", { name: "Open map", exact: true }).click();
     await page.getByRole("button", { name: "Evidence", exact: true }).click();
+    await page.setViewportSize({ width: 844, height: 390 });
+    await expect(page.getByRole("button", { name: "Open map", exact: true })).toHaveCount(0);
+    await expect(page.locator(".maplibregl-canvas")).toBeVisible();
     await expect(panel.getByRole("region", { name: "User report evidence" }).getByText("Report #3", { exact: true })).toBeVisible();
   }
   await panel.getByRole("button", { name: "Back to queue" }).click();
@@ -473,13 +479,17 @@ test("narrow and landscape evidence/map switching keeps content within the viewp
   await expect(panel.getByRole("button", { name: /Inspect suggestion 1/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath("review-narrow.png") });
-  await page.setViewportSize({ width: 844, height: 390 });
   await page.getByRole("button", { name: "Open map", exact: true }).click();
   await expect(panel).toBeHidden();
   await expect(page.getByRole("button", { name: "Evidence", exact: true })).toBeVisible();
   await page.screenshot({ path: info.outputPath("review-landscape-map.png") });
   await page.getByRole("button", { name: "Evidence", exact: true }).click();
   await expect(panel.getByRole("button", { name: "Back to queue" })).toBeVisible();
+  await page.setViewportSize({ width: 844, height: 390 });
+  await expect(panel).toBeVisible();
+  await expect(page.getByRole("button", { name: "Open map", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Map", exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("review-landscape-split.png") });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
@@ -536,10 +546,15 @@ for (const mode of ["extend", "corroborate", "add_section"] as const) {
       await expect(workspace.getByRole("button", { name: "Confirm & Publish" })).toBeVisible();
       expect((await labels.boundingBox())!.x).toBeGreaterThanOrEqual(56);
       await page.screenshot({ path: info.outputPath("growth-narrow.png") });
-      await page.setViewportSize({ width: 844, height: 390 });
       await workspace.getByRole("button", { name: "Map", exact: true }).click();
       await page.getByRole("button", { name: "Return to merge", exact: true }).click();
+      await page.setViewportSize({ width: 844, height: 390 });
+      await expect(workspace.getByRole("button", { name: "Map", exact: true })).toHaveCount(0);
       await expect(workspace.getByRole("button", { name: "Confirm & Publish" })).toBeVisible();
+      const landscapeBounds = await workspace.boundingBox();
+      expect(landscapeBounds!.x).toBeGreaterThanOrEqual(56);
+      expect(landscapeBounds!.x + landscapeBounds!.width).toBeLessThanOrEqual(844);
+      await expect(workspace.getByRole("button", { name: "Confirm & Publish" })).toBeInViewport();
       await page.screenshot({ path: info.outputPath("growth-landscape.png") });
     }
     await page.screenshot({ path: info.outputPath(`growth-${mode}-confirmation.png`) });
@@ -627,7 +642,7 @@ test("active news zones reuse the staff summary with source and estimate details
   if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
   const { writes } = await setup(page, "news_zone");
   await page.getByRole("button", { name: /Active Zones/ }).click();
-  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
+  await inspectZoneGroup(page);
   const zone = page.getByRole("article", { name: "Zone #9", exact: true });
   await expect(zone.getByRole("link", { name: /News flood zone evidence/ })).toHaveAttribute("href", "https://example.org/flood");
   await expect(zone.getByText("Estimated road corridor", { exact: true })).toBeVisible();
@@ -641,7 +656,7 @@ test("active zones share report styling and keep zone-specific actions and contr
   if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
   const { writes } = await setup(page, "panel_details");
   await page.getByRole("button", { name: /Active Zones/ }).click();
-  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
+  await inspectZoneGroup(page);
   const panel = page.getByRole("region", { name: "Active Zones", exact: true });
   const zone = panel.getByRole("article", { name: "Zone #9", exact: true });
   await expect(zone.getByText("Open drain", { exact: true })).toBeVisible();
@@ -692,7 +707,7 @@ test("active zone public updates stay pending until an explicit staff review", a
     reviewed = true; await route.fulfill({ json: { ...update, review_state: "reviewed" } });
   });
   await page.getByRole("button", { name: /Active Zones/ }).click();
-  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
+  await inspectZoneGroup(page);
   const zone = page.getByRole("article", { name: "Zone #9", exact: true });
   await expect(zone.getByRole("button", { name: "Info for Zone #9" })).toBeVisible();
   await zone.getByRole("button", { name: "1 new update", exact: true }).click();
@@ -992,7 +1007,7 @@ async function communityFixture(page: Page) {
     return route.fulfill({ json: { patch: { depth_override: "waist", severity_override: "high" }, expected_updated_at: state.zone.updated_at, community_update: { update_id: 602, fields: ["depth"], reason: "Verified complete bridge coverage and evidence." } } });
   });
   await page.getByRole("button", { name: /Active Zones/ }).click();
-  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
+  await inspectZoneGroup(page);
   await page.getByRole("button", { name: "Info for Zone #9" }).click();
   return state;
 }

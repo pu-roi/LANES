@@ -8,6 +8,7 @@ from shapely.affinity import scale
 from shapely.errors import ShapelyError
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
+from shapely import from_wkb
 
 T = TypeVar("T")
 
@@ -28,7 +29,7 @@ def metric_geometry(raw: Any, *, projected: bool) -> BaseGeometry | None:
     try:
         if raw is None:
             return None
-        geometry = shape(json.loads(raw) if isinstance(raw, str) else raw)
+        geometry = from_wkb(bytes(raw)) if isinstance(raw, (bytes, bytearray, memoryview)) else shape(json.loads(raw) if isinstance(raw, str) else raw)
         if geometry.is_empty or not geometry.is_valid:
             return None
         # Production uses PostGIS UTM 51N. SQLite fixtures use a local WGS84 adapter.

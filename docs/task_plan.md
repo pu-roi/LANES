@@ -1,6 +1,86 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 09:23 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Documentation and roi-branch handoff
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Audit the accumulated spatial/history implementation against progress, task tracking, system documentation, bug records and indexed acceptance evidence.
+- [x] Record camera-only zone navigation, complete 20-card history browsing and the current 50 m original-geometry grouping rule in the delivery summary.
+- [x] Keep scale latency/mobile stress, inspection/cold/concurrent p95 and aggregation visual acceptance open; do not represent earlier qualified runs as complete acceptance.
+- [x] Verify the handoff introduces no dependency manifest, SQLAlchemy model or migration changes; the existing disposable-database migration results remain in their acceptance reports.
+
+## Historical zone map handoff
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Separate camera-only zone navigation from event selection and report evidence overlays.
+- [x] Verify unchanged zone styling and camera movement on desktop/320 px, including style reload and report-to-zone navigation (four browser checks); TypeScript and focused lint pass.
+
+## Spatial Operations and complete Flood History performance — implemented; acceptance qualified
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Approved plan](plans/spatial-history-performance.md) · [Implementation and acceptance evidence](evaluations/spatial-history-scale-20261021/README.md). All matching historical records are accessible beyond the interface's former 250-record ceiling.
+
+- [x] Phase A: narrow SQL JSON projections, batch operational map/member reads, share count/card ownership and coordinate visible refreshes.
+- [x] Phase B: index spatial candidates while preserving exact road/city/50 m complete-link grouping, anchors, filters and eligibility.
+- [x] Phase C: complete SQL-paged historical cards, independent bounded map reads over all matching history, paged evidence, filter debounce and deferred map startup.
+- [x] Verify 1,000/10,000-record native fixtures, complete cursor coverage, bounded card queries/payloads, authorization/read-only behavior, Analytics parity/exports, and saved zones 69/70 remaining separate without geometry/lifecycle changes.
+- [x] Verify ordinary desktop/320 px browsing, shared pagination/contributor pages, map focus/style recovery, operational actions and retained workspace maps; keep controls visible during page requests. Production build, TypeScript and focused lint pass; broader test failures remain recorded in the acceptance report.
+- [ ] Close scale latency acceptance: 10,000-zone grouping warm p95 exceeds 1 s; dense mobile rendering, cold-cache and concurrent real-network/browser budgets remain qualified. Human visual acceptance of overview aggregation remains open.
+- [x] Update implementation/acceptance documentation. No model/migration/dependency/infrastructure change or commit/push.
+
+## Flood Event loading — backend availability and bounded reads
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Reproduce frontend proxy 500 with backend port 8000 unavailable; restore the existing 3000/8000 local services without changing environment files.
+- [x] Batch history metrics, locations and zones; opt browsing into lightweight summaries while retaining legacy reads and full inspection details.
+- [x] Cancel superseded map requests and reuse fresh map/card results for 30 seconds; retain shared 20-card pagination and filtered map coverage.
+- [x] Verify 29 targeted backend checks, including bounded SQL counts, HTTP serialization, authorization, retryable database failures and no writes during browsing; apply existing migrations only to an owned disposable database and remove it afterward. Four existing lifecycle-service checks also pass.
+- [x] Pass 17 desktop/mobile history browser checks (one desktop mobile-only skip), including 320 px, plus TypeScript and focused lint.
+
+## Active Zones — stricter nearby grouping
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Require matching complete road/city evidence and original geometry within 50 m; retain separate cards for missing/conflicting evidence.
+- [x] Batch source/report geometry reads; prefer valid saved source geometry, then combined valid report geometry. Retain full saved polygon bounds for map focus.
+- [x] Preserve Needs Review, active eligibility, complete-link membership, filtering/pagination and ungrouped history.
+- [x] Pass 58 portable queue/review and 28 native PostGIS/expiry checks; verify the saved example read-only, TypeScript and focused lint.
+- [x] Pass 76 distinct desktop/mobile queue and Needs Review browser checks across the broad run and focused reruns, with two layout-specific skips; inspect desktop and 320 px screenshots.
+
+## Active Zones labels and responsive detection
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Replace user-facing Active Zones queue wording, including loading/history, navigation, accessibility and surfaced errors; keep Needs Review wording.
+- [x] Separate width-based compact layout from touch map interactions; retain full-width mobile inspection and group fly-to.
+- [x] Pass the 16 existing backend zone-reader checks.
+- [x] Pass 23 desktop/mobile browser checks (one desktop mobile-only skip), wide mouse/touch and 767/768 boundary, landscape workspace bounds, TypeScript and focused lint. Preserve existing LiveMap lint findings without new signatures.
+
+## Local environment cleanup — completed
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Remove only the redundant frontend development override; preserve encrypted configuration and decryption files.
+- [x] Make ordinary port-3000/8000 development the default VS Code build task.
+- [x] Restrict the optional Local Plotting port override to its launched frontend process; retain referenced backend test/MCP profiles.
+- [x] Validate retained configuration fingerprints, launcher syntax and normal API proxy reads without launching replay or changing data.
+
+## Flood Event Records map consistency
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Equal desktop map/list columns; retain mobile Map/List navigation.
+- [x] Page the card list with shared `Pagination` and at most 20 events per page; reset on filters, resolve off-page map picks and retain full filtered map coverage. Pass 25 portable/two native checks, 17 desktop/mobile browser checks (one layout skip), TypeScript/focused lint and 13-page footer checks through 320 px.
+- [x] Restore top-level Analytics/Flood Events tabs to the same shared underline defaults used by other admin pages; remove page-specific stretching and sizing overrides.
+- [x] Draw saved historical polygons automatically with shared Needs Review fill and initial/filter camera framing.
+- [x] Reuse public/admin heatmap rendering, colors and zoom 13–15 fade; add server-owned, filtered historical point features without lifecycle writes.
+- [x] Verify geometry/weights, filtering, authorization and read-only behavior in portable and native PostGIS checks.
+- [x] Complete 23 desktop/mobile Chromium browser checks and visual acceptance, including 320 px, style recovery, individual zone/report handoffs and Needs Review/public/admin heatmap regression; one desktop mobile-only skip. TypeScript and focused lint pass.
+
+No schema migration, dependency, commit or push is included. [Verification](evaluations/flood-history-map-20261021/README.md).
 
 ## Shared Spatial Operations queues — completed locally
 
@@ -9,6 +89,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Independent of the 
 - [x] Share grouped card/filter presentation while preserving Needs Review grouping and moderation rules.
 - [x] Add staff-only zone queue/member reads with backend proximity grouping, expiry eligibility, source/location/severity filters, stable summaries and pagination.
 - [x] Retain individual zone details, map focus, updates, contributors, editing and confirmed single/bulk deactivation; retain ungrouped history.
+- [x] Make Active Only card activation immediately fit the entire group on the map, preserving inspection and mobile Back to zones navigation. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 - [x] Verify 73 backend and 34 distinct desktop/mobile browser checks, TypeScript and focused lint; preserve the 12 existing LiveMap lint errors without new signatures.
 
 No schema/dependency change or deployment is included. Git publication is limited to `roi-branch`. [Acceptance and limits](evaluations/spatial-zone-queues-20261021/README.md).

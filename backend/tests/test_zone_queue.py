@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import httpx
 import pytest
-from shapely.geometry import box, mapping
+from shapely.geometry import LineString, box, mapping
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,12 +20,14 @@ NOW = datetime(2026, 10, 21, tzinfo=timezone.utc)
 
 
 def row(id, x=0, *, road="Test Avenue", city="Pasig", barangay="Maybunga", source="direct_user", **changes):
+    original = mapping(LineString([(x, 0), (x + 10, 0)]))
     reports = [] if source in {"official", "news"} else [{"id": id, "source": source,
         "human_readable_location": road, "city": city, "barangay": barangay, "raw_text": f"Evidence {id}",
-        "severity": "medium", "depth": "knee"}]
+        "severity": "medium", "depth": "knee", "geometry": original}]
     news = [{"claim": {"canonical_road": road, "canonical_city": city, "canonical_barangay": barangay},
              "snapshot": {"public": {"evidence_excerpt": f"News evidence {id}"}}}] if source == "news" else []
-    return {"id": id, "geometry": mapping(box(x, 0, x + 10, 10)), "reports": reports, "news": news,
+    return {"id": id, "geometry": mapping(box(x, 0, x + 10, 10)), "source_geometry": original,
+        "reports": reports, "news": news,
         "created_at": NOW + timedelta(hours=id * 4), "name": f"Zone {id}", "curated_by_admin_id": 7 if source == "official" else None,
         "severity_override": None, "depth_override": None, "admin_notes": None, **changes}
 
@@ -35,37 +37,75 @@ def grouped(rows):
     return complete_link_groups(facts, service.related_zones)
 
 
-@pytest.mark.parametrize("gap, expected", [(500, 1), (500.01, 2)])
-def test_matching_road_polygon_distance_and_no_time_cutoff(gap, expected):
+@pytest.mark.parametrize("gap, expected", [(0, 1), (50, 1), (50.01, 2), (500, 2)])
+def test_matching_road_original_distance_and_no_time_cutoff(gap, expected):
     assert len(grouped([row(1), row(2, 10 + gap, road="Test Ave.", city="Pasig City")])) == expected
 
 
 @pytest.mark.parametrize("change", [{"road": "Other Street"}, {"city": "Cainta"}, {"road": None}, {"city": None}, {"source": "official"}])
-def test_fifty_metre_fallback_including_missing_locations(change):
-    assert len(grouped([row(1), row(2, 60, **change)])) == 1
+def test_different_or_missing_locations_stay_separate_even_when_overlapping(change):
+    assert len(grouped([row(1), row(2, **change)])) == 2
+    assert len(grouped([row(1), row(2, 60, **change)])) == 2
     assert len(grouped([row(1), row(2, 60.01, **change)])) == 2
 
 
 def test_overlap_cross_source_cross_barangay_invalid_geometry_and_chain():
-    assert len(grouped([row(1), row(2, 5, source="official"), row(3, 8, source="news", barangay="Rosario")])) == 1
-    assert [len(group) for group in grouped([row(1), row(2, 400), row(3, 800)])] == [2, 1]
-    assert len(grouped([row(1), row(2, geometry=None)])) == 2
-    assert len(grouped([row(1), row(2, geometry="invalid")])) == 2
+    official = row(2, 5, source="manual_seeder", curated_by_admin_id=7)
+    assert len(grouped([row(1), official, row(3, 8, source="news", barangay="Rosario")])) == 1
+    assert [len(group) for group in grouped([row(1), row(2, 50), row(3, 100)])] == [2, 1]
+    for invalid in (None, "invalid", mapping(LineString())):
+        other = row(2, source_geometry=invalid)
+        other["reports"][0]["geometry"] = invalid
+        assert len(grouped([row(1), other])) == 2
 
 
-def test_ambiguous_roads_cannot_use_wider_threshold():
-    other = row(2, 100)
-    other["reports"].append({**other["reports"][0], "human_readable_location": "Other Road"})
+@pytest.mark.parametrize("location", [{"human_readable_location": "Other Road"}, {"city": "Cainta"}, {"city": None}])
+def test_ambiguous_or_incomplete_locations_cannot_group(location):
+    other = row(2)
+    other["reports"].append({**other["reports"][0], **location})
     assert len(grouped([row(1), other])) == 2
+
+
+def test_original_geometry_precedence_and_combined_report_fallback():
+    other = row(2, 100)
+    other["reports"][0]["geometry"] = row(1)["source_geometry"]
+    assert len(grouped([row(1), other])) == 2  # Saved source takes precedence.
+    for invalid in (None, "invalid"):
+        other["source_geometry"] = invalid
+        assert len(grouped([row(1), other])) == 1
+    other["reports"][0]["geometry"] = row(2, 200)["source_geometry"]
+    other["reports"].append({**other["reports"][0], "id": 3, "geometry": row(3)["source_geometry"]})
+    assert len(grouped([row(1), other])) == 1  # All valid report extents participate.
+    other["reports"][0]["geometry"] = "invalid"
+    assert len(grouped([row(1), other])) == 1
+
+
+def test_short_segment_within_long_segment_does_not_require_matching_centres():
+    long = row(1, source_geometry=mapping(LineString([(0, 0), (1000, 0)])))
+    assert len(grouped([long, row(2, 5)])) == 1
+
+
+def test_expanded_polygons_do_not_make_distant_original_geometry_qualify():
+    first = row(69, road="M. H. del Pilar Street", source_geometry=mapping(LineString([(0, 0), (200, 0)])),
+                geometry=mapping(box(-25, -25, 225, 25)))
+    second = row(70, road="Doctor Pilapil Street", source_geometry=mapping(LineString([(0, 77.5), (200, 77.5)])),
+                 geometry=mapping(box(-25, 52.5, 225, 102.5)))
+    assert len(grouped([first, second])) == 2
+    second["reports"][0]["human_readable_location"] = "M. H. del Pilar Street"
+    assert len(grouped([first, second])) == 2  # Still outside 50 m on the same road.
+
+
+def test_news_without_original_geometry_cannot_use_the_avoidance_polygon():
+    assert len(grouped([row(1), row(2, source="news", source_geometry=None)])) == 2
 
 
 @pytest.fixture
 def queue(monkeypatch):
-    rows = [row(1), row(2, 100, barangay="Rosario", severity_override="high", depth_override="waist"),
-            row(3, 50, source="official"), row(4, 110, source="news"), row(5, 5000, source="facebook")]
+    rows = [row(1), row(2, 30, barangay="Rosario", severity_override="high", depth_override="waist"),
+            row(3, 35, source="manual_seeder", curated_by_admin_id=7), row(4, 45, source="news"), row(5, 5000, source="facebook")]
     db = SimpleNamespace(get_bind=lambda: SimpleNamespace(dialect=SimpleNamespace(name="postgresql")))
     monkeypatch.setattr(service, "queue_metadata", lambda _db, active_only: rows)
-    monkeypatch.setattr(service, "zone_details", lambda _db, selected: [])
+    monkeypatch.setattr(service, "zone_details", lambda _db, selected, **_options: [])
     return db, rows
 
 
@@ -108,6 +148,27 @@ def test_search_includes_secondary_report_ids_roads_and_news_titles(queue):
     assert service.browse_zone_queue(db, q="Test Avenue").item_total == 5
 
 
+def test_camera_bounds_include_all_members_before_pagination_and_filtering(queue):
+    db, rows = queue
+    for index, item in enumerate(rows[:4]):
+        item["map_geometry"] = mapping(box(121.08 + index * .0001, 14.57, 121.0801 + index * .0001, 14.5701))
+    result = service.browse_zone_queue(db, q="Evidence 2", page_size=1)
+    assert result.items[0].member_count == 4
+    assert result.items[0].bounds == pytest.approx((121.08, 14.57, 121.0804, 14.5701))
+    # A displayed group's extent is independent of the selected member page.
+    service.browse_zone_members(db, 4, page=2, page_size=2)
+    assert service.browse_zone_queue(db, q="Evidence 2").items[0].bounds == result.items[0].bounds
+    rows[0]["map_geometry"] = None
+    assert service.browse_zone_queue(db, q="Evidence 2").items[0].bounds[0] == pytest.approx(121.0801)
+
+
+def test_camera_bounds_unavailable_or_out_of_range_are_not_guessed(queue):
+    db, rows = queue
+    assert all(item.bounds is None for item in service.browse_zone_queue(db).items)
+    rows[0]["map_geometry"] = mapping(box(200, 14, 201, 15))
+    assert service.browse_zone_queue(db, q="Evidence 1").items[0].bounds is None
+
+
 def test_metadata_uses_shared_eligibility_and_projected_geometry(monkeypatch):
     from app.crud.report import avoidance_zones_query
     db = Mock()
@@ -126,6 +187,8 @@ def test_metadata_uses_shared_eligibility_and_projected_geometry(monkeypatch):
     queue_metadata(db, active_only=True)
     geometry = query_stub.with_entities.call_args.args[-1]
     assert "ST_Transform" in str(geometry.compile(dialect=postgresql.dialect()))
+    source = query_stub.with_entities.call_args.args[-3]
+    assert "ST_Transform(flood_avoidance_zones.source_geometry" in str(source.compile(dialect=postgresql.dialect()))
     session.close()
 
 

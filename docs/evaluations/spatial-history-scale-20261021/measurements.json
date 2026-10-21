@@ -1,0 +1,203 @@
+{
+  "date": "2026-10-21",
+  "branch": "roi-branch",
+  "environment": {
+    "os": "Windows",
+    "cpu": "Intel Core i5-1135G7, 8 logical processors",
+    "ram_gib": 15.8,
+    "database": "owned disposable local PostgreSQL/PostGIS with existing migrations and ANALYZE",
+    "frontend": "Next.js 16.2.9 production builds, bundled Chromium",
+    "browser_transport": "fictional bounded responses; includes fixture/test transport overhead",
+    "isolated_host": false,
+    "backend_response_cache": false
+  },
+  "native_warm_seconds": {
+    "sample_count_per_read": 20,
+    "p95_method": "19th sorted sample of 20",
+    "includes": "SQL and Python service processing",
+    "excludes": "normal authorization, HTTP JSON delivery, browser",
+    "1000": {
+      "cards": {
+        "p50": 0.0403,
+        "p95": 0.1352
+      },
+      "groups": {
+        "p50": 0.256,
+        "p95": 0.7241
+      },
+      "historical_first_chunk": {
+        "p50": 0.0713,
+        "p95": 0.3901
+      }
+    },
+    "10000": {
+      "cards": {
+        "p50": 0.0312,
+        "p95": 0.0433
+      },
+      "groups": {
+        "p50": 1.5156,
+        "p95": 1.7334
+      },
+      "historical_first_chunk": {
+        "p50": 0.2166,
+        "p95": 0.3288
+      }
+    }
+  },
+  "profiled_grouping": {
+    "method": "separate tracemalloc + process_time call; instrumentation overhead applies",
+    "1000": {
+      "cpu_seconds": 1.0938,
+      "peak_python_heap_bytes": 2567861
+    },
+    "10000": {
+      "cpu_seconds": 8.5781,
+      "peak_python_heap_bytes": 26950658
+    },
+    "excludes": "GEOS native and database/browser memory"
+  },
+  "uncompressed_response_bytes": {
+    "1000": {
+      "history_cards": 10511,
+      "operational_250": 160670,
+      "historical_250": 55890,
+      "overview": 266
+    },
+    "10000": {
+      "history_cards": 10563,
+      "operational_250": 161388,
+      "historical_250": 57388,
+      "overview": 269
+    }
+  },
+  "saved_database_readonly_http_observations": [
+    {
+      "read": "count",
+      "seconds": 0.6746,
+      "data_statements": 2,
+      "bytes": 12
+    },
+    {
+      "read": "active_groups",
+      "seconds": 0.232,
+      "data_statements": 4,
+      "bytes": 6458
+    },
+    {
+      "read": "zone_69_members",
+      "seconds": 0.774,
+      "data_statements": 15,
+      "bytes": 3368
+    },
+    {
+      "read": "history_20_cards",
+      "seconds": 0.2625,
+      "data_statements": 7,
+      "bytes": 19300
+    },
+    {
+      "read": "historical_global_map",
+      "seconds": 0.137,
+      "data_statements": 3,
+      "bytes": 199
+    }
+  ],
+  "saved_example": {
+    "69": [
+      69
+    ],
+    "70": [
+      70
+    ],
+    "geometry_activity_expiry_unchanged": true
+  },
+  "browser_single_observations_after_lazy_bundles": {
+    "1000_desktop": {
+      "cards_ms": 1475,
+      "first_map_ms": 2239,
+      "complete_map_data_ms": 4726,
+      "js_heap_bytes": 32845612,
+      "script_seconds": 1.028629,
+      "task_seconds": 5.667688
+    },
+    "1000_mobile_320px": {
+      "cards_ms": 2615,
+      "first_map_ms": 3017,
+      "complete_map_data_ms": 6682,
+      "js_heap_bytes": 28463312,
+      "script_seconds": 0.999627,
+      "task_seconds": 7.640083
+    }
+  },
+  "dense_broad_browser_run": {
+    "10000_desktop": {
+      "cards_ms": 8437,
+      "first_map_ms": 12957,
+      "complete_map_data_ms": 45484,
+      "js_heap_bytes": 30038448
+    },
+    "10000_mobile_320px": {
+      "result": "failed",
+      "continuation_render_wait_ms": 120000,
+      "last_observed_zone_count": 6000
+    },
+    "functional_passes": 39,
+    "failures": 1
+  },
+  "isolated_final_mobile_10000": {
+    "result": "failed",
+    "continuation_render_wait_ms": 120000,
+    "last_observed_zone_count": 9500,
+    "timeout_raised": false
+  },
+  "acceptance": {
+    "history_card_query_budget": "at most 7 data statements",
+    "map_polygon_limit_per_response": 250,
+    "overview_cell_limit": 4096,
+    "no_browsing_writes": true,
+    "cold_cache_p95_established": false,
+    "real_network_concurrent_http_browser_p95_established": false,
+    "latency_targets_passed": false,
+    "overview_human_visual_acceptance": false,
+    "model_migration_dependency_changes": false,
+    "commit_or_push": false
+  },
+  "verification": {
+    "portable_distinct_passes": 116,
+    "targeted_native_passes": 19,
+    "stronger_native_fixture_reruns_passes": 2,
+    "broad_browser_passes": 39,
+    "broad_browser_failures": 1,
+    "latest_workspace_filter_rerun_passes": 8,
+    "final_layout_rerun_passes": 6,
+    "production_build": "passed",
+    "focused_lint": "passed",
+    "normal_git_diff_check": "passed",
+    "broader_native_regression": {
+      "passes": 39,
+      "failures": 2,
+      "setup_errors": 3,
+      "causes": "database disconnects/timeouts and existing scheduler paused-stage expectation"
+    },
+    "news_viewport_native_rerun": "passed",
+    "final_typescript": "passed"
+  },
+  "saved_database_operational_viewport": {
+    "zones": 10,
+    "sources": [
+      "direct_user",
+      "news"
+    ],
+    "seconds": 0.3362,
+    "bytes": 26392,
+    "transaction": "read only"
+  },
+  "local_services": {
+    "frontend": "development, port 3000",
+    "backend": "reload, port 8000, PTY",
+    "proxy_protected_reads_status": 401,
+    "timestamp_only_backend_reload": "passed",
+    "environment_task_changes_this_implementation": false
+  }
+}

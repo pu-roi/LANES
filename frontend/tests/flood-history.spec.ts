@@ -25,7 +25,7 @@ test.describe("Flood History & Analytics administrator workspace", () => {
     await page.getByRole("button", { name: "Ended", exact: true }).click();
     await page.getByRole("button", { name: "Peak severity" }).click();
     await page.getByRole("button", { name: "High", exact: true }).click();
-    await page.getByLabel("Barangay").fill("San Antonio");
+    await page.getByLabel("Barangay", { exact: true }).fill("San Antonio");
     await expect(page.getByRole("button", { name: "Clear filters" })).toBeVisible();
   });
 

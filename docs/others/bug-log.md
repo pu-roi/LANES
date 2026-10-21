@@ -1,6 +1,114 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 09:15 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Historical zone handoff adds an unwanted blue outline
+
+**Status:** Resolved locally. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Official history → View zone on map changes the footprint appearance.
+
+**2. Root cause:** The generic detail handoff selects the event (stronger base fill) and draws the saved zone again using blue focus fill/outline layers.
+
+**3. Solution:** Mark saved-zone handoffs as camera-only, preserve selection, and use saved geometry solely to frame the camera. Keep report evidence overlays separate.
+
+**4. Files:** `FloodEventDetailsTabs.tsx`, `FloodEventRecords.tsx`, `HistoricalEventsMap.tsx`, `floodHistoryApi.ts` and the existing history-map browser test. Four targeted browser checks pass on desktop/320 px, including style reload, preserved fill/selection, report evidence and read-only requests. TypeScript and focused lint pass. No API, stored geometry or routing changes.
+
+## Oversized spatial reads and incomplete historical browsing
+
+**Status:** Read architecture fixed locally; scale latency acceptance remains in progress. **Severity:** High. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Active Zones loads more slowly than Needs Review; historical browsing stops at 250 records and overlapping list/map/detail reads amplify work as data grows.
+
+**2. Root cause:** Complete extraction JSON is selected to read a few fields; ORM response properties issue hidden per-zone queries. Grouping considers impossible pairs. Map reads include evidence unnecessary for rendering, equivalent zone reads use different query keys, and map updates resend all loaded features for each new chunk. The historical list/map share a bounded dataset, and large inspection collections are unpaged.
+
+**3. Solution:** Narrow SQL projections, explicit eager serialization, STRtree candidate pruning with exact grouping preserved, lightweight count, independent complete card pagination, bounded cursor maps/overview aggregation and paged evidence collections. Share query definitions, coordinate visible polling/cancellation, debounce text, defer mobile maps and update appended map features incrementally. Invalid collection responses now surface retry UI rather than crashing the workspace. No stored geometry/routing/lifecycle change.
+
+**4. Files/verification:** `crud/zone_queue.py`, zone/news/spatial browse services, staff schemas/routes, `LiveMapPage`, history components/API, query definitions, `useStaffMapData`, `syncGeoJSONSource`, `BaseMap` and live invalidation. Nineteen targeted native scale/group/history checks and 71 targeted portable grouping/review/authorization checks pass. Saved zones 69/70 remain separate with unchanged geometry/lifecycle fingerprints. Pagination keeps previous cards during requests so controls do not jump offscreen. [Full receipts, browser reruns, p95 misses and limits](../evaluations/spatial-history-scale-20261021/README.md). No new model, migration, dependency, environment file, commit or push.
+
+## Flood Event history — local proxy 500 and slow browsing
+
+**Status:** Resolved locally. **Severity:** High. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** History requests through frontend port 3000 return 500; loading a large history result is slow.
+
+**2. Root cause:** At reproduction, backend port 8000 refused connections. Independently, history made per-event location/zone/count reads and lazy evidence lookups: three saved events required 45 SQL statements and 3.65 seconds. Pagination introduced separate map/card reads, multiplying that avoidable work. Fast Refresh messages indicate development rebuilds and do not identify the API failure.
+
+**3. Solution:** Start the existing backend with its encrypted environment on port 8000. Batch the browsing projection, use opt-in lightweight summaries for map/cards, preserve legacy responses and inspection details, cancel superseded reads and cache fresh results for 30 seconds. Database read failures become explicit retryable 503 responses.
+
+**4. Files/verification:** `admin.py`, `flood_event_service.py`, history API/client component, existing history native/authorization/browser tests. Read-only HTTP verification returns all 56 saved events in seven statements / 1.31 seconds and 20 cards in eight statements / 0.51 seconds; these are local measurements. Twenty-nine targeted backend and four existing lifecycle checks pass. [Acceptance evidence](../evaluations/flood-history-map-20261021/README.md). No environment file, schema, dependency, stored geometry or routing change.
+
+## Flood Event Records — missing card pagination
+
+**Status:** Resolved locally. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The right-side card list renders the entire bounded history result in one scrolling list.
+
+**2. Root cause:** Cards and map both consume the same array, with no page state, paged read or shared pagination control.
+
+**3. Solution:** Add optional backend paging to the existing history endpoint, capped at 20 cards, and reuse shared `Pagination`. Keep the full filtered map read separately cached. Filter/reset, map-to-card page resolution, list scroll, detail return and page errors/retry are handled without changing heatmap styling.
+
+**4. Files/verification:** History route/service/response schema, `FloodEventRecords`, history API client and existing fixture/native/browser tests. 25 portable and two native PostGIS checks pass; the existing migrations run only in an owned disposable database, removed afterward. Seventeen desktop/mobile browser checks pass with one mobile-only desktop skip, plus TypeScript/focused lint and 13-page footer checks at 1920/1024/768/320 px. [Evidence](../evaluations/flood-history-map-20261021/README.md).
+
+## Active Zones — different roads grouped through expanded polygon proximity
+
+**Status:** Resolved locally; backend and desktop/mobile regression verification passed. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Zones 69 and 70 appear in one group despite identifying M. H. del Pilar Street and Doctor Pilapil Street.
+
+**2. Root cause:** Active grouping used the gap between expanded avoidance polygons, with a 50 m fallback for different or missing roads. Saved data measured a 27.55 m polygon gap but a 77.50 m original road gap. Needs Review instead uses original report geometry and is unchanged.
+
+**3. Solution:** Active Only now requires complete matching road/city evidence and original geometry within 50 m. Prefer valid saved source geometry, otherwise combine valid linked report geometries; unavailable original geometry stays separate. Keep pairwise membership, all-history presentation, existing actions and full polygon map bounds.
+
+**4. Files/verification:** `backend/app/crud/zone_queue.py`, `backend/app/services/zone_queue_service.py`, portable/native queue tests and the browser queue explanation fixture. 58 portable queue/review and 28 native PostGIS/expiry checks pass. Read-only verification returns separate singleton groups for the saved example with unchanged geometry/lifecycle values. 76 distinct desktop/mobile browser checks pass across the broad run and focused reruns, with two layout-specific skips. One old related-report assertion expected a mobile map switch at 844 px; its test now exercises switching at 320 px and the existing split view at 844 px, without changing Needs Review implementation. TypeScript and focused lint pass. [Acceptance](../evaluations/spatial-zone-queues-20261021/README.md).
+
+## Flood History — stretched top-level tabs
+
+**Status:** Resolved locally. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Analytics and Flood Events appear centered across half the page each instead of following other admin pages' compact, left-aligned underline tabs.
+
+**2. Root cause:** The page already imports shared `Tabs`, but adds `fullWidth` and `tabClassName` sizing overrides. Moderation Center, Users and Settings use the shared underline defaults.
+
+**3. Solution:** Remove those page-specific overrides and retain the existing shared component, variant, tab state, icons and panels. Keep shared horizontal scrolling on narrow screens.
+
+**4. Files/verification:** `frontend/src/app/admin/flood-history/page.tsx`; shared `Tabs` is unchanged. TypeScript and focused page lint pass. After initial-render timeouts in the first run, the existing history suite passes five checks with one desktop mobile-only skip. Separate checks compare computed styling with Moderation Center, switch both views and inspect screenshots at 1920, 390 and 320 px; the 320 px strip scrolls within its container without page overflow. No browser runtime errors occurred in these fixture-based visual checks.
+
+## Active Zones — queue labels and desktop touch treated as mobile
+
+**Status:** Resolved locally; backend, desktop/mobile and wide-touch acceptance passed. **Severity:** Medium (layout), Low (wording). **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Active Zones displays review-queue terminology. A 1920×1080 DevTools viewport can show a full-width list with the map hidden, even though the screen is wide.
+
+**2. Root cause:** Group browsing retained user-facing queue labels. `LiveMapPage` combined narrow width and `(pointer: coarse)` with an OR into one mobile flag used for both layout and map interactions. Read-only reproduction measured a 460 px sidebar with mouse input and a 1864 px full-width sidebar with touch input at the same 1920 px width. Previous desktop/mobile coverage did not include wide touch input.
+
+**3. Solution:** Make compact layout width-only and retain touch detection separately for map layers. Update Active Zones loading/history, back, search, refresh/retry and surfaced API copy; retain Needs Review wording and API paths. Update tests to distinguish narrow map switching from wide landscape side-by-side behavior. Visual review also exposed an intermediate-width merge drawer clipped by the primary sidebar; at 768–1023 px, hide that sidebar while a secondary workspace is open and explicitly check that the workspace and publish control remain inside the viewport.
+
+**4. Files/verification:** `LiveMapPage.tsx`, `ActiveZonesPanel.tsx`, `zoneQueueApi.ts`, backend `admin_zone_queue.py` error text, zone browser helper/suite and landscape review tests. The 16 backend reader tests pass. Wide mouse/touch, mobile, 767/768 boundary and retained actions are covered in browser acceptance; [record](../evaluations/spatial-zone-queues-20261021/README.md).
+
+## Local API proxy — stale plotting environment override
+
+**Status:** Resolved locally. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Normal frontend port 3000 returns HTTP 500 for multiple API routes while backend port 8000 returns HTTP 200. SSE still connects directly to 8000.
+
+**2. Root cause:** An ignored `frontend/.env.development.local` left the proxy targeting the absent port-8003 plotting backend. VS Code's default build task also selected the old Local Plotting workflow.
+
+**3. Solution:** Restore the existing port-8000 proxy default by removing the redundant override; keep encrypted `.env.local` and `/api/v1`. Make normal development the default task. Supply optional plotting overrides through child-process environment only.
+
+**4. Files/verification:** Removed ignored frontend override; updated `.vscode/tasks.json` and ignored `data/news-replay/start-local-plotting.ps1`. Retained environment/key fingerprints, task JSON, PowerShell parsing and representative frontend API reads are verified. No keys are exposed, records changed, replay launched, migration performed or dependencies added.
+
+## Flood Event Records — unequal layout and inconsistent map layers
+
+**Status:** Resolved locally; backend and desktop/mobile browser acceptance passed. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The historical map and record list have unequal desktop widths. Historical footprints use dark outlines unlike Needs Review, and the initial camera does not frame them without selecting a record. History lacks the existing Analytics heatmap overview.
+
+**2. Root cause:** Records uses 1.35/0.8 grid tracks with a minimum list width; its map defines independent fill/outline paints and selection-only framing. Public/admin heatmap effects are duplicated and use report data rather than the historical record set.
+
+**3. Solution:** Use equal minimum-zero tracks, shared Needs Review polygon fill and shared public heatmap rendering. Add backend representative point features from saved polygons and apply visible-record filtering to both layers. Frame initial/filter data; retain selection/handoff focus, mobile sizing, visible errors and historical-only behavior.
+
+**4. Files/verification:** `FloodEventRecords.tsx`, `HistoricalEventsMap.tsx`, shared map styling/hooks and public/admin adapters; `flood_heatmap_service.py`, history/Analytics endpoints and history response schemas. Portable and disposable-native tests verify weights, geometry, filtering, staff authorization and read-only preservation. [Browser acceptance and limits](../evaluations/flood-history-map-20261021/README.md).
 
 ## Active Zones — mobile bulk controls and expired history entries
 

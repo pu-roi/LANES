@@ -108,3 +108,10 @@ export const PENDING_REPORT_POINT_AURA_PAINT: any = {
   ],
   "circle-stroke-width": 0,
 };
+
+// Shared borderless footprint styling for review and historical polygons.
+export const PENDING_REPORT_POLYGON_AURA_PAINT: import("maplibre-gl").FillLayerSpecification["paint"] = {
+  "fill-color": ["get", "color"],
+  "fill-opacity": ["step", ["zoom"], 0, ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
+    ["case", ["==", ["get", "is_selected"], true], 0.55, 0.35]],
+};

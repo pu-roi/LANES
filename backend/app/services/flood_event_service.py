@@ -12,7 +12,7 @@ from typing import Any, Optional
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app import models, schemas
 from app.schemas.common import ensure_utc, serialize_utc_datetime
@@ -114,14 +114,28 @@ def get_event_metrics(
         models.FloodAvoidanceZone.is_active.is_(True),
         unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, as_of),
     ).count()
-    end_time = ensure_utc(event.ended_at) or as_of
-    start_time = ensure_utc(event.verified_at) or as_of
-    duration_seconds = max(0, int((end_time - start_time).total_seconds()))
     approved_reports_filter = (
         models.FloodReport.event_id == event.id,
         models.FloodReport.status == models.ReportStatus.APPROVED,
         models.FloodReport.deleted_at.is_(None),
     )
+    counts = {
+        "evidence_count": db.query(models.FloodReport.id).filter(*approved_reports_filter).count(),
+        "supporting_report_count": db.query(models.FloodReport.id).filter(
+            *approved_reports_filter, models.FloodReport.zone_id.is_not(None)).count(),
+        "reporter_count": int(db.query(func.count(func.distinct(models.FloodReport.user_id))).filter(
+            *approved_reports_filter, models.FloodReport.user_id.is_not(None)).scalar() or 0),
+        "zone_count": db.query(models.FloodAvoidanceZone.id).filter(models.FloodAvoidanceZone.event_id == event.id).count(),
+        "active_zone_count": active_zone_count,
+        "location_count": db.query(models.FloodEventLocation.id).filter(models.FloodEventLocation.event_id == event.id).count(),
+    }
+    return _event_metrics(event, as_of, counts)
+
+
+def _event_metrics(event: models.FloodEvent, as_of: datetime, counts: dict[str, int]) -> dict[str, Any]:
+    end_time = ensure_utc(event.ended_at) or as_of
+    start_time = ensure_utc(event.verified_at) or as_of
+    duration_seconds = max(0, int((end_time - start_time).total_seconds()))
     return {
         "event_id": event.id,
         "status": event.status.value,
@@ -132,24 +146,7 @@ def get_event_metrics(
             duration_seconds // 60
             if event.status == models.FloodEventStatus.ENDED and event.ended_at else None
         ),
-        "evidence_count": db.query(models.FloodReport.id).filter(
-            *approved_reports_filter,
-        ).count(),
-        "supporting_report_count": db.query(models.FloodReport.id).filter(
-            *approved_reports_filter,
-            models.FloodReport.zone_id.is_not(None),
-        ).count(),
-        "reporter_count": int(db.query(func.count(func.distinct(models.FloodReport.user_id))).filter(
-            *approved_reports_filter,
-            models.FloodReport.user_id.is_not(None),
-        ).scalar() or 0),
-        "zone_count": db.query(models.FloodAvoidanceZone.id).filter(
-            models.FloodAvoidanceZone.event_id == event.id,
-        ).count(),
-        "active_zone_count": active_zone_count,
-        "location_count": db.query(models.FloodEventLocation.id).filter(
-            models.FloodEventLocation.event_id == event.id,
-        ).count(),
+        **counts,
         "peak_severity": event.peak_severity.value,
         "peak_depth": event.peak_depth,
     }
@@ -165,6 +162,7 @@ def build_flood_event_history_query(
     barangay: Optional[str] = None,
     road: Optional[str] = None,
     search: Optional[str] = None,
+    multiple_places: bool = False,
 ) -> Any:
     """Build one authorized-event query for history, planning, and exports.
 
@@ -182,6 +180,12 @@ def build_flood_event_history_query(
         raise ValueError("Invalid Flood Event severity") from exc
 
     query = db.query(models.FloodEvent)
+    if multiple_places:
+        place_count = db.query(func.count(models.FloodEventLocation.id)).filter(
+            models.FloodEventLocation.event_id == models.FloodEvent.id,
+            models.FloodEventLocation.location_type != models.FloodEventLocationType.CITY,
+        ).correlate(models.FloodEvent).scalar_subquery()
+        query = query.filter(place_count > 1)
     if status_value:
         query = query.filter(models.FloodEvent.status == status_value)
     if severity_value:
@@ -216,6 +220,83 @@ def build_flood_event_history_query(
     return query
 
 
+def flood_history_window(query: Any, *, limit: int, page: int | None,
+                        page_size: int, focus_event_id: int | None) -> tuple[list[models.FloodEvent], dict[str, int] | None]:
+    """Page the same bounded, ordered history set used by the overview map."""
+    ordered = query.order_by(models.FloodEvent.verified_at.desc(), models.FloodEvent.id.desc())
+    if page is None:
+        return ordered.limit(limit).all(), None
+    ids = [row.id for row in ordered.with_entities(models.FloodEvent.id, models.FloodEvent.verified_at).limit(limit).all()]
+    total = len(ids)
+    pages = max(1, (total + page_size - 1) // page_size)
+    actual = ids.index(focus_event_id) // page_size + 1 if focus_event_id in ids else min(page, pages)
+    selected = ids[(actual - 1) * page_size:actual * page_size]
+    events = ordered.filter(models.FloodEvent.id.in_(selected)).all() if selected else []
+    return events, {"total": total, "page": actual, "pages": pages, "page_size": page_size}
+
+
+def flood_history_records(db: Session, events: list[models.FloodEvent], *, summary: bool = False) -> list[dict[str, Any]]:
+    """Batch the browsing projection; evidence details remain available on inspection."""
+    from app.schemas.flood_event import HistoricalFloodZoneResponse
+    from app.services.flood_heatmap_service import historical_heatmap_features
+
+    if not events:
+        return []
+    ids = [event.id for event in events]
+    locations: dict[int, list[Any]] = defaultdict(list)
+    for location in db.query(models.FloodEventLocation).filter(models.FloodEventLocation.event_id.in_(ids)).order_by(
+            models.FloodEventLocation.location_type, models.FloodEventLocation.display_name):
+        locations[location.event_id].append(location)
+    zones: dict[int, list[Any]] = defaultdict(list)
+    zone_query = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.event_id.in_(ids)).order_by(
+        models.FloodAvoidanceZone.created_at.asc(), models.FloodAvoidanceZone.id.asc())
+    reports = selectinload(models.FloodAvoidanceZone.reports)
+    if summary:
+        zone_query = zone_query.options(reports.load_only(models.FloodReport.severity, models.FloodReport.depth))
+    else:
+        zone_query = zone_query.options(
+            reports.selectinload(models.FloodReport.user).selectinload(models.User.profile),
+            reports.selectinload(models.FloodReport.user).selectinload(models.User.role),
+            reports.selectinload(models.FloodReport.survey))
+    for zone in zone_query:
+        zones[zone.event_id].append(zone)
+    report_counts = {row[0]: row[1:] for row in db.query(models.FloodReport.event_id,
+        func.count(models.FloodReport.id),
+        func.count(models.FloodReport.id).filter(models.FloodReport.zone_id.is_not(None)),
+        func.count(func.distinct(models.FloodReport.user_id))).filter(
+            models.FloodReport.event_id.in_(ids), models.FloodReport.status == models.ReportStatus.APPROVED,
+            models.FloodReport.deleted_at.is_(None)).group_by(models.FloodReport.event_id)}
+    as_of = datetime.now(timezone.utc)
+    active_counts = dict(db.query(models.FloodAvoidanceZone.event_id, func.count(models.FloodAvoidanceZone.id)).filter(
+        models.FloodAvoidanceZone.event_id.in_(ids), models.FloodAvoidanceZone.is_active.is_(True),
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, as_of)).group_by(models.FloodAvoidanceZone.event_id).all())
+    records = []
+    for event in events:
+        evidence, supporting, reporters = report_counts.get(event.id, (0, 0, 0))
+        event_zones = zones[event.id]
+        serialized_zones = []
+        for zone in event_zones:
+            # ORM evidence/contributor properties can query news/users once per zone.
+            # Browsing needs saved footprints and severity only, never those properties.
+            value = {key: getattr(zone, key) for key in (
+                "id", "event_id", "geometry", "is_active", "created_at", "updated_at", "severity", "depth"
+            )} if summary else zone
+            serialized_zones.append(HistoricalFloodZoneResponse.model_validate(value).model_dump(
+                mode="json", exclude_unset=summary))
+        records.append({
+            **schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
+            **_event_metrics(event, as_of, {"evidence_count": evidence, "supporting_report_count": supporting,
+                "reporter_count": reporters, "zone_count": len(event_zones), "active_zone_count": active_counts.get(event.id, 0),
+                "location_count": len(locations[event.id])}),
+            "locations": [schemas.FloodEventLocationResponse.model_validate(row).model_dump(mode="json")
+                for row in locations[event.id]],
+            "heatmap_features": [feature.model_dump(mode="json") for feature in historical_heatmap_features(
+                event.id, event.peak_severity, event_zones)],
+            "zones": serialized_zones,
+        })
+    return records
+
+
 def _event_report_counts(db: Session, event_ids: list[int]) -> dict[int, int]:
     """Return approved, non-deleted report volume by event without user details."""
     if not event_ids:
@@ -233,12 +314,13 @@ def _event_report_counts(db: Session, event_ids: list[int]) -> dict[int, int]:
     return {event_id: int(count) for event_id, count in rows if event_id is not None}
 
 
-def _event_locations(db: Session, event_ids: list[int]) -> dict[int, list[models.FloodEventLocation]]:
+def _event_locations(db: Session, event_ids: list[int]) -> dict[int, list[Any]]:
     if not event_ids:
         return {}
-    locations_by_event: dict[int, list[models.FloodEventLocation]] = defaultdict(list)
+    locations_by_event: dict[int, list[Any]] = defaultdict(list)
     locations = (
-        db.query(models.FloodEventLocation)
+        db.query(models.FloodEventLocation.event_id, models.FloodEventLocation.location_type,
+            models.FloodEventLocation.display_name, models.FloodEventLocation.normalized_name)
         .filter(models.FloodEventLocation.event_id.in_(event_ids))
         .order_by(models.FloodEventLocation.location_type, models.FloodEventLocation.display_name)
         .all()
@@ -314,17 +396,18 @@ def get_flood_event_planning_analytics(
     total_reports = sum(report_counts.values())
     report_day_counts: Counter[str] = Counter()
     if event_ids:
+        day = func.date(func.coalesce(models.FloodReport.approved_at, models.FloodReport.created_at))
         approved_reports = (
-            db.query(models.FloodReport)
+            db.query(day, func.count(models.FloodReport.id))
             .filter(
                 models.FloodReport.event_id.in_(event_ids),
                 models.FloodReport.status == models.ReportStatus.APPROVED,
                 models.FloodReport.deleted_at.is_(None),
             )
-            .all()
+            .group_by(day).all()
         )
-        for report in approved_reports:
-            report_day_counts[(report.approved_at or report.created_at).date().isoformat()] += 1
+        for report_day, count in approved_reports:
+            report_day_counts[str(report_day)] += count
     ended_count = sum(event.status == models.FloodEventStatus.ENDED for event in events)
     return {
         "total_events": len(events),

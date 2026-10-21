@@ -21,6 +21,7 @@ class ZoneQueueItem(BaseModel):
     evidence: str
     queued_at: datetime
     group_reason: str
+    bounds: tuple[float, float, float, float] | None = None
 
 
 class ZoneQueuePage(BaseModel):
@@ -37,6 +38,7 @@ class ZoneQueuePage(BaseModel):
 
 
 class ZoneMembersPage(BaseModel):
+    zone_total: int | None = None
     zone_id: int
     zones: list[FloodAvoidanceZoneResponse]
     total: int

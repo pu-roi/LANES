@@ -1,6 +1,71 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 09:23 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Spatial Operations and Flood History — branch delivery checkpoint
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Documentation audited for the requested `roi-branch` handoff.
+
+- Active Zones groups only unambiguous matching road/city evidence whose original geometries are within 50 m; padded polygons cannot cause grouping. Needs Review retains its existing rules. Shared cards, individual actions and full-group camera bounds are preserved.
+- Flood Events has equal desktop map/list columns, shared admin tabs, shared 20-card pagination and access to all matching history. Saved polygons retain Needs Review's translucent severity fill; zone detail actions only fly the camera, including repeated clicks after panning. Existing historical/public/admin heatmap rendering and zoom transition are preserved; the proposed heatmap redesign is not delivered by this checkpoint.
+- Batched/narrow database reads, exact spatial candidate indexing, independent cards/maps/inspection, bounded map continuation, paged evidence and visible-view fetching are implemented. The standard local startup remains frontend 3000 and backend 8000 through `/api/v1`.
+- Existing acceptance evidence records 116 distinct portable backend passes, 19 targeted native checks, production browser and desktop/320 px interaction checks. The final camera-only change passes four browser checks, TypeScript and focused lint. These counts cover separate documented runs and are not a claim that every suite is clean.
+
+**Still open:** warm 10,000-zone grouping p95 is about 1.73 s against the 1 s target; the dense 10,000-zone mobile case still fails its 120 s wait. Cold/concurrent end-to-end and ordinary-inspection p95, operational map scale-browser coverage and human acceptance of overview aggregation remain unconfirmed. Broader native-suite failures and existing lint diagnostics are retained in the evidence.
+
+[Performance evidence](evaluations/spatial-history-scale-20261021/README.md) · [Map/camera evidence](evaluations/flood-history-map-20261021/README.md) · [Grouping/UI evidence](evaluations/spatial-zone-queues-20261021/README.md). No new dependency, model, migration or hosted deployment. Detailed implementation notes below describe their original local checkpoints.
+
+## Historical zone camera navigation
+
+“View zone on map” now frames the saved footprint without changing map selection, base fill or adding a blue focus overlay. Supporting-report evidence retains its separate focus overlay. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Four desktop/mobile browser checks pass, including 320 px and repeated fly-to after manual panning. Verification is recorded in the [existing map evaluation](evaluations/flood-history-map-20261021/README.md).
+
+## Spatial Operations and complete historical browsing — local implementation
+
+Implemented the [approved performance plan](plans/spatial-history-performance.md): narrow news projections, explicit batched zone serialization, spatial candidate indexing, lightweight counts, all-history SQL-paged cards, bounded viewport maps and paged inspection collections. Shared pagination, exact grouping/expiry/provenance, Needs Review, existing operational actions and heatmap styling remain. Frontend reads share zone query definitions, cancel obsolete requests, debounce text filters and defer mobile history map startup. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Nineteen targeted native checks pass on disposable PostGIS databases, including 1,000/10,000-record coverage and a 1,000-report inspection. Seventy-one targeted portable grouping/review/heatmap/authorization checks pass, with 116 distinct portable passes across the relevant runs. Ordinary desktop/320 px browsing passes, including final eight-check and six-check reruns for workspace retention, filtering and stable pagination. A read-only saved-data check returns zones 69 and 70 as separate cards, with unchanged geometry/lifecycle values. Recorded remote HTTP observations: queue 0.232 s / four data statements; group inspection 0.774 s / 15 statements; 20 historical cards 0.263 s / seven statements. These observations exclude normal authorization overhead and do not establish p95.
+
+**Scale acceptance remains qualified:** the dense 10,000-zone grouping benchmark exceeds the one-second warm target; browser stress and cold/concurrent real-network budgets remain open as documented in the [acceptance report](evaluations/spatial-history-scale-20261021/README.md). Overview aggregation still requires visual acceptance. No new dependency, model, migration, routing, environment file, commit or push changes.
+
+## Flood Event history — loading performance and local API recovery
+
+The observed port-3000 HTTP 500 was reproduced with no backend listener on port 8000. Starting the existing backend restores proxy connectivity. Browsing now requests `summary=true`, batches history locations/zones and event counts, cancels superseded filter reads, and caches fresh results for 30 seconds. Full evidence remains on event inspection; legacy history responses remain compatible. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Read-only HTTP measurements against the saved dataset: three legacy events originally required 45 SQL statements / 3.65 s; the revised summary returns all 56 events in seven statements / 1.31 s and the first 20-card page in eight statements / 0.51 s. Measurements are local observations, not latency guarantees. Twenty-nine targeted backend checks and four existing lifecycle-service checks pass; browser/type/lint results are recorded in the [existing acceptance report](evaluations/flood-history-map-20261021/README.md). No environment file, dependency, model or migration changes.
+
+## Active Zones — original geometry and matching locations
+
+Active Only now requires matching, complete road/city evidence and original geometries within 50 m. Saved source geometry takes precedence; otherwise valid linked report geometries are combined. Missing or contradictory locations and unavailable original geometry stay separate. Expanded routing polygons still supply full map bounds but cannot cause grouping. Needs Review keeps all existing rules. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Verification: 58 portable queue/review checks and 28 native PostGIS/expiry checks pass, with existing migrations applied only to an owned disposable database that was removed afterward. A read-only check of saved zones 69 and 70 now returns two individual groups and unchanged geometry/lifecycle fingerprints. **76 distinct desktop/mobile browser checks pass across the broad run and focused reruns**, with two layout-specific skips. The related-report test now checks map switching at 320 px and split view at 844 px, matching the existing responsive implementation. TypeScript and focused lint pass. [Acceptance and retry details](evaluations/spatial-zone-queues-20261021/README.md). No model, migration, dependency, routing, commit or push change.
+
+## Spatial Operations — Active Zones wording and wide touch layout
+
+Active Zones now says **Loading active zones**, **Loading zone history**, **Back to zones**, **Refresh zones** and **Retry zones**; its accessible search labels and surfaced API errors use zone terminology. Needs Review retains queue terminology. Spatial Operations layout now follows the 767/768 px width boundary independently of touch detection, so a 1920×1080 touch-emulated viewport keeps its fixed sidebar beside the map. Map touch interactions retain their prior behavior. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Verification: **16 backend and 23 desktop/mobile browser checks pass**, with one desktop skip for a mobile-only interaction. TypeScript and focused lint pass; LiveMap retains 11 existing errors versus 12 at HEAD with no introduced signatures. Wide mouse/touch and 320 px screenshots plus corrected landscape workspace bounds were checked. See the [existing grouped-zone report](evaluations/spatial-zone-queues-20261021/README.md). No grouping/eligibility, API path, dependency, migration, commit or push change.
+
+## Local environment cleanup — standard 3000/8000 startup
+
+Removed the redundant ignored `frontend/.env.development.local` override. Normal development keeps encrypted `frontend/.env.local`, its private decryption key and the existing `/api/v1` browser URL, forwarding through the existing port-8000 proxy default. Ctrl+Shift+B now selects **Start LANES Dev Server**. The explicitly selected ignored Local Plotting launcher supplies port 8003 only to its child frontend process and restores its caller's environment; it no longer needs a persistent frontend override. Backend test/MCP profiles and templates remain referenced and separate. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Retained configuration/key fingerprints are checked without exposing values. Task JSON and PowerShell parsing are verified; no replay, database/schema operation, dependency, commit or push is included. [Startup guide](guides/local-news-replay.md#current-local-startup--october-21-2026).
+
+## Flood Event Records — shared map presentation
+
+Pagination follow-up: the card list uses shared `Pagination` with a backend-enforced maximum of 20 events per page, total/page indicators and page-load retry. Filters reset to page 1; map picks resolve the containing card page; dialogs retain the current page. The map continues using the full filtered history window, preserving its existing 250-record limit and camera on page changes. 25 portable and two native PostGIS checks pass, plus 17 desktop/mobile browser checks with one desktop mobile-only skip. TypeScript/focused lint and 13-page footer checks at 1920/1024/768/320 px pass. Heatmap styling is unchanged. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Tab consistency follow-up: `/admin/flood-history` now uses the shared underline `Tabs` defaults, matching Moderation Center, Users and Settings. Removed its page-only stretching and sizing overrides; Analytics/Flood Events navigation remains intact. Five existing desktop/mobile history checks pass, with one desktop skip for a mobile-only interaction; TypeScript and focused lint pass. Computed styling matches Moderation Center, with screenshots and switching checked at 1920, 390 and 320 px. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Equal desktop columns now pair the historical map and records. Saved footprints draw automatically with Needs Review's translucent borderless fill; initial/filter framing includes the displayed footprints, with the existing mobile Map/List switch retained. Public, Spatial Operations and historical maps share one heatmap renderer and the original zoom 13–15 fade. History uses server-generated severity-weighted points from its displayed zones, preserving filters and historical/routing separation.
+
+Backend verification passes 72 checks (71 portable queue/review/history checks and one native PostGIS history check). Native acceptance applies existing migrations to head in an owned disposable database, verifies filtered points and read-only geometry/lifecycle preservation, then removes that database. **23 desktop/mobile Chromium browser checks pass**, with one desktop skip for a mobile-only interaction. TypeScript and focused lint pass; the legacy map-file lint comparison introduces no new error signatures. See [verification evidence and limits](evaluations/flood-history-map-20261021/README.md). No database model, migration, dependency, commit, push or deployment is included. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Active Zone group cards — immediate map focus
+
+Clicking or pressing Enter on an Active Only group card now fits the map to the full group, including members beyond the first detail page. Individual inspection still opens; mobile switches to the map and **Back to zones** returns to those records. Backend summaries provide display-only WGS84 bounds without geometry or lifecycle writes. Missing bounds surface a map error while inspection remains available.
+
+Follow-up verification: **54 backend checks** (50 queue/review and four native PostGIS checks), **16 desktop/mobile browser checks**, TypeScript and focused lint pass. The existing 12 LiveMap lint errors have no new signatures. Both desktop and 320 px mobile screenshots were inspected with mocked map/provider data. This follow-up is local and uncommitted. [Acceptance](evaluations/spatial-zone-queues-20261021/README.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Shared Spatial Operations queues — completed locally
 

@@ -1,7 +1,13 @@
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, field_serializer, model_validator
+from pydantic import BaseModel, ConfigDict, field_serializer, field_validator, model_validator
+from geoalchemy2.elements import WKBElement
+from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
+from shapely.errors import ShapelyError
+from app.schemas.report import FloodAvoidanceZoneResponse
+from app.schemas.common import PolygonGeometry, MultiPolygonGeometry
 
 from app.schemas.common import serialize_utc_datetime
 from app.services.flood_depth import get_flood_depth_measurement, format_flood_depth
@@ -12,6 +18,47 @@ from app.models.report import (
     ReportRejectionReason,
     ReportSeverity,
 )
+
+
+class HistoricalHeatmapPoint(BaseModel):
+    type: Literal["Point"] = "Point"
+    coordinates: tuple[float, float]
+
+
+class HistoricalHeatmapProperties(BaseModel):
+    event_id: int
+    zone_id: int
+    weight: int
+
+
+class HistoricalHeatmapFeature(BaseModel):
+    type: Literal["Feature"] = "Feature"
+    geometry: HistoricalHeatmapPoint
+    properties: HistoricalHeatmapProperties
+
+
+class HistoricalFloodZoneResponse(FloodAvoidanceZoneResponse):
+    """History remains inspectable when a footprint is absent or multipart."""
+    geometry: Optional[PolygonGeometry | MultiPolygonGeometry] = None
+
+    @field_validator("geometry", mode="before")
+    @classmethod
+    def convert_geometry(cls, value: Any) -> Any:
+        if isinstance(value, WKBElement):
+            try:
+                geometry = to_shape(value)
+                return mapping(geometry) if not geometry.is_empty and geometry.is_valid and geometry.geom_type in {"Polygon", "MultiPolygon"} else None
+            except (ValueError, TypeError, ShapelyError):
+                return None
+        return value
+
+
+class FloodEventHistoryPage(BaseModel):
+    items: list[dict[str, Any]]
+    total: int
+    page: int
+    pages: int
+    page_size: int
 
 
 class FloodEventLocationResponse(BaseModel):

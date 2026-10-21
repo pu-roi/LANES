@@ -1,6 +1,52 @@
 import { expect, type Page } from '@playwright/test';
 
 const now = new Date().toISOString();
+
+/** Fixture transport for legacy map reads and opt-in server-paginated cards. */
+export function floodHistoryResponse<T extends { id: number; locations: { location_type: string }[] }>(records: T[], requestUrl: string) {
+  const params = new URL(requestUrl).searchParams;
+  const items = (params.get('multiple_places') === 'true'
+    ? records.filter(record => record.locations.filter(location => location.location_type !== 'city').length > 1)
+    : records).slice(0, Number(params.get('limit') || (new URL(requestUrl).pathname.endsWith('/records') ? records.length : 100)));
+  if (!params.has('page')) return items;
+  const size = Number(params.get('page_size') || 20);
+  const pages = Math.max(1, Math.ceil(items.length / size));
+  const focused = items.findIndex(item => item.id === Number(params.get('focus_event_id')));
+  const page = focused >= 0 ? Math.floor(focused / size) + 1 : Math.min(Number(params.get('page')), pages);
+  const selected = items.slice((page - 1) * size, page * size);
+  const cards = new URL(requestUrl).pathname.endsWith('/records') ? selected.map(record => {
+    const { zones, heatmap_features: _heatmap, ...summary } = record as T & { zones?: unknown[]; heatmap_features?: unknown[] };
+    return { ...summary, zone_count: zones?.length ?? 0 };
+  }) : selected;
+  return { items: cards, page, pages, page_size: size, total: items.length };
+}
+
+/** Match the production bounded-map transport using fictional browser data. */
+export function floodMapResponse(records: { id: number; peak_severity: string; zones: { id: number; geometry: unknown }[]; heatmap_features?: unknown[] }[], requestUrl: string) {
+  const params = new URL(requestUrl).searchParams;
+  const selected = params.has('event_id') ? records.filter(record => record.id === Number(params.get('event_id'))) : records;
+  const pairs = (value: unknown): number[][] => !Array.isArray(value) ? [] : typeof value[0] === 'number' ? [value] : value.flatMap(pairs);
+  const features = selected.flatMap(record => record.zones.filter(zone => zone.geometry).map(zone => ({ type: 'Feature', geometry: zone.geometry,
+    properties: { event_id: record.id, zone_id: zone.id, severity: record.peak_severity } })));
+  const coordinates = features.flatMap(feature => pairs((feature.geometry as { coordinates: unknown }).coordinates));
+  const bounds = coordinates.length ? [Math.min(...coordinates.map(point => point[0])), Math.min(...coordinates.map(point => point[1])),
+    Math.max(...coordinates.map(point => point[0])), Math.max(...coordinates.map(point => point[1]))] : null;
+  const cursor = Number(params.get('cursor') || 0), chunk = features.filter(feature => feature.properties.zone_id > cursor).sort((a,b) => a.properties.zone_id-b.properties.zone_id);
+  const summary = params.get('summary_only') === 'true', zoom = Number(params.get('zoom') || 12);
+  return { features: summary || zoom < 14 ? [] : chunk.slice(0,250), heatmap_features: summary || zoom >= 15 ? [] : selected.flatMap(record => record.heatmap_features || []),
+    bounds, total: selected.length, mapped_count: features.length, unmapped_count: selected.filter(record => !record.zones.some(zone => zone.geometry)).length,
+    viewport_count: features.length, next_cursor: !summary && zoom >= 14 && chunk.length > 250 ? chunk[249].properties.zone_id : null };
+}
+
+export function zoneMapResponse(zones: { id: number; geometry: unknown }[], requestUrl: string) {
+  const base = floodMapResponse(zones.map(zone => ({ id: zone.id, peak_severity: 'medium', zones: [zone] })), requestUrl);
+  const summary = new URL(requestUrl).searchParams.get('summary_only') === 'true';
+  const cursor = Number(new URL(requestUrl).searchParams.get('cursor') || 0);
+  const selected = zones.filter(zone => zone.id > cursor).sort((a,b) => a.id-b.id);
+  return { ...base, features: summary ? [] : selected.slice(0,250).map(zone => ({ type: 'Feature', geometry: zone.geometry, properties: zone })),
+    next_cursor: !summary && selected.length > 250 ? selected[249].id : null };
+}
+
 export const fixtureZone = {
   id: 910, name: 'Fixture flood zone', is_active: true, severity: 'medium', depth: 'knee',
   created_at: now, updated_at: now, expires_at: null, contributors: [], news: [],
@@ -60,10 +106,19 @@ export async function installChrisFixtures(page: Page, role: 'Admin' | 'Commuter
       else if (path.endsWith('/feed/hotspots')) body = { hotspots: [], window_hours: 24, as_of: now };
       else if (path.endsWith('/news/local-updates')) body = { items: [], as_of: now };
       else if (path.endsWith('/reports/active-zones')) body = [fixtureZone];
+      else if (path.endsWith('/admin/zones/map')) body = zoneMapResponse([fixtureZone], url.href);
+      else if (path.endsWith('/admin/zones/count')) body = { total: 1 };
       else if (path.endsWith('/admin/zones/all')) body = { zones: [fixtureZone], total: 1 };
       else if (path.endsWith('/admin/zones/910')) body = fixtureZone;
       else if (path.endsWith('/admin/flood-events/analytics')) body = analytics;
-      else if (path.endsWith('/admin/flood-events/history')) body = [fixtureEvent];
+      else if (path.endsWith('/admin/flood-events/history')) body = floodHistoryResponse([fixtureEvent], url.href);
+      else if (path.endsWith('/admin/flood-events/records')) body = floodHistoryResponse([fixtureEvent], url.href);
+      else if (path.endsWith('/admin/flood-events/map')) body = floodMapResponse([fixtureEvent], url.href);
+      else if (path.endsWith('/admin/flood-events/920/inspection')) body = fixtureEvent;
+      else if (path.includes('/admin/flood-events/920/inspection/')) {
+        const collection = path.split('/').pop() as 'zones' | 'reports' | 'timeline' | 'locations';
+        body = { items: fixtureEvent[collection], total: fixtureEvent[collection].length, page: 1, pages: 1, page_size: 20 };
+      }
       else if (path.endsWith('/admin/flood-events/920/history-detail')) body = fixtureEvent;
       else if (path.includes('/updates')) body = { updates: [], next_before_id: null, can_review: true };
       else if (path.endsWith('/admin/review/items')) body = { items: [], total: 0, page: 1, page_size: 20, pages: 1,

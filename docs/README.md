@@ -1,6 +1,18 @@
 # LANES documentation
 
-> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 09:23 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current spatial/history delivery checkpoint
+
+[Progress summary](progress.md#spatial-operations-and-flood-history--branch-delivery-checkpoint) · [Remaining acceptance tasks](task_plan.md#spatial-operations-and-complete-flood-history-performance--implemented-acceptance-qualified). The requested `roi-branch` handoff includes stricter 50 m original-geometry grouping, all-history 20-card browsing, shared map presentation, camera-only zone navigation and coordinated bounded reads. The latest camera fix passes four desktop/mobile browser checks, TypeScript and focused lint. Scale latency/mobile stress and overview visual acceptance remain open. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Spatial Operations and complete Flood History browsing
+
+[Approved performance plan](plans/spatial-history-performance.md) · [Implementation, 1,000/10,000-record measurements and acceptance limits](evaluations/spatial-history-scale-20261021/README.md). Smaller batched reads, exact indexed grouping, complete SQL-paged historical cards, bounded map responses and paged inspection. Local implementation is delivered; dense grouping/mobile, cold/concurrent latency and overview visual acceptance remain explicitly qualified. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Flood Event Records map consistency
+
+[Equal columns, shared Needs Review styling, historical heatmap data and verification](evaluations/flood-history-map-20261021/README.md). Preserves saved footprints, historical filters, individual evidence and routing separation. Verified locally with 72 backend and 23 desktop/mobile Chromium checks; one desktop mobile-only skip. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Shared Spatial Operations queues — verified locally
 

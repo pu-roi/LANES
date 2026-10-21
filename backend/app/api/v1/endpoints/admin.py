@@ -17,9 +17,10 @@ from app.models.post import CommunityPost, CommunityPostReport
 from app.models.notification import Notification, NotificationType
 from app.services.flood_event_service import (
     build_flood_event_history_query,
+    flood_history_window,
+    flood_history_records,
     create_verified_event_with_zone,
     deactivate_zone_and_end_event_if_final,
-    get_flood_event_planning_analytics,
     get_event_metrics,
     initialize_verified_event_for_zone,
     link_supporting_report,
@@ -30,6 +31,7 @@ from app.services.flood_event_service import (
 from app.services.visitor_analytics_service import get_visitor_analytics
 from app.services.flood_zone_growth_service import compose_reviewed_coverage, validate_active_target
 from app.services.flood_feature_service import capture_features
+from app.schemas.flood_event import FloodEventHistoryPage, HistoricalFloodZoneResponse
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -330,12 +332,23 @@ def list_flood_event_history(
     road: Optional[str] = None,
     search: Optional[str] = None,
     limit: int = 100,
+    page: Optional[int] = None,
+    page_size: int = 20,
+    focus_event_id: Optional[int] = None,
+    multiple_places: bool = False,
+    summary: bool = False,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
-) -> list[dict[str, Any]]:
+) -> list[dict[str, Any]] | FloodEventHistoryPage:
     """Return filtered, admin-only historical records with isolated event map data."""
     if limit < 1 or limit > 250:
         raise HTTPException(status_code=422, detail="Limit must be between 1 and 250")
+    if page is not None and page < 1:
+        raise HTTPException(status_code=422, detail="Page must be at least 1")
+    if page_size < 1 or page_size > 20:
+        raise HTTPException(status_code=422, detail="Page size must be between 1 and 20")
+    if focus_event_id is not None and focus_event_id < 1:
+        raise HTTPException(status_code=422, detail="Event ID must be positive")
     try:
         query = build_flood_event_history_query(
             db,
@@ -346,33 +359,19 @@ def list_flood_event_history(
             barangay=barangay,
             road=road,
             search=search,
+            multiple_places=multiple_places,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    events = query.order_by(models.FloodEvent.verified_at.desc()).limit(limit).all()
-    records: list[dict[str, Any]] = []
-    for event in events:
-        locations = db.query(models.FloodEventLocation).filter(
-            models.FloodEventLocation.event_id == event.id
-        ).order_by(models.FloodEventLocation.location_type, models.FloodEventLocation.display_name).all()
-        zones = db.query(models.FloodAvoidanceZone).filter(
-            models.FloodAvoidanceZone.event_id == event.id
-        ).order_by(models.FloodAvoidanceZone.created_at.asc()).all()
-        records.append({
-            **schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
-            **get_event_metrics(db=db, event=event),
-            "locations": [
-                schemas.FloodEventLocationResponse.model_validate(location).model_dump(mode="json")
-                for location in locations
-            ],
-            # These are event-owned historic copies, never the live routing source.
-            "zones": [
-                schemas.FloodAvoidanceZoneResponse.model_validate(zone).model_dump(mode="json")
-                for zone in zones
-            ],
-        })
-    return records
+    try:
+        events, pagination = flood_history_window(query, limit=limit, page=page,
+            page_size=page_size, focus_event_id=focus_event_id)
+        records = flood_history_records(db, events, summary=summary)
+    except SQLAlchemyError as exc:
+        logger.exception("Flood Event history database read failed")
+        raise HTTPException(503, "Flood Event records are temporarily unavailable. Please try again.") from exc
+    return FloodEventHistoryPage(items=records, **pagination) if pagination is not None else records
 
 
 @router.get("/flood-events/analytics")
@@ -389,7 +388,7 @@ def get_flood_event_analytics(
 ) -> dict[str, Any]:
     """Return filtered city-planning analytics where one Flood Event counts once."""
     try:
-        events = build_flood_event_history_query(
+        query = build_flood_event_history_query(
             db,
             status_filter=status_filter,
             severity=severity,
@@ -398,10 +397,11 @@ def get_flood_event_analytics(
             barangay=barangay,
             road=road,
             search=search,
-        ).order_by(models.FloodEvent.verified_at.asc()).all()
+        )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    return get_flood_event_planning_analytics(db, events)
+    from app.services.spatial_browse_service import planning_metrics
+    return planning_metrics(db, query)
 
 
 @router.get("/flood-events/export")
@@ -424,7 +424,7 @@ def export_flood_event_planning_data(
     if export_format not in {"csv", "json"}:
         raise HTTPException(status_code=422, detail="Export format must be csv or json")
     try:
-        events = build_flood_event_history_query(
+        query = build_flood_event_history_query(
             db,
             status_filter=status_filter,
             severity=severity,
@@ -433,14 +433,15 @@ def export_flood_event_planning_data(
             barangay=barangay,
             road=road,
             search=search,
-        ).order_by(models.FloodEvent.verified_at.desc()).all()
+        )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
+    from app.services.spatial_browse_service import planning_metrics
     payload: Any = (
-        serialize_flood_event_planning_records(db, events)
+        serialize_flood_event_planning_records(db, query.order_by(models.FloodEvent.verified_at.desc(), models.FloodEvent.id.desc()).all())
         if export_type == "records"
-        else get_flood_event_planning_analytics(db, events)
+        else planning_metrics(db, query)
     )
     filename = f"lanes_flood_event_{export_type}.{export_format}"
     headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
@@ -524,7 +525,7 @@ def get_flood_event_history_detail(
         **schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
         **get_event_metrics(db=db, event=event),
         "locations": [schemas.FloodEventLocationResponse.model_validate(location).model_dump(mode="json") for location in locations],
-        "zones": [schemas.FloodAvoidanceZoneResponse.model_validate(zone).model_dump(mode="json") for zone in zones],
+        "zones": [HistoricalFloodZoneResponse.model_validate(zone).model_dump(mode="json") for zone in zones],
         "reports": [schemas.FloodReportResponse.model_validate(report).model_dump(mode="json") for report in reports],
         "timeline": [schemas.FloodEventTimelineEntryResponse.model_validate(entry).model_dump(mode="json") for entry in timeline],
     }
@@ -2184,6 +2185,7 @@ async def create_official_zone(
 @router.get("/zones/{zone_id}", response_model=schemas.FloodAvoidanceZoneResponse)
 def get_zone(
     zone_id: int,
+    summary: bool = False,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Any:
@@ -2197,6 +2199,9 @@ def get_zone(
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
+    if summary:
+        from app.services.zone_queue_service import zone_details
+        return zone_details(db, [{"id": zone_id}], brief=True)[0]
     return _attach_report_media(zone)
 
 
