@@ -1,0 +1,228 @@
+{
+  "ai_assisted_silver": true,
+  "application_connected": false,
+  "baseline_evidence_gaps": 0,
+  "bindings": {
+    "analysis_manifest_sha256": "5f14094bc3c896025170a17d2beef79b072de635961051ea81b563bf033e94bb",
+    "fixture_qualification_sha256": "160e47584fec4718f5990dc51da1987f40f5745540556a134bf9667448ebd71b",
+    "freeze_sha256": "b0660ed78786374d58196a63f95358bcc361ddca1b05daeb5f130dc87af53d44",
+    "grant_sha256": "235ad5030ce8a5a420f39c6159990eb2b94498393353b1cbd394cf9257477477",
+    "implementation": {
+      "backend/training/__init__.py": "46d6fec0fcf151b67229d747b2acb74352abcf649e66a77eb30d20c82b1368a2",
+      "backend/training/flood_ner/__init__.py": "5422b9618f898398d03a6319fbbd6eede797dadca4e4ded71a8ef2a2cebb9511",
+      "backend/training/flood_ner/annotation/__init__.py": "8b9527e11a220f423e87cb12f4cc01e8c1944c3ef85a6862d26f7bbf16b49b83",
+      "backend/training/flood_ner/annotation/context_review.py": "6e5101a9bc27d60cf3a5e275647914aec243e7a0744234dd609b3a7287476d65",
+      "backend/training/flood_ner/annotation/schema.py": "f43c50101c729ccae1d01036760289b865be6b2fdfba168173046e27932954a2",
+      "backend/training/flood_ner/annotation/validation.py": "a2753a90badf3d6dbea24e5d50398e3d21005242a7640085eb238755dcbe6c75",
+      "backend/training/flood_ner/collection.py": "82daae339e9dc71175e275b635a1ee77b5a5b873672b53ddbebb9f6adcadf8ee",
+      "backend/training/flood_ner/context_acceptance.py": "4744171534962782edb29eb44f43d1b9e7283cbd2563b68beb1c62deddf8c9f3",
+      "backend/training/flood_ner/context_association.py": "b0299ca99b6360bf5a19eb1a7460ac3f8f6ccdff33ed4ebae7b840f083db303a",
+      "backend/training/flood_ner/context_association_cases_v35.py": "25d7d4f62345200862e7b3b6066f314e6c5a45556fc89cd712f416dc9affea1b",
+      "backend/training/flood_ner/context_association_run.py": "363a39bd9d5e6ffe44558ba9bdee541ffccab20d5a7c89b401c24f1037c2a945",
+      "backend/training/flood_ner/context_association_run_v35.py": "92dabf34d0000fedef37daf1a8fc48e330092f6c2b9b961674a17544476bfc0b",
+      "backend/training/flood_ner/context_association_scoring.py": "1471296c5559d57bbef3565bc5b2da0673d1823631e2db1d94a15f9a4dfa00ac",
+      "backend/training/flood_ner/context_association_scoring_v35.py": "d462fcb1c56969c8b6e4896bab86905b557be22deb5bdb2fb0d4e7ed639003fb",
+      "backend/training/flood_ner/context_association_v35.py": "dffd859206370e736db121d3592b54ef524383d5e78f578045ed73795df3b711",
+      "backend/training/flood_ner/context_association_worker.py": "a45a17e1d9a48b4c4c5ca9a7f1f83390ae14c9a38d89e41ec042f5ed9dca3195",
+      "backend/training/flood_ner/context_association_worker_v35.py": "ec2b2d4d0a81b5f7711eb6beff26261a88e8d5d9d64353822835de2bbe2c44d2",
+      "backend/training/flood_ner/context_gap_audit.py": "4c9a2cd1d285f04544d1f983a5a15eba335a8c6bd797d4653b19768a6ce6fc8f",
+      "backend/training/flood_ner/context_gap_runner.py": "f477f8f47d025b8399cfd2a2aa222eefad89ad9dc154da6ccb4e395448ef2a14",
+      "backend/training/flood_ner/context_gap_worker.py": "62e544f636b150061c9eca35bc54ac9d1b1de2a4e00716742115831028697e8b",
+      "backend/training/flood_ner/context_revision_v35.py": "c582b020e9272e389597935103194e9e433f754920c752a27ca2e972de8e2f61",
+      "backend/training/flood_ner/corrected_rules_worker.py": "a58a3fa649004a7ba872c1d315cc20235081ea9750fb46c50f92f1cbb8bab512",
+      "backend/training/flood_ner/linux_runtime_v29.py": "ce5c0e0d54331138412bdc31dc7840c3e6ee5f7a50d4a653609a1eb97c970819",
+      "backend/training/flood_ner/runtime_preflight.py": "ba21503a2d3335fac7d44c25b7ed71761d69748e6b761867a03e7c0c91ffddf3",
+      "backend/training/flood_ner/sources.py": "f515efdb6bcea898a8a0bf2fb529e390352a9f4ba817da98e19ced490ceb3c7e",
+      "backend/training/flood_ner/window.py": "783b5bd974bc7d23b6a97a39cdaeba1a46e428c02f8eafe2ddd9c088af132510"
+    },
+    "reference_qualification_sha256": "284bd039a5149cccbb4439e10a88c1c25b17047e5d6ed994f91ce463f440fa34",
+    "source_only_review_freeze_sha256": "33665dce48b4ffa4ca230ffb8ce5cb8cc647da40d76df865e8604466c7e231d1",
+    "source_only_review_manifest_sha256": "9510173461539a49925ee62ebb878da9266b5f6f9363f5824ebfc20415d58bb5",
+    "source_result_review_sha256": "d6e8e6783b0be6222bc4a599b05f672a248b6c4650a506fed4f837e73d159a68",
+    "test_receipt_sha256": "dd620fbb2e740bda12b0ca69c266702f10490840be9fe4099af8ebe8db8deabd",
+    "tests": {
+      "backend/tests/test_flood_ner_context_association_v35.py": "e591bc02a3753be20dd12742a10fea97b5939c72794eb311b3214d8a45f8166d",
+      "backend/tests/test_flood_ner_context_association_v35_execution.py": "ab7cd9109d924f38d3d4d3f7312232454048e63313cecae96691d077eb3d43ec",
+      "backend/tests/test_flood_ner_context_revision_v35.py": "fa53fa7d687664e14174a702bbf50bdbc1a6c5f9bdeb86ece747f4a0c78903b2"
+    }
+  },
+  "blockers": [
+    "introduced_incorrect_resolved_associations"
+  ],
+  "candidate_abstentions": {
+    "unassigned_facts": 52,
+    "unresolved_links": 0
+  },
+  "carried_holds": 2,
+  "connected_groups": 13,
+  "eligible_references": 23,
+  "execution": {
+    "active_lease_cleared": true,
+    "attempts": 1,
+    "consumed_claim_sha256": "d8bf80c3f984104caf91d222ea85c00668e6a859d48b4deae9bcc95f24b8e350",
+    "cpus": 2,
+    "execution": {
+      "application_connected": false,
+      "cold_seconds": 2.562999999998283,
+      "eligible_references": 23,
+      "image_id": "sha256:a51ce2a6b0f19f382ce96bf63c265e060b37112098176c97c66c23e887794680",
+      "neural_inference": false,
+      "records": 88,
+      "status": "offline_successor_worker_completed",
+      "training_started": false,
+      "wall_seconds": 3.9219999999986612
+    },
+    "maximum_input_seconds": 0.003983766999226646,
+    "memory_bytes": 4294967296,
+    "models_or_references_mounted": false,
+    "network": "none",
+    "neural_inference": false,
+    "oom_killed": false,
+    "read_only_assets": true,
+    "records": 88,
+    "saved_rules_and_v34_outputs_reused": true,
+    "status": "verified_completed_not_qualified",
+    "stopped_pid_zero_exit_zero": true
+  },
+  "fictional_cases": 64,
+  "fictional_failed": 0,
+  "fictional_passed": 64,
+  "fixture_facets": "All explicitly specified fact kinds; unspecified extras remain unmeasured.",
+  "fixture_families": {
+    "abbreviated_lists": {
+      "cases": 4,
+      "passed": 4
+    },
+    "collective_ranges": {
+      "cases": 4,
+      "passed": 4
+    },
+    "facility_scope": {
+      "cases": 4,
+      "passed": 4
+    },
+    "flood_evidence": {
+      "cases": 4,
+      "passed": 4
+    },
+    "forecast": {
+      "cases": 4,
+      "passed": 4
+    },
+    "historical_update": {
+      "cases": 4,
+      "passed": 4
+    },
+    "negation": {
+      "cases": 4,
+      "passed": 4
+    },
+    "observation_onset": {
+      "cases": 4,
+      "passed": 4
+    },
+    "parallel_updates": {
+      "cases": 4,
+      "passed": 4
+    },
+    "ranges_qualifiers": {
+      "cases": 4,
+      "passed": 4
+    },
+    "recession_clearance": {
+      "cases": 4,
+      "passed": 4
+    },
+    "row_measurements": {
+      "cases": 4,
+      "passed": 4
+    },
+    "scope_boundaries": {
+      "cases": 4,
+      "passed": 4
+    },
+    "separate_depth_shared_time": {
+      "cases": 4,
+      "passed": 4
+    },
+    "shared_depth": {
+      "cases": 4,
+      "passed": 4
+    },
+    "temporal_evidence": {
+      "cases": 4,
+      "passed": 4
+    }
+  },
+  "gained_correct_links": 39,
+  "generalization_claim": false,
+  "introduced_incorrect_links": 7,
+  "lost_correct_links": 0,
+  "neural_inference": false,
+  "new_holds": 1,
+  "original_reference_outcome": {
+    "eligible_references": 24,
+    "gained_correct_links": 39,
+    "introduced_incorrect_links": 8,
+    "lost_correct_links": 0,
+    "status": "not_qualified",
+    "v34_correct_links_lost": 0
+  },
+  "preservation": {
+    "frozen_implementation_tests_workload_preserved": true,
+    "holdout_content_read": false,
+    "holdout_stat_only_entries": 55,
+    "previous_validation_stat_only_entries": 27,
+    "protected_file_hashes": 1383,
+    "reproduced_analysis_files": 12,
+    "reproduction_byte_identical": true,
+    "source_review_freeze_preserved": true,
+    "status": "preserved",
+    "training_started": false,
+    "v33_v34_additional_predecessor_files": 231,
+    "validation_records_processed": 0
+  },
+  "previously_correct_reference_dispositions": {
+    "retained": 40
+  },
+  "qualifier_failures": 0,
+  "raw_training_inputs": 24,
+  "reference_dispositions": {
+    "correct_proposed": 14,
+    "hold": 1,
+    "retain_proposed": 9
+  },
+  "reference_review": {
+    "corrected": 14,
+    "input_manifest_self_entry_defect_documented": true,
+    "isolated_source_only": true,
+    "new_holds": 1,
+    "not_universally_blinded": true,
+    "prediction_or_error_targeting_supplied": false,
+    "prior_holds_unchanged": 2,
+    "records_reviewed": 24,
+    "retained": 9,
+    "total_dispositions": 26
+  },
+  "reference_unknowns": {
+    "carried_holds": 2,
+    "new_holds": 1,
+    "unassigned_facts": 24,
+    "unresolved_links": 2
+  },
+  "schema": "lanes-context-association-repair-aggregate-v35",
+  "status": "not_qualified",
+  "training_started": false,
+  "v34_correct_links_gained": 2,
+  "v34_correct_links_lost": 0,
+  "verification": {
+    "extraction_attempts": 1,
+    "fictional_schema_tokenizer_qualified": 64,
+    "fresh_passing_tests": 470,
+    "new_constructed_tests": 111,
+    "original_rules_or_v34_rerun": false,
+    "reference_schema_tokenizer_qualified": 24,
+    "reproduced_saved_analysis_files": 12,
+    "upstream_warnings": 1
+  }
+}

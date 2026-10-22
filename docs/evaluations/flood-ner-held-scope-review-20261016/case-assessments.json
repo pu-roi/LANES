@@ -1,0 +1,552 @@
+[
+  {
+    "acquisition": "Unknown / Codex collected",
+    "admission_applied": false,
+    "body_characters": 2356,
+    "body_reference": {
+      "path": "backend/training/flood_ner/artifacts/captures/52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7.txt",
+      "sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d"
+    },
+    "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+    "contractual_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "credit_review": {
+      "agency_marker_evidence": [],
+      "author_identity": "unknown",
+      "body_byline_evidence": [],
+      "note": "Agency mentions/site footers are cues, not proof of ownership or article syndication.",
+      "parse_error": null,
+      "raw_site_notice_markers": [],
+      "rights_holder_verified": false,
+      "structured_authors": []
+    },
+    "current_scope_decision_changed": false,
+    "findings": {
+      "amount": "The new aggregate is five nonoverlapping windows/961 characters from the 2,356-character complete article, compared with eight/1,468 previously. It removes the Cebu/barging paragraph, the defense/criticism paragraph and the later NBSP beach causal paragraph. It still takes central causal and recommendation language; the retained price sentence is not described as insignificant. Whole-source retention remains 100 percent. The earlier bounded research-revision inventory recorded 64 embedded full-body representations, with older archives separately referenced; that historical count is not a current all-device census. Reducing selected text neither removes those files nor makes every copy necessary.",
+      "change_reason": "The prior hold concerned eight windows retaining intervening evaluative framing without a complete aggregate explanation. The new content union removes three actual regions rather than merely repartitioning them, and the five confirmations now explain why names inside attributed, recent, habitual and preventive clauses remain distinct annotation cases. This is a substantive selection and analytical finding; no new publisher permission or changed law is claimed. The project accepts remaining expressive, archive and contract uncertainty only for the stated private analytical use.",
+      "market_effect": "The present use is owner-only academic analysis with restricted storage, source attribution and no public reading interface, text attachment, model distribution or production deployment. The five windows are not offered to substitute for the opinion article. There is no measured news-licensing or future model-reconstruction evidence, so absence of market harm is not asserted. Existing duplicates create additional copying exposure even without distribution. The small private purpose and exact analytical contrasts support this limited project adoption despite the expressive passages and unknown licensing effect; they do not authorize another market or public use.",
+      "nature": "This is a published editorial containing a reported MMDA account, recent traffic observations, an alleged causal explanation, cost criticism and a mangrove recommendation. Its factual place names do not make the authored phrasing or persuasive selection unprotected. The surviving recommendation and criticism count against a claim that only bare facts are copied. No separate agency ownership cue was established from the saved body/header review, but missing credits are not proof that Philstar owns every right.",
+      "necessity": "Each retained unit has an identified role: the outlet list establishes three LANDMARK boundaries including Estero San Antonio Abad; the adjacent reported account changes Remedios to ROAD beside Taft; the two-road/passability unit retains coordinated proper names; the habitual Taft sentence keeps a road label valid inside historical/causal criticism rather than asserting fresh flooding; and the Roxas recommendation is a positive road mention in hypothetical protection language. These roles explain keeping source-exact clauses around the names, instead of just copying a list of names. The aggregate no longer preserves the wider chain of beach material, expense defense and later causal conclusion. This is a reasonable selected scope for these research contrasts, not a claim of unique indispensability, accuracy gains, or justification from road/landmark quotas alone.",
+      "next_action": "Carry this scoped AI-authored project adoption forward only with the reviewed five-window membership and hashes when a separately authorized revision is assembled. Keep the current eight-window hold and all current admission flags unchanged. Record archive/retention uncertainty in that revision; any public text, deployment or distribution scope needs its separate decision. No publisher reply or additional adviser acknowledgment is imposed as a universal prerequisite.",
+      "purpose": "The proposed five-window scope is used privately to mark where road/outfall names begin and end, while keeping different factual and modal contexts distinguishable. It compares Remedios as an outlet with Remedios as a street, coordinates Taft/UN road names, and places Roxas Boulevard inside prevention language. The analytical output is annotated occurrences and separately reviewed context, not an editorial digest. This serves a different project function from persuading readers about the beach project, but the change of function is an AI assessment rather than a settled legal classification of NER."
+    },
+    "independent_human_review_claimed": false,
+    "inherited_copy_evidence": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 64,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "latest_generated_copy_inventory": {
+      "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/copy-inventory.json",
+      "sha256": "4bb87b44bebd76eb08a5981926352fc3eefb7a11bb25f4772f8ceb5f960c623a"
+    },
+    "legal_approval_claimed": false,
+    "new_complete_body_copies_in_this_checkpoint": 0,
+    "permission_claimed": false,
+    "prior_current_scope_decision": "retain_hold",
+    "prior_selected_characters": 1468,
+    "proposed_decision": "adopt_private_academic_basis",
+    "proposed_selected_characters": 961,
+    "publisher": "Philstar",
+    "retained_complete_body_fraction": 1.0,
+    "retention": "not_decided",
+    "selected_samples": [
+      {
+        "analytical_role": "Three separately named drainage outlets are LANDMARKs. Remedios here is an outfall, contrasting with its ROAD sense in the adjacent selected window. Manila Bay remains a water body outside the profile, and MMDA/Don Artes are not place labels. Attribution and 2021 project history do not establish a present flood time.",
+        "end": 388,
+        "language": "taglish",
+        "record_id": "revision3-0c1b2b0cfc686a8277f2",
+        "sha256": "f5914d8633ea032d08e6e1d6aa3c29729e847e330dc09992963612fc293ac56a",
+        "source_evidence": {
+          "end": 388,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7.txt",
+            "sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d"
+          },
+          "span_sha256": "f5914d8633ea032d08e6e1d6aa3c29729e847e330dc09992963612fc293ac56a",
+          "start": 182
+        },
+        "split": "train",
+        "start": 182
+      },
+      {
+        "analytical_role": "Roxas Boulevard is ROAD; Manila Bay is a water body outside this profile. The complete recommendation and following predicted protection sentence show a road name inside counterfactual prevention, rather than a current inundation. Mangroves is common English lexical material; no flood status is implied by that language decision.",
+        "end": 2182,
+        "language": "taglish",
+        "record_id": "revision3-2e6d6e87683e02351c89",
+        "sha256": "04df31d0f2fa5312c8429a3959273e88deb8c8b99925641114cb39c1fe995c38",
+        "source_evidence": {
+          "end": 2182,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7.txt",
+            "sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d"
+          },
+          "span_sha256": "04df31d0f2fa5312c8429a3959273e88deb8c8b99925641114cb39c1fe995c38",
+          "start": 2003
+        },
+        "split": "train",
+        "start": 2003
+      },
+      {
+        "analytical_role": "Taft Avenue and UN Avenue are both ROAD. The complete two-sentence unit preserves reported vehicle difficulty and stranded passengers; last week is relative report wording, not a fabricated absolute clock. The untranslated stranded stem contributes to the operational Taglish convention.",
+        "end": 951,
+        "language": "taglish",
+        "record_id": "revision3-45fa2d7e6daee2528fa6",
+        "sha256": "985975e34f7e4fb5a8c868ee1661f5661f778ca046b6b58daf4cd11eded09477",
+        "source_evidence": {
+          "end": 951,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7.txt",
+            "sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d"
+          },
+          "span_sha256": "985975e34f7e4fb5a8c868ee1661f5661f778ca046b6b58daf4cd11eded09477",
+          "start": 781
+        },
+        "split": "train",
+        "start": 781
+      },
+      {
+        "analytical_role": "Taft Avenue is the only ROAD occurrence. The source also names Manila Bay, an excluded water body. Habitual flooding and a project-cost criticism remain in the sentence; the P389 million amount is not a depth or address. This differs from the preceding recent-passability unit and must not become an observed current flood assertion.",
+        "end": 1142,
+        "language": "taglish",
+        "record_id": "revision3-4b06ccbc5cc68816f84c",
+        "sha256": "0490bb6ff4104e9443d756127591ce92f1216e09aa192570778b816102b7eadf",
+        "source_evidence": {
+          "end": 1142,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7.txt",
+            "sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d"
+          },
+          "span_sha256": "0490bb6ff4104e9443d756127591ce92f1216e09aa192570778b816102b7eadf",
+          "start": 952
+        },
+        "split": "train",
+        "start": 952
+      },
+      {
+        "analytical_role": "Dolomite Beach is LANDMARK; Remedios and Taft Avenue are ROAD. Source wording separates the outfall closure from the qualified rainy-season causal account. The exact contextual shift in Remedios is the reason to retain both this and the outlet-list window; no inferred OSM identity is assigned.",
+        "end": 606,
+        "language": "taglish",
+        "record_id": "revision3-93e4a4482562c5e56f57",
+        "sha256": "dbd75eead36d01d4af09e3081d62190610af97d4ccaf5eff53033c6b36a8f4d0",
+        "source_evidence": {
+          "end": 606,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7.txt",
+            "sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d"
+          },
+          "span_sha256": "dbd75eead36d01d4af09e3081d62190610af97d4ccaf5eff53033c6b36a8f4d0",
+          "start": 390
+        },
+        "split": "train",
+        "start": 390
+      }
+    ],
+    "source_id": "news-1856c6263451d088",
+    "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+  },
+  {
+    "acquisition": "Unknown / Codex collected",
+    "admission_applied": false,
+    "body_characters": 2420,
+    "body_reference": {
+      "path": "backend/training/flood_ner/artifacts/captures/518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e.txt",
+      "sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1"
+    },
+    "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+    "contractual_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "credit_review": {
+      "agency_marker_evidence": [],
+      "author_identity": "unknown",
+      "body_byline_evidence": [],
+      "note": "Agency mentions/site footers are cues, not proof of ownership or article syndication.",
+      "parse_error": null,
+      "raw_site_notice_markers": [],
+      "rights_holder_verified": false,
+      "structured_authors": []
+    },
+    "current_scope_decision_changed": false,
+    "findings": {
+      "amount": "Five complete sentences total 503 characters of a 2,420-character source, compared with three windows totaling 629. The new scope excludes the general-thesis/current conclusion pair and their extended final call, replacing them with three named occurrences and two specific generic controls. One sentence qualifies its inference with marahil; the November 2022 count is retained as written. Full-body retention is still 100 percent. The inherited bounded revision inventory measured 33 embedded body representations and references an older archive inventory; neither is treated as a count of distinct articles or a complete desktop/Drive census.",
+      "change_reason": "The earlier scope was a historical province paragraph plus generic thesis and final advocacy. This proposal substitutes a different five-sentence content union, drops the culminating advocacy and documents each named/generic contrast. The change is substantive even though all historical full-body copies remain retained. Existing evidence is reweighed for this new analytical amount, with no inference of publisher approval or new statutory exemption specific to NER.",
+      "market_effect": "The private labels and contextual notes do not function as a logging opinion article, a publicly searchable news copy or a substitute subscription product. No text/model redistribution or deployed use is included. Market effects and machine-processing licensing are unmeasured; retaining the whole article and repeated archival copies weighs adversely rather than vanishing because only 503 characters are selected. Under the narrow private workflow, the specifically explained five-sentence amount is accepted as a limited project basis, not a conclusion that all machine learning or all future reuse is harmless.",
+      "nature": "The complete work is an editorial: a disaster comparison is joined to causal inferences and a final call for government action. The proposed sentences still include speculative causation and cannot be called wholly uncreative fact. The named historical/town examples are more informational than the removed culminating prescription, while the two generic sentences retain authored phrasing. Published availability does not establish permission or settle the unknown website terms.",
+      "necessity": "The first sentence leaves probinsiya generic despite nearby named geography; the second explicitly labels Batangas within a qualified inference; the third explicitly names Agoncillo but supplies no written parent province; the fourth names Maguindanao del Norte while its November 2022/100-person context must not become an address or present observation; the last has a generic cause with no named feature. The two empty-label cases have different roles, parent non-propagation and absence of named location in a causal statement. The three positives and two controls are not a reproduction of the editorial narrative or final prescription. Their individual source-exact contexts support this selected research scope without claiming that quotas, factual words, or an observed model failure make them indispensable.",
+      "next_action": "Use the five reviewed sentence IDs and evidence only in the proposed revision; preserve the former three-window decision and current corpus. Keep historical-event chronology and unresolved parent identities explicit. Carry the stated duplicate-retention and contract limitations into any later admission proposal, without presenting the adopted project basis as publisher permission or a human legal opinion.",
+      "purpose": "The five source-exact sentences privately contrast an unnamed province and generic logging cause with named Batangas, Agoncillo and Maguindanao del Norte. The historical province sentence also supplies a date/count negative for the separate contextual task. The research analyzes entity boundaries and the absence of place identifiers, not whether logging caused a disaster or whether the editorial recommendation is correct. Keeping the attribution and uncertainty visible in review notes avoids using annotation as factual verification."
+    },
+    "independent_human_review_claimed": false,
+    "inherited_copy_evidence": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 33,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "latest_generated_copy_inventory": {
+      "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/copy-inventory.json",
+      "sha256": "4bb87b44bebd76eb08a5981926352fc3eefb7a11bb25f4772f8ceb5f960c623a"
+    },
+    "legal_approval_claimed": false,
+    "new_complete_body_copies_in_this_checkpoint": 0,
+    "permission_claimed": false,
+    "prior_current_scope_decision": "retain_hold",
+    "prior_selected_characters": 629,
+    "proposed_decision": "adopt_private_academic_basis",
+    "proposed_selected_characters": 503,
+    "publisher": "Philstar",
+    "retained_complete_body_fraction": 1.0,
+    "retention": "not_decided",
+    "selected_samples": [
+      {
+        "analytical_role": "This causal negative complements the named historical/town windows but does not introduce a new current incident or resolve the editorial causal claim as fact.",
+        "end": 1832,
+        "language": "taglish",
+        "record_id": "heldproposal-0cfe5369e42f69261057",
+        "sha256": "dfff9856093f903fad79de4ea031023ed75b02d872233f7f40bc91c8a86ef7d3",
+        "source_evidence": {
+          "end": 1832,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e.txt",
+            "sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1"
+          },
+          "span_sha256": "dfff9856093f903fad79de4ea031023ed75b02d872233f7f40bc91c8a86ef7d3",
+          "start": 1766
+        },
+        "split": "train",
+        "start": 1766
+      },
+      {
+        "analytical_role": "The retained town name supplies a municipality example inside a landslide comparison, without labeling generic houses or assuming a current mapped flood zone.",
+        "end": 769,
+        "language": "taglish",
+        "record_id": "heldproposal-0f5bf1ba449f24eed50d",
+        "sha256": "e6063080eaab1eb00cfc28b89c6dfd39767faba894523bc200f08e742afffcab",
+        "source_evidence": {
+          "end": 769,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e.txt",
+            "sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1"
+          },
+          "span_sha256": "e6063080eaab1eb00cfc28b89c6dfd39767faba894523bc200f08e742afffcab",
+          "start": 648
+        },
+        "split": "train",
+        "start": 648
+      },
+      {
+        "analytical_role": "Historical geography and counts are explicit, preventing publication date or casualties from becoming an observation time or address number. Actual current flooding is not inferred.",
+        "end": 1307,
+        "language": "taglish",
+        "record_id": "heldproposal-18e3fb206d8751460895",
+        "sha256": "a8c2f276c756bfefcb7b1f44a00526e7299447d1a9bbcbf8ea0b81e556145dee",
+        "source_evidence": {
+          "end": 1307,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e.txt",
+            "sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1"
+          },
+          "span_sha256": "a8c2f276c756bfefcb7b1f44a00526e7299447d1a9bbcbf8ea0b81e556145dee",
+          "start": 1169
+        },
+        "split": "train",
+        "start": 1169
+      },
+      {
+        "analytical_role": "This is a named-province boundary in qualified causation; contrast it with the source generic-province negative rather than attributing all surrounding towns to it.",
+        "end": 510,
+        "language": "taglish",
+        "record_id": "heldproposal-73264d779b92e8da8e00",
+        "sha256": "61526ca4d5306ca9e8b674545e43f4a2b817cf30890e30af0f9a2c595716b413",
+        "source_evidence": {
+          "end": 510,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e.txt",
+            "sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1"
+          },
+          "span_sha256": "61526ca4d5306ca9e8b674545e43f4a2b817cf30890e30af0f9a2c595716b413",
+          "start": 429
+        },
+        "split": "train",
+        "start": 429
+      },
+      {
+        "analytical_role": "Generic province and logging cause are a location-negative contrast with the separately selected named province; the causal claim is not independently verified.",
+        "end": 306,
+        "language": "taglish",
+        "record_id": "heldproposal-a048c73f43b97fec3ae6",
+        "sha256": "ddb70be83732362a4d8341e16f4ae58aaf5eb829c018f43111bfeb3ba208ea7a",
+        "source_evidence": {
+          "end": 306,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e.txt",
+            "sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1"
+          },
+          "span_sha256": "ddb70be83732362a4d8341e16f4ae58aaf5eb829c018f43111bfeb3ba208ea7a",
+          "start": 209
+        },
+        "split": "train",
+        "start": 209
+      }
+    ],
+    "source_id": "news-641a924608dd03ab",
+    "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+  },
+  {
+    "acquisition": "Unknown / Codex collected",
+    "admission_applied": false,
+    "body_characters": 2258,
+    "body_reference": {
+      "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+      "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+    },
+    "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+    "contractual_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "credit_review": {
+      "agency_marker_evidence": [],
+      "author_identity": "unknown",
+      "body_byline_evidence": [],
+      "note": "Agency mentions/site footers are cues, not proof of ownership or article syndication.",
+      "parse_error": null,
+      "raw_site_notice_markers": [],
+      "rights_holder_verified": false,
+      "structured_authors": []
+    },
+    "current_scope_decision_changed": false,
+    "findings": {
+      "amount": "Six complete sentences total 429 of the 2,258 body characters, down from five paragraph windows/694. They omit the emotional opening image, collateral-damage paragraph, extended victim narrative and culminating conclusion. The policy statement and related question remain rhetorically related; they are a deliberate form contrast, not two independent incidents. The private full article remains retained in its entirety, and the inherited bounded revision count is 57 embedded full-body representations with older archives separately referenced. That adverse duplication is acknowledged without claiming that every representation is necessary or that selected percentage equals total retention.",
+      "change_reason": "The new selection is not the previously held five-paragraph aggregate: it replaces victim/moral rhetoric with narrower fully read sentences, explicitly compares their linguistic/annotation functions with the fixed negative pool and assigns one source-supported no-observation contextual role. Reduced amount alone is not the reason for changing the project disposition. The new analytical findings and restricted content union support the limited private basis while leaving the original held selection untouched.",
+      "market_effect": "The planned output is private entity/context annotations and metadata, with no article display, excerpt publication, downloadable dataset or production/model distribution. The six windows would not supply the whole rhetorical narrative for a reader, but central-expression value and any text-licensing market remain uncertainties. No empirical market, memorization or substitute-use measurement exists. The concrete small-scope analytical differences support this project adoption despite those uncertainties; privacy is a risk-limiting fact, not automatic statutory or contractual clearance.",
+      "nature": "The article is expressive political commentary. All six selected sentences retain rhetoric, and some belong to its central argument; there is no inference that negative NER labels remove copyright or make opinion merely factual. The source disclaimer and author framing remain available in the unchanged complete capture rather than copied into the selected material. Agency references are content, not evidence of an agency-owned wire report or a place name.",
+      "necessity": "The custody statement contains an organization and VIP category without a named prison; the flood-control question contains infrastructure without a named ROAD; the body-camera question contains a device and worker title without a location or flood time; the transparency question has finance concepts without a target; and the zero-tolerance statement/question keep identical policy vocabulary unlabelled across assertion and interrogation rather than treating it as flood status or access. Across the 39 unaffected empty-location samples, exact case-insensitive searches found none of VIP, body cam, jail guard, transparency or Zero tolerance; flood control occurred in one. This is a finite lexical comparison, not proof of model weakness, representativeness or legal necessity. It explains these six distinct supervisory contexts more specifically than the prior generic justification for five moral paragraphs. Redundancy is limited to the intentional statement/question comparison, and no performance benefit is claimed before evaluation.",
+      "next_action": "Carry all six accepted windows and the explicit VIP operational-language finding into a proposed revision, with silver-label limitations and the reviewed contextual negative. Preserve the old five-window hold and current research-only flags. Do not generalize this decision to the whole commentary, a public excerpt, deployed model use or permission to retain indefinite unreviewed copies.",
+      "purpose": "The six short negative controls examine named-organization versus place, generic flood-control infrastructure, device/job vocabulary, finance vocabulary, an attributed policy slogan, and its interrogative form. The selected contextual replacement additionally records that a question about body cameras has no flood observation clock or target. The annotation exercise does not endorse the article allegations or retell the victims narrative. This is a bounded private research purpose distinct from the public commentary, with language-borrowing uncertainty openly recorded."
+    },
+    "independent_human_review_claimed": false,
+    "inherited_copy_evidence": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 57,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "latest_generated_copy_inventory": {
+      "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/copy-inventory.json",
+      "sha256": "4bb87b44bebd76eb08a5981926352fc3eefb7a11bb25f4772f8ceb5f960c623a"
+    },
+    "legal_approval_claimed": false,
+    "new_complete_body_copies_in_this_checkpoint": 0,
+    "permission_claimed": false,
+    "prior_current_scope_decision": "retain_hold",
+    "prior_selected_characters": 694,
+    "proposed_decision": "adopt_private_academic_basis",
+    "proposed_selected_characters": 429,
+    "publisher": "Philstar",
+    "retained_complete_body_fraction": 1.0,
+    "retention": "not_decided",
+    "selected_samples": [
+      {
+        "analytical_role": "The complete attributed custody statement is an agency-versus-place negative. Kasong ito is left unspecified; it is not an annotated flood observation. Generic acronym mixing is explicitly recorded rather than inherited from the article.",
+        "end": 425,
+        "language": "taglish",
+        "record_id": "heldproposal-85cb4e1f0029f31ded53",
+        "sha256": "ae57f7b58a4ccaaa22ebe8666b6f646bc805c3dd4c20b33dc2011b4ffa3f9a6b",
+        "source_evidence": {
+          "end": 425,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+            "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+          },
+          "span_sha256": "ae57f7b58a4ccaaa22ebe8666b6f646bc805c3dd4c20b33dc2011b4ffa3f9a6b",
+          "start": 290
+        },
+        "split": "train",
+        "start": 290
+      },
+      {
+        "analytical_role": "The attributed statement provides a policy-versus-flood-status negative. It is compared with the separately selected interrogative form; no measured model error or necessity theorem is claimed.",
+        "end": 1499,
+        "language": "taglish",
+        "record_id": "heldproposal-9c9f9d2c98d2848d8683",
+        "sha256": "8a49337f9b7d3f56faed62435e8940f9f0da8cbc32f16ae73425dca5d22dd4ce",
+        "source_evidence": {
+          "end": 1499,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+            "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+          },
+          "span_sha256": "8a49337f9b7d3f56faed62435e8940f9f0da8cbc32f16ae73425dca5d22dd4ce",
+          "start": 1463
+        },
+        "split": "train",
+        "start": 1463
+      },
+      {
+        "analytical_role": "Distinguish generic public works from a named road, and rhetoric from a place-scoped observation. The source makes no clock or geographically identified flood assertion in this sentence.",
+        "end": 797,
+        "language": "taglish",
+        "record_id": "heldproposal-c2b2ae5cf8fedc53290f",
+        "sha256": "0a46e68263ea7a38ece6b21d62e7b15034a2f8852a31905a22f1a10d0f23b70c",
+        "source_evidence": {
+          "end": 797,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+            "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+          },
+          "span_sha256": "0a46e68263ea7a38ece6b21d62e7b15034a2f8852a31905a22f1a10d0f23b70c",
+          "start": 735
+        },
+        "split": "train",
+        "start": 735
+      },
+      {
+        "analytical_role": "A finance question with implied victims supplies a negative distinct from bodily depth, access and a clock. No measured current inundation or unnamed target is fabricated.",
+        "end": 1461,
+        "language": "taglish",
+        "record_id": "heldproposal-d7bc29d2573380f70f30",
+        "sha256": "5e6ac6b38586d2657acdb5fe4ea343c491efbd6d5f09abe7abad89d6b27e89c3",
+        "source_evidence": {
+          "end": 1461,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+            "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+          },
+          "span_sha256": "5e6ac6b38586d2657acdb5fe4ea343c491efbd6d5f09abe7abad89d6b27e89c3",
+          "start": 1378
+        },
+        "split": "train",
+        "start": 1378
+      },
+      {
+        "analytical_role": "The question contrasts a policy slogan with victims and must remain an unlocated negative with unknown observation chronology. It does not establish flood recession or clearance.",
+        "end": 1580,
+        "language": "taglish",
+        "record_id": "heldproposal-ed24a7497d478b26e040",
+        "sha256": "8987a63084947dcfdca2062b8e75a6104590bbf9c1ef22090ad1685ddbad2285",
+        "source_evidence": {
+          "end": 1580,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+            "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+          },
+          "span_sha256": "8987a63084947dcfdca2062b8e75a6104590bbf9c1ef22090ad1685ddbad2285",
+          "start": 1531
+        },
+        "split": "train",
+        "start": 1531
+      },
+      {
+        "analytical_role": "The future/question form is non-flood chronology; do not label onset, publication, observation or clearance from it. This is the selected replacement contextual negative.",
+        "end": 1314,
+        "language": "taglish",
+        "record_id": "heldproposal-fcf22d43cad1ea1fc9f7",
+        "sha256": "38b7f17dde2cb88a78f1ea3280b41681fb904364b9b96c22e3e98ec4243af523",
+        "source_evidence": {
+          "end": 1314,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076.txt",
+            "sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda"
+          },
+          "span_sha256": "38b7f17dde2cb88a78f1ea3280b41681fb904364b9b96c22e3e98ec4243af523",
+          "start": 1250
+        },
+        "split": "train",
+        "start": 1250
+      }
+    ],
+    "source_id": "news-7a824863d687424a",
+    "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+  },
+  {
+    "acquisition": "Unknown / Codex collected",
+    "admission_applied": false,
+    "body_characters": 1874,
+    "body_reference": {
+      "path": "backend/training/flood_ner/artifacts/captures/34289f08a63c2f334e0be237ee52403df218e7217ca7bc1506aba28cbe251b80.txt",
+      "sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c"
+    },
+    "capture_version": "34289f08a63c2f334e0be237ee52403df218e7217ca7bc1506aba28cbe251b80",
+    "contractual_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "credit_review": {
+      "agency_marker_evidence": [],
+      "author_identity": "unknown",
+      "body_byline_evidence": [],
+      "note": "Agency mentions/site footers are cues, not proof of ownership or article syndication.",
+      "parse_error": null,
+      "raw_site_notice_markers": [],
+      "rights_holder_verified": false,
+      "structured_authors": []
+    },
+    "current_scope_decision_changed": false,
+    "findings": {
+      "amount": "The proposal uses one 164-character sentence from the 1,874-character body, replacing the 296-character central paragraph. It preserves raw and its complete allegation rather than cutting at the English words. The opening paragraph, broad rhetorical progression and closing moral are outside the selected scope, while the complete body remains retained. The inherited bounded revision inventory recorded 13 embedded full-body representations and a separate older archive reference; unknown additional desktop/Drive multiplicity and undecided retention are not converted into single-copy claims.",
+      "change_reason": "The previous hold concerned a generic public-works paragraph with no specifically identified named-place/temporal need. This alternative is a different content interval with a complete reviewed prevention/observation boundary and an explicit proportion negative, paired in the contextual task. The narrower text and new case-specific analytical finding jointly support the scoped project adoption. The original paragraph remains held; neither a shorter percentage nor the desired total sample count is treated as sufficient by itself.",
+      "market_effect": "The sentence is not publicly displayed, distributed or offered as a substitute commentary; it is paired with an unlocated prevention/unknown-time research record. There is no measured licensing-market or future model-output evidence, and private processing does not guarantee no effect. The narrowly selected amount and specific non-consumptive annotation role are weighed in favor of this private project basis, with central-expression, full-body, duplicate and contract uncertainties expressly retained. No statutory result for all financial commentary is inferred.",
+      "nature": "This is opinion and the sentence is part of its central accusation, so creative and qualitative importance remain adverse considerations. The common financial words do not strip protection from the sentence. The work is already published, but public availability, noncommercial status and an unnamed location do not by themselves establish a use basis.",
+      "necessity": "Unlike the previously selected three-claim paragraph, this complete sentence explicitly states the spending purpose of fighting floods and qualifies an alleged diversion with raw. It supports one prevention-versus-observation contextual example with no place target, alongside location-negative annotation. Kalahati must remain an indefinite proportion rather than an address identifier or water measurement. The 39 unaffected location negatives have no exact kickback or overpricing occurrence; that bounded lexical comparison explains added vocabulary, not unique indispensability or demonstrated model error. One whole sentence supplies these linked dimensions without taking the surrounding accusation and political conclusion. The contextual fact is anchored only to the stated purpose; no actual project, flood, time or victim location is invented.",
+      "next_action": "Carry only the reviewed sentence and its no-target prevention context into the proposed revision. Keep the earlier paragraph decision and all admission flags unchanged until the separately versioned assembly/admission workflow. Preserve raw as uncertainty, absence of location/time, the duplicate inventory and contract limitations; do not publish the sentence or infer permission for deployed use.",
+      "purpose": "The single complete sentence is reviewed as a negative location case with a prevention-purpose contextual fact, an allegation qualifier and an indefinite proportion. Its role is to prevent public-works spending language from becoming a current, geographically located flood observation or a numeric address/depth. This bounded private annotation purpose neither endorses the corruption claim nor turns it into verified system evidence."
+    },
+    "independent_human_review_claimed": false,
+    "inherited_copy_evidence": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 13,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "latest_generated_copy_inventory": {
+      "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/copy-inventory.json",
+      "sha256": "4bb87b44bebd76eb08a5981926352fc3eefb7a11bb25f4772f8ceb5f960c623a"
+    },
+    "legal_approval_claimed": false,
+    "new_complete_body_copies_in_this_checkpoint": 0,
+    "permission_claimed": false,
+    "prior_current_scope_decision": "retain_hold",
+    "prior_selected_characters": 296,
+    "proposed_decision": "adopt_private_academic_basis",
+    "proposed_selected_characters": 164,
+    "publisher": "Philstar",
+    "retained_complete_body_fraction": 1.0,
+    "retention": "not_decided",
+    "selected_samples": [
+      {
+        "analytical_role": "The spending purpose of fighting floods is prevention context, not evidence of a current flood at an implied place. This is the second contextual replacement; targets and observation times remain absent.",
+        "end": 536,
+        "language": "taglish",
+        "record_id": "heldproposal-dddf63b496712d4182b4",
+        "sha256": "54ceee6b119b6aca6925738d4ec4f15984d903bee6af505f2f6f36655a831390",
+        "source_evidence": {
+          "end": 536,
+          "reference": {
+            "path": "backend/training/flood_ner/artifacts/captures/34289f08a63c2f334e0be237ee52403df218e7217ca7bc1506aba28cbe251b80.txt",
+            "sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c"
+          },
+          "span_sha256": "54ceee6b119b6aca6925738d4ec4f15984d903bee6af505f2f6f36655a831390",
+          "start": 372
+        },
+        "split": "train",
+        "start": 372
+      }
+    ],
+    "source_id": "news-c7216b3994ab5614",
+    "source_sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+  }
+]

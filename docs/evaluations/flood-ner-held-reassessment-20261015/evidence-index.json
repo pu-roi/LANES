@@ -1,0 +1,233 @@
+[
+  {
+    "clause_id": "law-fair-use",
+    "end": 183920,
+    "evidence_id": "wipo-consolidated",
+    "file_sha256": "93373e2a2fb796a426c8041498788190e7ba27d54309f920a805a490cd7fbf2c",
+    "retrieved_at": "2026-10-15T11:37:35.895445+00:00",
+    "scope_note": "Four-factor provision in consolidated text labeled version 2015; research is listed but no blanket NER clearance is claimed.",
+    "span_sha256": "cbf1b5b5171f902fe170ed54001aa9513d30dc87b001069ab37e5c5ee0255b98",
+    "start": 182363,
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "law-private-copy",
+    "end": 185378,
+    "evidence_id": "wipo-consolidated",
+    "file_sha256": "93373e2a2fb796a426c8041498788190e7ba27d54309f920a805a490cd7fbf2c",
+    "retrieved_at": "2026-10-15T11:37:35.895445+00:00",
+    "scope_note": "Single-copy private-study exception has limits; not treated as blanket coverage for multiple working/archive containers.",
+    "span_sha256": "0f3d5bc91dc9148e553f976970be1c36486c3fe1ccb525e3ae9c3345e2591840",
+    "start": 184405,
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "law-facts-expression",
+    "end": 169808,
+    "evidence_id": "wipo-consolidated",
+    "file_sha256": "93373e2a2fb796a426c8041498788190e7ba27d54309f920a805a490cd7fbf2c",
+    "retrieved_at": "2026-10-15T11:37:35.895445+00:00",
+    "scope_note": "Facts/data differ from copying expressive wording; do not reclassify whole articles as unprotected.",
+    "span_sha256": "60e94a33561dd2195befa019dd9687c8edccd9f342e26ca58d5015a5a00c7515",
+    "start": 169267,
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "law-amendment",
+    "end": 11999,
+    "evidence_id": "ra10372-ncda",
+    "file_sha256": "ec9dc7e94da001e079c524569cc03ef59c4ffd62df4fe6097e9872e0f4f2208a",
+    "retrieved_at": "2026-10-15T11:37:35.895445+00:00",
+    "scope_note": "Official amendment reproduction has transcription quirks; read with consolidated provision rather than silently correcting its wording.",
+    "span_sha256": "34a9f5d923cb7261c78324ade226a857b652e991879c855aafb1e7fd5d6535af",
+    "start": 11204,
+    "url": "https://ncda.gov.ph/disability-laws/republic-acts/republic-act-no-10372-an-act-amending-certain-provisions-of-republic-act-no-8293-otherwise-known-as-the-intellectual-property-code-of-the-philippines-and-for-other-purposes/"
+  },
+  {
+    "clause_id": "contract-1306",
+    "end": 426817,
+    "evidence_id": "civil-code-lawphil",
+    "file_sha256": "7c4073ccf202bb67c74e865900a61cc618f4b90d65027307f904ee761025887b",
+    "retrieved_at": "2026-10-15T11:38:21.745877+00:00",
+    "scope_note": "Primary statute reproduced by Lawphil/Arellano Law Foundation; direct judiciary TLS fetch failed. Not a website-specific ruling.",
+    "span_sha256": "31af38ced41f7a1fed8061f9e4c1a5e9fc24368ffa03f7c6b8472f5e1ebdba3c",
+    "start": 426586,
+    "url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+  },
+  {
+    "clause_id": "contract-1318",
+    "end": 429901,
+    "evidence_id": "civil-code-lawphil",
+    "file_sha256": "7c4073ccf202bb67c74e865900a61cc618f4b90d65027307f904ee761025887b",
+    "retrieved_at": "2026-10-15T11:38:21.745877+00:00",
+    "scope_note": "Primary statute reproduced by Lawphil/Arellano Law Foundation; direct judiciary TLS fetch failed. Not a website-specific ruling.",
+    "span_sha256": "e16837a7d230f1bf4254918f97f5c2924127f70c1906aabc9d1180cefdb81d9c",
+    "start": 429647,
+    "url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+  },
+  {
+    "clause_id": "contract-1319",
+    "end": 430384,
+    "evidence_id": "civil-code-lawphil",
+    "file_sha256": "7c4073ccf202bb67c74e865900a61cc618f4b90d65027307f904ee761025887b",
+    "retrieved_at": "2026-10-15T11:38:21.745877+00:00",
+    "scope_note": "Primary statute reproduced by Lawphil/Arellano Law Foundation; direct judiciary TLS fetch failed. Not a website-specific ruling.",
+    "span_sha256": "4d96027164ef2fb1ccb1f0d4eedd9b8f65736113bb9e0d46a9d31f887a1bcad0",
+    "start": 429901,
+    "url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+  },
+  {
+    "clause_id": "contract-1356",
+    "end": 438567,
+    "evidence_id": "civil-code-lawphil",
+    "file_sha256": "7c4073ccf202bb67c74e865900a61cc618f4b90d65027307f904ee761025887b",
+    "retrieved_at": "2026-10-15T11:38:21.745877+00:00",
+    "scope_note": "Primary statute reproduced by Lawphil/Arellano Law Foundation; direct judiciary TLS fetch failed. Not a website-specific ruling.",
+    "span_sha256": "db9f649da43aaf299d447184ca947ffb84ea5c538e13bf7d993f60511d2104fc",
+    "start": 438097,
+    "url": "https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html"
+  },
+  {
+    "clause_id": "electronic-contract",
+    "end": 18610,
+    "evidence_id": "ecommerce-lawphil",
+    "file_sha256": "4df2c670ec4d8953b233d264eff043aa40131494e85aba536a72cf65ada6e822",
+    "retrieved_at": "2026-10-15T11:38:21.747009+00:00",
+    "scope_note": "Electronic form alone does not negate contractual validity; actual formation and scope still matter.",
+    "span_sha256": "7086cd03c91c6e27634d2b8f4f444a616097118a82fa1b99ac5270d403ad4488",
+    "start": 17362,
+    "url": "https://lawphil.net/statutes/repacts/ra2000/ra_8792_2000.html"
+  },
+  {
+    "clause_id": "abs-agreement",
+    "end": 741,
+    "evidence_id": "abs-terms",
+    "file_sha256": "f08bd7b72af693aecbaaec8f1d44c92db9aafc051a7fa051f187cfbe8251d40e",
+    "retrieved_at": "2026-10-15T11:37:36.038884+00:00",
+    "scope_note": "Current terms assert agreement through use; no historical assent finding is inferred.",
+    "span_sha256": "de7a330e5cb1dced14917769bfa158ef375f710eef077c463ae6dbf164a86d2b",
+    "start": 498,
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "clause_id": "abs-use-limit",
+    "end": 4243,
+    "evidence_id": "abs-terms",
+    "file_sha256": "f08bd7b72af693aecbaaec8f1d44c92db9aafc051a7fa051f187cfbe8251d40e",
+    "retrieved_at": "2026-10-15T11:37:36.038884+00:00",
+    "scope_note": "Current intended-purpose, reproduction and third-party clauses; copyright exception analysis remains separate.",
+    "span_sha256": "2376ab883593b7a6bcc11f5b65bf2b742f5cdf2739413313f2afa6726ebe4a79",
+    "start": 2279,
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "clause_id": "philstar-personal-processing",
+    "end": 1125,
+    "evidence_id": "philstar-agreement",
+    "file_sha256": "6257969d625a6331f2e41928317acb72d2f75c5ad7387473c1167c40702e737f",
+    "retrieved_at": "2026-10-15T11:37:36.054704+00:00",
+    "scope_note": "Personal-use copying allowance and broader reproduction/new-works language must be read together; NER is not automatically declared a derivative work.",
+    "span_sha256": "1f9a18e712ec47e4b058899aee6d8a55d762446d1d50c1c7eb792e498304c5bf",
+    "start": 1078,
+    "url": "https://www.philstar.com/member-agreement"
+  },
+  {
+    "clause_id": "philstar-copy-count",
+    "end": 1612,
+    "evidence_id": "philstar-copyright",
+    "file_sha256": "246ebafe13248147ed46e7412cbad27bb92557d96a414896408dd759752cd003",
+    "retrieved_at": "2026-10-15T11:37:36.102125+00:00",
+    "scope_note": "Post-capture review confirms the exact personal/noncommercial copy allowance. Original broad marker check remains failed because it sought the noncontiguous phrase personal use.",
+    "span_sha256": "e60fcc5f7cbe048a9f3cc7440a4fabc01394a9e12b4d43cf80355a6b39dafcff",
+    "start": 1045,
+    "url": "https://www.philstar.com/copyright-notice"
+  },
+  {
+    "clause_id": "afp-platform-scope",
+    "end": 4029,
+    "evidence_id": "afp-platform",
+    "file_sha256": "657c741655e0902de6e529860594e29f91318fcbed668eddb7b2078c9e015139",
+    "retrieved_at": "2026-10-15T11:37:36.208047+00:00",
+    "scope_note": "Includes named AFP platforms and specified third-party fact-check projects; ordinary GMA news syndication is not automatically within that scope.",
+    "span_sha256": "59d2f154bee0d0b99d65708f332b3f7c5ef80c68a08499dbddcaef3afe937f94",
+    "start": 2329,
+    "url": "https://www.afp.com/en/useful-links/terms-use"
+  },
+  {
+    "clause_id": "afp-platform-ai-reservation",
+    "end": 7798,
+    "evidence_id": "afp-platform",
+    "file_sha256": "657c741655e0902de6e529860594e29f91318fcbed668eddb7b2078c9e015139",
+    "retrieved_at": "2026-10-15T11:37:36.208047+00:00",
+    "scope_note": "Express systematic/AI restriction and French-law reservation recorded; neither universal contract applicability nor a Philippine statutory opt-out is inferred.",
+    "span_sha256": "1f110bc146eefb42007843da6710efeae3dde2bb64a261b1a314c3511d5d2e5d",
+    "start": 6523,
+    "url": "https://www.afp.com/en/useful-links/terms-use"
+  },
+  {
+    "clause_id": "gma-educational-copy",
+    "end": 2669,
+    "evidence_id": "gma-policy",
+    "file_sha256": "48571b9aa57b030dc9b7c1521e3bf3463362dca84c297184d252cbb3b49e8904",
+    "retrieved_at": "2026-10-15T11:37:37.974163+00:00",
+    "scope_note": "Host download allowance is not an AFP license.",
+    "span_sha256": "b60f0efba87b948133fce5e083b7330528678375e6efa7a3b9b1d309bb97065f",
+    "start": 2387,
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "clause_id": "reuters-header-credit",
+    "end": 365,
+    "evidence_id": "abs-reuters-story",
+    "file_sha256": "e21178bec9ea81fe0fda81427deefb0fd55bc917f9f044ebb6baada2ca0a3b43",
+    "retrieved_at": "2026-10-15T11:37:37.979046+00:00",
+    "scope_note": "Visible publisher header attribution, not an inference from the interview reference. Current response omits full body; original corpus is preserved.",
+    "span_sha256": "17cb18f365c48ea5ea5b5b18062dd5efdf6422d33f38cd80790ca663edcc8a28",
+    "start": 343,
+    "url": "https://www.abs-cbn.com/news/07/24/17/home-sweet-home-filipinos-stay-put-even-when-the-sea-invades"
+  },
+  {
+    "clause_id": "gma-wire-credit",
+    "end": 5210,
+    "evidence_id": "gma-afp-story",
+    "file_sha256": "8634df1f2a6ee772f9e66178c803d5a07ce2a9146bb8371eb31102c49f966d02",
+    "retrieved_at": "2026-10-15T11:37:37.979046+00:00",
+    "scope_note": "Current host confirms wire attribution already present in frozen body.",
+    "span_sha256": "0435e1f6697ac7969943d70a847e9114fb99d20baae9ba48f7d664e288b0f508",
+    "start": 5187,
+    "url": "https://www.gmanetwork.com/news/topstories/nation/849654/death-toll-from-philippine-flash-floods-rises-to-67-official-tally/story/"
+  },
+  {
+    "clause_id": "afp-caption-embedded-credit",
+    "end": 184770,
+    "evidence_id": "abs-caption-story",
+    "file_sha256": "3dbf28b5f22fef61a1a5cbaecaeab7b023f7f5d6baf0020e76ca9501b4b85b3f",
+    "retrieved_at": "2026-10-15T11:37:37.979046+00:00",
+    "scope_note": "Embedded HTML/response credit only; initial visible-content check failed. No image captured or admitted.",
+    "span_sha256": "d11d74225bc60ba280e2d9c18f9e48b8e9a7d3b8b5e1b99b72ba4e4057d0845a",
+    "start": 184625,
+    "url": "https://www.abs-cbn.com/news/regions/2025/11/11/dpwh-to-implement-shelved-2017-flood-control-masterplan-in-storm-ravaged-cebu-1823"
+  },
+  {
+    "clause_id": "philstar-qa-story-identity",
+    "end": 25,
+    "evidence_id": "philstar-qa-story",
+    "file_sha256": "1f48c3a22d284d313cff919dfd44a8b942ec74219637a40ee6b13275a829dbe1",
+    "retrieved_at": "2026-10-15T11:37:38.181925+00:00",
+    "scope_note": "Title identity supported; full normalized-body comparison is separately bound, not a new canonical source.",
+    "span_sha256": "6a223aeeb2ad3927827db0b8e687a4d9b05e35717ffeba6eef04964289ec14d5",
+    "start": 0,
+    "url": "https://qa.philstar.com/pilipino-star-ngayon/opinyon/2023/09/02/2293208/editoryal-basura-baha"
+  },
+  {
+    "clause_id": "philstar-public-story-identity",
+    "end": 25,
+    "evidence_id": "philstar-public-story",
+    "file_sha256": "1f48c3a22d284d313cff919dfd44a8b942ec74219637a40ee6b13275a829dbe1",
+    "retrieved_at": "2026-10-15T11:37:38.747782+00:00",
+    "scope_note": "Title identity supported; full normalized-body comparison is separately bound, not a new canonical source.",
+    "span_sha256": "6a223aeeb2ad3927827db0b8e687a4d9b05e35717ffeba6eef04964289ec14d5",
+    "start": 0,
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2023/09/02/2293208/editoryal-basura-baha"
+  }
+]

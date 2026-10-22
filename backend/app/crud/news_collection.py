@@ -10,7 +10,9 @@ from app.models.news import NewsArticle, NewsExtractionRun
 from app.schemas.news_collection import CollectionFilter
 
 
-def collection_rows(db: Session) -> tuple[Select, ColumnElement]:
+def collection_rows(db: Session, *, pipeline_version: str | None = None) -> tuple[Select, ColumnElement]:
+    if pipeline_version is not None:
+        return native_collection_rows(db,pipeline_version)
     rows, value, _, _ = result_rows(db, latest_only=True)
     totals = rows.with_only_columns(
         NewsExtractionRun.id.label("run_id"),
@@ -37,6 +39,9 @@ def collection_rows(db: Session) -> tuple[Select, ColumnElement]:
         (processing.in_(["pending", "processing", "retry_wait"]), "processing"),
         (processing == "failed", "processing_failed"),
         (or_(NewsExtractionRun.result.is_(None), ~readable_run(db)), "needs_checking"),
+        # Until the native projection/card consumer is qualified, keep these
+        # artifacts inspectable attention items instead of declaring no floods.
+        (NewsExtractionRun.mode == "ner_rules_v1", "needs_checking"),
         (location_count == 0, "excluded"), (location_count < claim_count, "needs_checking"),
         else_="ready",
     )
@@ -48,10 +53,15 @@ def collection_rows(db: Session) -> tuple[Select, ColumnElement]:
 
 
 def list_collection(db: Session, *, page: int, page_size: int, search: str, publisher: str | None,
-                    status: CollectionFilter) -> tuple[list, int, int, dict[str, int], list[str]]:
-    query, state = collection_rows(db)
+                    status: CollectionFilter, pipeline_version: str | None = None,
+                    retrieval: str | None = None) -> tuple[list, int, int, dict[str, int], list[str], dict[str, int]]:
+    query, state = collection_rows(db,pipeline_version=pipeline_version)
     overview = query.subquery()
     counts = dict(db.execute(select(overview.c.collection_status, func.count()).group_by(overview.c.collection_status)).all())
+    body = article_body_status()
+    retrieval_counts = dict(db.execute(select(body, func.count()).group_by(body)).all())
+    if retrieval is not None:
+        query = query.where(body == retrieval)
     if status == "attention":
         query = query.where(state.not_in(["ready", "excluded", "no_locations"]))
     elif status != "all":
@@ -66,4 +76,31 @@ def list_collection(db: Session, *, page: int, page_size: int, search: str, publ
     rows = db.execute(query.options(defer(NewsArticle.article_text)).order_by(NewsArticle.last_seen_at.desc(),
         NewsArticle.id.desc()).offset((actual_page - 1) * page_size).limit(page_size)).all()
     publishers = list(db.scalars(select(NewsArticle.publisher_source_id).distinct().order_by(NewsArticle.publisher_source_id)))
-    return list(rows), total, actual_page, counts, publishers
+    return list(rows), total, actual_page, counts, publishers, retrieval_counts
+
+
+def native_collection_rows(db: Session, pipeline_version: str) -> tuple[Select, ColumnElement]:
+    from .news_ner_results import native_result_rows
+    cards,_=native_result_rows(pipeline_version)
+    card_rows=cards.subquery()
+    totals=select(card_rows.c.run_id,func.count().label('locations')).group_by(card_rows.c.run_id).subquery()
+    latest=latest_article_runs('ner_rules_v1',pipeline_version)
+    run=NewsExtractionRun
+    body=article_body_status();processing=func.coalesce(run.status,'not_recorded')
+    locations=func.coalesce(totals.c.locations,0)
+    contextual=func.coalesce(run.result['read_projection']['omitted_counts']['location_context_only'].as_integer(),0)
+    group_count=func.coalesce(func.jsonb_array_length(run.result['projection']['groups']),0)-contextual
+    questionable=func.greatest(group_count-locations,0)
+    state=case(
+        (NewsArticle.review_state=='local_update','excluded'),
+        (body=='error','retrieval_failed'),(body=='missing','missing_text'),
+        (processing=='not_recorded','waiting'),
+        (processing.in_(('pending','processing','retry_wait')),'processing'),
+        (processing=='failed','processing_failed'),
+        (run.result['read_projection']['version'].astext.is_distinct_from('ner-result-read-v1'),'needs_checking'),
+        (run.result['projection']['disposition'].astext=='no_eligible_observations','no_locations'),
+        (locations==0,'needs_checking'),(questionable>0,'needs_checking'),else_='ready')
+    query=select(NewsArticle,body,processing,run.id,state.label('collection_status'),locations,
+        questionable.label('questionable_count')).outerjoin(latest,latest.c.article_id==NewsArticle.id).outerjoin(
+            run,run.id==latest.c.run_id).outerjoin(totals,totals.c.run_id==run.id)
+    return query,state

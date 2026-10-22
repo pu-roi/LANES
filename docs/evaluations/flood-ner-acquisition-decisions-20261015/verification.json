@@ -1,0 +1,81 @@
+{
+  "actual_new_project_decisions": 0,
+  "articles": 139,
+  "code_pointers_verified": 3,
+  "contextual_pairs": 40,
+  "current_methods": [
+    {
+      "articles": 50,
+      "method": "browser-rendered-article-dom-v1",
+      "publisher": "ABS-CBN News"
+    },
+    {
+      "articles": 1,
+      "method": "html-visible-article-main-v1",
+      "publisher": "GMA News"
+    },
+    {
+      "articles": 61,
+      "method": "jsonld-articleBody-html-v2",
+      "publisher": "GMA News"
+    },
+    {
+      "articles": 1,
+      "method": "jsonld-articleBody-html-v3-from-frozen-raw",
+      "publisher": "GMA News"
+    },
+    {
+      "articles": 8,
+      "method": "preserved-manifest-text",
+      "publisher": "GMA News"
+    },
+    {
+      "articles": 18,
+      "method": "browser-rendered-article-dom-v1",
+      "publisher": "Philstar"
+    }
+  ],
+  "draft_factor_and_clause_binding_checks": 69,
+  "export_destination_created": false,
+  "exports": 0,
+  "historical_validator_is_not_desktop_decision_count": true,
+  "live_reference_refresh_attempts": [
+    {
+      "outcome": "web open timeout; prior verified local evidence retained",
+      "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+    },
+    {
+      "outcome": "web open timeout; prior verified local evidence retained",
+      "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/"
+    }
+  ],
+  "model_files_hash_verified_without_loading": 23,
+  "nonacademic_outcomes_and_partitions_unchanged": true,
+  "original_proposal_validation": {
+    "actual_project_decisions": 0,
+    "articles": 139,
+    "contextual_pairs": 40,
+    "docbin_exported": 0,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "samples": 400,
+    "training_admitted": 0
+  },
+  "prior_clause_pointers_verified": 21,
+  "prior_files_unchanged": 1462,
+  "prior_research_manifest_files_verified": 52,
+  "private_packet_hash_entries_verified": 10,
+  "research_only_export_refusals": 400,
+  "runtime_code_dependencies_or_schema_changed": false,
+  "samples": 400,
+  "snapshot_observations": 68,
+  "snapshot_references_verified": 204,
+  "snapshot_sample_memberships": 240,
+  "source_text_hashes_verified": 139,
+  "test_scope_note": "New evidence bindings and existing validators checked directly; prior 64-test suite result is historical, not rerun.",
+  "test_suite_rerun": false,
+  "training_admitted": 0,
+  "verified_at": "2026-10-15T20:10:28.894379+08:00"
+}

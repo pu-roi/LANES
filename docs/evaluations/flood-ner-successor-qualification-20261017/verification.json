@@ -1,0 +1,21 @@
+{
+  "qualification_complete": true,
+  "training_ready": false,
+  "unique_considered_membership_records_checked": 565,
+  "source_cases_checked": 149,
+  "relationship_entries_checked": 259,
+  "shared_schema_records_checked": 565,
+  "unexpected_schema_offset_label_overlap_or_alignment_errors": 0,
+  "known_alignment_failure_held": 1,
+  "qualified_member_spans_aligned": 918,
+  "alignment_method": "Revalidated hash-bound prior actual tokenizer boundaries, request, worker, vocabulary and unchanged source/reference strings; no fresh tokenizer execution claimed.",
+  "historical_fitted_component_leakage": 0,
+  "cross_partition_groups": 0,
+  "historical_nontraining_or_fixture_members_added": 0,
+  "protected_prior_files_unchanged": 1489,
+  "prior_design_protected_files_unchanged": 1461,
+  "old_held_and_excluded_records_promoted": 0,
+  "actual_admission_freeze_export_inference_training_push": false,
+  "public_api_dependencies_and_database_unchanged": true,
+  "fresh_curator_content_opened_by_coordinator": false
+}

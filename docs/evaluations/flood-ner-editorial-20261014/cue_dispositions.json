@@ -1,0 +1,90 @@
+[
+  {
+    "disposition": "explicitly_excluded",
+    "end": 574,
+    "exclusion_kind": "related_story",
+    "reason": "Unrelated August 29/30 headlines inserted into the July 10/August 8 list; retain original city/list context in sibling blocks.",
+    "role": "recession_clearance_cue",
+    "sha256": "1ce633db987d152027e86c1108528f9f39b1d67cd2c45ec25ed553f907fe7e6a",
+    "source_id": "GMA-20260808-997803",
+    "source_version": "62027caf5825",
+    "start": 568
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 654,
+    "exclusion_kind": "related_story",
+    "reason": "Unrelated August 29/30 headlines inserted into the July 10/August 8 list; retain original city/list context in sibling blocks.",
+    "role": "road_location_cue",
+    "sha256": "362a284952d3a7250e4bdd72a659ea78e8ec79804e0e6a2053dfe4c10e7d79f1",
+    "source_id": "GMA-20260808-997803",
+    "source_version": "62027caf5825",
+    "start": 650
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 77,
+    "exclusion_kind": "caption",
+    "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+    "role": "road_location_cue",
+    "sha256": "362a284952d3a7250e4bdd72a659ea78e8ec79804e0e6a2053dfe4c10e7d79f1",
+    "source_id": "ABS-BROWSER-abs-2023",
+    "source_version": "c9df37096f225b02d3fdf039ebd0891121ee52346a4bbbb24bbdd78a8e344cd2",
+    "start": 73
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 157,
+    "exclusion_kind": "caption",
+    "reason": "Lead photo caption remains separate from the reporting list and its 4:30 p.m. update.",
+    "role": "road_location_cue",
+    "sha256": "92b43f0001d42cbd0dc872fefcdf3dc3b0c022e711947d5ba2c3f96ed263ede5",
+    "source_id": "saved-article-2",
+    "source_version": "d23a9c30b6dc8ceac9aa9d479958130c8569ecff92e891bf8fce48c73d7d08e9",
+    "start": 151
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 191,
+    "exclusion_kind": "caption",
+    "reason": "Caption claims are corroborated by the later narrative; exclude the duplicate photo caption.",
+    "role": "depth_expression_cue",
+    "sha256": "69ef5a88b0273f58658889db76be768e3f7ede302059bef7d3184d230b098799",
+    "source_id": "TRIBUNE-20260830",
+    "source_version": "7f911d1f1d3b36ec66495f95dcf27fada3ae3862b20553ad2016a40b8466ad76",
+    "start": 187
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 150,
+    "exclusion_kind": "publisher_metadata",
+    "reason": "Section/title/byline/reading-time wrapper.",
+    "role": "clock_cue",
+    "sha256": "cef1a55d258ff78625e69fadca16cb6ca3c8a557b2d91bd0165bb6aa2c7cc3f7",
+    "source_id": "TRIBUNE-20260830",
+    "source_version": "7f911d1f1d3b36ec66495f95dcf27fada3ae3862b20553ad2016a40b8466ad76",
+    "start": 146
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 335,
+    "exclusion_kind": "caption",
+    "reason": "Caption claims are corroborated by the later narrative; exclude the duplicate photo caption.",
+    "role": "access_status_cue",
+    "sha256": "0757be2f06bdbf09c44d94bd8b04e3f9a77be5996d36f7ac3dad9e183946b04b",
+    "source_id": "TRIBUNE-20260830",
+    "source_version": "7f911d1f1d3b36ec66495f95dcf27fada3ae3862b20553ad2016a40b8466ad76",
+    "start": 325
+  },
+  {
+    "disposition": "explicitly_excluded",
+    "end": 392,
+    "exclusion_kind": "caption",
+    "reason": "Caption claims are corroborated by the later narrative; exclude the duplicate photo caption.",
+    "role": "recession_clearance_cue",
+    "sha256": "11fd1f5962f7ce32275b525ae472ffe64d1695ca3a141a52154cc6f735de8838",
+    "source_id": "TRIBUNE-20260830",
+    "source_version": "7f911d1f1d3b36ec66495f95dcf27fada3ae3862b20553ad2016a40b8466ad76",
+    "start": 387
+  }
+]

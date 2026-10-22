@@ -194,8 +194,8 @@ export async function getPendingReports(): Promise<FloodReport[]> {
   return apiClient.get<FloodReport[]>("/admin/reports/pending");
 }
 
-export async function getReportForSpatialReview(reportId: number): Promise<FloodReport> {
-  return apiClient.get<FloodReport>(`/admin/reports/detail/${reportId}`);
+export async function getReportForSpatialReview(reportId: number, signal?: AbortSignal): Promise<FloodReport> {
+  return apiClient.get<FloodReport>(`/admin/reports/detail/${reportId}`, { signal });
 }
 
 /**
@@ -226,6 +226,7 @@ export interface ZoneContributor {
 }
 
 export interface AvoidanceZone {
+  contributor_count?: number;
   id: number;
   report_id: number;
   name?: string | null;

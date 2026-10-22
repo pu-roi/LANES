@@ -1,0 +1,133 @@
+{
+  "introduced_FP_group_contributions": [
+    3,
+    3,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "introduced_FP_groups": 11,
+  "introduced_FP_relation_categories": {
+    "no_reference_overlap": 3,
+    "same_boundary_wrong_type": 9,
+    "wrong_boundary_and_type": 3,
+    "wrong_boundary_same_type": 3
+  },
+  "reference_support": {
+    "dev": {
+      "labels": {
+        "BARANGAY": 19,
+        "CITY": 23,
+        "LANDMARK": 7,
+        "LOCAL_AREA": 12,
+        "PROVINCE": 10,
+        "ROAD": 14
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": 10,
+          "CITY": 9,
+          "LANDMARK": 6,
+          "LOCAL_AREA": 9,
+          "PROVINCE": 2,
+          "ROAD": 14
+        },
+        "taglish": {
+          "BARANGAY": 9,
+          "CITY": 14,
+          "LANDMARK": 1,
+          "LOCAL_AREA": 3,
+          "PROVINCE": 8,
+          "ROAD": 0
+        }
+      },
+      "passages": 60,
+      "spans": 85
+    },
+    "train": {
+      "labels": {
+        "BARANGAY": 85,
+        "CITY": 308,
+        "LANDMARK": 58,
+        "LOCAL_AREA": 19,
+        "PROVINCE": 169,
+        "ROAD": 201
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": 34,
+          "CITY": 186,
+          "LANDMARK": 38,
+          "LOCAL_AREA": 6,
+          "PROVINCE": 106,
+          "ROAD": 155
+        },
+        "taglish": {
+          "BARANGAY": 51,
+          "CITY": 122,
+          "LANDMARK": 20,
+          "LOCAL_AREA": 13,
+          "PROVINCE": 63,
+          "ROAD": 46
+        }
+      },
+      "passages": 345,
+      "spans": 840
+    }
+  },
+  "validation_transition_labels": {
+    "gained_TP": {
+      "CITY": 3,
+      "LOCAL_AREA": 2,
+      "ROAD": 2
+    },
+    "introduced_FP": {
+      "BARANGAY": 4,
+      "CITY": 5,
+      "LANDMARK": 4,
+      "PROVINCE": 1,
+      "ROAD": 4
+    },
+    "lost_TP": {
+      "BARANGAY": 2,
+      "LANDMARK": 1,
+      "PROVINCE": 1
+    },
+    "resolved_FP": {
+      "BARANGAY": 2,
+      "CITY": 1,
+      "LANDMARK": 3,
+      "PROVINCE": 1,
+      "ROAD": 1
+    }
+  },
+  "validation_transition_languages": {
+    "english": {
+      "gained_TP": 4,
+      "introduced_FP": 12,
+      "lost_TP": 3,
+      "resolved_FP": 7
+    },
+    "taglish": {
+      "gained_TP": 3,
+      "introduced_FP": 6,
+      "lost_TP": 1,
+      "resolved_FP": 1
+    }
+  }
+}

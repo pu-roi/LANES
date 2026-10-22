@@ -1,0 +1,34 @@
+{
+  "exported": 0,
+  "human_verified_gold": 0,
+  "original": {
+    "articles": 132,
+    "context_reviewed": 0,
+    "location_spans": 1374,
+    "samples": 400,
+    "tokenizer": "lanes.xx.address-v2",
+    "window": [
+      "2022-01-01",
+      "2026-10-14"
+    ]
+  },
+  "original_unchanged": true,
+  "paired_context_records_add_samples": false,
+  "revision": {
+    "articles": 139,
+    "context_reviewed": 40,
+    "location_spans": 1494,
+    "samples": 400,
+    "tokenizer": "lanes.xx.address-v3",
+    "window": [
+      "2017-01-01",
+      "2026-10-14"
+    ]
+  },
+  "train_validation_test": [
+    280,
+    60,
+    60
+  ],
+  "training_admitted": 0
+}

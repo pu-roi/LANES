@@ -1,0 +1,188 @@
+{
+  "all_context_requirements_pass": true,
+  "all_hard_quotas_pass": true,
+  "artifact_checks_are_not_model_accuracy_or_legal_approval": true,
+  "carried_dispositions_bound": 134,
+  "complete_body_audit_scope": "All complete-body string fields in both bound generated assembly sets, including contextual evidence.",
+  "complete_body_field_counts_by_kind": {
+    "embedded_source_body": 880,
+    "other_evidence": 56,
+    "whole_body_passage": 24
+  },
+  "copy_inventory_complete_body_field_representations": 960,
+  "copy_inventory_reference": {
+    "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/copy-inventory-v2.json",
+    "sha256": "64e087b430b894ec6d74e43ae834df683ef082defd9ef220c84020d8e9543c7b"
+  },
+  "deterministic_replay": true,
+  "existing_tooling_files_preserved": 35,
+  "exports": 0,
+  "fixed_unaffected_records_exact": 383,
+  "fresh_pytest_run": false,
+  "frozen_contextual_pairs": 40,
+  "frozen_location_records": 400,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "location_spans": 1465,
+  "model_files_hashed_without_loading": 23,
+  "model_trained": false,
+  "negative_artifact_check_count": 32,
+  "negative_artifact_checks": {
+    "admission_count": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "automatic_admission": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "boolean_admission_count": {
+      "reason": "source-use counts must be integers, not booleans",
+      "result": "rejected"
+    },
+    "broken_evidence": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "canonical_desktop_v2_claim": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "changed_nonacademic_outcome": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "changed_preserved_context": {
+      "reason": "context content/order differs from reviewed inputs",
+      "result": "rejected"
+    },
+    "changed_unicode_span": {
+      "reason": "record content/order differs from exact reviewed selection",
+      "result": "rejected"
+    },
+    "duplicate_article": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "duplicate_location": {
+      "reason": "record content/order differs from exact reviewed selection",
+      "result": "rejected"
+    },
+    "duplicate_membership": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "export_count": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "false_desktop_reconciliation": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "fixed_annotation_or_metadata_change": {
+      "reason": "record content/order differs from exact reviewed selection",
+      "result": "rejected"
+    },
+    "fixed_split_movement": {
+      "reason": "record content/order differs from exact reviewed selection",
+      "result": "rejected"
+    },
+    "legal_approval": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "manifest_path_escape": {
+      "reason": "qualification evidence file is missing or outside its root",
+      "result": "rejected"
+    },
+    "membership_partition": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "missing_article": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "missing_context_pair": {
+      "reason": "context content/order differs from reviewed inputs",
+      "result": "rejected"
+    },
+    "missing_location": {
+      "reason": "record content/order differs from exact reviewed selection",
+      "result": "rejected"
+    },
+    "missing_membership": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "passage_offset": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "publisher_permission": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "refuse_primary_overwrite": {
+      "reason": "new assembly destinations required: D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\research-assembly-20261016-v1\\cohort-v5",
+      "result": "rejected"
+    },
+    "refuse_replay_overwrite": {
+      "reason": "new assembly destinations required: D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\research-assembly-20261016-v1\\replay\\cohort-v5",
+      "result": "rejected"
+    },
+    "scope_hash": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "source_admission_bypass": {
+      "reason": "record content/order differs from exact reviewed selection",
+      "result": "rejected"
+    },
+    "source_hash": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "unsupported_decision": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "wrong_cohort_binding": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    },
+    "wrong_context_binding": {
+      "reason": "source-use binding differs from reviewed scopes, decisions or frozen manifests",
+      "result": "rejected"
+    }
+  },
+  "negative_records": 48,
+  "new_scopes_bound": 4,
+  "no_selection_or_model_load_calls": true,
+  "nonacademic_outcomes_unchanged": 12,
+  "previous_verification": {
+    "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/verification.json",
+    "sha256": "50161a40aa7072fa691b3b20752e434d39c92cd0c9344c2ab5d1c560d7976e05"
+  },
+  "prior_checkpoint_files_preserved": 2966,
+  "replaced_context_records": 2,
+  "replaced_location_records": 12,
+  "replayed_generated_files": 22,
+  "research_only_export_refusals": {
+    "new": 400,
+    "previous": 400
+  },
+  "retained_context_records_exact": 38,
+  "retained_location_records_exact": 388,
+  "source_articles": 138,
+  "source_use_articles_bound": 138,
+  "source_use_memberships_bound": 400,
+  "test_records_preserved": 60,
+  "training_admitted": 0,
+  "training_pilots_preserved": 10,
+  "unicode_round_trip": true,
+  "validation_records_preserved": 60
+}

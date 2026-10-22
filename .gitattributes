@@ -61,3 +61,200 @@
 /docs/evaluations/cross-location-duration-20261008/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/scripts/evaluate_cross_location_duration.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/app/services/cross_location_duration_model.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Offline NER provenance JSON retains exact bytes across Windows/Linux checkouts.
+/docs/evaluations/flood-ner-*/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/flood-news-corpus-*/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/annotation/schema.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/configs/tokenizer.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Frozen NER report manifests also bind Markdown, CSV and dependency-lock bytes.
+/docs/evaluations/flood-ner-*/**/*.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/flood-ner-*/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/flood-ner-*/**/*.lock -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/configs/preflight_constructed_cases.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/configs/tokenizer_qualification_cases.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# New research helper identities and desktop handoff hashes retain exact bytes.
+/backend/training/flood_ner/academic_proposal.py -text
+/backend/training/flood_ner/desktop_inventory.py -text
+/backend/tests/test_flood_ner_academic_proposal.py -text
+/backend/tests/test_flood_ner_desktop_inventory.py -text
+/docs/guides/ner-desktop-preflight.md -text
+
+# GPU qualification manifests bind these helper/recipe bytes across checkouts.
+/backend/training/flood_ner/gpu_preflight.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/gpu_worker.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/requirements-gpu-qualification.in -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Private handoff manifests bind the standard-library restorer's exact bytes.
+/backend/training/flood_ner/desktop_handoff.py -text
+
+# Frozen NER qualification/export/training manifests hash Python source bytes.
+# Retain Git blob bytes on Windows too; autocrlf must not invalidate a handoff.
+/backend/training/flood_ner/**/*.py -text
+# These pre-existing desktop files were CRLF when their frozen hashes were recorded.
+/backend/training/flood_ner/cli.py text eol=crlf
+/backend/training/flood_ner/corpus_tokenizer_qualification.py text eol=crlf
+/backend/training/flood_ner/corpus_tokenizer_worker.py text eol=crlf
+/backend/training/flood_ner/evaluation/contract.py text eol=crlf
+/backend/tests/test_flood_ner_repository_bytes.py -text
+
+# Portable history-handoff evidence retains the bytes tested on the laptop.
+/backend/tests/test_flood_ner_history_inventory.py -text
+/docs/guides/ner-desktop-history-inventory.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Newly published, hash-bound research reports and test sources retain exact bytes.
+/docs/evaluations/flood-ner-baseline-recovery-20261018/** -text
+/docs/evaluations/flood-ner-bounded-discovery-20261017/** -text
+/docs/evaluations/flood-ner-clearance-assessment-20261018/** -text
+/docs/evaluations/flood-ner-controlled-retry-20261017/** -text
+/docs/evaluations/flood-ner-desktop-history-gap-completion-20261017/** -text
+/docs/evaluations/flood-ner-final-gdelt-diagnostic-20261017/** -text
+/docs/evaluations/flood-ner-four-passage-completion-20261018/** -text
+/docs/evaluations/flood-ner-gemini-evidence-recovery-20261018/** -text
+/docs/evaluations/flood-ner-gemini-recovery-response-20261018/** -text
+/docs/evaluations/flood-ner-latest-candidate-reuse-20261018/** -text
+/docs/evaluations/flood-ner-non-gdelt-search-20261017/** -text
+/docs/evaluations/flood-ner-provenance-adoption-20261018/** -text
+/docs/evaluations/flood-ner-saved-test-evidence-review-20261017/** -text
+/docs/evaluations/flood-ner-six-known-leads-20261017/** -text
+/docs/evaluations/flood-ner-source-evidence-gate-review-20261017/** -text
+/docs/evaluations/flood-ner-successor-delivery-20261018/** -text
+/docs/evaluations/flood-ner-successor-preparation-20261018/** -text
+/docs/evaluations/flood-ner-taglish-60-complete-20261017/** -text
+/docs/evaluations/flood-ner-taglish-budget-continuation-20261017/** -text
+/docs/evaluations/flood-ner-taglish-completion-followup-20261017/** -text
+/docs/evaluations/flood-ner-taglish-targeted-collection-20261017/** -text
+/docs/evaluations/flood-ner-taglish-test-completion-20261017/** -text
+/docs/evaluations/flood-ner-v7-workflow-repair-20261017/** -text
+/backend/tests/test_flood_ner_bounded_discovery.py -text
+/backend/tests/test_flood_ner_exposure_review.py -text
+/backend/tests/test_flood_ner_known_source_capture.py -text
+/backend/tests/test_flood_ner_receipt_evidence.py -text
+/backend/tests/test_flood_ner_receipt_recovery.py -text
+/backend/tests/test_flood_ner_research_capture.py -text
+/backend/tests/test_flood_ner_research_review.py -text
+/backend/tests/test_flood_ner_review_progress.py -text
+/backend/tests/test_flood_ner_successor_preparation.py -text
+/backend/tests/test_flood_ner_successor_windows_runtime.py -text
+/backend/training/flood_ner/development_error_audit.py -text
+/backend/training/flood_ner/development_error_worker.py -text
+/backend/tests/test_flood_ner_development_error_audit.py -text
+/backend/training/flood_ner/successor_experiment_preparation.py -text
+/backend/training/flood_ner/successor_experiment_worker.py -text
+/backend/tests/test_flood_ner_successor_experiment.py -text
+/docs/evaluations/flood-ner-corrected-experiment-preparation-20261018/** -text
+/docs/evaluations/flood-ner-corrected-experiment-delivery-20261018/** -text
+/docs/evaluations/flood-ner-development-error-audit-20261018/** -text
+/docs/evaluations/flood-ner-successor-desktop-training-20261018/** -text
+# Frozen historical Markdown contains intentional hard breaks; preserve its digest.
+/docs/evaluations/flood-ner-taglish-test-completion-20261017/README.md whitespace=-blank-at-eol,cr-at-eol
+
+/docs/evaluations/flood-ner-successor-config-correction-20261018/** -text
+
+/docs/evaluations/flood-ner-successor-v16-desktop-training-20261018/** -text
+/docs/evaluations/flood-ner-successor-publication-20261018/** -text
+
+# v19 comparison qualification binds these exact test and aggregate bytes.
+/backend/tests/test_flood_ner_corrected_execution.py -text whitespace=cr-at-eol
+/backend/tests/test_flood_ner_corrected_holdout_evaluation.py -text
+/backend/tests/test_flood_ner_v19_diagnosis.py -text
+/docs/evaluations/flood-ner-v19-diagnosis-evaluation-20261018/** -text
+
+# Regularization package source/test bindings must survive desktop checkout.
+/backend/tests/test_flood_ner_regularization_experiment.py -text
+/docs/evaluations/flood-ner-regularization-preparation-20261018/** -text
+
+# Transfer verifier/test bytes and public delivery evidence survive checkout.
+/backend/tests/test_flood_ner_regularization_delivery.py -text
+/docs/evaluations/flood-ner-regularization-delivery-20261018/** -text
+# Store the already-bound contract bytes literally instead of translating on checkout.
+/backend/training/flood_ner/evaluation/contract.py -text whitespace=cr-at-eol
+
+# Desktop execution evidence binds these test bytes across Windows/Linux checkouts.
+/backend/tests/test_flood_ner_regularization_execution.py -text
+/backend/tests/test_flood_ner_corrected_development_languages.py -text
+
+# Saved-development comparison grants and dated aggregate evidence bind exact bytes.
+/backend/tests/test_flood_ner_regularization_comparison.py -text
+/docs/evaluations/flood-ner-regularization-diagnosis-20261019/** -text
+
+# Training-only context-study grants bind exact helper/test/aggregate bytes.
+/backend/training/flood_ner/context_safeguards.py -text
+/backend/training/flood_ner/context_safeguard_cases.py -text
+/backend/training/flood_ner/context_safeguard_study.py -text
+/backend/tests/test_flood_ner_context_safeguards.py -text
+/docs/evaluations/flood-ner-context-safeguards-20261019/** -text
+
+# Frozen validation-only comparison bindings preserve exact checkout bytes.
+/backend/training/flood_ner/context_safeguard_validation.py -text
+/backend/tests/test_flood_ner_context_safeguard_validation.py -text
+/docs/evaluations/flood-ner-context-validation-20261019/** -text
+
+# Frozen training-only boundary-study grants bind these exact bytes.
+/backend/training/flood_ner/road_boundary_rules.py -text
+/backend/training/flood_ner/road_boundary_cases.py -text
+/backend/training/flood_ner/road_boundary_study.py -text
+/backend/tests/test_flood_ner_road_boundary_study.py -text
+/docs/evaluations/flood-ner-road-boundaries-20261019/** -text
+
+# Runtime qualification binds research helper/test bytes; no production hook.
+/backend/training/flood_ner/runtime_preflight.py -text
+/backend/training/flood_ner/runtime_probe_worker.py -text
+/backend/tests/test_flood_ner_runtime_preflight.py -text
+/docs/evaluations/flood-ner-runtime-preflight-20261019/** -text
+
+# Linux qualification receipts bind these new research bytes separately.
+/backend/training/flood_ner/linux_runtime_qualification.py -text
+/backend/training/flood_ner/linux_runtime_worker.py -text
+/backend/tests/test_flood_ner_linux_runtime.py -text
+/docs/evaluations/flood-ner-linux-qualification-20261019/** -text
+
+# Preserve the clean-launch diagnostic aggregate when later published.
+/docs/evaluations/flood-ner-docker-clean-launch-20261019/** -text
+
+# v29 qualification preserves earlier Linux helpers and binds new exact bytes.
+/backend/training/flood_ner/linux_runtime_v29.py -text
+/backend/training/flood_ner/linux_runtime_worker_v29.py -text
+/backend/tests/test_flood_ner_linux_runtime_v29.py -text
+/docs/evaluations/flood-ner-linux-execution-20261019/** -text
+
+# Internal shadow comparison bindings preserve literal source bytes.
+/backend/app/services/ner_shadow_service.py -text
+/backend/training/flood_ner/shadow_comparison.py -text
+/backend/training/flood_ner/shadow_worker.py -text
+/backend/tests/test_ner_shadow_service.py -text
+/backend/tests/test_flood_ner_shadow_comparison.py -text
+/docs/evaluations/flood-ner-shadow-comparison-20261019/** -text
+/docs/evaluations/flood-ner-shadow-execution-20261019/** -text
+
+# Context-gap research audit and aggregate report bind literal bytes.
+/backend/training/flood_ner/context_gap_audit.py -text
+/backend/training/flood_ner/context_gap_worker.py -text
+/backend/training/flood_ner/context_gap_runner.py -text
+/backend/tests/test_flood_ner_context_gap_audit.py -text
+/docs/evaluations/flood-ner-context-gaps-20261019/** -text
+/backend/training/flood_ner/context_acceptance.py -text
+/backend/training/flood_ner/context_acceptance_cases.py -text
+/backend/tests/test_flood_ner_context_acceptance.py -text
+/docs/plans/ner-interim-context-acceptance.md -text
+/docs/evaluations/flood-ner-context-acceptance-20261019/** -text
+/backend/training/flood_ner/context_association.py -text
+/backend/training/flood_ner/context_association_scoring.py -text
+/backend/training/flood_ner/context_association_worker.py -text
+/backend/training/flood_ner/context_association_run.py -text
+/backend/tests/test_flood_ner_context_association.py -text
+/docs/evaluations/flood-ner-context-association-20261019/** -text
+
+# Preserve versioned offline context repair qualification bytes.
+/backend/training/flood_ner/context_revision_v35.py -text
+/backend/training/flood_ner/context_association_v35.py -text
+/backend/training/flood_ner/context_association_cases_v35.py -text
+/backend/training/flood_ner/context_association_worker_v35.py -text
+/backend/training/flood_ner/context_association_run_v35.py -text
+/backend/training/flood_ner/context_association_scoring_v35.py -text
+/backend/tests/test_flood_ner_context_revision_v35.py -text
+/backend/tests/test_flood_ner_context_association_v35.py -text
+/backend/tests/test_flood_ner_context_association_v35_execution.py -text
+/docs/evaluations/flood-ner-context-repair-20261019/** -text

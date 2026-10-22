@@ -1,0 +1,47 @@
+{
+  "all_quotas_pass": true,
+  "calamancy_corpus_tokenizer_qualified": false,
+  "changed_fields": [
+    "source.admission_status",
+    "source.reuse_status",
+    "source.reuse_terms"
+  ],
+  "contextual_pairs": 40,
+  "dataset_license_granted": false,
+  "decision_provenance_counts": {
+    "adopt_private_academic_basis": 69,
+    "prior_desktop_reported_adoption": 68,
+    "prior_local_adoption": 1
+  },
+  "desktop_predecessor_unreconciled": true,
+  "evaluation_partition_records": 120,
+  "export_status": "Source-policy eligibility applied only. Existing exporter does not enforce the remaining model-tokenizer workflow gate. No export invoked on admitted data.",
+  "exports": 0,
+  "fresh_pytest_run": false,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "location_records": 400,
+  "location_spans": 1465,
+  "model_inference_performed": false,
+  "model_trained": false,
+  "negative_passages": 48,
+  "next_task": "Corpus qualification against pinned calamanCy tokenizer and frozen evaluation contract",
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "publisher_permission_claimed": false,
+  "schema_version": "lanes-private-academic-admission-status-v1",
+  "scope": "private_owner_only_academic_training_evaluation",
+  "source_articles": 138,
+  "training_admitted": 400,
+  "training_partition_records": 280,
+  "unchanged_nonacademic_outcomes": 12
+}

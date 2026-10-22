@@ -1,0 +1,111 @@
+[
+  {
+    "assessment": "evidence inventory only; no admission or legal determination",
+    "policy_evidence": [
+      {
+        "assessment": "Content rights reserved; copying/derivative use tied to express permission. No recorded training basis.",
+        "assessment_type": "policy-evidence inventory; not legal determination",
+        "capture_outcome": "raw_saved",
+        "checked_at": "2026-10-14T05:22:45.698519+00:00",
+        "final_url": "https://www.abs-cbn.com/terms",
+        "http_status": 200,
+        "kind": "terms",
+        "publisher": "ABS-CBN News",
+        "raw_path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/d0c139559e39e4aa03f2e51000938229a9598d0f4b26f47a981201cfcf305f70.html",
+        "raw_sha256": "d0c139559e39e4aa03f2e51000938229a9598d0f4b26f47a981201cfcf305f70",
+        "source_category": "publisher_policy_reference",
+        "training_admission": "hold",
+        "training_basis_recorded": false,
+        "url": "https://www.abs-cbn.com/terms",
+        "web_review": "Official page text/excerpt inspected through web tool; internal newsroom AI policies do not grant third-party rights."
+      },
+      {
+        "assessment": "Internal INCA editorial AI guidelines; not third-party training permission.",
+        "assessment_type": "policy-evidence inventory; not legal determination",
+        "capture_outcome": "raw_saved",
+        "checked_at": "2026-10-14T05:22:45.699517+00:00",
+        "final_url": "https://www.abs-cbn.com/ai-policy",
+        "http_status": 200,
+        "kind": "ai_policy",
+        "publisher": "ABS-CBN News",
+        "raw_path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/4ce633f328b6c4391696e1e0e4e7065b45f3f0be62485d1c213b62bf6e2205a0.html",
+        "raw_sha256": "4ce633f328b6c4391696e1e0e4e7065b45f3f0be62485d1c213b62bf6e2205a0",
+        "source_category": "publisher_policy_reference",
+        "training_admission": "hold",
+        "training_basis_recorded": false,
+        "url": "https://www.abs-cbn.com/ai-policy",
+        "web_review": "Official page text/excerpt inspected through web tool; internal newsroom AI policies do not grant third-party rights."
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "selected_articles": 4,
+    "selected_samples": 13
+  },
+  {
+    "assessment": "evidence inventory only; no admission or legal determination",
+    "policy_evidence": [
+      {
+        "assessment": "Personal, educational and noncommercial viewing/downloading described; training/data/model redistribution basis not established.",
+        "assessment_type": "policy-evidence inventory; not legal determination",
+        "capture_outcome": "raw_saved",
+        "checked_at": "2026-10-14T05:22:45.696995+00:00",
+        "final_url": "https://www.gmanetwork.com/news/user-policy/",
+        "http_status": 200,
+        "kind": "user_policy",
+        "publisher": "GMA News",
+        "raw_path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/bd49e170d968238fb2d985301a9e153c78a4c02462b1859b4c138250bd92f3ba.html",
+        "raw_sha256": "bd49e170d968238fb2d985301a9e153c78a4c02462b1859b4c138250bd92f3ba",
+        "source_category": "publisher_policy_reference",
+        "training_admission": "hold",
+        "training_basis_recorded": false,
+        "url": "https://www.gmanetwork.com/news/user-policy/",
+        "web_review": "Official page text/excerpt inspected through web tool; internal newsroom AI policies do not grant third-party rights."
+      },
+      {
+        "assessment": "Internal newsroom AI review/publication practices; not a license to third-party model training.",
+        "assessment_type": "policy-evidence inventory; not legal determination",
+        "capture_outcome": "raw_saved",
+        "checked_at": "2026-10-14T05:22:45.697506+00:00",
+        "final_url": "https://www.gmanetwork.com/news/artificial-intelligence-policy/",
+        "http_status": 200,
+        "kind": "ai_policy",
+        "publisher": "GMA News",
+        "raw_path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/980540c117c5a386bf7ddf6df2c87747cbfaa03dbbd69d2216bccf40602e5ee8.html",
+        "raw_sha256": "980540c117c5a386bf7ddf6df2c87747cbfaa03dbbd69d2216bccf40602e5ee8",
+        "source_category": "publisher_policy_reference",
+        "training_admission": "hold",
+        "training_basis_recorded": false,
+        "url": "https://www.gmanetwork.com/news/artificial-intelligence-policy/",
+        "web_review": "Official page text/excerpt inspected through web tool; internal newsroom AI policies do not grant third-party rights."
+      }
+    ],
+    "publisher": "GMA News",
+    "selected_articles": 36,
+    "selected_samples": 193
+  },
+  {
+    "assessment": "evidence inventory only; no admission or legal determination",
+    "policy_evidence": [
+      {
+        "assessment": "Limited personal noncommercial transitory viewing license with modification/reproduction/transfer restrictions; training basis unresolved.",
+        "assessment_type": "policy-evidence inventory; not legal determination",
+        "capture_outcome": "raw_saved",
+        "checked_at": "2026-10-14T05:22:45.944684+00:00",
+        "final_url": "https://rmn.ph/terms-and-conditions/",
+        "http_status": 200,
+        "kind": "terms",
+        "publisher": "RMN Networks",
+        "raw_path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/830f3dad338efbf6c46e8831529a74fea701d832196136bbb5e689d81de17277.html",
+        "raw_sha256": "830f3dad338efbf6c46e8831529a74fea701d832196136bbb5e689d81de17277",
+        "source_category": "publisher_policy_reference",
+        "training_admission": "hold",
+        "training_basis_recorded": false,
+        "url": "https://rmn.ph/terms-and-conditions/",
+        "web_review": "Official page text/excerpt inspected through web tool; internal newsroom AI policies do not grant third-party rights."
+      }
+    ],
+    "publisher": "RMN Networks",
+    "selected_articles": 92,
+    "selected_samples": 194
+  }
+]

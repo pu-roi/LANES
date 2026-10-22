@@ -1,0 +1,109 @@
+{
+  "archive_bytes": 469492,
+  "archive_members": 40,
+  "archive_sha256": "a2c7234a4b9846c845a405b9ed5ebeb3f75745c2b2015f0970ac71f953a4d2da",
+  "authenticated_full_byte_readback": true,
+  "counts": {
+    "dev": 60,
+    "research_holdout_separate": 60,
+    "train": 345
+  },
+  "desktop_gpu_verified": false,
+  "desktop_receipt_verified": false,
+  "drive_folder_url": "https://drive.google.com/drive/folders/1LDO770D82NXHZRiYNZrHe5oyLo7-vJU7",
+  "existing_sharing_preserved": true,
+  "fresh_extraction_controls": {
+    "controls": [
+      {
+        "case": "authentic_archive_extracts",
+        "passed": true
+      },
+      {
+        "case": "Absent checkout artifact destination",
+        "passed": true
+      },
+      {
+        "case": "ZIP checksum/size mismatch",
+        "passed": true
+      },
+      {
+        "case": "Unexpected/duplicate ZIP members",
+        "passed": true
+      },
+      {
+        "case": "Unexpected/duplicate ZIP members",
+        "passed": true
+      },
+      {
+        "case": "Unsafe ZIP entry",
+        "passed": true
+      },
+      {
+        "case": "Unsafe ZIP entry",
+        "passed": true
+      },
+      {
+        "case": "Unexpected ZIP member/size",
+        "passed": true
+      },
+      {
+        "case": "Transfer member hash mismatch",
+        "passed": true
+      },
+      {
+        "case": "Pull matching implementation before extraction",
+        "passed": true
+      }
+    ],
+    "existing_output_unchanged": true,
+    "network_or_training": false,
+    "passed": 10
+  },
+  "fresh_git_checkout_byte_checks": 22,
+  "frozen_preparation_unchanged": true,
+  "git_publication_status": "Reviewed public changes are included in this publication; post-push commit equality receipt is private.",
+  "holdout_accessed": false,
+  "implementation_dependencies_database_changes": false,
+  "inference_performed": false,
+  "local_documentation_links_checked": 1614,
+  "owner_only_permission_checks": 5,
+  "package_files": {
+    "control": 12,
+    "higher_dropout": 12,
+    "lower_learning_rate": 12
+  },
+  "preparation_tests": {
+    "passed": 367,
+    "rerun_during_delivery": false,
+    "subtests_passed": 35
+  },
+  "prior_evaluation_git_blobs_unchanged": 1014,
+  "private_delivery_verified": true,
+  "reviewed_public_files": 24,
+  "schema": "lanes-corrected-experiment-public-delivery-v1",
+  "secrets_scan_passed": true,
+  "source_archive_byte_equality": true,
+  "staged_private_data_excluded": true,
+  "trainer_helpers_unchanged": true,
+  "training_performed": false,
+  "uploaded_files": [
+    {
+      "byte_equal": true,
+      "bytes": 469492,
+      "name": "LANES-NER-corrected-experiment-20261018-v19.zip",
+      "sha256": "a2c7234a4b9846c845a405b9ed5ebeb3f75745c2b2015f0970ac71f953a4d2da"
+    },
+    {
+      "byte_equal": true,
+      "bytes": 115,
+      "name": "SHA256SUMS.txt",
+      "sha256": "aad44746406493147a61100344c144103e1066430d2e508cebd4abcc1ced90b3"
+    },
+    {
+      "byte_equal": true,
+      "bytes": 3060,
+      "name": "START-HERE.md",
+      "sha256": "def1c3eb08c429d8bf1b80cc2b720ecedd01d54d8059878d586e87fd427cfad1"
+    }
+  ]
+}

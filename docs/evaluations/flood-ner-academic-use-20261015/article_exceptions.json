@@ -1,0 +1,1852 @@
+[
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "cohort-1467f337694744fd0a5c",
+      "cohort-15d0f7b338acbc1281cd",
+      "cohort-59c8df72c665ca8017ab",
+      "cohort-97f940be8605fdf115b1",
+      "cohort-a2bf533e575777359fc8"
+    ],
+    "source_id": "ABS-BROWSER-abs-2022",
+    "url": "https://www.abs-cbn.com/news/09/26/22/some-malabon-streets-flooded-due-to-karding-high-tide"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "cohort-a846d7c60c9fcfd0bd32"
+    ],
+    "source_id": "ABS-BROWSER-abs-2023",
+    "url": "https://www.abs-cbn.com/news/07/31/23/22-areas-in-bulacan-province-flooded-thousands-flee"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "cohort-1a013b75f223c9ecdf8f",
+      "cohort-2a3ed5b9125740a9768d",
+      "cohort-a0fa6a72c98e363904ed",
+      "cohort-b2d07f63306caee9656f",
+      "cohort-b7270de04509e16db0ff",
+      "cohort-d9f72f7c7b51251a2a7d"
+    ],
+    "source_id": "ABS-BROWSER-abs-2024",
+    "url": "https://www.abs-cbn.com/news/2024/9/3/list-flooded-areas-due-to-sept-3-bad-weather-1223"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "cohort-2d5ca8b523e1b8743ef0",
+      "cohort-8032f5aadc7a9d39bf73",
+      "cohort-ae07d870dc06a8659104",
+      "cohort-bf3c56e92e567fb42373"
+    ],
+    "source_id": "ABS-BROWSER-abs-2025",
+    "url": "https://www.abs-cbn.com/news/weather-traffic/2025/6/21/floods-swamp-several-roads-in-metro-manila-amid-heavy-downpour-1835"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-6eac855adf2c30cfc624",
+      "continuation-81f6b10b1c46edfda523",
+      "continuation-b8657e3169afbb03da99"
+    ],
+    "source_id": "news-0628cdb524fef7d1",
+    "url": "https://www.abs-cbn.com/news/regions/2024/12/25/pasko-sa-camsur-problema-sa-andaya-highway-road-slips-landslides-baha-sumalubong-1104"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-2db7c70401671317cb95",
+      "continuation-3682a731601d21830338",
+      "continuation-4530ab868cf02f079a68",
+      "continuation-787e178be24277c54349",
+      "continuation-871e9e60bbcfbdf18abe",
+      "continuation-b22fcd447ea5f7fe4e62"
+    ],
+    "source_id": "news-0a7057762450f139",
+    "url": "https://www.abs-cbn.com/news/06/25/19/matinding-baha-naranasan-sa-ilang-parte-ng-metro-manila"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-3fa1686a1a29a783b349",
+      "continuation-441ff1a75dc482a1a9c5",
+      "continuation-5dba6d2600246906f8f0",
+      "continuation-7947102fce7bea3ca666",
+      "continuation-a7e84ff05ed924c42c9c",
+      "continuation-bca923a73f72f9d76a7a",
+      "continuation-d2bdec546f92ba203fec"
+    ],
+    "source_id": "news-0ce6fa8811d40df2",
+    "url": "https://www.abs-cbn.com/news/nation/2025/9/18/ici-inspects-flood-control-projects-in-quezon-city-2254"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-19bcadbb23d80b930485",
+      "revision-23b1585f176ae1a60e25"
+    ],
+    "source_id": "news-1367e412bf0b8a9f",
+    "url": "https://www.abs-cbn.com/news/07/26/19/ilang-barangay-sa-santa-maria-bulacan-binaha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-2c9049c0b12732dfdc57",
+      "continuation-4b80450b6501e487168a",
+      "continuation-7083e3d12285e30c158a",
+      "continuation-abcc90f6734aff39388f",
+      "continuation-f5fdd497ccc7118656f5"
+    ],
+    "source_id": "news-1856c6263451d088",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-2ffa12bca1842b297d4c",
+      "revision-d3e18d9e6367d009f611"
+    ],
+    "source_id": "news-1de5b547ff102993",
+    "url": "https://www.abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-0e3e9f1927814e77f717",
+      "continuation-1e0c29755fdbfb554d89",
+      "continuation-4c8da768a4fa3c5c5c16"
+    ],
+    "source_id": "news-1f5f90c1e3b7f312",
+    "url": "https://www.abs-cbn.com/news/10/20/23/mmda-announces-traffic-schemes-for-undas-christmas-season"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-0e0de1b0b3b75abf11a8",
+      "continuation-33d389839d9bcaddd935",
+      "continuation-4090e2b8e6f4b258ce16",
+      "continuation-a1ec3290e8054002fd44",
+      "continuation-e9615b0348f781ce7527"
+    ],
+    "source_id": "news-20746ac22823c8db",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-62aa3d80b50e75daac49",
+      "revision-a5e4c567f3aa0500898e"
+    ],
+    "source_id": "news-2a1a4e2381f63ab0",
+    "url": "https://www.abs-cbn.com/news/01/18/17/cdo-mayor-blames-clogged-drainage-system-for-massive-flood"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-3f9819645b137e5533a8",
+      "continuation-68271764c648734e3750",
+      "continuation-8247f0601fc492f6ae7b",
+      "continuation-cc5fe6600535911527a0"
+    ],
+    "source_id": "news-2a8473b3d610bb96",
+    "url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-79ef52a752c2b2fe0c5e",
+      "continuation-a00b122726642c90cb66"
+    ],
+    "source_id": "news-333a405b517ced17",
+    "url": "https://www.abs-cbn.com/news/2024/9/15/ilang-kalsada-sa-makati-binaha-750"
+  },
+  {
+    "credit_interpretation": "A source interview is attributed to Reuters; the frozen DOM snapshot has no byline. This is a lead, not proof that Reuters owns the whole article.",
+    "evidence_pointers": [
+      {
+        "end": 2290,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/31806c779e45675841cf24e5673d029114f16bf98810c8573dfc769fe0c9f912.txt",
+          "sha256": "6105dc468334267c6993a5a194de9adc5c9d5cc9e9fd33b4fc57e9ee5aaf9d29"
+        },
+        "span_sha256": "f5e28f296a39316ab6fdf6eb7b1ede2a415af993e76fbcba74c02b58515275b5",
+        "start": 2169
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured",
+      "possible_wire_origin"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Clarify article origin and credited rights before relying on publisher-wide permission; preserve the distinction between an interview attribution and a wire credit.",
+        "owner_type": "rights_holder"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-6c97b1f697b70cfcf274"
+    ],
+    "source_id": "news-33a273b337d533e8",
+    "url": "https://www.abs-cbn.com/news/07/24/17/home-sweet-home-filipinos-stay-put-even-when-the-sea-invades"
+  },
+  {
+    "credit_interpretation": "AFP is a photographer/agency caption credit in the first paragraph. Selected training record continuation-1601d9976fab438f9cbb includes the caption at source offsets 0–145; no image asset is part of the NER text.",
+    "evidence_pointers": [
+      {
+        "end": 235,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/359f322248180aba773dbbc3b78a60aa9d7b6710ddd5ca3f87fab1794c4a792d.txt",
+          "sha256": "abfa8cac412a8e251847cf2227a11b1bbf47eeefbc6f3f6a3deb0d20bff73ddb"
+        },
+        "span_sha256": "24026d1ec4dfbf844d216c0b0fff4db97907c2e54ce0681805ae18547e28252f",
+        "start": 72
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured",
+      "third_party_photo_caption"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Keep photo/caption copying separate from text-only NER use and document necessity of retaining complete evidence; no image license is inferred.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-1601d9976fab438f9cbb",
+      "continuation-52491f4ac3c0b63febb0",
+      "continuation-c69ebdb1b197d3d2caa3"
+    ],
+    "source_id": "news-36e7cdb0e61c5b61",
+    "url": "https://www.abs-cbn.com/news/regions/2025/11/11/dpwh-to-implement-shelved-2017-flood-control-masterplan-in-storm-ravaged-cebu-1823"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-130a1fd911e14a888179",
+      "continuation-d6963b6b09b417efcb74",
+      "continuation-da72c73f76d447f43700"
+    ],
+    "source_id": "news-3bc1ec8437f23801",
+    "url": "https://www.abs-cbn.com/news/04/27/21/ilang-lugar-sa-davao-city-binaha-dahil-sa-thunderstorms"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-44135653b79a061daad8"
+    ],
+    "source_id": "news-3f17e39b80d92846",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-48ddce7808f301143702",
+      "continuation-d19f3015e287df333132"
+    ],
+    "source_id": "news-3fe9a00d085db8d9",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/metro/2025/07/22/2459860/video-bahang-baha-sa-taft-avenue-dahil-sa-habagat"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-c6ddf9c215e39bfc3dcb"
+    ],
+    "source_id": "news-404b64185f60c55c",
+    "url": "https://www.abs-cbn.com/news/08/04/18/tingnan-baha-sa-metro-manila-dulot-ng-biglang-pagbuhos-ng-malakas-na-ulan"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-41352ed1db3ed7e0a835"
+    ],
+    "source_id": "news-4649d2f1a4604953",
+    "url": "https://www.abs-cbn.com/news/10/26/21/parte-ng-davao-city-binaha-dahil-sa-malakas-na-ulan"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-0c5383a6e83533b71498"
+    ],
+    "source_id": "news-496862ad9cd359b9",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/989301/baha-metro-manila-malakas-ulan/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-0e10dc4b0023ddd2e25d",
+      "continuation-0f01691c20669b2e52d0",
+      "continuation-259fc2f7630be4167095"
+    ],
+    "source_id": "news-4a13b0eb4b607e5f",
+    "url": "https://www.abs-cbn.com/news/11/15/19/isabela-cagayan-on-landslide-flood-watch-as-ramon-nears"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-020f4be43bdb072c2118",
+      "revision-616984ca36a00c0ed182",
+      "revision-a5b5c76d264119920ab5",
+      "revision-ea9231706dca69475243"
+    ],
+    "source_id": "news-4fe54a5e3ccb09ca",
+    "url": "https://www.abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-1ebd2254708b78f60228",
+      "revision-887034604ffed4c9dff4"
+    ],
+    "source_id": "news-5a83707ac0c552fe",
+    "url": "https://www.abs-cbn.com/news/2024/9/3/panoorin-baha-sa-ilang-kalsada-sa-malabon-valenzuela-723"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-77f8404b81dfd30a17da",
+      "continuation-a9b9c0b5f2b6d88a5567",
+      "continuation-e41fe1d52fd82fde7082"
+    ],
+    "source_id": "news-5c8cbed15a462665",
+    "url": "https://www.abs-cbn.com/news/05/30/17/thunderstorms-flood-parts-of-quezon-city-manila"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-7cda6f7a9e2b1f2793d4"
+    ],
+    "source_id": "news-5ec4d4b9bb6c8593",
+    "url": "https://www.gmanetwork.com/news/balitambayan/umg/656071/motoristang-sumunod-sa-waze-lumubog-ang-suv-sa-baha/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-1cbcb76a51afcc62051a",
+      "continuation-3bf7c5731ee8c95deeb3",
+      "continuation-caebdab7aa4bcf786ad8"
+    ],
+    "source_id": "news-6061d9bc1dc4efa4",
+    "url": "https://www.abs-cbn.com/news/10/12/20/nika-forecast-to-leave-par-brewing-storm-likely-to-strengthen-in-48-hours"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-0c1dde36bf0b320d7169",
+      "continuation-2313ddef67ba9d5251b5",
+      "continuation-30094a1699e4f9fb7a34",
+      "continuation-4f02b405b72741d5e7b3",
+      "continuation-5a18c26b5f50dfaafc5f",
+      "continuation-910b3b777c6c43ba8943",
+      "continuation-cec073c0b468aaed4d00"
+    ],
+    "source_id": "news-641a924608dd03ab",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-3ff16d2591b212a8f2a5"
+    ],
+    "source_id": "news-645827b407f23d1d",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/696896/students-in-opol-misamis-oriental-at-risk-as-they-pass-through-dilapidated-bridge-everyday/story/"
+  },
+  {
+    "credit_interpretation": "Source ends in Agence France-Presse credit; do not assume the GMA site policy grants AFP rights.",
+    "evidence_pointers": [
+      {
+        "end": 1178,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/099f6a9068accbda9cbd05718e8c7f831849523f9ce6b4b1878da31e43076b9e.txt",
+          "sha256": "92ec272beb8bbf8cd53c53cd1846b7d3f4c42b14a038cb4ebe414fafad3a4c9a"
+        },
+        "span_sha256": "61932c9e326517fa197b0531dbf6c02f600f57549b4b6d1e7373fccc220ed372",
+        "start": 1015
+      },
+      {
+        "end": 1846,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/099f6a9068accbda9cbd05718e8c7f831849523f9ce6b4b1878da31e43076b9e.txt",
+          "sha256": "92ec272beb8bbf8cd53c53cd1846b7d3f4c42b14a038cb4ebe414fafad3a4c9a"
+        },
+        "span_sha256": "4267704242249083030e4cc82e32ce05ac895405a8ce4e117025a1b95205ab88",
+        "start": 1683
+      },
+      {
+        "end": 3718,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/099f6a9068accbda9cbd05718e8c7f831849523f9ce6b4b1878da31e43076b9e.txt",
+          "sha256": "92ec272beb8bbf8cd53c53cd1846b7d3f4c42b14a038cb4ebe414fafad3a4c9a"
+        },
+        "span_sha256": "095f546ede7b9dcb0b1461e657819df58c7ee1fb9dba2dfa7bdf8265b90b22f2",
+        "start": 3628
+      }
+    ],
+    "exception_flags": [
+      "explicit_wire_credit"
+    ],
+    "next_actions": [
+      {
+        "action": "Establish the scope of the AFP-credit article separately from GMA-owned reporting, through an applicable documented basis or rights-holder clarification.",
+        "owner_type": "rights_holder"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "cohort-48d62e93da5cf7d8b92a",
+      "cohort-6b4a467fef180b34d7fe",
+      "cohort-7a8fe2edcf7b242eb92f"
+    ],
+    "source_id": "news-651c21937c60bd33",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/849654/death-toll-from-philippine-flash-floods-rises-to-67-official-tally/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-1374146bfdb88d0d4a67",
+      "revision-77017b275bfa957b0b4c",
+      "revision-d25a0b39450e1ac9aa54"
+    ],
+    "source_id": "news-72ae1d755bd1d810",
+    "url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-0015463c16667c6768ae",
+      "continuation-4b75d73b923b32d42b2b",
+      "continuation-91bf7b5093f6c0602cd6",
+      "continuation-a0d00d583fc98ca96cfb",
+      "continuation-c93402fcf5550aa70e2c"
+    ],
+    "source_id": "news-7a824863d687424a",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-1cbd5fd84fdce100429b",
+      "continuation-3c8241265883064d4dad",
+      "continuation-a0a41929fca8ac9f14db",
+      "continuation-a6beb32adce35c8b5f15",
+      "continuation-d7a78a8074d34e301171",
+      "continuation-fd5e7be271f243a9c734"
+    ],
+    "source_id": "news-7abee919f934ec27",
+    "url": "https://www.abs-cbn.com/news/09/08/21/baha-sa-ilang-bayan-sa-bulacan-humupa-na"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-0a6d49b26d07093b6c2b",
+      "continuation-19cfe93bf819b733d959",
+      "continuation-ae34b1ba4ced6a0aa60e"
+    ],
+    "source_id": "news-8cec5ab4050f478f",
+    "url": "https://www.abs-cbn.com/news/07/31/20/ilang-bayan-sa-pampanga-binaha-dahil-sa-malakas-na-pag-ulan"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-272923bc929ad6f03eac",
+      "continuation-80398f210d1fde4e2341",
+      "continuation-e7d2ad1e2b119d78197c"
+    ],
+    "source_id": "news-8d7467f1c4782199",
+    "url": "https://www.abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [
+      {
+        "end": 490,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/4ca4c8fc9fcee103e6e7b206337001dc07aa38e08ee3bf11efe6b9348e6c2de8.txt",
+          "sha256": "c431deed8f87ffb4489e52a64f5a7a1a9a9826512ac9ceac3c439ef07590d2d9"
+        },
+        "span_sha256": "8032702ba7f206d1d8bbb7fbe1ce45ab903a5ccb10ef56ab7126a3373bb505e2",
+        "start": 442
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-a12d865be8551f22c9f7"
+    ],
+    "source_id": "news-8e93fc9efc698e68",
+    "url": "https://www.abs-cbn.com/news/08/12/18/watch-floods-hit-parts-of-quezon-city-rizal"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-14e8a6ca7b05fc3e583e",
+      "continuation-19ec2d9140d31a6a685d",
+      "continuation-849f04f6b5fa9fc226e4"
+    ],
+    "source_id": "news-905a1e1ec31455e0",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-39d9e32fd1112c91142e",
+      "continuation-3dbb6fe8cb4a01d2bc0b",
+      "continuation-892c987b90bfa3bf8fe8"
+    ],
+    "source_id": "news-91ded5b32f42f85c",
+    "url": "https://www.abs-cbn.com/news/12/22/22/ph-south-korea-sign-3b-development-aid-loan-package"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-e2bcfda90af86197a2f8",
+      "revision-f540ed959911d40e6c54"
+    ],
+    "source_id": "news-91ec78444194763f",
+    "url": "https://www.abs-cbn.com/news/01/21/17/datu-montawal-in-maguindanao-now-under-state-of-calamity"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-7126f6cf49c934943ad7",
+      "continuation-aef84ed868b5ed5a50d7",
+      "continuation-b02f96dfc72421435408",
+      "continuation-bda4ec4c0b7b9a1b9051",
+      "continuation-fa48f2b04f7a773aec48"
+    ],
+    "source_id": "news-92a232adacae5fdd",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/03/2532481/editoryal-ipatupad-pagbabawal-na-mag-swimming-sa-baha/amp/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-c73ea02b627d2d41eb12"
+    ],
+    "source_id": "news-945f46c723917dec",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-226d50217e8daf36907b"
+    ],
+    "source_id": "news-959dc7f3e42305a4",
+    "url": "https://www.abs-cbn.com/news/regions/2025/7/12/halos-4-oras-na-ulan-nagdulot-ng-baha-sa-bacolod-city-0927"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-0f17f41c8965fb8d1784",
+      "continuation-17980e2aa13d4c6196df",
+      "continuation-31ffaef30fd70576e97c",
+      "continuation-45894493880174344bf8",
+      "continuation-4e901cd2a705a161f305",
+      "continuation-bc0a4bdbfbf03644fc48"
+    ],
+    "source_id": "news-95b46b8ad154130c",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-475b7ff83ef10710b258",
+      "continuation-b801a2552a5d1aecdd37",
+      "continuation-c85b0632d89cae2a49c5",
+      "continuation-fb3619faacf1b8538502"
+    ],
+    "source_id": "news-9d3da490cc412ad3",
+    "url": "https://www.abs-cbn.com/news/08/24/19/ilang-parte-ng-metro-manila-binaha-sa-pagsalubong-sa-long-weekend"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-adbb1b957a659cbafa82"
+    ],
+    "source_id": "news-9f85f3f1fa38fa8c",
+    "url": "https://www.abs-cbn.com/news/08/01/20/mga-bahay-binaha-sa-sta-mesa-dahil-sa-sirang-tubo"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-13ea25d57a03515d2cc7"
+    ],
+    "source_id": "news-a07b77e950bca4fa",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760146/bahagi-ng-maharlika-highway-sa-lopez-quezon-lubog-sa-baha/story"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-ecec0a81588a556433cb"
+    ],
+    "source_id": "news-a38a1551c552a86b",
+    "url": "https://www.abs-cbn.com/news/09/25/17/ilang-barangay-sa-lapu-lapu-city-binaha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-306ed8a75ea8a4571887",
+      "continuation-319dec9c5ac6feb5d9fc"
+    ],
+    "source_id": "news-a3945a9d77fef99a",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/metro/2026/07/31/2545995/dpwh-ikakasa-dagdag-proyekto-vs-baha-sa-maynila"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-0cb728340a6ded267fc7",
+      "continuation-51165fb51e234765871a"
+    ],
+    "source_id": "news-a4d477ae7b54b451",
+    "url": "https://www.abs-cbn.com/news/01/10/17/look-auring-soaks-school-materials-in-toledo-city"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-3a8d730273f3a138bb86",
+      "continuation-9422ebc005511002b63b",
+      "continuation-9bceee63971374450f94"
+    ],
+    "source_id": "news-a78225d936fe4756",
+    "url": "https://www.abs-cbn.com/news/11/12/20/ilang-mga-residente-ng-rodriguez-at-san-mateo-sa-rizal-na-stranded-sa-baha-nagpapasaklolo"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-43c34c4653c8937095ed",
+      "continuation-6e87adcca3de846dd7ac",
+      "continuation-a5aafd13e76a7b756748",
+      "continuation-fcfe2020f45e128ac772"
+    ],
+    "source_id": "news-aa6269dd60812ee5",
+    "url": "https://www.abs-cbn.com/news/11/13/20/walang-pasabi-marikina-mayor-sinisi-ang-angat-dam-sa-lagpas-ondoy-na-baha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-dade1bede1aecc9dd2fa"
+    ],
+    "source_id": "news-ade9c52e455ef8a3",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2022/11/03/2221150/editoryal-mga-sakit-pagkatapos-ng-bagyot-baha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-8af17aaf8b407a807778"
+    ],
+    "source_id": "news-b334a6595b2116f3",
+    "url": "https://www.abs-cbn.com/news/11/02/22/mga-dadalaw-sa-sementeryo-sa-biliran-hirap-makatawid-sa-baha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-0ab1364300308f89bef9",
+      "continuation-10404a76a0dbc99c4bd7",
+      "continuation-1513e88e4cf330ce0912",
+      "continuation-28aa46adb8d57570cf78",
+      "continuation-2903166fe721bc9029e0",
+      "continuation-327eb478abc0e5c03df0",
+      "continuation-8d7bed717d6806fc9ca6",
+      "continuation-e9a594fccd032ebaacba"
+    ],
+    "source_id": "news-b38de27def66b200",
+    "url": "https://www.abs-cbn.com/news/10/10/23/senators-ask-dpwh-why-fix-roads-that-still-look-good"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-04691a75914ae321c2b9",
+      "continuation-1892116daaca540cb48b",
+      "continuation-884d15d09ef76838a35b",
+      "continuation-d7bbc048ac136cd33259"
+    ],
+    "source_id": "news-bd360a67694282cd",
+    "url": "https://www.abs-cbn.com/news/12/04/19/oriental-mindoro-to-be-placed-under-state-of-calamity-disaster-official"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-2f7cf654d4586d745dca"
+    ],
+    "source_id": "news-c04d4f7154f4f54f",
+    "url": "https://www.abs-cbn.com/news/09/03/17/6-barangay-ng-bayan-sa-bukidnon-binaha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [
+      {
+        "end": 6507,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/9e698edfacef5eb6cbd55ebe6e7e2bbb6fddb9ce2c8adc61ca348a99c8c78cf6.txt",
+          "sha256": "8b7bbbacf7c6c11b6d96077c416482fc6025e4ab8da9a4aacd167dc1831d8f00"
+        },
+        "span_sha256": "8cadeb3a1cfe8940a2fccf7679effb546e58592c07d4ac4e3fd1ff2bbdb18b01",
+        "start": 6418
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-1420c4c49fc6a7fb87ef",
+      "continuation-356d7077097baf6d5503",
+      "continuation-37c44cf0d2296efa0509",
+      "continuation-3d4dc27a00988f9785d7",
+      "continuation-46fd62d57f69297d37ef",
+      "continuation-53bf840ef1b4cf59fbad",
+      "continuation-60d23ff9567a95ef4275",
+      "continuation-6bcd1c4d33c8b6f459f7"
+    ],
+    "source_id": "news-c296dd5349f4e7ee",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-182d11de8367cf901d30",
+      "continuation-24ef4a59901b74bc21b3"
+    ],
+    "source_id": "news-c7216b3994ab5614",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-51cb0e44d3bf3b4a24ce",
+      "revision-e49c25d3347235f30227"
+    ],
+    "source_id": "news-c814e44a54372ad1",
+    "url": "https://www.abs-cbn.com/news/07/28/18/flash-flood-inundates-20-homes-in-zambo-del-sur"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-0b73740c9943dafb7d1d",
+      "continuation-2552bb8e2253b79b7f99"
+    ],
+    "source_id": "news-ca7319840b01cb70",
+    "url": "https://www.abs-cbn.com/news/10/26/20/marikina-govt-handa-sa-posibilidad-ng-pagbaha-dahil-sa-bagyong-quinta"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [
+      {
+        "end": 4733,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/35224769c3249d87e4db126627060699facab9832bf78c8854c7e6195c2f9dc0.txt",
+          "sha256": "3836829bd2f1ab0742aeafb54f8e8840aa99c3013f0d34170522293e92a1cedc"
+        },
+        "span_sha256": "462f2245917d5e154f8ff18de87ecdf65405252ed52e358eea0ae392e9f42569",
+        "start": 4688
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-2e3fd8a03bd9c3d55386",
+      "continuation-4eb2f51041065c8e4962",
+      "continuation-4f2107ce52c298ecb892",
+      "continuation-d873c5655649fe4b3e84",
+      "continuation-f25b0a210a94e95db3fe"
+    ],
+    "source_id": "news-cc126ad08a03808b",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-32555f5226b16d0ba2b5",
+      "continuation-341f427b5eff5f55bae0",
+      "continuation-3f9e82e340d472170dab",
+      "continuation-5fa0b801a31bccad62df",
+      "continuation-a2550f98acb8e9e80afd",
+      "continuation-b2c549e7fa7e6d793e18",
+      "continuation-b56ff60c70277c422d7f"
+    ],
+    "source_id": "news-d0a136d3df01f457",
+    "url": "https://www.philstar.com/the-freeman/region/2018/01/04/1774478/agaton-leaves-bohol-flooded"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-3ec7af5d4a0c51976069"
+    ],
+    "source_id": "news-d40ef2f36bb454d6",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/"
+  },
+  {
+    "credit_interpretation": "AFP is explicitly expanded as Armed Forces of the Philippines in the source, not Agence France-Presse.",
+    "evidence_pointers": [
+      {
+        "end": 323,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/c99f7f041f3194979d86f74c34a811ac89f82ba8b66515a013ced25debc8f41c.txt",
+          "sha256": "f57251d892d83a8a03768a3bb22222bdacb16de409d4fa7d9e787092402e6349"
+        },
+        "span_sha256": "488448f5dd70e154cf5a3f5f163a4fa74d74c9aece27b25145cdf011208a6fe1",
+        "start": 160
+      },
+      {
+        "end": 418,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/c99f7f041f3194979d86f74c34a811ac89f82ba8b66515a013ced25debc8f41c.txt",
+          "sha256": "f57251d892d83a8a03768a3bb22222bdacb16de409d4fa7d9e787092402e6349"
+        },
+        "span_sha256": "8f232cfd15e9239bb64653ba6932ebb58295ad7666decbc264fc79e74f7c9508",
+        "start": 255
+      },
+      {
+        "end": 1097,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/c99f7f041f3194979d86f74c34a811ac89f82ba8b66515a013ced25debc8f41c.txt",
+          "sha256": "f57251d892d83a8a03768a3bb22222bdacb16de409d4fa7d9e787092402e6349"
+        },
+        "span_sha256": "50401694aa9714791c0ae7be1b6381aa93a2dbce6adf1f2fd32c5b942542000f",
+        "start": 934
+      },
+      {
+        "end": 1381,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/c99f7f041f3194979d86f74c34a811ac89f82ba8b66515a013ced25debc8f41c.txt",
+          "sha256": "f57251d892d83a8a03768a3bb22222bdacb16de409d4fa7d9e787092402e6349"
+        },
+        "span_sha256": "3d594c9c76be3485fa8f2a47891a063324ba11a8b94a8c7fb4450b97f0319915",
+        "start": 1218
+      },
+      {
+        "end": 2704,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/c99f7f041f3194979d86f74c34a811ac89f82ba8b66515a013ced25debc8f41c.txt",
+          "sha256": "f57251d892d83a8a03768a3bb22222bdacb16de409d4fa7d9e787092402e6349"
+        },
+        "span_sha256": "f0ff223c51d07869a6d91c5397b2be5e103c71b2a765ac48fb789d3bf0097d16",
+        "start": 2663
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured",
+      "non_agency_acronym"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Do not classify this report as an AFP wire story merely because the acronym occurs.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-a39317b1795de115e190",
+      "continuation-a9d791e6ae044a32c4c3",
+      "continuation-dca908d33b4e17846395",
+      "continuation-e9fa847684ce62f7d2f5",
+      "continuation-f941935fbb822a344432"
+    ],
+    "source_id": "news-d51c97021d07d991",
+    "url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-1a0f87d70d39eacf95f4",
+      "continuation-3cd8d7c1f2db2110a9aa",
+      "continuation-406bd3e382cc3bf8fc31",
+      "continuation-6df0c01629635d78b706",
+      "continuation-911b2e9550613bc5aacc",
+      "continuation-d1349eba2a93f1a1515d"
+    ],
+    "source_id": "news-d706fe79a0ec5353",
+    "url": "https://www.abs-cbn.com/news/04/06/22/palace-says-ips-consulted-in-kaliwa-dam-project"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-17680009edbab7571c25",
+      "continuation-29c6c4746720ef88b3a9",
+      "continuation-a5caa168e02e58d987c7",
+      "continuation-c8c4343f08b0380eecdb",
+      "continuation-f8e8bff81d03289022ea"
+    ],
+    "source_id": "news-dc0d8bcd7617f20f",
+    "url": "https://www.abs-cbn.com/news/11/23/20/foundation-na-nag-aalaga-ng-matatanda-nanawagan-ng-tulong-matapos-bahain"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [
+      {
+        "end": 4716,
+        "reference": {
+          "path": "backend/training/flood_ner/artifacts/captures/31e88d4d19a743a1dc277ef3c12d56611ef8bf8de05de2e61bcb32aa61cb4ca6.txt",
+          "sha256": "79d0c3cc0502718c705573454e539d848ebe46a408f0cde86db0273c5099cd41"
+        },
+        "span_sha256": "c63f9e5bc92c1b3fc3243766e9ae889cb6f22d5c41f7d7ebaf039d4a91f37fe8",
+        "start": 4632
+      }
+    ],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-1d0db833ad1bc72de8bc",
+      "continuation-3cbb0c0a4d8911e70dd0",
+      "continuation-3d40a567c58060837ed6",
+      "continuation-5074c60a8f9e8d149add",
+      "continuation-80062fbf8faae6e8d922",
+      "continuation-82e22e72cbaf8e7bc30b",
+      "continuation-86a97f0b58a8389452b9",
+      "continuation-9c9adf69146a46cb9b7e"
+    ],
+    "source_id": "news-e0cf751ea8d71e21",
+    "url": "https://www.philstar.com/headlines/2017/12/16/1769104/3-dead-urduja-pummels-visayas"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-ba6cb482e1e723eaf398"
+    ],
+    "source_id": "news-e45b849dae35a056",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/954882/malaking-bahagi-ng-bundok-sa-angono-rizal-nakalbo-dahil-sa-quarrying/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "revision-31f7d82646010159122f",
+      "revision-4a01873db691acaf52ae",
+      "revision-a421c0fc77ca27d54a1e",
+      "revision-fd735778837094abef7b"
+    ],
+    "source_id": "news-e984b661dcaf2637",
+    "url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-042fe8fe7d1fc262e760",
+      "continuation-0a87532a2ddca7e8d54f",
+      "continuation-2d4c06001d2b331d429a",
+      "continuation-46b4d92017982d6c2708",
+      "continuation-5afed2f8e53966e74553",
+      "continuation-5e38da6f4a5280f2dab1",
+      "continuation-8e335fe67769bcfe66db",
+      "continuation-95958fd9ddcd9e7b0d00"
+    ],
+    "source_id": "news-ea3429aa801a60cb",
+    "url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "next_actions": [
+      {
+        "action": "Explain why the whole article is needed for location/context annotation and separately justify full evidence retention. No shortening or removal was performed.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "GMA News",
+    "sample_ids": [
+      "revision-c9fc28e08a0aa54e9a50"
+    ],
+    "source_id": "news-eb21b538ee224afc",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-4b8794ee43d0e5d8b3f0"
+    ],
+    "source_id": "news-eb2c5a8e951bbbb2",
+    "url": "https://www.abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-002b156fc1ca1d940954",
+      "continuation-250ad36661b992f8451f",
+      "continuation-2b53728ff7ba09a7c762"
+    ],
+    "source_id": "news-f27dfa33a87f1e62",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2022/08/13/2202378/editoryal-hindi-masolusyunan-ang-problemang-baha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression",
+      "publisher_qa_host"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Address this article as opinion/editorial expression in the nature factor; do not classify the entire selected corpus as mere factual flood lists.",
+        "owner_type": "researcher"
+      },
+      {
+        "action": "Clarify whether the captured QA-host publication falls within the same authorized academic-use scope; the host alone supplies no permission.",
+        "owner_type": "rights_holder"
+      }
+    ],
+    "publisher": "Philstar",
+    "sample_ids": [
+      "continuation-457cadb50b825a4485bd",
+      "continuation-4a52bf9f8b29db5f2f36",
+      "continuation-5de8ccc100a16b624a99"
+    ],
+    "source_id": "news-f716f246440bddfd",
+    "url": "https://qa.philstar.com/pilipino-star-ngayon/opinyon/2023/09/02/2293208/editoryal-basura-baha"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-3a7651829e890d658084",
+      "continuation-5cfa0e968efec9a23375",
+      "continuation-6c7feb0c3ff5877e6e62",
+      "continuation-9a7211c1c167fe1bebeb",
+      "continuation-b2eec3f4d345023317ae"
+    ],
+    "source_id": "news-f828b8452eed31ae",
+    "url": "https://www.abs-cbn.com/news/08/11/18/baha-zero-visibility-dala-ng-walang-humpay-na-pag-ulan-sa-kamaynilaan"
+  },
+  {
+    "credit_interpretation": "No explicit wire-origin indication established from reviewed captured credit/agency cues; absence is not proof of publisher ownership.",
+    "evidence_pointers": [],
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "next_actions": [
+      {
+        "action": "Retain the captured publisher/title/URL and identify missing byline as unknown; do not invent an author or rights holder.",
+        "owner_type": "researcher"
+      }
+    ],
+    "publisher": "ABS-CBN News",
+    "sample_ids": [
+      "continuation-20834fd4bd3a46fb922a",
+      "continuation-30f69499ce7939d16c76",
+      "continuation-58f1f02e23ff195aced2"
+    ],
+    "source_id": "news-fcff07b9d070ca91",
+    "url": "https://www.abs-cbn.com/news/05/09/19/pagasa-sees-sign-of-dry-seasons-looming-end"
+  }
+]

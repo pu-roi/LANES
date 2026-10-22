@@ -1,0 +1,22 @@
+{
+  "schema_version": "lanes-flood-ner-backup-bundle-v1",
+  "folder": "backend/training/flood_ner/artifacts/400-sample-dataset-20261014",
+  "samples": 400,
+  "articles": 132,
+  "location_spans": 1374,
+  "verified_files": 418,
+  "originals_preserved": true,
+  "all_copies_byte_equal": true,
+  "full_text_git_ignored": true,
+  "external_backup_created": false,
+  "contains": [
+    "README.md",
+    "400-sample-links.csv",
+    "132-article-links.csv",
+    "article_index.json",
+    "dataset/",
+    "articles/",
+    "reports/",
+    "bundle_manifest.json"
+  ]
+}

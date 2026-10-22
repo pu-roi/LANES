@@ -1,0 +1,9 @@
+# Paper-method notes: source-use proposals
+
+The study dataset remains 400 distinct AI-created, same-agent-reviewed silver passages from 139 Philippine news articles, with 200 English/200 Taglish and frozen 280/60/60 splits. Forty contextual-v3 records describe existing training passages rather than 40 additional samples. Labels are not independently human-verified gold and no trained-model accuracy has been measured.
+
+The private academic-use assessment produced 139 article recommendations and three publisher summaries. Seventy articles (157 passages) received AI recommendations for narrowly scoped private academic use; 69 articles (243 passages) remain held for clarification. These are proposals, with zero actual project admission decisions, zero admitted training records and zero exports. Do not describe the 400 as permission-cleared training data or the 157 as a qualified replacement cohort.
+
+The researcher reports adviser acknowledgment and instructions to keep use private and solely research/training. Drive owner-only permissions are verified; no specific school ethics standard or formal publisher permission is invented. Retention remains undecided and is not itself a training prohibition. Full-source/copy amounts, third-party credits, expressive opinions and possible website-contract issues are recorded separately from annotation acceptance.
+
+Source and partition identities, ten retained pilots and all existing quotas remain unchanged. This milestone performs no source collection, annotation revision, NER model inference, training, GPU setup, operational database write or deployment. Copyright/exception analyses are AI recommendations, not court findings or invented human/legal verification. Public excerpts, public demonstrations, dataset/model distribution and production use retain their separate unresolved/deferred outcomes.

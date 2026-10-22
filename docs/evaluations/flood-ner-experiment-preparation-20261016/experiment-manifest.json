@@ -1,0 +1,104 @@
+{
+  "authoritative_checkpoint": "future seed directory/selected-checkpoint/model; built-in model-best is diagnostic only because spaCy overwrites equal scores",
+  "baseline_mapping": "rules-baseline.json",
+  "evaluation_contract": {
+    "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/qualification/evaluation-contract.json",
+    "sha256": "10c1b4e0dae0a12320d8ff41d1d586f843752ffc34af0cf752fc759721e143da"
+  },
+  "export": {
+    "path": "backend/training/flood_ner/artifacts/qualified-export-20261016-v1/manifest.json",
+    "sha256": "54c72ceeec2ace69c39d9dae14d0809a3eab6282b7d07c532bbd7ca108b55122"
+  },
+  "files": {
+    "initialization.json": "0ff2f93fdd08c37d4c5e0a0580df4c37d5000d6653f77ee24daacd799a64862c",
+    "request.json": "7cdfa8e212806f687a88e1ec6743394fa6fea730b5d5e00d707852b469ae77e3",
+    "rules-baseline.json": "a41fccfcc6d633d1a5cbb09dbdd0ecd3869e30cf39031699765e3615bd3b2fce",
+    "rules-smoke.json": "bf59da0e64276d067962ed29e1d76e3b82d9642c144ce4b01fa7269e1feb70a8",
+    "train-seed-0.cfg": "11f63c56d6977ce694f51c906464473d40983a2ca1ebe01fc3c7cf4526c8ba77",
+    "train-seed-1.cfg": "609782de2e9ba5ed0d1d650c41efb8e7dedd072327e31c5510f9f6482939595d",
+    "train-seed-2.cfg": "7428185d29d51238536d91b6dfb3a5adffadea4578d9eebaae79a76004130530",
+    "worker.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "worker.stdout.log": "9e5d76223bcc143f1e421e9651c57c06ea425918fe01f62ba524be0d26032273"
+  },
+  "future_training_root": "backend/training/flood_ner/artifacts/academic-training-20261016-v1",
+  "implementation_sha256": {
+    "experiment_preparation.py": "656c03434ca7487b9dedaee98e497669d7e89b606c53555e754808077c563d2c",
+    "experiment_registry.py": "028c39a0eb4be2e5aa5c736eca40f1c4440d71fe7dd68a19f25f9e5a42c060e9",
+    "experiment_worker.py": "add3a7fb5995fc2c55464c36ddd18d65587cc915f91c6b0a37ca13cf3c856ede",
+    "rules_baseline.py": "04945963bb78843e0c2c59484a7d5a70284b045cdd30d0b4f05821bd4741278a"
+  },
+  "initialization_only": true,
+  "input_bindings": {
+    "admission_ledger": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/admission-ledger.json",
+      "sha256": "5563206da2830f1e107e4c883c780b4b186d2d5b86c36acdeeb69ff3c47115ad"
+    },
+    "admission_package": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/hash-manifest.json",
+      "sha256": "0b3bea737fa6004c600cb6c55141718bca54b4283c7a88583222d95b02de4f14"
+    },
+    "cohort": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/cohort-admitted-v1/partition_manifest.json",
+      "sha256": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8"
+    },
+    "context": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/contextual-admitted-v1/manifest.json",
+      "sha256": "4a0fbd7760730ecb4055fd6c837da1d3cf37884a8f0fb8a09ef54a80d7ad2c78"
+    },
+    "model_manifest": {
+      "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/model-manifest.json",
+      "sha256": "362c266324a8f11f5c5b0f804d5eba2ea9ebf27f32368211e4c5cf248734efe6"
+    },
+    "tokenizer_manifest": {
+      "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/tokenizer-manifest.json",
+      "sha256": "9575ef0e7f5f1e32bbfa26b71d9d6d1e9b47cd916e559ceeae26815f585e3823"
+    }
+  },
+  "model_predictions_performed": false,
+  "model_selection": {
+    "configuration_policy": "Freeze configuration identities before training; select using development results only",
+    "metric": "strict six-class micro F1",
+    "partition": "dev",
+    "primary_seed": 0,
+    "robustness_seeds": [
+      1,
+      2
+    ],
+    "test_boundary_audit": "Deterministic token-boundary inspection is permitted here; it is not NER test evaluation",
+    "test_policy": "No test predictions, metrics or errors for tuning; final selected experiment only after configurations/checkpoints are frozen",
+    "tie_break": "earlier checkpoint step"
+  },
+  "optimizer_updates": 0,
+  "pretrained_baseline": {
+    "reference_driven_relabeling": false,
+    "scope": "coarse LOC only, original native tokenizer and pinned NER weights",
+    "six_class_claim": false
+  },
+  "primary_seed": 0,
+  "qualification": {
+    "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/qualification/manifest.json",
+    "sha256": "1caacfbdbb3ffd09989f321f5d4b8f75aa2491a4ef7659885841ecf0b0d8a87e"
+  },
+  "robustness_seeds": [
+    1,
+    2
+  ],
+  "rule_mapping_scope": "existing mention rules; not full flood claim/context/placement pipeline",
+  "schema_version": "lanes-experiment-preparation-v1",
+  "source_use_scope": "private_owner_only_academic_training_evaluation",
+  "state": "passed",
+  "test_corpus_read_by_initializer": false,
+  "training_performed": false,
+  "training_policy": {
+    "batch_size": 8,
+    "dropout": 0.1,
+    "eval_frequency": 35,
+    "learning_rate": 0.001,
+    "max_epochs": 30,
+    "max_steps": 1000,
+    "patience": 175
+  },
+  "unavailable_rule_output_labels": [
+    "LOCAL_AREA"
+  ]
+}

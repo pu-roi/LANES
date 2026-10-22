@@ -1,0 +1,27 @@
+{
+  "schema": "lanes-v19-runtime-verification-v1",
+  "tests": {
+    "fresh_passed": 322,
+    "new_runtime_checks": 54,
+    "training_or_live_requests": false
+  },
+  "preservation": {
+    "files": 507,
+    "holdout_metadata_only": 55,
+    "validation_metadata_only": 27
+  },
+  "preserved": true,
+  "model_files_verified": 11,
+  "pinned_resource_files_verified": 23,
+  "implementation": {
+    "backend/training/flood_ner/runtime_preflight.py": "ba21503a2d3335fac7d44c25b7ed71761d69748e6b761867a03e7c0c91ffddf3",
+    "backend/training/flood_ner/runtime_probe_worker.py": "0457b88145e2b4192405d53f272b9d0e18cd4701a77086e25a8c3efeb3302589",
+    "backend/tests/test_flood_ner_runtime_preflight.py": "fd085aa94a2ee61d2e2567791d78dafeeae88f4beb8a35b8fe9d45444c8b46d3"
+  },
+  "preflight_status_sha256": "c6660a138c083126ba357bd870c88e6ddc05237820215c453e16280ef50f5775",
+  "smoke_outcome_sha256": "b79d75b45b82b868ca47eeff358057fa654f167b0b4edb8969a1ee377490e896",
+  "smoke_request_sha256": "a6fbbbebda4581b4767eaddc24390381a2554afc0561dc40c34013c77be117fd",
+  "fresh_tests_receipt_sha256": "eec5dcd039cbec71ac63a83763429cbea5559571cff0b4dd01335b16eef33fde",
+  "predecessor_ledger_sha256": "3c2ea6de70bbb091d7b3e55c2c3541ff07f910842d35227c88f5a8f347ac01b9",
+  "decision": "Gate 3 open: Linux engine and CPU/resource qualification pending; no application integration"
+}

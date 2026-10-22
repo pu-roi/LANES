@@ -1,0 +1,36 @@
+{
+  "missing_payloads_before_and_after": [
+    12,
+    12
+  ],
+  "this_task_exact_recoveries": 0,
+  "prior_three_exact_recoveries_preserved": true,
+  "same_name_local_candidates_checked": 3,
+  "same_name_local_candidates_matching": 0,
+  "drive_exact_name_search_results": 0,
+  "drive_source_stats_keyword_results": 0,
+  "known_drive_handoff_items": 19,
+  "known_project_root_folders": 4,
+  "verified_desktop_inventory_files": 6369,
+  "read_errors": 0,
+  "recorded_backup_payloads": 3863,
+  "payload_dispositions": {
+    "identical": 3382,
+    "helper_rule_exclusions": 478,
+    "explicit_exclusions": 3
+  },
+  "additional_artifact_dispositions": {
+    "available_payloads": 20,
+    "prior_inventory_hash": 1,
+    "archive_byte_ranges": 2,
+    "unavailable": 12
+  },
+  "priority_material_evidence": "source-stats.json: 673184 bytes, SHA256 a5b458502bed712f8887de0768fcc3aa3ba44289905f173df2c4a94b161d52f3. Potential historical collection-scope metadata; exact contents unavailable.",
+  "other_missing_evidence": "Eleven individually named helper/transport/checksum/receipt payloads remain listed with sizes and hashes in private targeted-evidence-requests.json. Their names do not establish additional article corpora; their contents are unverified.",
+  "attestation": "Older collections stayed only inside LANES to user knowledge; retain this as a scoped user statement.",
+  "coverage_limits": "Only recorded readable roots and named local/Drive evidence were checked. Exclusions, deleted/unrecorded collections and unspecified folders are not certified absent. Search results do not prove exhaustive Drive absence.",
+  "new_source_identities": 0,
+  "archived_scripts_executed": false,
+  "archives_restored": false,
+  "history_certified_complete": false
+}

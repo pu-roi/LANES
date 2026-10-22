@@ -1,0 +1,79 @@
+{
+  "annotation_profile": "location-only-v1",
+  "context_manifest_sha256": "e8d022086d434efda6c5a2859565615f75b2a27226c3ee115da771415b06e8f0",
+  "context_scope": "The 40 paired records are training-only contextual-rule development references. They cannot estimate contextual holdout accuracy or add 40 NER samples.",
+  "dataset_manifest_sha256": "386b13f7e1f7d125f38ad77903ab96bc7ef3440e1ce1dcee8037d16ee7388d92",
+  "evaluation_runs": 0,
+  "execution_gates": [
+    "documented source-use/training-evaluation admission",
+    "qualified pinned model artifact and dependencies",
+    "actual model tokenizer and CPU resources",
+    "recorded run configuration before fitting/tuning"
+  ],
+  "independent_reference_review": "Open; any future score must retain silver-reference interpretation without independent verification.",
+  "labels": [
+    "ROAD",
+    "LANDMARK",
+    "LOCAL_AREA",
+    "BARANGAY",
+    "CITY",
+    "PROVINCE"
+  ],
+  "model_accuracy": null,
+  "model_candidates": [
+    {
+      "model": "tl_calamancy_md",
+      "revision": "4960655b2d63fd9f306d60d554a95d7bfa5dd25d",
+      "state": "metadata_spacy_version_conflict",
+      "version": "0.2.0"
+    },
+    {
+      "model": "tl_calamancy_trf",
+      "revision": "5e24dd2acde15ecff6c2de819fa043a909477894",
+      "state": "metadata_spacy_version_conflict",
+      "version": "0.2.0"
+    },
+    {
+      "model": "tl_calamancy_md",
+      "revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+      "state": "metadata_compatible_only",
+      "version": "0.1.0"
+    },
+    {
+      "model": "tl_calamancy_trf",
+      "revision": "39f330b7400f7069bf0e632c6dcdeb2f003bb145",
+      "state": "metadata_compatible_only",
+      "version": "0.1.0"
+    }
+  ],
+  "partition_use": {
+    "dev": "choose model and hyperparameters; report silver agreement",
+    "test": "one final evaluation after selection; never tune, relabel for scores or fit weights",
+    "train": "fit weights and debug preprocessing only"
+  },
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "primary_metric": "Micro exact passage-relative start/end/type entity precision, recall and F1; a partial boundary or wrong type counts as a false positive and false negative.",
+  "reference_quality": "AI-created silver; agreement with references, not human/gold accuracy",
+  "release_thresholds": "Roadmap 90% precision/85% recall are unqualified proposals, not achieved results or an approval decision.",
+  "required_reporting": [
+    "raw TP/FP/FN and denominator counts",
+    "per-language/per-class/per-publisher support and scores",
+    "empty-place false positives",
+    "coverage limits and silver uncertainty",
+    "model revision/weights/license/dependency hashes",
+    "actual model-tokenizer alignment over unchanged passages",
+    "CPU latency peak memory and recorded device",
+    "selection runs and seed provenance"
+  ],
+  "schema_version": "lanes-flood-ner-evaluation-protocol-v1",
+  "secondary_metric": "Place-span exact start/end agreement ignoring six fine classes; compare only LOC predictions from coarse candidates against all six place reference classes, with unmatched LOC predictions counted as false positives.",
+  "selected_model": null,
+  "status": "frozen measurement protocol; execution held",
+  "tokenizer": "lanes.xx.address-v3",
+  "tokenizer_sha256": "e489899630ba84b61f5823dd44b0e7dc373c5f15465dc06e911d44245c591384",
+  "zero_denominators": "Report undefined precision/recall as null with raw counts; do not silently claim perfect performance."
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "lanes-gemini-response-public-verification-v1",
+  "origin": "user-relayed AI access-limitation statement",
+  "native_receipt": false,
+  "new_review_or_tests_executed": false,
+  "prior_safe_bindings": {
+    "evidence-status.json": "09746fa6d8884c1cce3bdd46c8bbd9bb19559cd0e575e73e654d64828bbb978e",
+    "aggregate-status.json": "7cffe6c926510b240dcd878ee657dda6c29bab03be0530ef2db418f124f3ded2",
+    "verification-manifest.json": "72fa9aa3bbb5da23e869cfcbbbd75d27fb6b63947a95d3b80c051d7ee5161da1",
+    "final-manifest.json": "14d3ae45eaaab643f6dd1d3fc87247050b1abca9fb944c17665e5a8e212e3ccb"
+  },
+  "private_statement_sha256": "bb79170a0f4adf654e5d595b93e9467d25e903cb7cd3d9aecd96a012c2a769f9",
+  "private_aggregate_sha256": "560df7435c660f76ee3275959f3a47bcd90029247759d2e66c8480f9a7a2fabd",
+  "proposal": {
+    "training": 345,
+    "validation": 60,
+    "conditional_test": 60
+  },
+  "evidence_received": false,
+  "accounting_verified": false,
+  "history_verified": false,
+  "source_stats_desktop_existence_verified": false,
+  "new_network_requests": 0,
+  "dataset_changed": false,
+  "training_ready": false,
+  "test_sealed": false
+}

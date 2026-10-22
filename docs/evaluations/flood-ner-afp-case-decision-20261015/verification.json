@@ -1,0 +1,60 @@
+{
+  "aggregate_400_memberships_disjoint_and_complete": true,
+  "all_articles": 139,
+  "all_new_case_binding_references_verified": true,
+  "all_samples": 400,
+  "capture_outcomes": {
+    "captured_content_checked": 2,
+    "failed": 1
+  },
+  "case_samples": 3,
+  "contextual_pairs": 40,
+  "decision_fidelity_checks_not_new_runtime_regressions": {
+    "admission_change": "rejected",
+    "false_v2": "rejected",
+    "invent_human_reviewer": "rejected",
+    "legal_approval_claim": "rejected",
+    "permission_claim": "rejected",
+    "public_scope": "rejected",
+    "remove_amount_limitation": "rejected",
+    "source_hash": "rejected"
+  },
+  "export_destination_created": false,
+  "exports": 0,
+  "historical_validator_not_current_decision_count": true,
+  "inherited_case_clause_pointers": 13,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "model_files_hash_verified_without_loading": 23,
+  "new_case_decisions": 1,
+  "new_clause_pointers": 2,
+  "news_model_inference_or_training": false,
+  "original_proposal_validation": {
+    "actual_project_decisions": 0,
+    "articles": 139,
+    "contextual_pairs": 40,
+    "docbin_exported": 0,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "samples": 400,
+    "training_admitted": 0
+  },
+  "prior_files_unchanged": 1479,
+  "private_desktop_v1_byte_reconciled": false,
+  "private_manifest_entries_verified": 15,
+  "research_only_export_refusals": 400,
+  "runtime_or_dependency_or_schema_changes": false,
+  "source_flags_nonacademic_outcomes_and_partitions_unchanged": true,
+  "splits": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "test_suite_rerun": false,
+  "training_admitted": 0,
+  "verified_at": "2026-10-15T20:43:23.258169+08:00"
+}

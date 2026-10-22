@@ -1,0 +1,33 @@
+{
+  "task_complete": true,
+  "ready_for_admission": false,
+  "test_sealed": false,
+  "proposed_training": 345,
+  "proposed_validation": 60,
+  "conditional_test": 50,
+  "test_target": 60,
+  "missing_positive_english": 1,
+  "missing_positive_taglish": 9,
+  "actual_exposed_urls": 296,
+  "uncertain_reserved_slots": 4,
+  "remaining_url_allowance": 0,
+  "cumulative_article_attempts": 74,
+  "remaining_article_attempts": 26,
+  "joint_witness": {
+    "english_positive": 26,
+    "english_genuine_negative": 3,
+    "taglish_positive": 18,
+    "taglish_genuine_negative": 3
+  },
+  "references": "AI-assisted silver; no human-gold verification or model-improvement claim.",
+  "development_membership_unchanged": true,
+  "desktop_action": "None; can remain off.",
+  "next_requirements": [
+    "Joint target remains short one English positive and nine operational Taglish positives; no quota weakening.",
+    "Initial HTTP-only URL accounting missed eight scheme-less snippet aliases. Append-only correction and chronological full-raw replay retain the omission and original reservations; corrected actual total plus four legacy slots reaches the ceiling.",
+    "Unresolved administrative types, source/event/use holds and one duplicate remain unscored; none becomes a negative.",
+    "Scoped historical source review is not exhaustive absence proof; twelve exact prior metadata/helper/transport payloads remain unavailable.",
+    "References and language judgments are AI silver with no independent gold adjudication."
+  ],
+  "no_admission_freeze_seal_export_inference_training_upload_push": true
+}

@@ -1,0 +1,214 @@
+{
+  "actual_after_global_history_eligible_records": 0,
+  "actual_after_global_history_eligible_sources": 0,
+  "actual_negative_counts": {
+    "english": 0,
+    "taglish": 0
+  },
+  "actual_positive_counts": {
+    "english": 0,
+    "taglish": 0
+  },
+  "admitted_records": 0,
+  "after_recorded_history_and_scoped_use_conditional_solver": {
+    "best_supported_selection_counts": {
+      "english_genuine_negative": 3,
+      "english_positive": 17,
+      "taglish_genuine_negative": 3,
+      "taglish_positive": 13
+    },
+    "best_supported_selection_size": 36,
+    "local_combinations_checked": 150,
+    "max_three_source_nonoverlap_verified": true,
+    "maximum_english_positive_with_exact_three_negatives_per_language": 21,
+    "maximum_taglish_positive_with_exact_three_negatives_per_language": 13,
+    "positive_deficits_for_best_selection": {
+      "english": 10,
+      "taglish": 14
+    },
+    "scope": "Current finite supported proposal pool, with source cap <=3 and nonoverlapping alternatives. This is not a maximum over every conceivable segmentation.",
+    "separate_english_maximum_witness_counts": {
+      "english_genuine_negative": 3,
+      "english_positive": 21,
+      "taglish_genuine_negative": 3,
+      "taglish_positive": 9
+    },
+    "separate_taglish_maximum_witness_counts": {
+      "english_genuine_negative": 3,
+      "english_positive": 17,
+      "taglish_genuine_negative": 3,
+      "taglish_positive": 13
+    },
+    "solver_final_states": 4936,
+    "target_feasible": false,
+    "witness_definition": "Private diagnostic selection IDs demonstrate counts from supported references only; never an admitted corpus or frozen partition. Per-language maxima may come from different selections."
+  },
+  "blockers": [
+    "Current finite supported alternatives do not meet both 27-positive language quotas; surplus genuine negatives do not repair positive gaps.",
+    "Global older cross-computer article/annotation/training history remains not sure; known-backup verification cannot certify freshness or sealing.",
+    "Fourteen full references remain unresolved and unscored; supported subwindows are separate alternatives, not repairs to those full references.",
+    "Two source comparisons remain uncertain; two additional sources have supported connected-reporting exclusions.",
+    "Two specific third-party working-copy extent holds remain; saved scoped project inference is not a blanket publisher AI license."
+  ],
+  "bounded_history_comparison_cleared_sources": 10,
+  "candidate_reference_pool_after_recorded_history_and_scoped_use_conditional": {
+    "candidate_language_counts": {
+      "english": 31,
+      "taglish": 27,
+      "unknown": 1
+    },
+    "candidate_records": 59,
+    "complete_reference_records": 48,
+    "genuine_empty_reference_counts": {
+      "english": 3,
+      "taglish": 8
+    },
+    "positive_reference_counts": {
+      "english": 23,
+      "taglish": 14
+    },
+    "unresolved_reference_records": 11
+  },
+  "candidate_reference_pool_before_history": {
+    "candidate_language_counts": {
+      "english": 39,
+      "tagalog": 1,
+      "taglish": 36,
+      "unknown": 1
+    },
+    "candidate_records": 77,
+    "complete_reference_records": 63,
+    "genuine_empty_reference_counts": {
+      "english": 4,
+      "taglish": 10
+    },
+    "positive_reference_counts": {
+      "english": 29,
+      "taglish": 20
+    },
+    "unresolved_reference_records": 14
+  },
+  "checks": {
+    "candidate_records_checked": 77,
+    "fault_guards_passed": 9,
+    "fresh_entity_spans_checked": 92,
+    "fresh_shared_schema_tokenizer_records_checked": 63,
+    "legacy_alignment_claimed_fresh": false,
+    "predecessor_files_verified_unchanged": 154,
+    "private_outputs_hash_bound": 29,
+    "source_hash_pairs_checked": 27,
+    "source_offset_schema_nonoverlap_tokenizer_errors": 0,
+    "vocab_files_unchanged": 5
+  },
+  "conditional_eligibility_definition": "Ignores unresolved global history only to describe supported proposals after known local history/exclusion and extent gates. Scoped project preparation inference is not actual use admission.",
+  "confirmed_connected_or_same_project_excluded_sources": 2,
+  "corpus_admission": false,
+  "created_at": "2026-10-16T19:00:44.613676+00:00",
+  "exact_saved_article_exposure_hits": 0,
+  "exact_saved_source_hash_exposure_hits": 0,
+  "freshness_certified": false,
+  "full_saved_source_body_codepoints_reviewed": 50223,
+  "global_cross_computer_history_gap_unresolved": true,
+  "historical_capture_stubs_not_counted_as_full_evidence": 3,
+  "historical_source_body_variants_reviewed": 23,
+  "historical_source_identifiers_reviewed": 20,
+  "history_exposure_supplement_sha256": "448ea0dc58c334d3d2faa2782014e8d99c86c4172dda66130e336db255a4279f",
+  "history_hold_count": 4,
+  "history_metadata_variants_reconciled": 11528,
+  "human_gold": false,
+  "isolation": "Dedicated continuing subagent; source-only historical exception used after readiness. No parent conversation or development annotation/prediction/score material read. Spawn-context setting and exact runtime model identity unavailable; blank-context or independent-human adjudication not claimed.",
+  "latest_development_components_reconciled": 140,
+  "latest_development_edges_reconciled": 536,
+  "metadata_variants_are_not_distinct_articles": true,
+  "ner_inference_run": false,
+  "network_calls": 0,
+  "neural_model_loaded": false,
+  "new_collection": false,
+  "new_empty_window_alternatives": 1,
+  "new_empty_window_purpose": "One coherent replacement option for the required English negative quota when a prior empty slot is replaced; never used to fill positive slots.",
+  "new_positive_window_alternatives": 17,
+  "new_supported_window_alternatives": 18,
+  "new_unresolved_full_reference_repairs": 0,
+  "original_candidate_records_accounted": 56,
+  "package_id": "heldout-selection-20261017-v1",
+  "partition_frozen": false,
+  "policy_scope_expanded": false,
+  "predecessor_integrity_manifest_sha256": "5761aab44b8db796cbccacb9a6558be8eef32a958e70b2aa9f1370299e6c470b",
+  "prior_history_comparisons_accounted": 14,
+  "prior_proposal_records_accounted": 59,
+  "prior_reference_holds_accounted": 14,
+  "prior_reference_records_accounted": 59,
+  "private_access_log_sha256": "121d7766c757780aa471cbf0973c4981c8b6f934ff816f543bd6d4c372021d93",
+  "private_mechanical_checks_sha256": "99338c8b4da8e7d558af784672d6ec915ed1dc06e26c59e0d111dd7b638820a9",
+  "private_output_manifest_sha256": "f6595806dabc01d92e70a037d13be4d8225032815125a0993d432447ded229d6",
+  "push_performed": false,
+  "quality": "AI-assisted silver proposals only",
+  "ready": false,
+  "records": 0,
+  "reference_holds_reassessed": 14,
+  "remaining_specific_history_comparison_holds": 2,
+  "requirements_preserved": {
+    "definitive_passages": 60,
+    "english_passages": 30,
+    "genuine_empty_negative_each_language": 3,
+    "maximum_simultaneously_selected_passages_per_article": 3,
+    "positive_each_language": 27,
+    "raw_text_tokenizer_unchanged": true,
+    "six_location_classes_unchanged": true,
+    "taglish_passages": 30,
+    "unresolved_not_negative": true
+  },
+  "safe_for_parent": true,
+  "schema": "lanes-heldout-selection-safe-aggregate-v1",
+  "scoped_private_academic_preparation_dispositions_retained": 25,
+  "scoring_records": 0,
+  "sealed": false,
+  "source_articles_reviewed": 27,
+  "source_history_comparisons_reassessed": 14,
+  "source_only_historical_bundle_sha256": "6f66eb389aecd1bca4f0b939a021c6bd6bc1462c8cd3cd0ba205e164dae753f0",
+  "source_opportunity_review_count": 27,
+  "source_opportunity_reviews": 27,
+  "source_reference_only_solver": {
+    "best_supported_selection_counts": {
+      "english_genuine_negative": 3,
+      "english_positive": 23,
+      "taglish_genuine_negative": 3,
+      "taglish_positive": 19
+    },
+    "best_supported_selection_size": 48,
+    "local_combinations_checked": 202,
+    "max_three_source_nonoverlap_verified": true,
+    "maximum_english_positive_with_exact_three_negatives_per_language": 27,
+    "maximum_taglish_positive_with_exact_three_negatives_per_language": 19,
+    "positive_deficits_for_best_selection": {
+      "english": 4,
+      "taglish": 8
+    },
+    "scope": "Current finite supported proposal pool, with source cap <=3 and nonoverlapping alternatives. This is not a maximum over every conceivable segmentation.",
+    "separate_english_maximum_witness_counts": {
+      "english_genuine_negative": 3,
+      "english_positive": 27,
+      "taglish_genuine_negative": 3,
+      "taglish_positive": 15
+    },
+    "separate_taglish_maximum_witness_counts": {
+      "english_genuine_negative": 3,
+      "english_positive": 23,
+      "taglish_genuine_negative": 3,
+      "taglish_positive": 19
+    },
+    "solver_final_states": 8800,
+    "target_feasible": false,
+    "witness_definition": "Private diagnostic selection IDs demonstrate counts from supported references only; never an admitted corpus or frozen partition. Per-language maxima may come from different selections."
+  },
+  "source_supported_language_corrections": 1,
+  "source_supported_prior_reference_completion_retained": 1,
+  "source_use_extent_holds_reassessed": 2,
+  "source_use_hold_count": 2,
+  "sourceopportunityreviewcount": 27,
+  "status": "bounded_selection_history_review_complete_target_infeasible_unsealed",
+  "third_party_extent_holds_accounted": 2,
+  "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+  "training_exported": false,
+  "training_run": false
+}

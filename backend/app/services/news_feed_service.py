@@ -33,6 +33,8 @@ class NewsEntry:
     excerpt: str
     article_url: str
     published_at: datetime | None
+    publication_raw: str | None = None
+    publication_timezone_known: bool = False
 
 
 @dataclass(frozen=True)
@@ -99,6 +101,20 @@ def _published(value: str | None) -> datetime | None:
         except ValueError:
             return None
     return result.replace(tzinfo=timezone.utc) if result.tzinfo is None else result.astimezone(timezone.utc)
+
+
+def publication_has_timezone(value: str | None) -> bool:
+    """Inspect the publisher value before the legacy UTC compatibility fill."""
+    if not value:
+        return False
+    try:
+        try:
+            parsed = parsedate_to_datetime(value)
+        except (TypeError, ValueError):
+            parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        return parsed.utcoffset() is not None
+    except (TypeError, ValueError, OverflowError):
+        return False
 
 
 def canonical_article_url(url: str, source: NewsSource) -> str | None:
@@ -175,11 +191,13 @@ def parse_feed(content: bytes, source: NewsSource, feed_url: str) -> tuple[NewsE
         if not title:
             continue
         excerpt = _plain_text(_child_text(node, "description", "summary", "content", "encoded"))[:5000]
-        published_at = _published(_child_text(node, "pubdate", "published", "updated", "date"))
+        publication_raw = _child_text(node, "pubdate", "published", "updated", "date")
+        published_at = _published(publication_raw)
         feed_id = _child_text(node, "guid", "id") or article_url
         if len(feed_id.encode("utf-8")) > MAX_GUID_BYTES:
             feed_id = "sha256:" + hashlib.sha256(feed_id.encode("utf-8")).hexdigest()
-        entries.append(NewsEntry(source.id, source.publisher, feed_url, feed_id, title, excerpt, article_url, published_at))
+        entries.append(NewsEntry(source.id, source.publisher, feed_url, feed_id, title, excerpt, article_url, published_at,
+                                 publication_raw, publication_has_timezone(publication_raw)))
     return tuple(entries)
 
 

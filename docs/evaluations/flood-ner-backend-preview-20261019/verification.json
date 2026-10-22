@@ -1,0 +1,33 @@
+{
+  "api_cases": 9,
+  "application_preview_enabled": false,
+  "cached_context_view_parity_checks": 120,
+  "database_writes": false,
+  "declared_application_source_changes": [
+    "backend/app/core/config.py"
+  ],
+  "excluded_metadata_entries_unchanged": 82,
+  "fault_check_limit": "Docker lifecycle faults simulated; child output/time bounds and successful Docker isolation exercised directly",
+  "freeze_sha256": "c373ddd6cffcf41c8014221c73c489e4db82ced3571849303ff345eb6cbb2370",
+  "frontend_changed": false,
+  "historical_metadata_entries_unchanged": 1538,
+  "inference_rerun_for_reconciliation": false,
+  "initial_audit_failure_preserved": true,
+  "live_container_isolation_verified": true,
+  "live_database_preview_run": false,
+  "maximum_cold_seconds": 4.313513282999338,
+  "maximum_extraction_seconds": 1.4655215740021958,
+  "maximum_worker_rss_bytes": 386506752,
+  "new_accuracy_measurement": false,
+  "new_preview_tests_passed": 379,
+  "owned_containers_remaining": 0,
+  "pre_task_git_baseline": "72bde046b92c693d44f04c421c34ef98ff5e5956",
+  "preserved_v40_v41_tests_passed": 419,
+  "private_freeze_and_responses": "retained outside Git",
+  "protected_evidence_hashes_unchanged": 208,
+  "software_tests_passed": 798,
+  "status": "saved_receipts_verified_with_declared_config_change",
+  "training_neural_parity_cases": 6,
+  "v41_frozen_files_unchanged": 55,
+  "validation_holdout_contents_opened": false
+}

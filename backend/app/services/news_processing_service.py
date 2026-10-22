@@ -60,8 +60,14 @@ async def process_saved_news(session_factory: Callable[[], Session], *, limit: i
             continue
         error_code, retryable, result = None, False, None
         try:
-            source = NewsArticleExtractorInput.model_validate({**claim.input_snapshot, "article_id": claim.article_id})
-            if extraction_input_snapshot(source)[1] != claim.input_fingerprint:
+            try:
+                source = NewsArticleExtractorInput.model_validate({**claim.input_snapshot, "article_id": claim.article_id})
+            except ValidationError:
+                source = None
+                error_code = "invalid_input_snapshot"
+            if source is None:
+                pass
+            elif extraction_input_snapshot(source)[1] != claim.input_fingerprint:
                 error_code = "input_fingerprint_mismatch"
             else:
                 extracted = await extract_captured_news_article(source)
@@ -73,7 +79,7 @@ async def process_saved_news(session_factory: Callable[[], Session], *, limit: i
                 else:
                     result = extracted.extraction.model_dump(mode="json")
         except ValidationError:
-            error_code = "invalid_input_snapshot"
+            error_code, retryable = "extraction_result_errors", True
         except Exception:
             error_code, retryable = "extraction_exception", True
         # Storage failures deliberately propagate; never report durable success

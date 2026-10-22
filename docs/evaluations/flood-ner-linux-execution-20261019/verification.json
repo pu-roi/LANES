@@ -1,0 +1,114 @@
+{
+  "dataset_counts": {
+    "research_holdout": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "environment": {
+    "base_digest": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "docker_desktop": "4.95.0.242831",
+    "docker_engine": "29.8.2",
+    "image_id": "sha256:a51ce2a6b0f19f382ce96bf63c265e060b37112098176c97c66c23e887794680",
+    "platform": "linux/x86_64",
+    "python": [
+      3,
+      12,
+      15
+    ],
+    "resolved_package_count": 152,
+    "spacy": "3.7.5"
+  },
+  "execution": {
+    "compatibility": "passed",
+    "failure_handling": "passed",
+    "fault_checks": {
+      "crash": true,
+      "malformed_input": true,
+      "mismatched_asset": true,
+      "missing_asset": true,
+      "new_attempt_restart": true,
+      "oom": true,
+      "oversized_input": true,
+      "timeout": true
+    },
+    "parity_mismatches": 0,
+    "performance": "passed",
+    "prediction_records": 345,
+    "tokenizer_serialization_and_reconstruction": true
+  },
+  "gate_3_cleared": true,
+  "hashes": {
+    "execution_grant": "a34da3a96e1e598d27c3fe73d8735b2e51e50560e71ef9053d0949d61289cd2e",
+    "fault_verification": "c6dfa9366645d038a214f994a30be6e9a83f0d3acf40d86d3bb4a6077201ec82",
+    "measurement_receipt": "acef47ed8c7ea17a7648c057f3c6b4ab1ab723990482ba3b216709718270f792",
+    "parity_receipt": "96316c849cc64f5e44a88fcaec9c277439ce04b62c9c7c6501dc21d395b2085c",
+    "pre_execution_tests": "01f49b512bb5f287d910eca791481397324983e7039a60e58e66e66197916dac",
+    "raw_workload": "cb330d8448fd950afea2062113c6ca9e297e17610537de22cacc02bcb7d86db4",
+    "resolved_packages": "546b2e1e7d7f83d05634fa5a5eca2e00df5a66579117a11566dc103e648e801d",
+    "workload_freeze": "057094d0bde07340278ca7108cb06222be79f42f114907ba30a89e21952fb5f8"
+  },
+  "implementation": {
+    "linux_runtime_v29.py": "ce5c0e0d54331138412bdc31dc7840c3e6ee5f7a50d4a653609a1eb97c970819",
+    "linux_runtime_worker_v29.py": "b6b1330a584b75fd5e934afd0ff7b003addd1eda3b09abad92728a5f9947fde7",
+    "runtime_preflight.py": "ba21503a2d3335fac7d44c25b7ed71761d69748e6b761867a03e7c0c91ffddf3",
+    "runtime_probe_worker.py": "0457b88145e2b4192405d53f272b9d0e18cd4701a77086e25a8c3efeb3302589"
+  },
+  "measurements": {
+    "cold_host_seconds": 4.0779999999999745,
+    "cold_worker_seconds": 3.6382017940001106,
+    "model_load_seconds": 0.792369524000037,
+    "stress_characters": 100000,
+    "timing_summary": {
+      "article": {
+        "calls": 6,
+        "calls_per_second": 5.243879086070425,
+        "max_seconds": 0.5065812889999961,
+        "median_seconds": 0.09373881849995769,
+        "p95_seconds": 0.5065812889999961
+      },
+      "passage": {
+        "calls": 345,
+        "calls_per_second": 43.638337720237956,
+        "max_seconds": 0.06960675400000582,
+        "median_seconds": 0.0214934360000143,
+        "p95_seconds": 0.03622701699998743
+      },
+      "stress": {
+        "calls": 3,
+        "calls_per_second": 0.555993591090788,
+        "max_seconds": 5.368448330999968,
+        "median_seconds": 0.014727824000033252,
+        "p95_seconds": 5.368448330999968
+      }
+    }
+  },
+  "new_checks": {
+    "executed_fault_containers": 8,
+    "fresh_passing_tests": 475,
+    "neural_measurement_containers": 1,
+    "new_versioned_checks": 82
+  },
+  "preservation": {
+    "file_hashes": 633,
+    "holdout_metadata_only": 55,
+    "validation_metadata_only": 27
+  },
+  "preserved": true,
+  "resources": {
+    "container_memory_bytes": 4294967296,
+    "cpus": 2,
+    "peak_rss_bytes": 1975013376,
+    "peak_rss_limit_bytes": 3221225472
+  },
+  "retained_model": "v19 corrected control seed 0",
+  "schema": "lanes-linux-qualification-execution-v29",
+  "scope": {
+    "accuracy_improvement_measured": false,
+    "application_connected": false,
+    "deployment": false,
+    "holdout_accessed": false,
+    "training_started": false,
+    "validation_evaluated": false
+  },
+  "status": "qualified_local_linux_cpu_profile"
+}

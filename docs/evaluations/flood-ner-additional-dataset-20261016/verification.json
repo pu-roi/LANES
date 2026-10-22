@@ -1,0 +1,400 @@
+{
+  "budget_reconciliation": {
+    "all_exposed_links": 428,
+    "caps_pass": true,
+    "capture_attempt_cap": 200,
+    "capture_attempts": 182,
+    "contextual_file_sha256": "0c331bfd56ec1f61d38f9f5bacc8ca75fb503d74c41f23f31b3c64e594b82266",
+    "development_url_cap": 400,
+    "distinct_article_keys": 363,
+    "distinct_canonical_candidate_article_urls": 365,
+    "note": "Discovery helper counts article identities; canonical URL count additionally includes two aliases. Both within user bounds. Closed discovery files retained unchanged.",
+    "original_contextual_pairs": 40,
+    "recorded_at": "2026-10-16T14:08:30.943175+00:00",
+    "remaining_attempt_capacity": 18,
+    "remaining_canonical_url_capacity": 35
+  },
+  "dataset_readiness_complete": false,
+  "development": {
+    "admitted_records": 0,
+    "alignment": {
+      "errors": 1,
+      "records": 244,
+      "spans": 359,
+      "tokenizer_changed": false
+    },
+    "candidate_theme_upper_bound": 156,
+    "cohort_feasible_from_current_candidate_pool": false,
+    "complete": false,
+    "coverage": [
+      {
+        "candidate_negatives": 6,
+        "candidate_shortfall": 0,
+        "draft": 24,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 21,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "compound-crossing-roads"
+      },
+      {
+        "candidate_negatives": 2,
+        "candidate_shortfall": 9,
+        "draft": 9,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 6,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "compound-crossing-roads"
+      },
+      {
+        "candidate_negatives": 7,
+        "candidate_shortfall": 1,
+        "draft": 17,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 14,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "facilities-institutions"
+      },
+      {
+        "candidate_negatives": 10,
+        "candidate_shortfall": 1,
+        "draft": 19,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 14,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "facilities-institutions"
+      },
+      {
+        "candidate_negatives": 11,
+        "candidate_shortfall": 0,
+        "draft": 34,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 23,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "geographic-type-ambiguity"
+      },
+      {
+        "candidate_negatives": 7,
+        "candidate_shortfall": 0,
+        "draft": 25,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 15,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "geographic-type-ambiguity"
+      },
+      {
+        "candidate_negatives": 0,
+        "candidate_shortfall": 10,
+        "draft": 7,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 5,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "locality-designators"
+      },
+      {
+        "candidate_negatives": 0,
+        "candidate_shortfall": 6,
+        "draft": 17,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 9,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "locality-designators"
+      },
+      {
+        "candidate_negatives": 18,
+        "candidate_shortfall": 0,
+        "draft": 19,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 18,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "misleading-names-time-common-words"
+      },
+      {
+        "candidate_negatives": 21,
+        "candidate_shortfall": 0,
+        "draft": 25,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 21,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "misleading-names-time-common-words"
+      },
+      {
+        "candidate_negatives": 5,
+        "candidate_shortfall": 5,
+        "draft": 16,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 10,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "project-asset-names"
+      },
+      {
+        "candidate_negatives": 7,
+        "candidate_shortfall": 2,
+        "draft": 17,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 13,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "project-asset-names"
+      },
+      {
+        "candidate_negatives": 2,
+        "candidate_shortfall": 13,
+        "draft": 3,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 2,
+        "semantic_limit": "Administrative shared-type lists are not proof of numeric LOCAL_AREA ellipsis coverage.",
+        "target": 15,
+        "theme": "shared-identifiers"
+      },
+      {
+        "candidate_negatives": 1,
+        "candidate_shortfall": 13,
+        "draft": 5,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 2,
+        "semantic_limit": "Administrative shared-type lists are not proof of numeric LOCAL_AREA ellipsis coverage.",
+        "target": 15,
+        "theme": "shared-identifiers"
+      },
+      {
+        "candidate_negatives": 2,
+        "candidate_shortfall": 12,
+        "draft": 3,
+        "language": "english",
+        "negative_required": 1,
+        "reviewed_candidate": 3,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "short-codes"
+      },
+      {
+        "candidate_negatives": 2,
+        "candidate_shortfall": 12,
+        "draft": 4,
+        "language": "taglish",
+        "negative_required": 1,
+        "reviewed_candidate": 3,
+        "semantic_limit": "Negative controls alone do not supply positive rare-phenomenon coverage.",
+        "target": 15,
+        "theme": "short-codes"
+      }
+    ],
+    "draft": {
+      "articles": 49,
+      "languages": {
+        "english": 123,
+        "taglish": 121
+      },
+      "location_spans": 359,
+      "negative_passages": 107,
+      "records": 244
+    },
+    "fresh_test_readiness": "separate isolated curator result pending",
+    "input_bindings": {
+      "backend/training/flood_ner/artifacts/additional-dataset-20261016-v1/development-annotations-draft.jsonl": "bdc8dc25a21b8ef1c99d8478445137e7b8ef2ccd2e8b6f1edb39b720737ead1c",
+      "backend/training/flood_ner/artifacts/additional-dataset-20261016-v1/development-membership-draft.json": "2086059ebc75c806c56699e1bc238261a76ca4bf50220118b70f11cf523fe9e4",
+      "backend/training/flood_ner/artifacts/additional-dataset-20261016-v1/tokenizer-alignment.json": "7763b580c23c7cb5a9b71b58587b9186e97bbd9e7339872d125d56a78120f3c7",
+      "docs/guides/flood-ner-reference-scope-addendum-v1.md": "cf18e95508130c92ad98be3302fd1a21e1a869d6e3ad3bceaf870adc1980c10c"
+    },
+    "next_work": [
+      "Resolve occurrence-specific reference/language/source-use holds using captured evidence; do not guess labels.",
+      "Acquire or qualify missing theme/language and positive-phenomenon coverage in a separately authorized round, excluding isolated test exposures.",
+      "Only after complete source-supported eligibility, solve reviewed grouped 192/48 and 96/96+24/24 partitions and seal a 240-member cohort.",
+      "No export/training until development and fresh-test readiness both pass."
+    ],
+    "partition_attempted": false,
+    "partition_reason": "Theme/language capacity fails before group partition solving; do not split groups or weaken quotas.",
+    "recorded_at": "2026-10-16T14:02:11.247784+00:00",
+    "reviewed_candidates": {
+      "articles": 47,
+      "languages": {
+        "english": 96,
+        "taglish": 83
+      },
+      "location_spans": 159,
+      "negative_passages": 101,
+      "records": 179
+    },
+    "reviewer": "Codex source-reading AI under researcher delegation, exact model build unavailable",
+    "source_use_dispositions": {
+      "adopt_private_academic_selected_text_basis": 47,
+      "hold_mixed_origin_working_copy": 2
+    },
+    "target": 240,
+    "unresolved_records": 65
+  },
+  "focused_tests_passed": true,
+  "focused_unittest_methods": 20,
+  "heldout_curator_aggregate": {
+    "access_provenance_summary": "Sole curator /root/fresh_heldout_curator; exact runtime model unavailable; root transport only attested; no prior predictions/scores/test texts/annotations or parent development annotations read.",
+    "acquisition_limits_exhausted": false,
+    "admitted_independent_heldout_records": 0,
+    "alignment_errors": 0,
+    "alignment_records_checked": 41,
+    "alignment_spans_checked": 65,
+    "alignment_unresolved_records_skipped": 15,
+    "all_exposed_urls": 185,
+    "annotated_candidate_articles": 26,
+    "annotated_candidate_records": 56,
+    "articles": 0,
+    "blockers": [
+      "Exact 60 definitive passages / 30 English + 30 Taglish / 3 genuine negatives per language quotas not met. Only 56 prospective candidates; 22 operational Taglish; 41 complete silver references across all languages before history/source-use admission.",
+      "15 full references unresolved; no type guessed for bare ambiguous administrative names, uncertain proposal/project assets or weak language mixing.",
+      "14 captured article histories held for actual undated or potentially continuing source/event/project relationships; complete unavailable external/laptop exposure reconciliation not available.",
+      "2 sources retain specific independently credited photo/user-content extent/basis holds in full working context.",
+      "No independently admitted held-out membership or final test seal. All candidates remain private holds; none count as definitive negatives or training data."
+    ],
+    "candidate_article_urls": 185,
+    "candidate_languages": {
+      "english": 31,
+      "tagalog": 2,
+      "taglish": 22,
+      "unknown": 1
+    },
+    "candidate_records": 56,
+    "candidate_reference_status": "Prospective source-reading silver only; all scoring/admission flags false, all hold records not counted as negatives.",
+    "candidate_url_count_basis": "Conservative distinct discovered-URL upper bound, including rejected nonarticles, shortened links and aliases; actual candidate article URLs cannot exceed this count.",
+    "capture_attempts": 32,
+    "captured_history_hold_sources": 14,
+    "complete_source_reading_silver_references": 41,
+    "created_at": "2026-10-16T14:27:11.595365+00:00",
+    "failed_captures": 5,
+    "historical_independence_status": "Not certified. Candidate-specific actual undated/continuing-event/project relationships remain held. Available article keys are disjoint; unavailable external/laptop history is not reconciled.",
+    "initial_network_failure_status": "Five WinError10013 child attempts retained; root transport retries succeeded. Not the current readiness blocker.",
+    "languages": {
+      "english": 0,
+      "taglish": 0
+    },
+    "max_capture_batch": 10,
+    "max_passages_per_article": 3,
+    "metadata_manifest_sha256": "3caec19f13030fadb0718f29771ec676984da8c45f6ba12569a6cbc65d4e18e2",
+    "negatives_by_language": {
+      "english": 0,
+      "taglish": 0
+    },
+    "ner_inference_run": false,
+    "ner_loaded": false,
+    "not_captured_on_hold_candidates": 12,
+    "package_id": "additional-heldout-curation-20261016-v1",
+    "prior_exact_article_rejections": 68,
+    "provisional_private_academic_text_disposition_candidate_records": 52,
+    "provisional_private_academic_text_disposition_sources": 25,
+    "ready": false,
+    "records": 0,
+    "rejected_candidates": 146,
+    "safe_for_parent": true,
+    "schema": "lanes-heldout-curation-safe-aggregate-v1",
+    "screened_initial_candidates": 185,
+    "sealed": false,
+    "source_capture_integrity_errors": 0,
+    "source_read_articles": 27,
+    "source_use_admitted_records": 0,
+    "source_use_limits": "Current policy plus delegated private-owner academic case dispositions; no blanket AI permission, publisher correspondence or public reuse permission asserted. Full working-copy extent recorded.",
+    "status": "incomplete-unsealed",
+    "successful_captures": 27,
+    "third_party_extent_hold_sources": 2,
+    "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "training_exported": false,
+    "training_run": false,
+    "unresolved_full_references": 15,
+    "verification_scope": "All 27 raw HTML/frozen-text hashes, publication provenance/window, 56 contiguous source-exact passages, complete-reference class/offset/nonoverlap checks, <=3 passages per article, exact-duplicate checks and captured article key exclusions. Semantic independence remains unproven.",
+    "vocab_files_unchanged": 5
+  },
+  "heldout_metadata_bindings": {
+    "backend/training/flood_ner/artifacts/additional-heldout-curation-20261016-v1/aggregate-status.json": "5fa97fa6faceeb50424a205995c3ee73fec10dd6fe3c397539ebbd5c1ea0267f",
+    "backend/training/flood_ner/artifacts/additional-heldout-curation-20261016-v1/verification-manifest.json": "9fc32cfae62fbb80fbd06f03d5e3232f100893497b0aff06c0a4dcf7b8a1663c"
+  },
+  "limitations": [
+    "AI silver, not independent human gold.",
+    "Source-use project dispositions do not constitute publisher AI permission.",
+    "Theme/language and grouped partition quotas remain unmet.",
+    "One strict tokenizer alignment failure is preserved.",
+    "Historical desktop decision audit gaps remain; available source inventories and archive payloads are reconciled without inventing external laptop history."
+  ],
+  "no_export_training_or_predictions": true,
+  "recorded_at": "2026-10-16T22:28:02.525828+08:00",
+  "training_authorized": false,
+  "verification": {
+    "acquisition": {
+      "all_exposed_links": 428,
+      "candidate_article_urls": 363,
+      "capture_attempts": 182,
+      "dispositions": {
+        "capture_candidate": 171,
+        "foreign_story_excluded": 4,
+        "historically_exposed": 90,
+        "off_topic_search_result": 98
+      },
+      "failures": {
+        "ConnectError": 8,
+        "HTTPStatusError": 11,
+        "UnicodeDecodeError": 3,
+        "ValueError": 1
+      },
+      "successful_captures": 159
+    },
+    "draft_counts": {
+      "articles": 49,
+      "languages": {
+        "english": 123,
+        "taglish": 121
+      },
+      "location_spans": 359,
+      "negative_passages": 107,
+      "records": 244
+    },
+    "original_cohort": {
+      "articles": 138,
+      "languages": {
+        "english": 200,
+        "taglish": 200
+      },
+      "partitions": {
+        "dev": 60,
+        "test": 60,
+        "train": 280
+      },
+      "records": 400,
+      "spans": 1465
+    },
+    "preservation": {
+      "branch": "roi-branch",
+      "changed_environment_files": [],
+      "changed_prior_artifacts": [],
+      "cli_packages": 109,
+      "cli_packages_unchanged": true,
+      "env_unchanged": true,
+      "head": "4736cea39f904af5dd7863d56f99f5938b9ad255",
+      "prior_artifact_hashes": 11712,
+      "prior_repository_files_checked_excluding_four_documentation_updates": 2888,
+      "research_environment_file_stats": 22759,
+      "unexpected_repository_changes": []
+    },
+    "verification_passed": true
+  }
+}

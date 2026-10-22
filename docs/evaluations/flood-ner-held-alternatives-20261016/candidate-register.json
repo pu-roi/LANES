@@ -1,0 +1,824 @@
+{
+  "new_draft_proposals": [
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "context_finding": "Complete observation/inference sentence about cut timber. Province remains generic; surrounding Batangas must not be imported. Negative location proposal; uncertain contextual value requires review.",
+      "end": 306,
+      "language_evidence": [
+        "illegal logging activities"
+      ],
+      "passage_sha256": "ddb70be83732362a4d8341e16f4ae58aaf5eb829c018f43111bfeb3ba208ea7a",
+      "predecessor_record_ids": [
+        "continuation-2313ddef67ba9d5251b5"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-a048c73f43b97fec3ae6",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "unassessed changed selection",
+      "start": 209,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "context_finding": "Complete qualified inference names Batangas explicitly. Preserve marahil as uncertainty; do not convert the claim into verified logging evidence.",
+      "end": 510,
+      "language_evidence": [
+        "illegal logging"
+      ],
+      "passage_sha256": "61526ca4d5306ca9e8b674545e43f4a2b817cf30890e30af0f9a2c595716b413",
+      "predecessor_record_ids": [
+        "continuation-2313ddef67ba9d5251b5"
+      ],
+      "projected_labels": {
+        "PROVINCE": 1
+      },
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-73264d779b92e8da8e00",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "unassessed changed selection",
+      "start": 429,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "context_finding": "Complete sentence explicitly names Agoncillo and landslides, without requiring a parent place inferred from the preceding sentence. Prior context remains available separately.",
+      "end": 769,
+      "language_evidence": [
+        "landslides"
+      ],
+      "passage_sha256": "e6063080eaab1eb00cfc28b89c6dfd39767faba894523bc200f08e742afffcab",
+      "predecessor_record_ids": [
+        "continuation-0c1dde36bf0b320d7169"
+      ],
+      "projected_labels": {
+        "CITY": 1
+      },
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-0f5bf1ba449f24eed50d",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "unassessed changed selection",
+      "start": 648,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "context_finding": "Complete historical sentence explicitly names Maguindanao del Norte and November 2022. The death count is not an address or flood depth. Historical context must remain separate from article publication.",
+      "end": 1307,
+      "language_evidence": [
+        "landslides"
+      ],
+      "passage_sha256": "a8c2f276c756bfefcb7b1f44a00526e7299447d1a9bbcbf8ea0b81e556145dee",
+      "predecessor_record_ids": [
+        "continuation-910b3b777c6c43ba8943",
+        "revision3-fad79334eadda5ac3fdb"
+      ],
+      "projected_labels": {
+        "PROVINCE": 1
+      },
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-18e3fb206d8751460895",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "unassessed changed selection",
+      "start": 1169,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "context_finding": "Complete causal statement about trees and logging; no named location. Preserve nonbreaking spaces and do not infer an exact mountain or current incident.",
+      "end": 1832,
+      "language_evidence": [
+        "illegal",
+        "logging"
+      ],
+      "passage_sha256": "dfff9856093f903fad79de4ea031023ed75b02d872233f7f40bc91c8a86ef7d3",
+      "predecessor_record_ids": [
+        "continuation-5a18c26b5f50dfaafc5f"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-0cfe5369e42f69261057",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "unassessed changed selection",
+      "start": 1766,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "context_finding": "Complete attributed statement about custody conditions; agency name is outside six place classes. VIP is common/technical vocabulary, with language-borrowing uncertainty requiring fresh adjudication. The unspecified case stays unspecified.",
+      "end": 425,
+      "language_evidence": [
+        "VIP"
+      ],
+      "passage_sha256": "ae57f7b58a4ccaaa22ebe8666b6f646bc805c3dd4c20b33dc2011b4ffa3f9a6b",
+      "predecessor_record_ids": [
+        "continuation-4b75d73b923b32d42b2b"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-85cb4e1f0029f31ded53",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "unassessed changed selection",
+      "start": 290,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "context_finding": "Complete rhetorical question contrasts paperwork with flooding. It supplies no named place, observation time or independently observed event; no implied target may be fabricated.",
+      "end": 797,
+      "language_evidence": [
+        "flood control"
+      ],
+      "passage_sha256": "0a46e68263ea7a38ece6b21d62e7b15034a2f8852a31905a22f1a10d0f23b70c",
+      "predecessor_record_ids": [
+        "continuation-0015463c16667c6768ae",
+        "revision3-3b46f4c3ac6e970325b6"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-c2b2ae5cf8fedc53290f",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "unassessed changed selection",
+      "start": 735,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "context_finding": "Complete question about body-camera rhetoric. Preserve the soft-hyphenated wording. No place, current flood assertion or observation time can be derived from the reference to publicity.",
+      "end": 1314,
+      "language_evidence": [
+        "body cam",
+        "jail guard"
+      ],
+      "passage_sha256": "38b7f17dde2cb88a78f1ea3280b41681fb904364b9b96c22e3e98ec4243af523",
+      "predecessor_record_ids": [
+        "continuation-a0d00d583fc98ca96cfb",
+        "revision3-5e53af0f1426c3b8fc62"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-fcf22d43cad1ea1fc9f7",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "unassessed changed selection",
+      "start": 1250,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "context_finding": "Complete rhetorical question about transparency and funds. No named location or clock occurs. It is only a proposed negative/unknown-time example, not a confirmed factual assertion.",
+      "end": 1461,
+      "language_evidence": [
+        "transparency"
+      ],
+      "passage_sha256": "5e6ac6b38586d2657acdb5fe4ea343c491efbd6d5f09abe7abad89d6b27e89c3",
+      "predecessor_record_ids": [
+        "continuation-a0d00d583fc98ca96cfb",
+        "revision3-13d600f079388082fadb"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-d7bc29d2573380f70f30",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "unassessed changed selection",
+      "start": 1378,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "context_finding": "Complete reported policy slogan. It contains common English vocabulary and no place entity. Keep daw as attribution; surrounding victims and locations must not be imported.",
+      "end": 1499,
+      "language_evidence": [
+        "Zero tolerance",
+        "VIP treatment"
+      ],
+      "passage_sha256": "8a49337f9b7d3f56faed62435e8940f9f0da8cbc32f16ae73425dca5d22dd4ce",
+      "predecessor_record_ids": [
+        "continuation-c93402fcf5550aa70e2c",
+        "revision3-c3137aa4b35c164f4df5"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-9c9f9d2c98d2848d8683",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "unassessed changed selection",
+      "start": 1463,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "context_finding": "Complete rhetorical question about victims. No specific named victim, location or time is supplied; retain it as a provisional generic negative rather than a geographically scoped flood fact.",
+      "end": 1580,
+      "language_evidence": [
+        "Zero tolerance"
+      ],
+      "passage_sha256": "8987a63084947dcfdca2062b8e75a6104590bbf9c1ef22090ad1685ddbad2285",
+      "predecessor_record_ids": [
+        "continuation-c93402fcf5550aa70e2c",
+        "revision3-c3137aa4b35c164f4df5"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-ed24a7497d478b26e040",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "unassessed changed selection",
+      "start": 1531,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "admission_status": "research_only",
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "annotation_complete": false,
+      "annotation_review_status": "draft",
+      "capture_version": "34289f08a63c2f334e0be237ee52403df218e7217ca7bc1506aba28cbe251b80",
+      "context_finding": "Complete statement qualifies the spending allegation with raw. Numbers are generic amounts, not location identifiers. No named place occurs. This remains expressive central criticism despite a smaller selected amount.",
+      "end": 536,
+      "language_evidence": [
+        "kickback",
+        "overpricing"
+      ],
+      "passage_sha256": "54ceee6b119b6aca6925738d4ec4f15984d903bee6af505f2f6f36655a831390",
+      "predecessor_record_ids": [
+        "continuation-24ef4a59901b74bc21b3"
+      ],
+      "projected_labels": {},
+      "provisional_language": "taglish",
+      "record_id": "heldproposal-dddf63b496712d4182b4",
+      "source_id": "news-c7216b3994ab5614",
+      "source_sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c",
+      "source_use": "unassessed changed selection",
+      "start": 372,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+    }
+  ],
+  "reviewed_reserves": [
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "end": 896,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "f97c82aa34c6ee3f6edb4bd725ed3d733f9d4af896123402dc41b3078d525e7f",
+        "finding": "Two complete adjacent paragraphs ask about funding and flood-control structures. There are no named places. Flood control provides lexical mixing. It overlaps the current rhetorical question passage and preserves the argumentative core rather than a factual place inventory.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-0015463c16667c6768ae",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "f97c82aa34c6ee3f6edb4bd725ed3d733f9d4af896123402dc41b3078d525e7f",
+      "record_id": "continuation-0015463c16667c6768ae",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 586,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 820,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "765f5b740e6537ac31c29b3efecf233d21422e48ad31999a999f1d1b8fdc54f9",
+        "finding": "Complete Agoncillo paragraph contains two town mentions and Batangas, all labeled. The common English landslides occurs in Filipino clauses. Causal context and the closing expression of sympathy remain; it is not an isolated factual inventory.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-0c1dde36bf0b320d7169",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "CITY": 2,
+        "PROVINCE": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "765f5b740e6537ac31c29b3efecf233d21422e48ad31999a999f1d1b8fdc54f9",
+      "record_id": "continuation-0c1dde36bf0b320d7169",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 512,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "34289f08a63c2f334e0be237ee52403df218e7217ca7bc1506aba28cbe251b80",
+      "end": 370,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "25ea22a3e3ca4f8cc0489442d7b159661e95927accc7e28913c72cc14c4dab5b",
+        "finding": "Two complete opening paragraphs use flood control in otherwise Filipino commentary, with no named place. The source-exact window includes the whole current 74-370 central accusation; the changed-scope omission guard excludes it. More surrounding context does not resolve the prior hold.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-182d11de8367cf901d30",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "25ea22a3e3ca4f8cc0489442d7b159661e95927accc7e28913c72cc14c4dab5b",
+      "record_id": "continuation-182d11de8367cf901d30",
+      "source_id": "news-c7216b3994ab5614",
+      "source_sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 0,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 510,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "fdbccb9a7a8ab46f5959ca771a92aa168207d21e2bf0380c8c1841fa025532ba",
+        "finding": "Complete opening paragraph: the recession in Laurel/Batangas is followed by observations and an inference about timber. All three place occurrences are labeled; illegal logging activities supplies common English lexical material. New use would retain the author inference as well as facts.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-2313ddef67ba9d5251b5",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "CITY": 1,
+        "PROVINCE": 2
+      },
+      "language": "taglish",
+      "passage_sha256": "fdbccb9a7a8ab46f5959ca771a92aa168207d21e2bf0380c8c1841fa025532ba",
+      "record_id": "continuation-2313ddef67ba9d5251b5",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 0,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "34289f08a63c2f334e0be237ee52403df218e7217ca7bc1506aba28cbe251b80",
+      "end": 651,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "7ed7eec91e72261ed72c17502215dde9fc7a635fbad47b825d909a9baf8d0605",
+        "finding": "Complete paragraph discusses asserted spending, kickback and overpricing, with no named place. The latter terms provide English lexical mixing. It does not overlap the omitted current paragraph, but it remains another central accusation rather than independent evidence of a current flood.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-24ef4a59901b74bc21b3",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "7ed7eec91e72261ed72c17502215dde9fc7a635fbad47b825d909a9baf8d0605",
+      "record_id": "continuation-24ef4a59901b74bc21b3",
+      "source_id": "news-c7216b3994ab5614",
+      "source_sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 372,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+      "end": 779,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "d633da211fbeb10188b78109e2b0040d373985c2875162fad8a52eee3239bd6c",
+        "finding": "Complete paragraph separates Dolomite Beach landmark from the Remedios and Taft Avenue road occurrences. Sewerage treatment plant supplies lexical mixing. It overlaps the shorter current passage, and its retained causal assertion is not automatically justified by a larger label count.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-2c9049c0b12732dfdc57",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "LANDMARK": 1,
+        "ROAD": 2
+      },
+      "language": "taglish",
+      "passage_sha256": "d633da211fbeb10188b78109e2b0040d373985c2875162fad8a52eee3239bd6c",
+      "record_id": "continuation-2c9049c0b12732dfdc57",
+      "source_id": "news-1856c6263451d088",
+      "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 390,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 1044,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "6d1b261070d7f353c3fe447408aac425a5598dd1bd2235e78dd23d651bedfdb5",
+        "finding": "Complete paragraph makes a causal deforestation claim and names Agoncillo once. The embedded magla-landslide retains an English lexical stem under the declared project convention; language borrowing remains uncertain. Place coverage is complete, but source-use necessity is not established.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-30094a1699e4f9fb7a34",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "CITY": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "6d1b261070d7f353c3fe447408aac425a5598dd1bd2235e78dd23d651bedfdb5",
+      "record_id": "continuation-30094a1699e4f9fb7a34",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 822,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "end": 584,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "4927fac55e63f61236bb599febd738ccf2f65218d1814fe33d7f9a32bfc70109",
+        "finding": "Complete paragraph concerns custody conditions and names people and an agency, which are outside location-only-v1. VIP/aircon supply common English vocabulary. The rhetorical close is retained; no flood observation or place may be inferred from surrounding paragraphs.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-4b75d73b923b32d42b2b",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "4927fac55e63f61236bb599febd738ccf2f65218d1814fe33d7f9a32bfc70109",
+      "record_id": "continuation-4b75d73b923b32d42b2b",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 290,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+      "end": 2356,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "18c42dceae6de548fa08c35f0f891a284bcb563a7f80921a8307ae1887209309",
+        "finding": "Two complete paragraphs retain the flooding thesis, waste list and mangrove recommendation. All named in-profile occurrences are labeled, including nonbreaking-space Dolomite Beach and Roxas Boulevard. Waterways and the product list supply lexical mixing. This 875-character window is qualitatively extensive, overlaps several current windows and is not a shorter-scope solution.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-4b80450b6501e487168a",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "CITY": 2,
+        "LANDMARK": 3,
+        "ROAD": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "18c42dceae6de548fa08c35f0f891a284bcb563a7f80921a8307ae1887209309",
+      "record_id": "continuation-4b80450b6501e487168a",
+      "source_id": "news-1856c6263451d088",
+      "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1481,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 2420,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "272556f16b2f4977a2bd90abdee5205999546a2ed64c3173781abe7e961600e9",
+        "finding": "Two complete adjacent paragraphs combine causal explanation with the final government/reforestation call. No named in-profile place appears. Local government units is generic English institutional vocabulary, not a unique location. This reserve overlaps the deliberately omitted final appeal and is unavailable in that changed-scope scenario.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-4f02b405b72741d5e7b3",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "272556f16b2f4977a2bd90abdee5205999546a2ed64c3173781abe7e961600e9",
+      "record_id": "continuation-4f02b405b72741d5e7b3",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 2004,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 2002,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "6625852e7e107b008ed54ddc71dd0b92e594e807714936524e675133f8c2d28a",
+        "finding": "Complete paragraph has generic mountains, slopes and homes, with no named in-profile place. Illegal logging supplies English lexical material. It is a causal negative example and repeats the editorial thesis; a source-use assessor must justify its necessity separately.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-5a18c26b5f50dfaafc5f",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "6625852e7e107b008ed54ddc71dd0b92e594e807714936524e675133f8c2d28a",
+      "record_id": "continuation-5a18c26b5f50dfaafc5f",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1766,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+      "end": 388,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": false,
+        "expected_passage_sha256": "a4138f20affa52542205fbcd26b27f0c479526d25e2d54bdee124481efae6cda",
+        "finding": "Full first paragraph is source-exact, but the existing annotations omit Estero San Antonio Abad at passage offsets 364-387. Preserve this historical annotation and exclude it from verified witnesses. A new window or correction would require fresh annotation acceptance. Drainage outfall gives lexical mixing.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-7083e3d12285e30c158a",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "CITY": 1,
+        "LANDMARK": 3,
+        "ROAD": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "a4138f20affa52542205fbcd26b27f0c479526d25e2d54bdee124481efae6cda",
+      "record_id": "continuation-7083e3d12285e30c158a",
+      "source_id": "news-1856c6263451d088",
+      "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 0,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 1435,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "20ba619a916a4d93d2d046373d4ee91dcf649c9b4bcd39610e63227b7b6e932b",
+        "finding": "Two adjacent complete paragraphs connect a general logging thesis to a November 2022 Maguindanao del Norte example. The province is labeled and illegal logging/landslides supply lexical mixing. This is a larger predecessor of two current windows, so overlap conflicts must be enforced.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-910b3b777c6c43ba8943",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "PROVINCE": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "20ba619a916a4d93d2d046373d4ee91dcf649c9b4bcd39610e63227b7b6e932b",
+      "record_id": "continuation-910b3b777c6c43ba8943",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1046,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "end": 288,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "d609624e5cdc2878bbf2b3e5ee11790aafd126ba77879f995662b7ae1e691326",
+        "finding": "Complete opening paragraph has no named place. Ghost flood control projects is common English material embedded in Filipino clauses. The window contains the opening central accusation; being a negative NER example does not settle use of that expression.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-91bf7b5093f6c0602cd6",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "d609624e5cdc2878bbf2b3e5ee11790aafd126ba77879f995662b7ae1e691326",
+      "record_id": "continuation-91bf7b5093f6c0602cd6",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 0,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "end": 1461,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "2bc20bdd042337eea2046d6edd8beb7c745695f5cd61823ef647ae263598d2b8",
+        "finding": "Two complete paragraphs mention video, body cam and transparency while asking rhetorical flood questions. Generic barangay is not a named BARANGAY entity. This source-exact predecessor overlaps the current contextual pair and its adjacent passage; they cannot coexist.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-a0d00d583fc98ca96cfb",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "2bc20bdd042337eea2046d6edd8beb7c745695f5cd61823ef647ae263598d2b8",
+      "record_id": "continuation-a0d00d583fc98ca96cfb",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1196,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+      "end": 1142,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "a0eb38f9478f957243d658be55ef1f2fbde47d0c76eb8350d56cfd80e6ca21d0",
+        "finding": "Complete paragraph contains Taft Avenue twice and UN Avenue once, all roads. It combines recent passability with a criticism of the beautification project. English lexical material includes beautification project and the stranded stem. This predecessor overlaps two current windows and contributes only one ROAD-positive passage if selected.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-abcc90f6734aff39388f",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "ROAD": 3
+      },
+      "language": "taglish",
+      "passage_sha256": "a0eb38f9478f957243d658be55ef1f2fbde47d0c76eb8350d56cfd80e6ca21d0",
+      "record_id": "continuation-abcc90f6734aff39388f",
+      "source_id": "news-1856c6263451d088",
+      "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 781,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "e8d383a99c23a7aa070e2c8307db3782600cbaf79cb1eedf06de0a34ee2e3076",
+      "end": 1800,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "b4a78e88e7260e44cb0d082cd17b1f85568e5d876261b885a29ea53872f61add",
+        "finding": "Three complete adjacent paragraphs contain Zero tolerance, VIP treatment and collateral damage in Filipino clauses, without a named place. It includes the deliberately omitted accountability passage, so the changed-scope guard excludes it. No observation clock is supplied.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-c93402fcf5550aa70e2c",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {},
+      "language": "taglish",
+      "passage_sha256": "b4a78e88e7260e44cb0d082cd17b1f85568e5d876261b885a29ea53872f61add",
+      "record_id": "continuation-c93402fcf5550aa70e2c",
+      "source_id": "news-7a824863d687424a",
+      "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1463,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+      "end": 1764,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "adecf012acaa439e7a1122d37ca3726910fb1be6d87d5044a9f9c6339b951df0",
+        "finding": "Complete historical paragraph places the February 2006 event in Bgy. Guinsaugon, St. Bernard and Southern Leyte, then repeats Guinsaugon. All four occurrences are labeled. Article publication is within the collection window; the 2006 incident must remain historical context, not a publication-date error. Illegal loggers provides lexical mixing.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-cec073c0b468aaed4d00",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "BARANGAY": 2,
+        "CITY": 1,
+        "PROVINCE": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "adecf012acaa439e7a1122d37ca3726910fb1be6d87d5044a9f9c6339b951df0",
+      "record_id": "continuation-cec073c0b468aaed4d00",
+      "source_id": "news-641a924608dd03ab",
+      "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1437,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+      "end": 1479,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "59169baeed61a4c85da4a1b9c03c95f3ebcdf2d748f9b2dd47df8ea7ec48e602",
+        "finding": "Two adjacent paragraphs name Dolomite Beach twice and Cebu once; all are labeled. The text includes a reported defense and criticism of project expense. Pandemic supplies English lexical material under the operational convention. It intersects the explicit omission interval in the changed-scope scenario.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "continuation-f5fdd497ccc7118656f5",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "LANDMARK": 2,
+        "PROVINCE": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "59169baeed61a4c85da4a1b9c03c95f3ebcdf2d748f9b2dd47df8ea7ec48e602",
+      "record_id": "continuation-f5fdd497ccc7118656f5",
+      "source_id": "news-1856c6263451d088",
+      "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 1144,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+    },
+    {
+      "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+      "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+      "end": 505,
+      "finding": {
+        "boundary_review": "complete sentence/paragraph window; no source text edited",
+        "eligible_for_reviewed_scenario": true,
+        "expected_passage_sha256": "c9214ed6a271e0283c110b0940b576f2e76ecc41c04bbc141f56867798cdc449",
+        "finding": "Previously accepted two-paragraph/sentence window contains Maynila, Taft Avenue, four first-paragraph landmarks and a second Dolomite Beach occurrence, all labeled. Drainage outfall and sewerage treatment plant provide lexical mixing. Context is complete and source-exact; this stronger annotation can be used as a reviewed alternative without repairing the incomplete older predecessor.",
+        "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+        "record_id": "revision3-df3307cba5eb590d3555",
+        "reviewed_date": "2026-10-16",
+        "reviewer": "Codex AI same-agent source reader"
+      },
+      "labels": {
+        "CITY": 1,
+        "LANDMARK": 5,
+        "ROAD": 1
+      },
+      "language": "taglish",
+      "passage_sha256": "c9214ed6a271e0283c110b0940b576f2e76ecc41c04bbc141f56867798cdc449",
+      "record_id": "revision3-df3307cba5eb590d3555",
+      "source_id": "news-1856c6263451d088",
+      "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "source_use": "new aggregate selection remains unassessed",
+      "start": 0,
+      "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+    }
+  ]
+}

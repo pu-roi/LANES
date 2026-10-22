@@ -1,0 +1,13 @@
+{
+  "files": {
+    "README.md": "d1e1f5db4a213ce21b4e44163fa5c20f0034dcf9c1d1a3947ef61e89ac2c2546",
+    "preservation-publication-check.json": "fa3ee3886ff6a8dc8747536700f3e22078be30fd682b588ee5580c23164799e8",
+    "publication-receipt.json": "fc2b4d0f225749daf27039dfc9050acd94d631971e40eb8590342e5f5ed6ce04",
+    "reference-classification.json": "84e6cd85e6d0e255e8de2d3032bae03690aab9159106dc88218bfbf3f8f24bf5",
+    "restoration-verification.json": "52c54c541624efe0bffc3c5ceab0033848e10f7a39693fc1bf1e20be2f102c12",
+    "software-verification.json": "84942b5481e86e9a89fd2308d87193411602dbf1a54791e03808964fe48a6875",
+    "verification.json": "b9158ee8a1dbc16c9564fd98dd5bd22e51c161b01dbd71bdb268d8fcb5bf697e"
+  },
+  "private_archive_sha256": "afe11aa15398d9b88e7ef268c75f7d51c79107206a60f29ac4313264f4dba65f",
+  "public_text_excludes_news_passages": true
+}

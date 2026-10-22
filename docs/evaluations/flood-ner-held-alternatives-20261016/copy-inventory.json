@@ -1,0 +1,151 @@
+{
+  "current_dataset_changed": false,
+  "distinct_articles_represented_as_complete_bodies": 10,
+  "existing_body_archive_files_changed": false,
+  "files": [
+    {
+      "complete_bodies": [
+        {
+          "record_id": "revision-0c5383a6e83533b71498",
+          "source_id": "news-496862ad9cd359b9",
+          "source_sha256": "b9775aa5762bfdca53dd044ce75cb2af76bc1997b7f86863078a0d295df699a6",
+          "url": "https://www.gmanetwork.com/news/balitambayan/balita/989301/baha-metro-manila-malakas-ulan/story/"
+        },
+        {
+          "record_id": "revision-13ea25d57a03515d2cc7",
+          "source_id": "news-a07b77e950bca4fa",
+          "source_sha256": "6baf7a54cd55752753023fe7123bff13f8bb71e80eb142b43e7160a1cbd17bd3",
+          "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760146/bahagi-ng-maharlika-highway-sa-lopez-quezon-lubog-sa-baha/story"
+        },
+        {
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_id": "news-d40ef2f36bb454d6",
+          "source_sha256": "d11977fec62f7a16ce9ca2cfd79100f393ce9b70e5040ad21a012dc439995237",
+          "url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/"
+        },
+        {
+          "record_id": "revision-3ff16d2591b212a8f2a5",
+          "source_id": "news-645827b407f23d1d",
+          "source_sha256": "5db92742b9b2ae5af6d6482fdaa9fc8552bb2379b59b6cf8d2bc2ab884e2bee7",
+          "url": "https://www.gmanetwork.com/news/topstories/regions/696896/students-in-opol-misamis-oriental-at-risk-as-they-pass-through-dilapidated-bridge-everyday/story/"
+        },
+        {
+          "record_id": "revision-44135653b79a061daad8",
+          "source_id": "news-3f17e39b80d92846",
+          "source_sha256": "fd418c63fdba6ddffa6e2a46b236eba32ec95429ef192744234015a29dbacfa3",
+          "url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/"
+        },
+        {
+          "record_id": "revision-53303e0f6a7bc5fc160a",
+          "source_id": "news-3a5b4ac4795658f8",
+          "source_sha256": "f248cdc1677da794d6d18597066f13de157c42a6377dcddaecef1a5ccc9b1bd7",
+          "url": "https://www.gmanetwork.com/news/balitambayan/balita/627775/bayan-ng-baao-sa-camarines-sur-lubog-sa-baha/story/"
+        },
+        {
+          "record_id": "revision-7cda6f7a9e2b1f2793d4",
+          "source_id": "news-5ec4d4b9bb6c8593",
+          "source_sha256": "0a9662548bd99698aada7a462914e66c71ede0c85afc88d7fc74ef88395f0822",
+          "url": "https://www.gmanetwork.com/news/balitambayan/umg/656071/motoristang-sumunod-sa-waze-lumubog-ang-suv-sa-baha/story/"
+        },
+        {
+          "record_id": "revision-ba6cb482e1e723eaf398",
+          "source_id": "news-e45b849dae35a056",
+          "source_sha256": "8764e5ceccb8b8c8767f9ea15894882b0edc41e9c100e8586a4123658b74dd95",
+          "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/954882/malaking-bahagi-ng-bundok-sa-angono-rizal-nakalbo-dahil-sa-quarrying/story/"
+        },
+        {
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_id": "news-945f46c723917dec",
+          "source_sha256": "4843c298716a5988ce1f97b07782d762eed049d2f7eb13c825f20d2c59af0cad",
+          "url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/"
+        },
+        {
+          "record_id": "revision-c9fc28e08a0aa54e9a50",
+          "source_id": "news-eb21b538ee224afc",
+          "source_sha256": "5678f306ea10760c193701bffe7488aa1857133714489c0ab42b0cc5e9a2f7d9",
+          "url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/"
+        }
+      ],
+      "exact_complete_body_representations": 10,
+      "passage_representations": 400,
+      "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/analysis/reviewed-selection-proposal.json",
+      "sha256": "60726683ac61a650d1b4dbb4fd478a52316648f22ace115eaa640da6fbf07fec"
+    },
+    {
+      "complete_bodies": [
+        {
+          "record_id": "revision-0c5383a6e83533b71498",
+          "source_id": "news-496862ad9cd359b9",
+          "source_sha256": "b9775aa5762bfdca53dd044ce75cb2af76bc1997b7f86863078a0d295df699a6",
+          "url": "https://www.gmanetwork.com/news/balitambayan/balita/989301/baha-metro-manila-malakas-ulan/story/"
+        },
+        {
+          "record_id": "revision-13ea25d57a03515d2cc7",
+          "source_id": "news-a07b77e950bca4fa",
+          "source_sha256": "6baf7a54cd55752753023fe7123bff13f8bb71e80eb142b43e7160a1cbd17bd3",
+          "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760146/bahagi-ng-maharlika-highway-sa-lopez-quezon-lubog-sa-baha/story"
+        },
+        {
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_id": "news-d40ef2f36bb454d6",
+          "source_sha256": "d11977fec62f7a16ce9ca2cfd79100f393ce9b70e5040ad21a012dc439995237",
+          "url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/"
+        },
+        {
+          "record_id": "revision-3ff16d2591b212a8f2a5",
+          "source_id": "news-645827b407f23d1d",
+          "source_sha256": "5db92742b9b2ae5af6d6482fdaa9fc8552bb2379b59b6cf8d2bc2ab884e2bee7",
+          "url": "https://www.gmanetwork.com/news/topstories/regions/696896/students-in-opol-misamis-oriental-at-risk-as-they-pass-through-dilapidated-bridge-everyday/story/"
+        },
+        {
+          "record_id": "revision-44135653b79a061daad8",
+          "source_id": "news-3f17e39b80d92846",
+          "source_sha256": "fd418c63fdba6ddffa6e2a46b236eba32ec95429ef192744234015a29dbacfa3",
+          "url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/"
+        },
+        {
+          "record_id": "revision-53303e0f6a7bc5fc160a",
+          "source_id": "news-3a5b4ac4795658f8",
+          "source_sha256": "f248cdc1677da794d6d18597066f13de157c42a6377dcddaecef1a5ccc9b1bd7",
+          "url": "https://www.gmanetwork.com/news/balitambayan/balita/627775/bayan-ng-baao-sa-camarines-sur-lubog-sa-baha/story/"
+        },
+        {
+          "record_id": "revision-7cda6f7a9e2b1f2793d4",
+          "source_id": "news-5ec4d4b9bb6c8593",
+          "source_sha256": "0a9662548bd99698aada7a462914e66c71ede0c85afc88d7fc74ef88395f0822",
+          "url": "https://www.gmanetwork.com/news/balitambayan/umg/656071/motoristang-sumunod-sa-waze-lumubog-ang-suv-sa-baha/story/"
+        },
+        {
+          "record_id": "revision-ba6cb482e1e723eaf398",
+          "source_id": "news-e45b849dae35a056",
+          "source_sha256": "8764e5ceccb8b8c8767f9ea15894882b0edc41e9c100e8586a4123658b74dd95",
+          "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/954882/malaking-bahagi-ng-bundok-sa-angono-rizal-nakalbo-dahil-sa-quarrying/story/"
+        },
+        {
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_id": "news-945f46c723917dec",
+          "source_sha256": "4843c298716a5988ce1f97b07782d762eed049d2f7eb13c825f20d2c59af0cad",
+          "url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/"
+        },
+        {
+          "record_id": "revision-c9fc28e08a0aa54e9a50",
+          "source_id": "news-eb21b538ee224afc",
+          "source_sha256": "5678f306ea10760c193701bffe7488aa1857133714489c0ab42b0cc5e9a2f7d9",
+          "url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/"
+        }
+      ],
+      "exact_complete_body_representations": 10,
+      "passage_representations": 400,
+      "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/analysis-replay/reviewed-selection-proposal.json",
+      "sha256": "60726683ac61a650d1b4dbb4fd478a52316648f22ace115eaa640da6fbf07fec"
+    }
+  ],
+  "held_editorial_complete_body_representations": 0,
+  "interpretation": "The current accepted corpus still contains 400 samples. Two ignored full-passage witness/replay files add 800 passage representations, including 20 exact whole-body representations of ten already selected nonheld articles. They are generated audit copies, not new independent samples or newly collected articles. Existing retained bodies and archive files are unchanged; their count is not reduced by the smaller proposed selection.",
+  "new_exact_complete_body_representations": 20,
+  "new_selected_passage_representations": 800,
+  "newly_collected_articles": 0,
+  "schema_version": "lanes-feasibility-copy-inventory-v1",
+  "scope": "new local generated proposal/replay copies only; not an inventory of every prior local, desktop or cloud copy",
+  "source_use_note": "Carry this additional generated-copy footprint into any subsequent scoped-use assessment. No necessity, permission or admission is inferred for the generated copies."
+}

@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "additional_constructed_checks": 4,
+  "same_shared_monitor_implementation": true,
+  "actual_test_receipt_sha256": "b1010088634e505b9c34cfd97881a33bbffae10e5ef79330aade21ff1826fa56",
+  "notes": "Separate from the 277 frozen preparation checks; no extraction/inference rerun. Covers timeout, controlled crash, OOM state and cold-clock accounting."
+}

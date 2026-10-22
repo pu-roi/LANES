@@ -1,0 +1,352 @@
+{
+  "backend_promoted": false,
+  "exposed_training_and_constructed_checks": true,
+  "independent_accuracy_measurement": false,
+  "methods": {
+    "boundary_replacement": {
+      "article": {
+        "corrected_occurrences": 3,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 16,
+        "restored_facts": 15,
+        "restored_measured_rows": 3,
+        "restored_rows": 3,
+        "restored_unmeasured_rows": 0
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [
+        "new_fixture_failures",
+        "preserved_context_temporal_failures"
+      ],
+      "checks": {
+        "article_dateline_error": 0,
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_invented_depth": 0,
+        "article_previously_complete_losses": 0,
+        "article_unsupported_proposals": 0,
+        "expression_regressions": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "new_fixture_failures": 12,
+        "preserved_context_temporal_failures": 1,
+        "preserved_location_fixture_failures": 0,
+        "qualifier_losses": 0
+      },
+      "fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 24,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 35,
+          "total": 36
+        }
+      },
+      "gained_correct_training_locations": 0,
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "combined": {
+      "article": {
+        "corrected_occurrences": 8,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 11,
+        "restored_facts": 40,
+        "restored_measured_rows": 8,
+        "restored_rows": 8,
+        "restored_unmeasured_rows": 0
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [
+        "new_fixture_failures",
+        "preserved_context_temporal_failures"
+      ],
+      "checks": {
+        "article_dateline_error": 0,
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_invented_depth": 0,
+        "article_previously_complete_losses": 0,
+        "article_unsupported_proposals": 0,
+        "expression_regressions": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "new_fixture_failures": 34,
+        "preserved_context_temporal_failures": 3,
+        "preserved_location_fixture_failures": 0,
+        "qualifier_losses": 0
+      },
+      "fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 2,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 33,
+          "total": 36
+        }
+      },
+      "gained_correct_training_locations": 0,
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "junction_type": {
+      "article": {
+        "corrected_occurrences": 0,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 19,
+        "restored_facts": 0,
+        "restored_measured_rows": 0,
+        "restored_rows": 0,
+        "restored_unmeasured_rows": 0
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [
+        "new_fixture_failures",
+        "preserved_context_temporal_failures",
+        "no_supported_real_correction"
+      ],
+      "checks": {
+        "article_dateline_error": 0,
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_invented_depth": 0,
+        "article_previously_complete_losses": 0,
+        "article_unsupported_proposals": 0,
+        "expression_regressions": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "new_fixture_failures": 12,
+        "preserved_context_temporal_failures": 1,
+        "preserved_location_fixture_failures": 0,
+        "qualifier_losses": 0
+      },
+      "fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 24,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 35,
+          "total": 36
+        }
+      },
+      "gained_correct_training_locations": 0,
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    },
+    "missing_junction": {
+      "article": {
+        "corrected_occurrences": 5,
+        "facts_accounted": 93,
+        "remaining_unresolved_rows": 14,
+        "restored_facts": 25,
+        "restored_measured_rows": 5,
+        "restored_rows": 5,
+        "restored_unmeasured_rows": 0
+      },
+      "association_counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "blockers": [
+        "new_fixture_failures",
+        "preserved_context_temporal_failures"
+      ],
+      "checks": {
+        "article_dateline_error": 0,
+        "article_fact_losses": 0,
+        "article_incorrect_links": 0,
+        "article_invented_depth": 0,
+        "article_previously_complete_losses": 0,
+        "article_unsupported_proposals": 0,
+        "expression_regressions": 0,
+        "historic_recovery_losses": 0,
+        "introduced_association_fp": 0,
+        "introduced_location_fp": 0,
+        "lost_correct_associations": 0,
+        "lost_correct_locations": 0,
+        "new_fixture_failures": 10,
+        "preserved_context_temporal_failures": 1,
+        "preserved_location_fixture_failures": 0,
+        "qualifier_losses": 0
+      },
+      "fixtures": {
+        "existing": {
+          "passed": 238,
+          "total": 238
+        },
+        "location_fixtures": {
+          "passed": 36,
+          "total": 36
+        },
+        "new": {
+          "passed": 26,
+          "total": 36
+        },
+        "temporal": {
+          "passed": 36,
+          "total": 36
+        },
+        "v41": {
+          "passed": 36,
+          "total": 36
+        },
+        "v42": {
+          "passed": 35,
+          "total": 36
+        }
+      },
+      "gained_correct_training_locations": 0,
+      "historical_seven": {
+        "retained_recovery": 6,
+        "still_unresolved": 1
+      },
+      "qualified_for_later_proposal": false,
+      "recognition_counts": {
+        "baseline": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        },
+        "candidate": {
+          "fn": 17,
+          "fp": 12,
+          "tp": 823
+        }
+      }
+    }
+  },
+  "neural_inference": false,
+  "no_post_result_tuning": true,
+  "preservation": {
+    "excluded_metadata_unchanged": 82,
+    "historical_metadata_unchanged": 1538,
+    "preexisting_declared_config_change": [
+      "backend/app/core/config.py"
+    ],
+    "protected_evidence_hashes": 208,
+    "v40_v42_and_promoted_application_unchanged": true,
+    "v41_source_test_hashes": 55,
+    "validation_holdout_content_opened": false
+  },
+  "raw_records": 788,
+  "status": "completed",
+  "three_holds_retained": true
+}

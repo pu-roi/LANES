@@ -3,7 +3,7 @@
 from sqlalchemy.orm import Session
 
 from app.crud.news_collection import list_collection
-from app.schemas.news_browsing import NewsPublisherOption
+from app.schemas.news_browsing import NewsPublisherOption, BodyStatus
 from app.schemas.news_collection import CollectionFilter, NewsCollectionItem, NewsCollectionPage
 from app.services.news_browsing_service import publisher_labels
 
@@ -21,9 +21,14 @@ COLLECTION_LABELS = {
 
 
 def browse_news_collection(db: Session, *, page: int, page_size: int, search: str,
-                           publisher: str | None, status: CollectionFilter) -> NewsCollectionPage:
-    rows, total, actual_page, counts, publishers = list_collection(db, page=page, page_size=page_size,
-        search=search, publisher=publisher, status=status)
+                           publisher: str | None, status: CollectionFilter, processing_context=None,
+                           retrieval: BodyStatus | None = None) -> NewsCollectionPage:
+    if processing_context is not None:
+        from app.services.news_ner_durable.readers import validate_read_context
+        validate_read_context(db,processing_context)
+    rows, total, actual_page, counts, publishers, retrieval_counts = list_collection(db, page=page, page_size=page_size,
+        search=search, publisher=publisher, status=status, retrieval=retrieval,
+        pipeline_version=processing_context.pipeline_version if processing_context is not None else None)
     labels = publisher_labels()
     items = []
     for article, body, processing, run_id, state, locations, questionable in rows:
@@ -37,4 +42,5 @@ def browse_news_collection(db: Session, *, page: int, page_size: int, search: st
             location_count=locations, questionable_count=questionable))
     return NewsCollectionPage(items=items, total=total, page=actual_page, page_size=page_size,
         pages=max(1, (total + page_size - 1) // page_size), counts={key: counts.get(key, 0) for key in COLLECTION_LABELS},
+        retrieval_counts={key: retrieval_counts.get(key, 0) for key in ('available','missing','error')},
         publishers=[NewsPublisherOption(id=value, label=labels.get(value, value)) for value in publishers])

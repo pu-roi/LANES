@@ -1,0 +1,246 @@
+{
+  "actual_test_evaluation_attempts": 1,
+  "annotation_or_source_use_changes": false,
+  "completion_audit": {
+    "path": "backend/training/flood_ner/artifacts/heldout-test-execution-20261016-v1/completion-audit.json",
+    "sha256": "cc4968afbad919c28d7b6b66d6054f56aa94796338aca93e73ca825ac792be9c"
+  },
+  "contextual_pairs_are_training_references_not_heldout_benchmark": true,
+  "copy_accounting": {
+    "new_articles": 0,
+    "new_private_test_request_passage_text_fields": 60,
+    "new_samples": 0,
+    "new_whole_body_selected_passage_representations": 2,
+    "predictions_and_errors_use_offsets_labels_only": true,
+    "public_article_or_passage_bodies": 0
+  },
+  "corpus_counts": {
+    "articles": 138,
+    "contextual_pairs_added_as_samples": 0,
+    "contextual_pairs_referenced": 40,
+    "languages": {
+      "english": 200,
+      "taglish": 200
+    },
+    "location_spans": 1465,
+    "negative_passages": 48,
+    "partitions": {
+      "dev": 60,
+      "test": 60,
+      "train": 280
+    },
+    "samples": 400
+  },
+  "deployment_correspondence_commit_push_shutdown": false,
+  "exclusive_attempt_marker_sha256": "18364ac9750ae607473a6e994f3b5c520a81f09cf25e93ad87718cdd17d3ae40",
+  "exploratory_family": "A",
+  "family_statistics": {
+    "A": {
+      "coarse_loc": {
+        "max": 0.8315789473684211,
+        "mean": 0.818252043840405,
+        "min": 0.8083623693379791,
+        "primary": 0.8148148148148148,
+        "primary_seed": 0,
+        "sample_stddev": 0.011983875891866958
+      },
+      "six_class": {
+        "max": 0.7177700348432056,
+        "mean": 0.7024331379487563,
+        "min": 0.6772486772486772,
+        "primary": 0.6772486772486772,
+        "primary_seed": 0,
+        "sample_stddev": 0.02198240182521854
+      }
+    },
+    "original": {
+      "coarse_loc": {
+        "max": 0.8220640569395018,
+        "mean": 0.8112431669377699,
+        "min": 0.7978723404255319,
+        "primary": 0.7978723404255319,
+        "primary_seed": 0,
+        "sample_stddev": 0.012295788674533225
+      },
+      "six_class": {
+        "max": 0.7259786476868327,
+        "mean": 0.6845786818612096,
+        "min": 0.6312056737588653,
+        "primary": 0.6312056737588653,
+        "primary_seed": 0,
+        "sample_stddev": 0.04850767416407343
+      }
+    }
+  },
+  "finished_at": "2026-10-16T20:06:34.397085+08:00",
+  "formal_desktop_predecessor_reconciliation": false,
+  "freeze_sha256": "498b0db49690c8bd7ca0dacde5902759e30e9052b8438b4fc9f1b99af4db6243",
+  "freeze_unchanged": true,
+  "frozen_at": "2026-10-16T20:05:03.948809+08:00",
+  "historical_limitations": [
+    {
+      "actual_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1/manifest.json"
+    },
+    {
+      "actual_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1/delegation-record.json"
+    },
+    {
+      "actual_sha256": "a102ac899848d2934bb26539562200868b22e83bd41f6ec3eaf542f68a3bd8a7",
+      "current_bytes_match_reference": false,
+      "expected_sha256": "2f87e31c25ea9af7bd20c522e1a7a80b055192311dcce56b1b0fc141741bd56a",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json"
+    }
+  ],
+  "model_best_used": false,
+  "models": 6,
+  "next_task": "Existing Gate 3 model-qualification review: inspect recorded weak entity/language/negative errors and document readiness/limitations before Gate 4 isolated integration. Any further tuning needs a fresh untouched holdout; independently verified accuracy requires independent reference review.",
+  "pre_inference_implementation_fix": {
+    "evaluation_retried": false,
+    "failed_freeze_created_output": false,
+    "fixed_before_freeze_and_inference": true,
+    "problem": "Constructed qualification controls lack record_id; the first freeze check incorrectly treated them as memberships.",
+    "regression": "Constructed controls excluded; location/context overlap checks retained."
+  },
+  "preservation": {
+    "added_research_environment": [],
+    "changed_or_missing_artifacts": [],
+    "changed_research_environment": [],
+    "cli_package_count": 109,
+    "cli_package_versions_unchanged": true,
+    "env_unchanged": true,
+    "frozen_input_bindings_revalidated": true,
+    "model_files_hash_verified": 23,
+    "prior_artifact_files_hash_verified": 11625,
+    "recorded_at": "2026-10-16T20:07:27.529133+08:00",
+    "requirements_unchanged": true,
+    "research_environment_files_size_mtime_verified": 22759,
+    "research_environment_scope": "Size/mtime audit, not full environment content hashing; bytecode consistently excluded.",
+    "state": "passed"
+  },
+  "primary": "original-seed-0",
+  "recipe_B_evaluated": false,
+  "reconciliation": {
+    "canonical_frozen_scorer_six_class_agreement": true,
+    "freeze_manifest_unchanged": true,
+    "freeze_precedes_inference": true,
+    "freeze_sha256": "498b0db49690c8bd7ca0dacde5902759e30e9052b8438b4fc9f1b99af4db6243",
+    "frozen_primary_unchanged": "original-seed-0",
+    "independent_metric_slices_checked": 240,
+    "offset_error_counts_reconciled": true,
+    "prediction_record_sets_checked": 8,
+    "prediction_sets_complete": true,
+    "predictions_sha256": "d2a6e93d47d3511d46c33a99a00cf799eaf32ee066e9880cfcdce7ac73ae7127",
+    "recorded_at": "2026-10-16T20:07:05.830828+08:00",
+    "request_sha256": "95b654755aedaf0320e66144b513168a925d06273b5956a47ff0ae67f508f5b1",
+    "results_manifest_sha256": "2ba96b256ded2c196b184b4399c88c09dcf7624759e5860789a83794129f03b1",
+    "state": "passed",
+    "systems": 8,
+    "test_negative_passages": 3,
+    "test_records": 60,
+    "test_spans": 290
+  },
+  "recorded_at": "2026-10-16T20:09:22.424106+08:00",
+  "schema_version": "lanes-heldout-test-report-v1",
+  "scope_completed": true,
+  "selection_changed_using_test_results": false,
+  "started_at": "2026-10-16T20:06:12.469091+08:00",
+  "state": "passed",
+  "systems_including_baselines": 8,
+  "test_languages": {
+    "english": 30,
+    "taglish": 30
+  },
+  "test_negative_passages": 3,
+  "test_records": 60,
+  "test_spans": 290,
+  "tests": {
+    "existing_regressions": 43,
+    "framework": "stdlib unittest",
+    "full_historical_suite_rerun": false,
+    "heldout_tests": 16,
+    "log_sha256": "db72213808edf749dd7f9576b9d45ff445a0bbb29cdf87ca4b66bdfd7c465e1f",
+    "passed": 59
+  },
+  "training_dependency_api_schema_changes": false,
+  "weak_slices": {
+    "A-seed-0": {
+      "LANDMARK": {
+        "FN": 13,
+        "FP": 11,
+        "TP": 7,
+        "f1": 0.3684210526315789,
+        "passages": 60,
+        "precision": 0.3888888888888889,
+        "predicted_spans": 18,
+        "recall": 0.35,
+        "reference_spans": 20
+      },
+      "LOCAL_AREA": {
+        "FN": 15,
+        "FP": 3,
+        "TP": 7,
+        "f1": 0.4375,
+        "passages": 60,
+        "precision": 0.7,
+        "predicted_spans": 10,
+        "recall": 0.3181818181818182,
+        "reference_spans": 22
+      },
+      "ROAD": {
+        "FN": 33,
+        "FP": 29,
+        "TP": 36,
+        "f1": 0.5373134328358209,
+        "passages": 60,
+        "precision": 0.5538461538461539,
+        "predicted_spans": 65,
+        "recall": 0.5217391304347826,
+        "reference_spans": 69
+      }
+    },
+    "original-seed-0": {
+      "LANDMARK": {
+        "FN": 20,
+        "FP": 2,
+        "TP": 0,
+        "f1": 0.0,
+        "passages": 60,
+        "precision": 0.0,
+        "predicted_spans": 2,
+        "recall": 0.0,
+        "reference_spans": 20
+      },
+      "LOCAL_AREA": {
+        "FN": 16,
+        "FP": 5,
+        "TP": 6,
+        "f1": 0.36363636363636365,
+        "passages": 60,
+        "precision": 0.5454545454545454,
+        "predicted_spans": 11,
+        "recall": 0.2727272727272727,
+        "reference_spans": 22
+      },
+      "ROAD": {
+        "FN": 37,
+        "FP": 47,
+        "TP": 32,
+        "f1": 0.43243243243243246,
+        "passages": 60,
+        "precision": 0.4050632911392405,
+        "predicted_spans": 79,
+        "recall": 0.463768115942029,
+        "reference_spans": 69
+      }
+    }
+  }
+}

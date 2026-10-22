@@ -1,0 +1,11 @@
+{
+  "files": {
+    "README.md": "6af5ff7200943dd6072cf0b6b936363de947f754faba5ae41b48e0cd170a663c",
+    "metrics.json": "0fa6674bb37459f505720dbacfd5b077c77a4d7fd4dbbbb47b2395a5cb689df4",
+    "output-hashes.json": "d3a244450c47d192b7aace4a0abb750e7ad6a2ac202dd0d800952ff1a2eb54ff",
+    "preservation.json": "04149d4519dfd14f839dc7d7e5da54c0d0cb10938dcea939b1ad64900a185ac5",
+    "run-summary.json": "feec69d86d7b4acd9db813172a05a769d65b6aecb147f7bf20880261d5efef4f",
+    "study-manifest.json": "086dfce59742ad72cbac950d2f4615bb509937dcdb36a10877b14854876600d9",
+    "verification.json": "dd543ebda3ff25bcd5c4681386629eac7169ae0a2b34cdc5680aa223e601f7f3"
+  }
+}

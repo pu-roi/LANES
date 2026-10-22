@@ -1,0 +1,108 @@
+{
+  "additional_reviewed_articles_outside_original_100": 97,
+  "additional_selected_articles_outside_original_100": 88,
+  "annotation_accepted": 400,
+  "annotation_pool": 561,
+  "annotation_schema_sha256": "c52794ddb5b361b33c12d9a2a19bf5ee35c8d1d64fa472ecd00145dca344f52f",
+  "context_fact_review_completed": 0,
+  "context_preserved": 400,
+  "counts": {
+    "dev": {
+      "english": 30,
+      "taglish": 30
+    },
+    "test": {
+      "english": 30,
+      "taglish": 30
+    },
+    "train": {
+      "english": 140,
+      "taglish": 140
+    }
+  },
+  "distinct_articles": 132,
+  "eligible_connected_groups": 27,
+  "empty_entities_mean_only_no_supported_place_labels": true,
+  "empty_entity_records": 72,
+  "entity_labels": {
+    "BARANGAY": 165,
+    "CITY": 426,
+    "LANDMARK": 103,
+    "LOCAL_AREA": 50,
+    "PROVINCE": 162,
+    "ROAD": 468
+  },
+  "export_holds": [
+    "source_not_training_admitted",
+    "source_reuse_unresolved"
+  ],
+  "exported_samples": 0,
+  "group_overlay_preserves_original_captures": true,
+  "independent_language_adjudication": false,
+  "independently_verified_gold": 0,
+  "labels": [
+    "ROAD",
+    "LANDMARK",
+    "LOCAL_AREA",
+    "BARANGAY",
+    "CITY",
+    "PROVINCE"
+  ],
+  "language_definition": "AI-assigned passage language; Taglish includes Filipino clauses with untranslated English common/technical lexical material; names alone insufficient",
+  "model_trained": false,
+  "profile": "location-only-v1",
+  "publisher_language_confounding": true,
+  "publisher_languages": {
+    "ABS-CBN News": {
+      "english": 13
+    },
+    "GMA News": {
+      "english": 187,
+      "taglish": 6
+    },
+    "RMN Networks": {
+      "taglish": 194
+    }
+  },
+  "publishers": {
+    "ABS-CBN News": 13,
+    "GMA News": 193,
+    "RMN Networks": 194
+  },
+  "retained_pilot_ids": [
+    "location-81abb349bb5fe38ae7ca",
+    "location-88c7c0a6579afd822893",
+    "location-95ccf208233b102344af",
+    "location-a297873e7455d2c3222a",
+    "location-bd95f93c15138ebe64f3",
+    "location-c805fadee3a31d1cca2b",
+    "location-ca58809c7f156a80b5b3",
+    "location-cd6dfcac700b410780ac",
+    "location-cebe21af8fefbd04cc6f",
+    "location-d04ea15a62c61150439e"
+  ],
+  "reviewed_source_pool": 142,
+  "sample_years": {
+    "2022": 50,
+    "2023": 44,
+    "2024": 74,
+    "2025": 110,
+    "2026": 122
+  },
+  "schema_version": "lanes-flood-ner-cohort-v1",
+  "selected_connected_groups": 27,
+  "selected_source_articles": 132,
+  "selection": "stable source/record order; prefer entity-bearing records then solve exact grouped constraints",
+  "source_timestamps_retained": true,
+  "source_years": {
+    "2022": 13,
+    "2023": 18,
+    "2024": 31,
+    "2025": 40,
+    "2026": 30
+  },
+  "tokenizer": "lanes.xx.address-v2",
+  "tokenizer_sha256": "0855c702cf80e1c8f3be6145997c10e1fdfa4209b5274b4418a14e3b6e0b1948",
+  "total": 400,
+  "training_admitted": 0
+}

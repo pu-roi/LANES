@@ -1,0 +1,86 @@
+{
+  "schema_version": "lanes-v7-workflow-repair-verification-v1",
+  "ten_findings_covered": 10,
+  "fresh_regression_suite": {
+    "passed": 292,
+    "skipped": 1,
+    "passing_subtests": 110,
+    "elapsed_seconds": 31.351,
+    "new_repair_test_methods": 61,
+    "existing_test_methods_passed": 231,
+    "command": "& .\\backend\\.venv\\Scripts\\python.exe -B -m pytest --noconftest -p no:cacheprovider -q .\\backend\\tests\\test_flood_ner_research_capture.py .\\backend\\tests\\test_flood_ner_research_review.py .\\backend\\tests\\test_flood_ner_bounded_discovery.py .\\backend\\tests\\test_flood_ner_known_source_capture.py .\\backend\\tests\\test_flood_ner_history_inventory.py .\\backend\\tests\\test_flood_ner_repository_bytes.py .\\backend\\tests\\test_flood_ner_tooling.py .\\backend\\tests\\test_flood_ner_reference_selection.py .\\backend\\tests\\test_flood_ner_qualified_export.py",
+    "skip_reason": "existing Windows symlink creation unavailable",
+    "warnings": [
+      "existing spaCy/Click deprecation"
+    ],
+    "junit_sha256": "d0a2a15623069044b21d34c7dab5a1d04438aecfbeeef952dfcd8425df14ae69"
+  },
+  "fresh_focused_machine_receipt": {
+    "passed_test_methods": 61,
+    "passing_subtests": 62,
+    "failed": 0,
+    "skipped": 0,
+    "receipt_sha256": "0d3a6715b01f9534cd0d9196be0c3fd0cdb5eb664d81d12e7c5c3359d2606d3a",
+    "junit_sha256": "f29800247e1b81253b9d4191a4fb37cc0b5e46aef182316f7e6f41ce4ab89feb"
+  },
+  "private_curator": {
+    "complete_references": 139,
+    "entity_spans": 182,
+    "unknown_reference_holds": 62,
+    "guard_checks_passed": 18,
+    "guard_checks_failed": 0,
+    "predecessor_files_unchanged": 214,
+    "safe_pair_schema_and_bindings_verified": true
+  },
+  "protected_input_preservation": {
+    "protected_files": 7067,
+    "unchanged_files": 7067,
+    "missing_files": 0,
+    "changed_files": 0
+  },
+  "protected_input_manifest_sha256": "cb3371314a0df5596aaf3c37ebb6162b775f62f92e4a228b55ff1510fa0b93e4",
+  "curator_aggregate_sha256": "c2d5445abd921c1bb93fd7a9e123378e3211aad0d54f082b703aa2c0f10fce86",
+  "curator_verification_sha256": "4167e5cc357c7c1337a44ca0ceebf243dc4321a30f8597bc1ffe5db24e6b41de",
+  "implementation_and_test_hashes": {
+    "backend/training/flood_ner/research_capture.py": "6da4a7ac9370766ab08677ac498a07e4524dffff19cc38bca1d0857d1507b4fd",
+    "backend/training/flood_ner/research_review.py": "88f82c11fbb8490c03eed5de6e16d3994eb7d4ff8283c318e0e0c12848fa8204",
+    "backend/tests/test_flood_ner_research_capture.py": "de906168057b0ceda389fb2ea5a8ce137bada0be443eda826d3999bec9500a6e",
+    "backend/tests/test_flood_ner_research_review.py": "727c6fa45662b1940bf3f6cc3a9c1684dee198d2353e9af0bb9819f7ce14994a"
+  },
+  "readiness": {
+    "proposed_training": 345,
+    "proposed_validation": 60,
+    "conditional_test": 22,
+    "historical_conditional_baseline": 49,
+    "baseline_members_held": 27,
+    "v7_new_windows_held": 11,
+    "accounting_verified": false,
+    "history_verified": false,
+    "ready_for_admission": false,
+    "ready_for_training": false
+  },
+  "boundaries": {
+    "live_network_operations": 0,
+    "collection": false,
+    "budget_increase": false,
+    "admission": false,
+    "partition_freeze": false,
+    "test_sealing": false,
+    "real_dataset_export": false,
+    "model_inference": false,
+    "training": false,
+    "upload": false,
+    "commit": false,
+    "push": false,
+    "production_api_changes": false,
+    "dependency_changes": false,
+    "database_schema_changes": false
+  },
+  "notes": [
+    "No historical test count is presented as fresh.",
+    "The machine receipt binds executed constructed tests; it does not replace missing original acquisition receipts.",
+    "Conditional proposal counts are not an admission, freshness certificate or measured model improvement."
+  ],
+  "review_only_authorization_dispatch_rejected": true,
+  "final_preservation_receipt_sha256": "8f8c144bc7e4b95ab5d9a5b44553f1b6211279c5a00b5cf3d31dcc0fdcd0181a"
+}

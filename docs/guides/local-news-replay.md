@@ -1,6 +1,14 @@
 # Local News Intelligence replay
 
-> **Last Updated:** October 13, 2026, 9:50 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:23 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current local startup — October 21, 2026
+
+Use **Start LANES Dev Server** (now the default Ctrl+Shift+B task) for frontend **3000** and backend **8000**. Keep the existing encrypted `frontend/.env.local` and private `.env.keys`; the browser base remains `/api/v1`. No `frontend/.env.development.local` is required: Next's normal proxy already defaults to 8000. Normal backend configuration remains its encrypted `.env` and private key. Referenced test/MCP profiles are retained for their explicit tools.
+
+**Start LANES Local Plotting** is optional and no longer the default. Its ignored launcher supplies port 8003 through the launched frontend process environment and restores the caller's previous setting, rather than leaving a persistent frontend override. A currently running frontend with different saved records still causes the launcher to refuse the mismatch. This cleanup does not execute replay, switch database data, or migrate any database. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Older presentation/data-state sections below are historical checkpoints.
 
 ## Current presentation: explicitly authorized connected reconstruction
 
@@ -28,9 +36,9 @@ Run **Start LANES Local Plotting** (the selected local VS Code build task), or r
 powershell.exe -NoProfile -File data/news-replay/start-local-plotting.ps1
 ```
 
-The private launcher starts the existing guarded backend on **8003**, checks the three saved zone IDs, and starts the normal frontend on **3000**. The ignored `frontend/.env.development.local` sets `BACKEND_URL` to 8003 for subsequent frontend starts. The launcher reuses matching running processes; if another frontend uses different data, it reports the mismatch and requires that frontend to be stopped. It never silently selects a different port or copies records into cloud storage. Cold NLP imports can take over a minute; logs are under `data/news-replay/local-plotting-*.log`.
+The private launcher starts the existing guarded backend on **8003**, checks the three saved zone IDs, and starts the normal frontend on **3000**. The original persistent `frontend/.env.development.local` override has been superseded by the process-only launcher described above. The launcher reuses matching running processes; if another frontend uses different data, it reports the mismatch and requires that frontend to be stopped. It never silently selects a different port or copies records into cloud storage. Cold NLP imports can take over a minute; logs are under `data/news-replay/local-plotting-*.log`.
 
-The ordinary API paths and interface remain unchanged; no `news-simulation.local.json` mode is required. A cloud login token may need to be replaced by signing in to the local snapshot again. The original 8000 backend can remain running independently. To return to ordinary cloud-backed development, remove the ignored `frontend/.env.development.local`, restart the frontend, and select **Start LANES Dev Server** explicitly.
+The ordinary API paths and interface remain unchanged; no `news-simulation.local.json` mode is required. A cloud login token may need to be replaced by signing in to the local snapshot again. The original 8000 backend can remain running independently. To use ordinary development, stop the explicitly launched plotting frontend and select **Start LANES Dev Server**; no frontend override file is needed.
 
 This profile is machine-local: the database, private dotenv configuration, launch helpers and browser captures are ignored, and are not transferred by a Git push. The task requires this existing local setup. Backend and frontend-proxied authenticated history searches find all three events; both news readers return five locations, both public-zone readers return the three zones Active, and desktop/mobile History lists show Events 58/59/60. Repeated startup reuses the matching processes without creating duplicate zones. No application source, schema, source timestamps, expiry settings or shared cloud records changed.
 

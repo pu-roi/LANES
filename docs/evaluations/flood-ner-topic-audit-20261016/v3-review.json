@@ -1,0 +1,147 @@
+{
+  "alignment_rerun": false,
+  "candidate_label_spans": {
+    "BARANGAY": 22,
+    "CITY": 50,
+    "LANDMARK": 13,
+    "PROVINCE": 45,
+    "ROAD": 29
+  },
+  "candidate_languages": {
+    "english": 96,
+    "taglish": 83
+  },
+  "candidate_negatives": 101,
+  "candidate_positives": 78,
+  "candidate_theme_language_coverage": [
+    {
+      "language": "english",
+      "negative": 6,
+      "positive": 15,
+      "theme": "compound-crossing-roads"
+    },
+    {
+      "language": "taglish",
+      "negative": 2,
+      "positive": 4,
+      "theme": "compound-crossing-roads"
+    },
+    {
+      "language": "english",
+      "negative": 7,
+      "positive": 7,
+      "theme": "facilities-institutions"
+    },
+    {
+      "language": "taglish",
+      "negative": 10,
+      "positive": 4,
+      "theme": "facilities-institutions"
+    },
+    {
+      "language": "english",
+      "negative": 11,
+      "positive": 12,
+      "theme": "geographic-type-ambiguity"
+    },
+    {
+      "language": "taglish",
+      "negative": 7,
+      "positive": 8,
+      "theme": "geographic-type-ambiguity"
+    },
+    {
+      "language": "english",
+      "positive": 5,
+      "theme": "locality-designators"
+    },
+    {
+      "language": "taglish",
+      "positive": 9,
+      "theme": "locality-designators"
+    },
+    {
+      "language": "english",
+      "negative": 18,
+      "theme": "misleading-names-time-common-words"
+    },
+    {
+      "language": "taglish",
+      "negative": 21,
+      "theme": "misleading-names-time-common-words"
+    },
+    {
+      "language": "english",
+      "negative": 5,
+      "positive": 5,
+      "theme": "project-asset-names"
+    },
+    {
+      "language": "taglish",
+      "negative": 7,
+      "positive": 6,
+      "theme": "project-asset-names"
+    },
+    {
+      "language": "english",
+      "negative": 2,
+      "theme": "shared-identifiers"
+    },
+    {
+      "language": "taglish",
+      "negative": 1,
+      "positive": 1,
+      "theme": "shared-identifiers"
+    },
+    {
+      "language": "english",
+      "negative": 2,
+      "positive": 1,
+      "theme": "short-codes"
+    },
+    {
+      "language": "taglish",
+      "negative": 2,
+      "positive": 1,
+      "theme": "short-codes"
+    }
+  ],
+  "candidates": 179,
+  "capture_inventory": {
+    "captured_pending_full_topic_origin_reference_review": 91,
+    "excluded_or_hold": 19,
+    "flood_topic_source_read_for_draft": 49
+  },
+  "development_manifest_files_verified": 565,
+  "development_manifest_matches_published_binding": true,
+  "dotenv_unchanged": true,
+  "draft_articles": 49,
+  "draft_spans": 359,
+  "drafts": 244,
+  "fresh_test_safe_aggregate": {
+    "admitted_records": 0,
+    "prospective_records": 56,
+    "ready": false,
+    "sealed": false
+  },
+  "held_record_reason_counts_overlap": {
+    "frozen tokenizer strict alignment failed; preserve exact span and hold without tokenizer/source changes": 1,
+    "language depends on sparse/borrowed English or attribution; confirm operational Taglish rather than relying on proper names or English attribution alone": 7,
+    "mixed-origin full working-copy/source-use scope unresolved": 6,
+    "plural/shared designator boundary or antecedent recording needs convention/completeness review; retain raw draft without scoring": 4,
+    "source position/name alone may not establish geographic or road/facility type; obtain explicit occurrence-level evidence before definitive reference": 49
+  },
+  "held_unscored": 65,
+  "heldout_private_texts_or_labels_inspected": false,
+  "local_area_candidate_spans": 0,
+  "new_annotations": 0,
+  "newly_admitted_records": 0,
+  "old_input_files_preserved": 460,
+  "records_replaced": 0,
+  "saved_alignment_errors": 1,
+  "schema_version": "lanes-v3-development-relevance-review-v1",
+  "selected_model_files_verified": 66,
+  "selected_models_hash_verified": 6,
+  "source_body_reviewed_priority_sources": 6,
+  "training_inference_dependency_or_schema_changes": false
+}

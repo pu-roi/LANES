@@ -19,6 +19,7 @@ htmlcov/
 # Backups & test exports
 backups/
 exports/
+training/flood_ner/artifacts/
 data/
 
 # Git metadata

@@ -1,0 +1,16 @@
+{
+  "files": {
+    "README.md": "ae497486e8f0961842acf89e7a2b4c8a5777e30dda816a100dd1a4abd7c74585",
+    "article_exceptions.json": "5663e6636f22e94b8f0c93aaaa23509d1d434b81c0771ca5eb717f75304bb2d8",
+    "article_review_register.json": "c3d891dbe7554898634b3e46236639c54c110e39593874142ace8eb4207aadbc",
+    "audit.json": "b08bca5c6ea2426158abcf38063e4199e54d99b001479ccd2d37c686251abf86",
+    "clause_register.json": "a291c36447c44ece797de5dfa2e99b72197da3cc0a149807e66b118b25995444",
+    "decision-summary.md": "6d21f0ae68540e37d18bf7c11fcdd7f034fbf38a4e8b851393092a7fca44a18e",
+    "evidence_register.json": "8889d9420b70807af344fc7bc592edd7e11f15ac7689bac2ba1bd6bf0a7909bc",
+    "methods-notes.md": "a87289cb3aeeea8671a7e2e3def6d3a853e2e25301928b7d02bde010c12c1e47",
+    "publisher_assessments.json": "6c29c9d742078f05d3e97f636fb6877697faf059025401b638ef545f97f1ca14",
+    "review_bindings.json": "b49a0c92e154da5c150415ab860284f8859c99711c63aedd7ea90f6b8b742c9e",
+    "status.json": "722aa8fa58a4a013f903ee5de8e454aad5233d6518320fadf4073bd7aeb79dc5",
+    "unchanged_nonacademic_outcomes.json": "f540d40df2906ebad07a76cfb67c464d51b759a9cea3766c8c0ac729554aba3f"
+  }
+}

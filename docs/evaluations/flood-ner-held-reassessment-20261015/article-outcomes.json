@@ -1,0 +1,3160 @@
+[
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1280,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1142,
+    "selected_fraction": 0.892188,
+    "source_id": "ABS-BROWSER-abs-2022",
+    "title": "Some Malabon streets flooded due to Karding, high tide",
+    "url": "https://www.abs-cbn.com/news/09/26/22/some-malabon-streets-flooded-due-to-karding-high-tide"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2371,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 509,
+    "selected_fraction": 0.214677,
+    "source_id": "ABS-BROWSER-abs-2023",
+    "title": "22 areas in Bulacan province flooded; thousands flee",
+    "url": "https://www.abs-cbn.com/news/07/31/23/22-areas-in-bulacan-province-flooded-thousands-flee"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1816,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 6,
+    "selected_characters_union": 1609,
+    "selected_fraction": 0.886013,
+    "source_id": "ABS-BROWSER-abs-2024",
+    "title": "LIST: Flooded roads on Sept. 3 due to bad weather",
+    "url": "https://www.abs-cbn.com/news/2024/9/3/list-flooded-areas-due-to-sept-3-bad-weather-1223"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1019,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 980,
+    "selected_fraction": 0.961727,
+    "source_id": "ABS-BROWSER-abs-2025",
+    "title": "Floods swamp several roads in Metro Manila amid heavy downpour",
+    "url": "https://www.abs-cbn.com/news/weather-traffic/2025/6/21/floods-swamp-several-roads-in-metro-manila-amid-heavy-downpour-1835"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1965,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 3,
+    "selected_characters_union": 1120,
+    "selected_fraction": 0.569975,
+    "source_id": "GMA-20220730-839934",
+    "title": "Ester-enhanced Habagat rain floods several Metro Manila areas",
+    "url": "https://www.gmanetwork.com/news/topstories/world/839934/ester-enhanced-habagat-rain-floods-several-metro-manila-areas/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2859,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 5,
+    "selected_characters_union": 1555,
+    "selected_fraction": 0.543896,
+    "source_id": "GMA-20230831-880633",
+    "title": "Floods hit Metro Manila, other areas amid heavy rains",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/880633/flood-hits-metro-manila-other-areas-amid-heavy-rains/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3276,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 477,
+    "selected_fraction": 0.145604,
+    "source_id": "GMA-20240902-918977",
+    "title": "List of flooded areas in NCR due to Enteng",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 6560,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 8,
+    "selected_characters_union": 2082,
+    "selected_fraction": 0.317378,
+    "source_id": "GMA-20250722-953360",
+    "title": "Heavy rains from Habagat trigger floods in parts of Metro Manila",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/953360/heavy-rains-from-habagat-trigger-floods-in-parts-of-metro-manila/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 6176,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 8,
+    "selected_characters_union": 2056,
+    "selected_fraction": 0.332902,
+    "source_id": "GMA-20250722-953419",
+    "title": "MMDA list of flooded areas as of Tuesday, 4:40 p.m.",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/953419/mmda-list-of-flooded-areas-as-of-tuesday-4-40-p-m/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2909,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 5,
+    "selected_characters_union": 1400,
+    "selected_fraction": 0.481265,
+    "source_id": "GMA-20260710-994434",
+    "title": "LIST: Flooded areas in Metro Manila on July 10, 2026",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/994434/list-flooded-areas-in-metro-manila-on-july-10-2026/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2046,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 326,
+    "selected_fraction": 0.159335,
+    "source_id": "GMA-20260808-997803",
+    "title": "LIST: Flooded areas in Metro Manila due to rains from Habagat (Aug. 8, 2026)",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/997803/list-flooded-areas-in-metro-manila-due-to-rains-from-habagat-aug-8-2026/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 10001,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 8,
+    "selected_characters_union": 2361,
+    "selected_fraction": 0.236076,
+    "source_id": "GMA-20260817-998778",
+    "title": "FLOOD ALERT: Flooded roads in Metro Manila on Monday, August 17, 2026",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 8829,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 8,
+    "selected_characters_union": 2494,
+    "selected_fraction": 0.282478,
+    "source_id": "GMA-997943",
+    "title": "Thousands evacuate as Habagat rains cause flooding in NCR, other regions",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2668,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 701,
+    "selected_fraction": 0.262744,
+    "source_id": "news-017e86f44194f17e",
+    "title": "WATCH: Some provinces hit by floods due to Crising",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/952989/crising-flooding-regions/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 4690,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 1316,
+    "selected_fraction": 0.280597,
+    "source_id": "news-026d02c37bac6f5c",
+    "title": "Parts of Metro Manila flooded after heavy to intense rains",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/957494/parts-of-metro-manila-flooded-after-heavy-to-intense-rains/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2008,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1031,
+    "selected_fraction": 0.513446,
+    "source_id": "news-0628cdb524fef7d1",
+    "title": "Pasko sa CamSur: Problema sa Andaya Highway, road slips, landslides, baha sumalubong",
+    "url": "https://www.abs-cbn.com/news/regions/2024/12/25/pasko-sa-camsur-problema-sa-andaya-highway-road-slips-landslides-baha-sumalubong-1104"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 962,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 223,
+    "selected_fraction": 0.231809,
+    "source_id": "news-0685a665af348e59",
+    "title": "Lalawigan ng Cagayan, hinagupit din ni 'Ulysses'; 4 na ang patay",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764061/lalawigan-ng-cagayan-hinagupit-din-ni-ulysses-4-na-ang-patay/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2307,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 6,
+    "selected_characters_union": 1471,
+    "selected_fraction": 0.637625,
+    "source_id": "news-0a7057762450f139",
+    "title": "Matinding baha naranasan sa ilang parte ng Metro Manila",
+    "url": "https://www.abs-cbn.com/news/06/25/19/matinding-baha-naranasan-sa-ilang-parte-ng-metro-manila"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3059,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 582,
+    "selected_fraction": 0.190258,
+    "source_id": "news-0b427220c91c3b1e",
+    "title": "Heavy rains from Habagat cause floods in Metro Manila",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/1000340/heavy-rains-from-habagat-cause-floods-in-metro-manila/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 3089,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 7,
+    "selected_characters_union": 1989,
+    "selected_fraction": 0.643898,
+    "source_id": "news-0ce6fa8811d40df2",
+    "title": "ICI inspects flood control projects in Quezon City",
+    "url": "https://www.abs-cbn.com/news/nation/2025/9/18/ici-inspects-flood-control-projects-in-quezon-city-2254"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 811,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 767,
+    "selected_fraction": 0.945746,
+    "source_id": "news-1367e412bf0b8a9f",
+    "title": "Ilang barangay sa Santa Maria, Bulacan binaha",
+    "url": "https://www.abs-cbn.com/news/07/26/19/ilang-barangay-sa-santa-maria-bulacan-binaha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1008,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 741,
+    "selected_fraction": 0.735119,
+    "source_id": "news-14969870bff445fe",
+    "title": "LOOK: Habagat rains trigger floods across Luzon",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/1000224/look-habagat-rains-trigger-floods-across-luzon/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 568,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 202,
+    "selected_fraction": 0.355634,
+    "source_id": "news-1626080d04706384",
+    "title": "39 magsasaka, naipit sa baha sa Santa Ana, Cagayan",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/768014/39-magsasaka-naipit-sa-baha-sa-santa-ana-cagayan/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2356,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 2348,
+    "selected_fraction": 0.996604,
+    "source_id": "news-1856c6263451d088",
+    "title": "EDITORYAL — Baha dulot ng Dolomite Beach",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1028,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 239,
+    "selected_fraction": 0.23249,
+    "source_id": "news-1885abddb1dc6962",
+    "title": "LIST: Flooded roads in Metro Manila on Friday morning",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/998522/list-flooded-roads-in-metro-manila-on-friday-morning/story/?order=3&top_picks="
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 736,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 719,
+    "selected_fraction": 0.976902,
+    "source_id": "news-1de5b547ff102993",
+    "title": "Ilang bahagi ng Cebu, binaha dahil sa walang tigil na pag-ulan",
+    "url": "https://www.abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2100,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 926,
+    "selected_fraction": 0.440952,
+    "source_id": "news-1f5f90c1e3b7f312",
+    "title": "MMDA announces traffic management schemes for Undas, Christmas season",
+    "url": "https://www.abs-cbn.com/news/10/20/23/mmda-announces-traffic-schemes-for-undas-christmas-season"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2429,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1421,
+    "selected_fraction": 0.585014,
+    "source_id": "news-20746ac22823c8db",
+    "title": "MGB recommends: Vacate site of landslide in Barangay Busay",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3446,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 244,
+    "selected_fraction": 0.070807,
+    "source_id": "news-20f70679bcbbf1b1",
+    "title": "Floods hit low-lying areas in Bataan, Tarlac, Nueva Ecija",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/661338/floods-hit-low-lying-areas-in-bataan-tarlac-nueva-ecija/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 894,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 293,
+    "selected_fraction": 0.32774,
+    "source_id": "news-24c601183ae1726d",
+    "title": "Ilang bayan sa Pampanga lubog pa rin sa baha kahit wala nang ulan",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764620/ilang-bayan-sa-pampanga-lubog-pa-rin-sa-baha-kahit-wala-nang-ulan/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 649,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 272,
+    "selected_fraction": 0.419106,
+    "source_id": "news-2a0c1e1321fa4a42",
+    "title": "Residente sa Marikina, nasunugan na, nasalanta pa ng baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/764273/residente-sa-marikina-nasunugan-na-nasalanta-pa-ng-baha/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1440,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 1423,
+    "selected_fraction": 0.988194,
+    "source_id": "news-2a1a4e2381f63ab0",
+    "title": "CDO mayor blames clogged drainage system for massive flood",
+    "url": "https://www.abs-cbn.com/news/01/18/17/cdo-mayor-blames-clogged-drainage-system-for-massive-flood"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1305,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 1212,
+    "selected_fraction": 0.928736,
+    "source_id": "news-2a8473b3d610bb96",
+    "title": "Baha at landslide, naranasan sa Davao City",
+    "url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1419,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 328,
+    "selected_fraction": 0.231149,
+    "source_id": "news-31e4dd5f1f7ca430",
+    "title": "Leptospirosis makukuha rin sa talsik ng kontaminadong tubig sa mata, bibig ng tao",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/659180/leptospirosis-makukuha-rin-sa-talsik-ng-kontaminadong-tubig-sa-mata-bibig-ng-tao/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1493,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 547,
+    "selected_fraction": 0.366376,
+    "source_id": "news-333a405b517ced17",
+    "title": "Ilang kalsada sa Makati, binaha",
+    "url": "https://www.abs-cbn.com/news/2024/9/15/ilang-kalsada-sa-makati-binaha-750"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "reuters-header-credit"
+    ],
+    "complete_article_characters_retained": 2290,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "possible_wire_origin"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 1459,
+    "selected_fraction": 0.637118,
+    "source_id": "news-33a273b337d533e8",
+    "title": "Home sweet home: Filipinos stay put even when the sea invades",
+    "url": "https://www.abs-cbn.com/news/07/24/17/home-sweet-home-filipinos-stay-put-even-when-the-sea-invades"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1958,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 238,
+    "selected_fraction": 0.121553,
+    "source_id": "news-35871c2798fc135f",
+    "title": "Pagbaha sa MacArthur Highway sa Marilao, Bulacan, lalo pang lumalala",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/699336/pagbaha-sa-macarthur-highway-sa-marilao-bulacan-lalo-pang-lumalala/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "afp-caption-embedded-credit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2837,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "third_party_photo_caption"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1005,
+    "selected_fraction": 0.354247,
+    "source_id": "news-36e7cdb0e61c5b61",
+    "title": "DPWH to implement shelved 2017 flood control masterplan in storm-ravaged Cebu",
+    "url": "https://www.abs-cbn.com/news/regions/2025/11/11/dpwh-to-implement-shelved-2017-flood-control-masterplan-in-storm-ravaged-cebu-1823"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 865,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 696,
+    "selected_fraction": 0.804624,
+    "source_id": "news-3bc1ec8437f23801",
+    "title": "Ilang lugar sa Davao City binaha dahil sa thunderstorms",
+    "url": "https://www.abs-cbn.com/news/04/27/21/ilang-lugar-sa-davao-city-binaha-dahil-sa-thunderstorms"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1111,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 1111,
+    "selected_fraction": 1.0,
+    "source_id": "news-3f17e39b80d92846",
+    "title": "5 villages in Pampanga flooded after Pepito",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 844,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 761,
+    "selected_fraction": 0.901659,
+    "source_id": "news-3fe9a00d085db8d9",
+    "title": "Video: Bahang-baha sa Taft Avenue dahil sa habagat",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/metro/2025/07/22/2459860/video-bahang-baha-sa-taft-avenue-dahil-sa-habagat"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1346,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 195,
+    "selected_fraction": 0.144874,
+    "source_id": "news-404b64185f60c55c",
+    "title": "TINGNAN: Baha sa Metro Manila dulot ng biglang pagbuhos ng malakas na ulan",
+    "url": "https://www.abs-cbn.com/news/08/04/18/tingnan-baha-sa-metro-manila-dulot-ng-biglang-pagbuhos-ng-malakas-na-ulan"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 4031,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 135,
+    "selected_fraction": 0.03349,
+    "source_id": "news-463c035c37dcd824",
+    "title": "Heavy rains cause floods, traffic in NCR",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/657731/heavy-rains-cause-floods-traffic-in-ncr/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1333,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 192,
+    "selected_fraction": 0.144036,
+    "source_id": "news-4649d2f1a4604953",
+    "title": "Bahagi ng Davao City binaha dahil sa malakas na ulan; search, rescue ops isinagawa",
+    "url": "https://www.abs-cbn.com/news/10/26/21/parte-ng-davao-city-binaha-dahil-sa-malakas-na-ulan"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2721,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 4,
+    "selected_characters_union": 1343,
+    "selected_fraction": 0.493569,
+    "source_id": "news-492bc6234d82aecb",
+    "title": "Quezon Province, binaha at nagka-landslide dahil kay Ulysses",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/763793/quezon-province-binaha-at-nagka-landslide-dahil-kay-ulysses/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1179,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 1179,
+    "selected_fraction": 1.0,
+    "source_id": "news-496862ad9cd359b9",
+    "title": "Ilang kalsada sa Metro Manila, binaha matapos ang malakas na pag-ulan",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/989301/baha-metro-manila-malakas-ulan/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1543,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1032,
+    "selected_fraction": 0.668827,
+    "source_id": "news-4a13b0eb4b607e5f",
+    "title": "Isabela, Cagayan on landslide, flood watch as Ramon nears",
+    "url": "https://www.abs-cbn.com/news/11/15/19/isabela-cagayan-on-landslide-flood-watch-as-ramon-nears"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1621,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 1508,
+    "selected_fraction": 0.93029,
+    "source_id": "news-4fe54a5e3ccb09ca",
+    "title": "Ilang lugar sa Visayas, Mindanao binaha dahil sa masamang panahon",
+    "url": "https://www.abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2177,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 931,
+    "selected_fraction": 0.427653,
+    "source_id": "news-5100fc1563858052",
+    "title": "Metro Manila residents cope with floods due to Habagat enhanced by Carina",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 894,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 877,
+    "selected_fraction": 0.980984,
+    "source_id": "news-5a83707ac0c552fe",
+    "title": "PANOORIN: Baha sa ilang kalsada sa Malabon, Valenzuela",
+    "url": "https://www.abs-cbn.com/news/2024/9/3/panoorin-baha-sa-ilang-kalsada-sa-malabon-valenzuela-723"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1705,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 805,
+    "selected_fraction": 0.472141,
+    "source_id": "news-5c8cbed15a462665",
+    "title": "Thunderstorms flood parts of Quezon City, Manila",
+    "url": "https://www.abs-cbn.com/news/05/30/17/thunderstorms-flood-parts-of-quezon-city-manila"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 849,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 308,
+    "selected_fraction": 0.36278,
+    "source_id": "news-5e1e9bda96c4109d",
+    "title": "Mall sa Quezon City, pinasok ng baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/759628/mall-sa-quezon-city-pinasok-ng-baha/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2061,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 2061,
+    "selected_fraction": 1.0,
+    "source_id": "news-5ec4d4b9bb6c8593",
+    "title": "Motoristang sumunod sa Waze, lumubog ang SUV sa baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/umg/656071/motoristang-sumunod-sa-waze-lumubog-ang-suv-sa-baha/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 849,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 233,
+    "selected_fraction": 0.274441,
+    "source_id": "news-5ede135165754c54",
+    "title": "Mga puntod na nalinis na, nalubog sa baha nang umulan sa Koronadal City",
+    "url": "https://www.gmanetwork.com/news/balitambayan/content/672688/mga-puntod-na-nalinis-na-nalubog-sa-baha-nang-umulan-sa-koronadal-city/story"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1348,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1086,
+    "selected_fraction": 0.805638,
+    "source_id": "news-6061d9bc1dc4efa4",
+    "title": "'Nika' forecast to leave PAR; brewing storm likely to strengthen in 48 hours",
+    "url": "https://www.abs-cbn.com/news/10/12/20/nika-forecast-to-leave-par-brewing-storm-likely-to-strengthen-in-48-hours"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3654,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 6,
+    "selected_characters_union": 1946,
+    "selected_fraction": 0.532567,
+    "source_id": "news-61bde888c0935e15",
+    "title": "Enteng continues to flood parts of Metro Manila",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/919102/enteng-continues-to-flood-parts-of-metro-manila/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1945,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 1112,
+    "selected_fraction": 0.571722,
+    "source_id": "news-631bd1e58d8b1964",
+    "title": "Ilang lugar sa Malabon, binaha dahil sa pag-apaw ng tubig mula sa dike",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/660572/ilang-lugar-sa-malabon-binaha-dahil-sa-pag-apaw-ng-tubig-mula-sa-dike/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2985,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 5,
+    "selected_characters_union": 1498,
+    "selected_fraction": 0.501843,
+    "source_id": "news-63bce4e354aec337",
+    "title": "Habagat causes floods, landslides in several areas",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/998072/habagat-causes-floods-landslides-in-several-areas/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2420,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 7,
+    "selected_characters_union": 2408,
+    "selected_fraction": 0.995041,
+    "source_id": "news-641a924608dd03ab",
+    "title": "EDITORYAL - Illegal logging ang dahilan ng baha at pagguho ng lupa",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1115,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 1115,
+    "selected_fraction": 1.0,
+    "source_id": "news-645827b407f23d1d",
+    "title": "Students in Opol, Misamis Oriental at risk as they pass through dilapidated bridge everyday",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/696896/students-in-opol-misamis-oriental-at-risk-as-they-pass-through-dilapidated-bridge-everyday/story/"
+  },
+  {
+    "clause_ids": [
+      "afp-platform-ai-reservation",
+      "afp-platform-scope",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "gma-educational-copy",
+      "gma-wire-credit",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 3718,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "explicit_wire_credit"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "propose_narrow_private_exception_basis",
+    "sample_count": 3,
+    "selected_characters_union": 1022,
+    "selected_fraction": 0.274879,
+    "source_id": "news-651c21937c60bd33",
+    "title": "Death toll from Philippine flash floods rises to 67 &mdash; official tally",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/849654/death-toll-from-philippine-flash-floods-rises-to-67-official-tally/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2697,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 308,
+    "selected_fraction": 0.114201,
+    "source_id": "news-69f0476aa248cef6",
+    "title": "1,000 families affected by Tino in Talisay, Cebu receive aid from GMA Kapuso Foundation",
+    "url": "https://www.gmanetwork.com/news/lifestyle/content/965175/1-000-families-affected-by-tino-in-talisay-cebu-receive-aid-from-gma-kapuso-foundation/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3677,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 832,
+    "selected_fraction": 0.226271,
+    "source_id": "news-6b591d0fbc9779c5",
+    "title": "Marcos: Relief efforts struggle in Bicol due to floods even after Kristine",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/925009/marcos-relief-efforts-struggle-in-bicol-region-due-to-floods-even-after-kristine/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2023,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 1257,
+    "selected_fraction": 0.621354,
+    "source_id": "news-6caf0c129b6d7069",
+    "title": "Floods hound Camanava due to damaged gate, inadequate pumps",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/954052/camanava-still-flooded-due-to-damaged-gate-inadequate-pumps/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1894,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 242,
+    "selected_fraction": 0.127772,
+    "source_id": "news-6ced90b6ba8eac5a",
+    "title": "11-anyos na lalaki, tinangay ng malakas na agos ng baha at nalunod sa creek sa Valenzuela",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/1000867/11-anyos-na-lalaki-tinangay-ng-malakas-na-agos-ng-baha-at-nalunod-sa-creek-sa-valenzuela/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2486,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 454,
+    "selected_fraction": 0.182623,
+    "source_id": "news-70c9bfdac67f0c7d",
+    "title": "TD Maring floods Metro Manila areas, strands commuters",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/625603/td-maring-floods-metro-manila-areas-strands-commuters/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1400,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1313,
+    "selected_fraction": 0.937857,
+    "source_id": "news-72ae1d755bd1d810",
+    "title": "Daan-daang residente binaha matapos umapaw ang ilog sa Davao",
+    "url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3871,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 492,
+    "selected_fraction": 0.127099,
+    "source_id": "news-77b4d775acdbd915",
+    "title": "Over P1B dike, other flood control projects in Oriental Mindoro missing &mdash; Lacson",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/956608/over-p1b-dike-other-flood-control-projects-in-oriental-mindoro-missing-lacson/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 645,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 227,
+    "selected_fraction": 0.351938,
+    "source_id": "news-7885d5aaecfdc9ff",
+    "title": "4-anyos na babae, patay nang mabagsakan ng puno sa gitna ng hagupit ni 'Egay' sa Palawan",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/876996/4-anyos-na-babae-patay-nang-mabagsakan-ng-puno-sa-gitna-ng-hagupit-ni-egay-sa-palawan/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2092,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 3,
+    "selected_characters_union": 973,
+    "selected_fraction": 0.465105,
+    "source_id": "news-79addb1dcc55db8b",
+    "title": "Floods hit Bicol, Visayas areas due to Paeng",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/849559/floods-hit-bicol-visayas-areas-due-to-paeng/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2258,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1494,
+    "selected_fraction": 0.661647,
+    "source_id": "news-7a824863d687424a",
+    "title": "Pera sa bulsa, bangkay sa baha",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2834,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 6,
+    "selected_characters_union": 1432,
+    "selected_fraction": 0.505293,
+    "source_id": "news-7abee919f934ec27",
+    "title": "Baha sa ilang bayan sa Bulacan, humupa na; 2 dam nagpakawala ng tubig",
+    "url": "https://www.abs-cbn.com/news/09/08/21/baha-sa-ilang-bayan-sa-bulacan-humupa-na"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1826,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 880,
+    "selected_fraction": 0.481928,
+    "source_id": "news-7e3cff6275b06366",
+    "title": "LIST: Flooded roads in Metro Manila amid Habagat rains",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/958113/list-flooded-roads-in-metro-manila-amid-habagat-rains/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1300,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 404,
+    "selected_fraction": 0.310769,
+    "source_id": "news-864b3cd12a4d0cf5",
+    "title": "Overnight rains flood parts of Manila and Bulacan",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/656553/overnight-rains-flood-parts-of-manila-and-bulacan/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1733,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 445,
+    "selected_fraction": 0.25678,
+    "source_id": "news-87aca03905e85f15",
+    "title": "Ilang lugar sa Hagonoy, Bulacan, nananatiling lubog sa baha kahit umaraw na",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/1000755/ilang-lugar-sa-hagonoy-bulacan-nananatiling-lubog-sa-baha-kahit-umaraw-na/story"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1077,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 711,
+    "selected_fraction": 0.660167,
+    "source_id": "news-8cec5ab4050f478f",
+    "title": "Ilang bayan sa Pampanga, binaha dahil sa malakas na pag-ulan",
+    "url": "https://www.abs-cbn.com/news/07/31/20/ilang-bayan-sa-pampanga-binaha-dahil-sa-malakas-na-pag-ulan"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1534,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 949,
+    "selected_fraction": 0.618644,
+    "source_id": "news-8d7467f1c4782199",
+    "title": "Ilang kalsada sa Malabon, lubog sa baha dahil sa sunod-sunod na pag-ulan",
+    "url": "https://www.abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1659,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 579,
+    "selected_fraction": 0.349005,
+    "source_id": "news-8e266121254eaa21",
+    "title": "Heavy rains from Habagat cause flooding in parts of the country",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/881001/heavy-rains-from-habagat-cause-flooding-in-parts-of-the-country/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 490,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 191,
+    "selected_fraction": 0.389796,
+    "source_id": "news-8e93fc9efc698e68",
+    "title": "WATCH: Floods hit parts of Quezon City, Rizal",
+    "url": "https://www.abs-cbn.com/news/08/12/18/watch-floods-hit-parts-of-quezon-city-rizal"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2279,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 890,
+    "selected_fraction": 0.390522,
+    "source_id": "news-905a1e1ec31455e0",
+    "title": "Spillway not damaged, but demolished",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1847,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1145,
+    "selected_fraction": 0.619924,
+    "source_id": "news-91ded5b32f42f85c",
+    "title": "PH, South Korea sign $3B development assistance loan package",
+    "url": "https://www.abs-cbn.com/news/12/22/22/ph-south-korea-sign-3b-development-aid-loan-package"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 720,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 703,
+    "selected_fraction": 0.976389,
+    "source_id": "news-91ec78444194763f",
+    "title": "Datu Montawal in Maguindanao now under state of calamity",
+    "url": "https://www.abs-cbn.com/news/01/21/17/datu-montawal-in-maguindanao-now-under-state-of-calamity"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2400,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1412,
+    "selected_fraction": 0.588333,
+    "source_id": "news-92a232adacae5fdd",
+    "title": "EDITORYAL — Ipatupad pagbabawal na mag-swimming sa baha",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/03/2532481/editoryal-ipatupad-pagbabawal-na-mag-swimming-sa-baha/amp/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3274,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 5,
+    "selected_characters_union": 1613,
+    "selected_fraction": 0.49267,
+    "source_id": "news-9449e3528861ff03",
+    "title": "Parts of Metro Manila flooded as enhanced Habagat brought relentless rains",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/999189/parts-of-metro-manila-flooded-as-enhanced-habagat-brought-relentless-rains/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3145,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 3145,
+    "selected_fraction": 1.0,
+    "source_id": "news-945f46c723917dec",
+    "title": "Habagat: Bucket used to safely rescue child in Cavite; sinkhole appears in Tarlac",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1019,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 374,
+    "selected_fraction": 0.367026,
+    "source_id": "news-959dc7f3e42305a4",
+    "title": "Halos 4 oras na ulan, nagdulot ng baha sa Bacolod City",
+    "url": "https://www.abs-cbn.com/news/regions/2025/7/12/halos-4-oras-na-ulan-nagdulot-ng-baha-sa-bacolod-city-0927"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2542,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 6,
+    "selected_characters_union": 1998,
+    "selected_fraction": 0.785995,
+    "source_id": "news-95b46b8ad154130c",
+    "title": "Drainage project lacks mayor’s signature",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 616,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 237,
+    "selected_fraction": 0.38474,
+    "source_id": "news-96c272681ad9b4a8",
+    "title": "Bata, sa bangka na nag-aaral dahil sa baha sa Quezon",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760273/bata-sa-bangka-na-nag-aaral-dahil-sa-baha-sa-quezon/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3064,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 379,
+    "selected_fraction": 0.123695,
+    "source_id": "news-9b619fe2bf31c2b3",
+    "title": "Urduja affects nearly 160,000 people in Eastern Visayas, Caraga ",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/636781/urduja-affects-nearly-160-000-people-in-eastern-visayas-caraga/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1133,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 559,
+    "selected_fraction": 0.49338,
+    "source_id": "news-9c7551478f37e243",
+    "title": "Mga palayan sa Cotabato at mga bahay sa Ilocos Norte, binaha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/751613/mga-palayan-sa-cotabato-at-mga-bahay-sa-ilocos-norte-binaha/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1746,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 977,
+    "selected_fraction": 0.559565,
+    "source_id": "news-9d3da490cc412ad3",
+    "title": "Ilang parte ng Metro Manila binaha sa pagsalubong sa long weekend",
+    "url": "https://www.abs-cbn.com/news/08/24/19/ilang-parte-ng-metro-manila-binaha-sa-pagsalubong-sa-long-weekend"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1671,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 289,
+    "selected_fraction": 0.17295,
+    "source_id": "news-9f85f3f1fa38fa8c",
+    "title": "Mga bahay binaha sa Sta. Mesa dahil sa sirang tubo",
+    "url": "https://www.abs-cbn.com/news/08/01/20/mga-bahay-binaha-sa-sta-mesa-dahil-sa-sirang-tubo"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 680,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 680,
+    "selected_fraction": 1.0,
+    "source_id": "news-a07b77e950bca4fa",
+    "title": "Bahagi ng Maharlika Highway sa Lopez, Quezon lubog sa baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760146/bahagi-ng-maharlika-highway-sa-lopez-quezon-lubog-sa-baha/story"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 978,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 248,
+    "selected_fraction": 0.253579,
+    "source_id": "news-a38a1551c552a86b",
+    "title": "Ilang barangay sa Lapu-Lapu City binaha",
+    "url": "https://www.abs-cbn.com/news/09/25/17/ilang-barangay-sa-lapu-lapu-city-binaha"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 967,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 712,
+    "selected_fraction": 0.736298,
+    "source_id": "news-a3945a9d77fef99a",
+    "title": "DPWH ikakasa dagdag proyekto vs baha sa Maynila",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/metro/2026/07/31/2545995/dpwh-ikakasa-dagdag-proyekto-vs-baha-sa-maynila"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 541,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 453,
+    "selected_fraction": 0.837338,
+    "source_id": "news-a4d477ae7b54b451",
+    "title": "LOOK: Auring soaks school materials in Toledo City",
+    "url": "https://www.abs-cbn.com/news/01/10/17/look-auring-soaks-school-materials-in-toledo-city"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1793,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 5,
+    "selected_characters_union": 1240,
+    "selected_fraction": 0.691578,
+    "source_id": "news-a75484806c378f88",
+    "title": "Families rescued from floods in Davao Region",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/896016/families-rescued-from-floods-in-davao-region/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2904,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 729,
+    "selected_fraction": 0.251033,
+    "source_id": "news-a78225d936fe4756",
+    "title": "Ilang mga residente ng Rodriguez at San Mateo sa Rizal na stranded sa baha, nagpapasaklolo",
+    "url": "https://www.abs-cbn.com/news/11/12/20/ilang-mga-residente-ng-rodriguez-at-san-mateo-sa-rizal-na-stranded-sa-baha-nagpapasaklolo"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2451,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 1360,
+    "selected_fraction": 0.554876,
+    "source_id": "news-aa6269dd60812ee5",
+    "title": "'Walang pasabi': Marikina mayor sinisi ang Angat Dam sa lagpas-Ondoy na baha",
+    "url": "https://www.abs-cbn.com/news/11/13/20/walang-pasabi-marikina-mayor-sinisi-ang-angat-dam-sa-lagpas-ondoy-na-baha"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2017,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 249,
+    "selected_fraction": 0.123451,
+    "source_id": "news-ade9c52e455ef8a3",
+    "title": "EDITORYAL - Mga sakit pagkatapos ng bagyo’t baha",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2022/11/03/2221150/editoryal-mga-sakit-pagkatapos-ng-bagyot-baha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1248,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 220,
+    "selected_fraction": 0.176282,
+    "source_id": "news-b11e4314df572cad",
+    "title": "More than 8K residents affected by flooding in Davao City",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/896202/more-than-8k-residents-affected-by-flooding-in-davao-city/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1203,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 435,
+    "selected_fraction": 0.361596,
+    "source_id": "news-b334a6595b2116f3",
+    "title": "TINGNAN: Mga papunta, galing sementeryo sa Biliran nahirapang makatawid sa baha",
+    "url": "https://www.abs-cbn.com/news/11/02/22/mga-dadalaw-sa-sementeryo-sa-biliran-hirap-makatawid-sa-baha"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 6685,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 8,
+    "selected_characters_union": 2363,
+    "selected_fraction": 0.353478,
+    "source_id": "news-b38de27def66b200",
+    "title": "Senators ask DPWH: 'Why fix roads that still look good?'",
+    "url": "https://www.abs-cbn.com/news/10/10/23/senators-ask-dpwh-why-fix-roads-that-still-look-good"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 8755,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 8,
+    "selected_characters_union": 2637,
+    "selected_fraction": 0.301199,
+    "source_id": "news-b60f94bc963eaeec",
+    "title": "Dating magandang subdivision sa Hagonoy, Bulacan, iniwan ng ilang dating nakatira dahil nalubog na sa baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/998860/dating-magandang-subdivision-sa-hagonoy-bulacan-iniwan-ng-ilang-dating-nakatira-dahil-nalubog-na/story"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1652,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 1185,
+    "selected_fraction": 0.717312,
+    "source_id": "news-bd360a67694282cd",
+    "title": "Oriental Mindoro to be placed under state of calamity: disaster official",
+    "url": "https://www.abs-cbn.com/news/12/04/19/oriental-mindoro-to-be-placed-under-state-of-calamity-disaster-official"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 657,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 485,
+    "selected_fraction": 0.738204,
+    "source_id": "news-c04d4f7154f4f54f",
+    "title": "6 barangay ng bayan sa Bukidnon binaha",
+    "url": "https://www.abs-cbn.com/news/09/03/17/6-barangay-ng-bayan-sa-bukidnon-binaha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 613,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 221,
+    "selected_fraction": 0.360522,
+    "source_id": "news-c15427a62b79ba2c",
+    "title": "Tagbilaran, Bohol, nakaranas ng pagbaha dulot ng LPA",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/679136/tagbilaran-bohol-nakaranas-ng-pagbaha-dulot-ng-lpa/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 6507,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 8,
+    "selected_characters_union": 2524,
+    "selected_fraction": 0.38789,
+    "source_id": "news-c296dd5349f4e7ee",
+    "title": "Due to rains from ‘Auring’: Girl drowns in Toledo river",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 777,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 263,
+    "selected_fraction": 0.338481,
+    "source_id": "news-c29be324c3b71fb6",
+    "title": "Ilang barangay sa Pangasinan lubog pa rin sa lampas-taong baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/664361/ilang-barangay-sa-pangasinan-lubog-pa-rin-sa-lampas-taong-baha/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 4516,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 4,
+    "selected_characters_union": 1150,
+    "selected_fraction": 0.25465,
+    "source_id": "news-c6b8dee4d10093fa",
+    "title": "Cagayan under state of calamity as 11 towns remain flooded; 4 dead, 1 missing",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/714821/cagayan-under-state-of-calamity-as-11-towns-remain-flooded-4-dead-1-missing/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 1874,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 649,
+    "selected_fraction": 0.346318,
+    "source_id": "news-c7216b3994ab5614",
+    "title": "‘Hindi baha ang pumapatay sa Bayan, kundi Kurapsyon’",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 848,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 831,
+    "selected_fraction": 0.979953,
+    "source_id": "news-c814e44a54372ad1",
+    "title": "Flash flood inundates 20 homes in Zambo del Sur",
+    "url": "https://www.abs-cbn.com/news/07/28/18/flash-flood-inundates-20-homes-in-zambo-del-sur"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2216,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 2,
+    "selected_characters_union": 627,
+    "selected_fraction": 0.282942,
+    "source_id": "news-ca7319840b01cb70",
+    "title": "Marikina gov't handa sa posibilidad ng pagbaha dahil sa bagyong Quinta",
+    "url": "https://www.abs-cbn.com/news/10/26/20/marikina-govt-handa-sa-posibilidad-ng-pagbaha-dahil-sa-bagyong-quinta"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1377,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 977,
+    "selected_fraction": 0.709513,
+    "source_id": "news-cbbe7131c73d0250",
+    "title": "Rescue ops launched as Davao floods reach rooftop level in some communities\n\n ",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 4733,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1465,
+    "selected_fraction": 0.309529,
+    "source_id": "news-cc126ad08a03808b",
+    "title": "At height of downpour; 3 fall into river, die",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2140,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 851,
+    "selected_fraction": 0.397664,
+    "source_id": "news-cc7893469af71cb1",
+    "title": "Rains, flooding reported in several Luzon areas",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/875989/rains-flooding-reported-in-several-luzon-areas/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 759,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 125,
+    "selected_fraction": 0.16469,
+    "source_id": "news-cd0aa748f2207982",
+    "title": "Flood-hit Davao Oriental under state of calamity",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/895364/flood-hit-davao-oriental-under-state-of-calamity/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 3015,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 7,
+    "selected_characters_union": 2414,
+    "selected_fraction": 0.800663,
+    "source_id": "news-d0a136d3df01f457",
+    "title": "Agaton leaves Bohol flooded",
+    "url": "https://www.philstar.com/the-freeman/region/2018/01/04/1774478/agaton-leaves-bohol-flooded"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1720,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 1720,
+    "selected_fraction": 1.0,
+    "source_id": "news-d40ef2f36bb454d6",
+    "title": "Ilang lugar sa Quezon at Camarines Norte, binaha dahil sa ulang dulot ng shear line",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1560,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 1399,
+    "selected_fraction": 0.896795,
+    "source_id": "news-d4ad93228fbfb786",
+    "title": "LIST: Flooded areas in Metro Manila on Wednesday, July 24, 2024",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/914492/list-flooded-areas-in-metro-manila-on-wednesday-july-24-2024/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 2704,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "non_agency_acronym"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1678,
+    "selected_fraction": 0.620562,
+    "source_id": "news-d51c97021d07d991",
+    "title": "AFP: NPA rebels attack soldiers despite ceasefire, peace talks",
+    "url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 3254,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 6,
+    "selected_characters_union": 1922,
+    "selected_fraction": 0.590658,
+    "source_id": "news-d706fe79a0ec5353",
+    "title": "Next Pharmally? Palace says Filipino interests 'prioritized' in Kaliwa Dam deals",
+    "url": "https://www.abs-cbn.com/news/04/06/22/palace-says-ips-consulted-in-kaliwa-dam-project"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 2124,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1169,
+    "selected_fraction": 0.550377,
+    "source_id": "news-dc0d8bcd7617f20f",
+    "title": "Foundation na nag-aalaga ng matatanda nanawagan ng tulong matapos bahain",
+    "url": "https://www.abs-cbn.com/news/11/23/20/foundation-na-nag-aalaga-ng-matatanda-nanawagan-ng-tulong-matapos-bahain"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 4716,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 8,
+    "selected_characters_union": 2597,
+    "selected_fraction": 0.550679,
+    "source_id": "news-e0cf751ea8d71e21",
+    "title": "3 dead as Urduja pummels Visayas",
+    "url": "https://www.philstar.com/headlines/2017/12/16/1769104/3-dead-urduja-pummels-visayas"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2524,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 2524,
+    "selected_fraction": 1.0,
+    "source_id": "news-e45b849dae35a056",
+    "title": "Malaking bahagi ng bundok sa Angono, Rizal, nakalbo dahil sa quarrying",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/954882/malaking-bahagi-ng-bundok-sa-angono-rizal-nakalbo-dahil-sa-quarrying/story/"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3637,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 3,
+    "selected_characters_union": 890,
+    "selected_fraction": 0.244707,
+    "source_id": "news-e4b8c16d6fa18b8d",
+    "title": "Baha, bakit nga ba patuloy na nararanasan sa Metro Manila at iba pang lugar?",
+    "url": "https://www.gmanetwork.com/news/balitambayan/trending/1001213/baha-bakit-nga-ba-patuloy-na-nararanasan-sa-metro-manila-at-iba-pang-lugar/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 4357,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 4,
+    "selected_characters_union": 3057,
+    "selected_fraction": 0.70163,
+    "source_id": "news-e984b661dcaf2637",
+    "title": "Occidental Mindoro braces for another onslaught of habagat",
+    "url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1023,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 195,
+    "selected_fraction": 0.190616,
+    "source_id": "news-e9b53c4f27a5348a",
+    "title": "Baha, 'di humuhupa; ilang residente sa Hagonoy, Bulacan nagkaalipunga",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764749/baha-di-humuhupa-ilang-residente-sa-hagonoy-bulacan-nagkaalipunga/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 3984,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 8,
+    "selected_characters_union": 2053,
+    "selected_fraction": 0.515311,
+    "source_id": "news-ea3429aa801a60cb",
+    "title": "Metro Manila, ilang karatig-lalawigan, binaha dahil sa habagat",
+    "url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 797,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [
+      "complete_article_selected"
+    ],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 797,
+    "selected_fraction": 1.0,
+    "source_id": "news-eb21b538ee224afc",
+    "title": "Strawberry farm na dinarayo sa La Trinidad, nagmistulang lawa dahil sa baha",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1183,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 1,
+    "selected_characters_union": 289,
+    "selected_fraction": 0.244294,
+    "source_id": "news-eb2c5a8e951bbbb2",
+    "title": "Ilang lugar sa Davao City muling binaha dahil sa malakas na ulan",
+    "url": "https://www.abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1265,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 1,
+    "selected_characters_union": 334,
+    "selected_fraction": 0.264032,
+    "source_id": "news-ef286f8fdb9df6bd",
+    "title": "Pasok sa gobyerno at klase sa NCR, Regions 3 at 4A, sinuspinde ng Palasyo sa July 25, 2024",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/914640/pasok-sa-gobyerno-at-klase-sa-ncr-regions-3-at-4a-sinuspinde-ng-palasyo-sa-july-25-2024/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing"
+    ],
+    "complete_article_characters_retained": 1911,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 953,
+    "selected_fraction": 0.498692,
+    "source_id": "news-f27dfa33a87f1e62",
+    "title": "EDITORYAL - Hindi masolusyunan ang problemang baha",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2022/08/13/2202378/editoryal-hindi-masolusyunan-ang-problemang-baha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 2817,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 3,
+    "selected_characters_union": 782,
+    "selected_fraction": 0.2776,
+    "source_id": "news-f526421386d23fe2",
+    "title": "10 dead due to effects of low pressure area &mdash;OCD",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/857009/10-dead-due-to-rains-caused-by-low-pressure-area-ocd/story/"
+  },
+  {
+    "clause_ids": [
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy",
+      "philstar-copy-count",
+      "philstar-personal-processing",
+      "philstar-public-story-identity",
+      "philstar-qa-story-identity"
+    ],
+    "complete_article_characters_retained": 2575,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured",
+      "opinion_expression",
+      "publisher_qa_host"
+    ],
+    "publisher": "Philstar",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 1128,
+    "selected_fraction": 0.438058,
+    "source_id": "news-f716f246440bddfd",
+    "title": "EDITORYAL -Basura at baha",
+    "url": "https://qa.philstar.com/pilipino-star-ngayon/opinyon/2023/09/02/2293208/editoryal-basura-baha"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 3352,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 551,
+    "selected_fraction": 0.164379,
+    "source_id": "news-f788f7c467927dac",
+    "title": "Some provinces reeling from Enteng",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/919233/some-provinces-reeling-from-enteng/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 5325,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 5,
+    "selected_characters_union": 1153,
+    "selected_fraction": 0.216526,
+    "source_id": "news-f828b8452eed31ae",
+    "title": "Baha, zero visibility dala ng walang-humpay na pag-ulan sa Kamaynilaan",
+    "url": "https://www.abs-cbn.com/news/08/11/18/baha-zero-visibility-dala-ng-walang-humpay-na-pag-ulan-sa-kamaynilaan"
+  },
+  {
+    "clause_ids": [
+      "gma-educational-copy",
+      "law-fair-use"
+    ],
+    "complete_article_characters_retained": 1126,
+    "current_project_disposition": "reported_adopted_existing_basis",
+    "exception_flags": [],
+    "publisher": "GMA News",
+    "research_disposition": "carry_forward_reported_adoption",
+    "sample_count": 2,
+    "selected_characters_union": 587,
+    "selected_fraction": 0.521314,
+    "source_id": "news-faef8fb27a4a3a0f",
+    "title": "5 patay, 6 nawawala sa hagupit ni Maring —NDRRMC",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/625670/5-patay-6-nawawala-sa-hagupit-ni-maring-ndrrmc/story/"
+  },
+  {
+    "clause_ids": [
+      "abs-agreement",
+      "abs-use-limit",
+      "contract-1306",
+      "contract-1318",
+      "contract-1319",
+      "contract-1356",
+      "electronic-contract",
+      "law-amendment",
+      "law-facts-expression",
+      "law-fair-use",
+      "law-private-copy"
+    ],
+    "complete_article_characters_retained": 1693,
+    "current_project_disposition": "reported_hold",
+    "exception_flags": [
+      "byline_not_captured"
+    ],
+    "publisher": "ABS-CBN News",
+    "research_disposition": "retain_hold",
+    "sample_count": 3,
+    "selected_characters_union": 999,
+    "selected_fraction": 0.590077,
+    "source_id": "news-fcff07b9d070ca91",
+    "title": "PAGASA sees 'sign' of dry season's looming end",
+    "url": "https://www.abs-cbn.com/news/05/09/19/pagasa-sees-sign-of-dry-seasons-looming-end"
+  }
+]

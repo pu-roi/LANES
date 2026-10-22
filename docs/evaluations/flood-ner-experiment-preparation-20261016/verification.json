@@ -1,0 +1,211 @@
+{
+  "api_or_schema_changes": false,
+  "branch": "roi-branch",
+  "checkpoint": "backend/training/flood_ner/artifacts/experiment-preparation-20261016-v2",
+  "commit_push_deployment_or_external_correspondence": false,
+  "counts": {
+    "articles": 138,
+    "contextual_pairs_added_as_samples": 0,
+    "contextual_pairs_referenced": 40,
+    "languages": {
+      "english": 200,
+      "taglish": 200
+    },
+    "location_spans": 1465,
+    "negative_passages": 48,
+    "partitions": {
+      "dev": 60,
+      "test": 60,
+      "train": 280
+    },
+    "samples": 400
+  },
+  "dependencies_changed": false,
+  "failed_attempt": {
+    "checkpoint": "backend/training/flood_ner/artifacts/experiment-preparation-20261016-v1",
+    "failure_hashes": {
+      "failure.json": "9a712b93d4416fa0d7642565eeec761ef3c914758e7bed409ea48809ac0e2222",
+      "request.json": "e4e335be0786603c71fd0a8dc24be49879d7bab24222121afd42451413bd3357",
+      "rules-baseline.json": "a41fccfcc6d633d1a5cbb09dbdd0ecd3869e30cf39031699765e3615bd3b2fce",
+      "rules-smoke.json": "bf59da0e64276d067962ed29e1d76e3b82d9642c144ce4b01fa7269e1feb70a8",
+      "train-seed-0.cfg": "11f63c56d6977ce694f51c906464473d40983a2ca1ebe01fc3c7cf4526c8ba77",
+      "worker.stderr.log": "ed4e34fa110f11e5b402cbf623c6922a3d4bdb8ee6e3d4153ceba92fd73811c7",
+      "worker.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "preserved": true,
+    "reason": "Helper incorrectly required all arrays on GPU; pinned spaCy upper classifier intentionally stays on CPU."
+  },
+  "formal_desktop_predecessor_reconciliation": false,
+  "head": "4736cea39f904af5dd7863d56f99f5938b9ad255",
+  "historical_limitations": [
+    {
+      "actual_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1/manifest.json"
+    },
+    {
+      "actual_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1/delegation-record.json"
+    },
+    {
+      "actual_sha256": "a102ac899848d2934bb26539562200868b22e83bd41f6ec3eaf542f68a3bd8a7",
+      "current_bytes_match_reference": false,
+      "expected_sha256": "2f87e31c25ea9af7bd20c522e1a7a80b055192311dcce56b1b0fc141741bd56a",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json"
+    }
+  ],
+  "implementation_sha256": {
+    "experiment_preparation.py": "656c03434ca7487b9dedaee98e497669d7e89b606c53555e754808077c563d2c",
+    "experiment_registry.py": "028c39a0eb4be2e5aa5c736eca40f1c4440d71fe7dd68a19f25f9e5a42c060e9",
+    "experiment_worker.py": "add3a7fb5995fc2c55464c36ddd18d65587cc915f91c6b0a37ca13cf3c856ede",
+    "rules_baseline.py": "04945963bb78843e0c2c59484a7d5a70284b045cdd30d0b4f05821bd4741278a"
+  },
+  "initialization": {
+    "gpu_name": "NVIDIA GeForce RTX 3060 Ti",
+    "model_predictions_performed": false,
+    "operation": "initialize_only",
+    "optimizer_updates": 0,
+    "python_version": "3.11.17",
+    "seeds": [
+      {
+        "config_sha256": "11f63c56d6977ce694f51c906464473d40983a2ca1ebe01fc3c7cf4526c8ba77",
+        "configuration_loaded": true,
+        "cpu_upper_parameter_arrays": 2,
+        "gpu_parameter_arrays": 46,
+        "initialization": {
+          "encoder_sha256": "a80e0c1b627ddf8440bfa8292d6ac1a5dddb52d828d115d8955facd718682ea1",
+          "method": "fresh six-class NER head; copied pinned pretrained NER encoder; pinned static vocabulary",
+          "optimizer_updates": 0
+        },
+        "labels": [
+          "BARANGAY",
+          "CITY",
+          "LANDMARK",
+          "LOCAL_AREA",
+          "PROVINCE",
+          "ROAD"
+        ],
+        "optimizer_updates": 0,
+        "pipeline": [
+          "ner"
+        ],
+        "seed": 0,
+        "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+      },
+      {
+        "config_sha256": "609782de2e9ba5ed0d1d650c41efb8e7dedd072327e31c5510f9f6482939595d",
+        "configuration_loaded": true,
+        "cpu_upper_parameter_arrays": 2,
+        "gpu_parameter_arrays": 46,
+        "initialization": {
+          "encoder_sha256": "a80e0c1b627ddf8440bfa8292d6ac1a5dddb52d828d115d8955facd718682ea1",
+          "method": "fresh six-class NER head; copied pinned pretrained NER encoder; pinned static vocabulary",
+          "optimizer_updates": 0
+        },
+        "labels": [
+          "BARANGAY",
+          "CITY",
+          "LANDMARK",
+          "LOCAL_AREA",
+          "PROVINCE",
+          "ROAD"
+        ],
+        "optimizer_updates": 0,
+        "pipeline": [
+          "ner"
+        ],
+        "seed": 1,
+        "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+      },
+      {
+        "config_sha256": "7428185d29d51238536d91b6dfb3a5adffadea4578d9eebaae79a76004130530",
+        "configuration_loaded": true,
+        "cpu_upper_parameter_arrays": 2,
+        "gpu_parameter_arrays": 46,
+        "initialization": {
+          "encoder_sha256": "a80e0c1b627ddf8440bfa8292d6ac1a5dddb52d828d115d8955facd718682ea1",
+          "method": "fresh six-class NER head; copied pinned pretrained NER encoder; pinned static vocabulary",
+          "optimizer_updates": 0
+        },
+        "labels": [
+          "BARANGAY",
+          "CITY",
+          "LANDMARK",
+          "LOCAL_AREA",
+          "PROVINCE",
+          "ROAD"
+        ],
+        "optimizer_updates": 0,
+        "pipeline": [
+          "ner"
+        ],
+        "seed": 2,
+        "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+      }
+    ],
+    "spacy_version": "3.7.5",
+    "state": "passed",
+    "test_corpus_read": false,
+    "training_performed": false,
+    "training_policy": {
+      "batch_size": 8,
+      "dropout": 0.1,
+      "eval_frequency": 35,
+      "learning_rate": 0.001,
+      "max_epochs": 30,
+      "max_steps": 1000,
+      "patience": 175
+    }
+  },
+  "manifest_sha256": "e3e37d699f8f59dae3c5daa911fcfd16fc03500ec4de60be5d495dfffa4e6b87",
+  "model_corpus_predictions_performed": false,
+  "new_copy_accounting": {
+    "article_bodies_copied": 0,
+    "configs": 3,
+    "passage_documents_exported": 0,
+    "saved_initialized_or_trained_weights": 0
+  },
+  "optimizer_updates": 0,
+  "preservation": {
+    "annotations_context_pairs_partitions_source_use_flags_original_checkpoints_unchanged": true,
+    "candidate_tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "changed_or_missing_prior_artifacts": [],
+    "cli_package_count": 109,
+    "cli_packages_unchanged": true,
+    "env_unchanged": true,
+    "model_files_hash_verified": 23,
+    "prior_artifact_files_hash_verified": 10531,
+    "requirements_unchanged": true,
+    "research_environment_added_files": [],
+    "research_environment_changed_or_missing": [],
+    "research_environment_files_size_mtime_verified": 22759,
+    "research_environment_scope": "Size/mtime audit, not full environment content hashes. Existing __pycache__ and .pyc excluded consistently with before snapshot."
+  },
+  "recorded_at": "2026-10-16T17:15:59.637935+08:00",
+  "rules_smoke": {
+    "constructed_passages": 4,
+    "corpus_predictions_performed": false,
+    "database_connections_allowed": false,
+    "diagnostics": 0,
+    "state": "passed",
+    "valid_spans": 6
+  },
+  "schema_version": "lanes-experiment-preparation-verification-v1",
+  "state": "passed",
+  "test_corpus_read_by_initializer": false,
+  "tests": {
+    "export_regression_tests": 12,
+    "framework": "stdlib unittest",
+    "historical_full_suite_not_rerun": true,
+    "log_sha256": "34c54e02307a3dbd2bf7a7cf7e1a7857c214f97dd0ab1447fc72c06d5cc7ac5a",
+    "new_preparation_tests": 9,
+    "passed": 21
+  },
+  "training_performed": false
+}

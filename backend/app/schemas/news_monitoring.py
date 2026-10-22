@@ -27,3 +27,4 @@ class NewsMonitoringSummary(BaseModel):
     discovery_history: Literal["recorded"] = "recorded"
     fallback_history: Literal["recorded"] = "recorded"
     collection_to_alert_delay: Literal["unavailable"] = "unavailable"
+    collection_to_alert_delay_reason: Literal['not_computed'] = 'not_computed'

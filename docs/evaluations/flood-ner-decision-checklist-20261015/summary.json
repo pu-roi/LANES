@@ -1,0 +1,207 @@
+{
+  "schema_version": "lanes-academic-decision-checklist-completion-v1",
+  "state": "checklist_prepared_and_verified",
+  "checklist_preparation_complete": true,
+  "source_use_decisions_complete": false,
+  "private_checkpoint": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1",
+  "article_register_rows": 139,
+  "sample_memberships": 400,
+  "duplicates": 0,
+  "omissions": 0,
+  "recommendation_totals": {
+    "recommend_private_academic_use": {
+      "articles": 70,
+      "passages": 157
+    },
+    "hold_for_clarification": {
+      "articles": 69,
+      "passages": 243
+    }
+  },
+  "publisher_counts": [
+    {
+      "publisher": "ABS-CBN News",
+      "articles": 50,
+      "recommended_articles": 0,
+      "held_articles": 50,
+      "recommended_passages": 0,
+      "held_passages": 158
+    },
+    {
+      "publisher": "GMA News",
+      "articles": 71,
+      "recommended_articles": 70,
+      "held_articles": 1,
+      "recommended_passages": 157,
+      "held_passages": 3
+    },
+    {
+      "publisher": "Philstar",
+      "articles": 18,
+      "recommended_articles": 0,
+      "held_articles": 18,
+      "recommended_passages": 0,
+      "held_passages": 82
+    }
+  ],
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "partitions": {
+    "train": 280,
+    "validation": 60,
+    "testing": 60
+  },
+  "contextual_v3_pairs": 40,
+  "proposal_bindings_verified": 9,
+  "used_evidence_records_verified": 9,
+  "used_evidence_file_or_clause_references_verified": 13,
+  "proposal_packet_files_verified": 31,
+  "read_only_proposal_validator": {
+    "articles": 139,
+    "samples": 400,
+    "contextual_pairs": 40,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "actual_project_decisions": 0,
+    "training_admitted": 0,
+    "docbin_exported": 0
+  },
+  "csv_all_cells_round_trip": "passed; every field independently compared to original article recommendation",
+  "workbook_cell_errors": 0,
+  "original_files_verified_unchanged": 4372,
+  "preexisting_uncommitted_files_preserved": 33,
+  "core_documents_updated": [
+    "docs/task_plan.md",
+    "docs/progress.md",
+    "docs/README.md"
+  ],
+  "prior_document_bodies_preserved_verbatim": true,
+  "existing_gpu_checkpoint_files_verified_unchanged": 71,
+  "existing_gpu_packages_verified_unchanged": 73,
+  "backend_env_unchanged": true,
+  "annotations_contexts_partitions_model_tokenizer_decision_forms_source_flags_unchanged": true,
+  "private_checkpoint_ignored": true,
+  "historical_reference_gaps": {
+    "backend/training/flood_ner/artifacts/adviser-guidance-20261015-v1/manifest.json": {
+      "expected": "d9c8cc984afffefdb13fb16b801a5257a4e227e0f8873a925026ea1865219b6f",
+      "actual": "missing",
+      "referenced_by": "backend/training/flood_ner/artifacts/private-access-20261015-v1/adviser-and-access-update.json"
+    },
+    "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review.json": {
+      "expected": "d4f4406295563d0da7acd8ae562dd3ebf136e56082a6c83866ffc6a9ccce603d",
+      "actual": "missing",
+      "referenced_by": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review-v2.json"
+    },
+    "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/manifest.json": {
+      "expected": "5b8e3a752d248a1f14ce3857290272957db6ea75c735c9724ab6b07624985f09",
+      "actual": "missing",
+      "referenced_by": "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1/manifest.json"
+    }
+  },
+  "historical_gaps_block_checklist_preparation": false,
+  "actual_project_decisions": 0,
+  "training_admitted": 0,
+  "docbin_exported": 0,
+  "source_use_flags_changed": false,
+  "gpu_environment_modified": false,
+  "news_model_processing": false,
+  "training_started": false,
+  "deployment_started": false,
+  "external_messages_sent": 0,
+  "publisher_replies": "optional evidence, not a universal prerequisite",
+  "assessment_provenance": "Existing restored AI assessments only; no new legal conclusions or policy research",
+  "next_task_from_task_plan": "- [ ] **Next:** Finalize the case-specific supported research-use basis and explicit project decision using existing evidence, considering statutory-exception and contractual/origin questions separately. Publisher replies are optional evidence, not a universal prerequisite. Apply supported admission separately, then qualify news-cohort tokenization, export and train using the frozen partitions. Desktop inventory and constructed GPU environment qualification are complete; preserve the isolated environment and measured recipe; no news-model processing while admission is unresolved. Deployed inference/defense demonstration scope must also be assessed separately from the existing private-use review. Keep the 400-sample requirements and release checks; the 157 recommended passages are not a replacement cohort. [@roicambe](https://github.com/roicambe) (Roi Cambe)",
+  "private_checkpoint_output_hashes": {
+    "CHECKLIST.md": {
+      "sha256": "cc0fce8a5e44158c7a2d92f4d9192b0fec4d96fdf42e85bb095dc3b66b1f7268",
+      "bytes": 13526
+    },
+    "article-register.csv": {
+      "sha256": "3d63607f078708b613c9d8a161dc14fc45138e207529c1d35676ba5f7570783b",
+      "bytes": 479753
+    },
+    "input-references.json": {
+      "sha256": "8c959d296a6b86ab05ca3333c9c800e87507567b65256fcd875726fe7d9325c3",
+      "bytes": 3125
+    },
+    "evidence-references.json": {
+      "sha256": "0c9c9551e7e50ddc2ecb961ea13bf7ab5ce4110156bb7eafed1f1ec67a6bf889",
+      "bytes": 5030
+    },
+    "register-metadata.json": {
+      "sha256": "6ea3e89c549b309f84e330b775174cb31ce4f522c877ad3941491eb55f2610c3",
+      "bytes": 1713
+    },
+    "verification.json": {
+      "sha256": "97c5aa29177ac4e914c3f0fd877670b4aec04f6ccc63867d5a9c177c62a2293b",
+      "bytes": 9717
+    },
+    "manifest.json": {
+      "sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "bytes": 2534
+    }
+  },
+  "input_hashes": {
+    "proposal": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/proposal.json",
+      "sha256": "1341ac83946365735f76a9878cbe025ff2e4064f9aabf665a6e8cb125307f260"
+    },
+    "article_dispositions": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/article-dispositions.json",
+      "sha256": "fcaeb12a7532f3de2a64502a3daf38ad1632477e89545e04d9241de367628a65"
+    },
+    "publisher_recommendations": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/publisher-recommendations.json",
+      "sha256": "3d13eefbf2bf054e1215c5dda640c8b56026cb5ed7f7973dd55d348184af8430"
+    },
+    "editable_project_decisions": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/editable-project-decisions.json",
+      "sha256": "3a8ebb7b1943756916d1e0b2054ca98898111d93f5138083082510a365d2d565"
+    },
+    "proposal_manifest": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/manifest.json",
+      "sha256": "b3d470a9d3b296c3aeeef5ffeb83254d86cb035d837a6ba1ef9e3c283ea6fee9"
+    },
+    "access_verification": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/access-verification.json",
+      "sha256": "f1cfb37e84db9c141657d6049ab801ff74396b2e4eed6d264aa386a0816d9078"
+    },
+    "adviser_access": {
+      "path": "backend/training/flood_ner/artifacts/private-access-20261015-v1/adviser-and-access-update.json",
+      "sha256": "4bbcfdb888fac53a358d76842d97a9ed0102267d29731c30b5030741f30bd9b0"
+    },
+    "cohort_manifest": {
+      "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/cohort-v2/partition_manifest.json",
+      "sha256": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a"
+    },
+    "context_manifest": {
+      "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/contextual-v3/manifest.json",
+      "sha256": "e1f002dd69019713b8e8309743201084e5f731b99aaa4d0fbb69c5819b1f8578"
+    },
+    "copy_inventory": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/copy-inventory.json",
+      "sha256": "93b48ab1b1039d94877a5212adab9a7a1ae9fe7d5bc06c6572592ab670ed4401"
+    },
+    "evidence_register": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/evidence-register.json",
+      "sha256": "ef827df53befc6d91e02d870d3c7b1a437906d8308f6398a6d1741592e9a51bc"
+    },
+    "prior_review": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review-v2.json",
+      "sha256": "65f3d196289d9296c3edc51e8173d9b85107d99d55ee80ead04c780b7bfb91d7"
+    },
+    "researcher_facts": {
+      "path": "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1/user-facts.json",
+      "sha256": "5a62a2695ec06929341cac7778c171aabe9e0ec4d38fd667af123335e786921a"
+    },
+    "review_packet": {
+      "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/review-packet-v3.json",
+      "sha256": "8a0ca1c0b3b175d3435b57bcde690ed03dba28f64eee98c7cbbf5cd5033626bd"
+    }
+  },
+  "scope": "Metadata-only completion report; private research data remain ignored"
+}

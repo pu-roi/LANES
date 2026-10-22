@@ -1,0 +1,10 @@
+{
+  "files": {
+    "coverage.json": "20db715f031ddb7f367b67d3b7929ce60cb85ee6efbace9a43d425c13e717575",
+    "curator-status.json": "8c008d13165cf2c160b091860df5eaea424562d79b75e72e7d0046831617d2c9",
+    "readiness.json": "ecad76b702e0bdca36b090f851c96c72082c8aea0c2fec8cfb99d72eed7aa015",
+    "README.md": "aaa9d49639727ab5bb0649bfe9cc99d13cdf2f406f9f600ffcffb50322475b52",
+    "verification.json": "b1b8647fc0916065c6d5d6bb8ab98e5ecebdb54ec79f5a0bb92571b15a9d695b"
+  },
+  "private_source_content_included": false
+}

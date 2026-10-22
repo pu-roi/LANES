@@ -3,8 +3,17 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator, ValidationInfo
 from app.schemas.news_extraction import NewsExtractionResult
+from app.schemas.news_ner_result import NewsNerResult, ProcessingMode, parse_saved_result
+
+
+class NewsFeedHealth(BaseModel):
+    feed_url: str
+    status: Literal['not_recorded', 'ok', 'error']
+    last_checked_at: datetime | None = None
+    last_success_at: datetime | None = None
+    error_code: str | None = None
 
 
 class NewsSourceSummary(BaseModel):
@@ -14,6 +23,11 @@ class NewsSourceSummary(BaseModel):
     feed_urls: list[str]
     verified_at: date | None
     enabled: bool
+    registry_eligible: bool = False
+    selected_for_collection: bool = False
+    collection_active: bool = False
+    feed_health: list[NewsFeedHealth] = Field(default_factory=list)
+    body_counts: dict[str, int] = Field(default_factory=dict)
 
 
 class NewsFeedProbeResult(BaseModel):
@@ -77,18 +91,30 @@ class NewsExtractionRunSummary(BaseModel):
     id: int
     article_version_id: int
     pipeline_version: str
-    mode: Literal["rules_only"]
+    mode: ProcessingMode
     status: Literal["pending", "processing", "completed", "retry_wait", "failed"]
     attempt_count: int
     next_attempt_at: datetime | None
     started_at: datetime | None
     completed_at: datetime | None
     error_code: str | None
-    result: NewsExtractionResult | None
+    result: NewsNerResult | NewsExtractionResult | None
     created_at: datetime
     updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+    @field_validator("result", mode="before")
+    @classmethod
+    def preserve_method_result(cls, value: object, info: ValidationInfo) -> NewsExtractionResult | None:
+        return parse_saved_result(info.data.get("mode", ""), value)
+
+    @model_validator(mode="after")
+    def validate_native_version(self) -> "NewsExtractionRunSummary":
+        if isinstance(self.result, NewsNerResult):
+            if self.result.source.article_version_id != self.article_version_id:
+                raise ValueError("ner_source_version_mismatch")
+        return self
 
 
 class NewsProcessingOutcome(BaseModel):

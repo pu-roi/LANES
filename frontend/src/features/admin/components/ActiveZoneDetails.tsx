@@ -7,7 +7,7 @@ import { Button, Tabs } from "@/shared/ui";
 import { RecordDetailsDialog } from "@/shared/ui/feedback/RecordDetailsDialog";
 import { FloodFacts, FloodSeverityBadge } from "@/shared/ui/feedback/FloodFacts";
 import { MediaViewer } from "@/shared/ui/feedback/MediaViewer";
-import { apiClient } from "@/lib/apiClient";
+import { zoneDetailQuery } from "../zoneQueueApi";
 import { formatFloodDepth } from "@/lib/floodDepth";
 import { getZoneUpdates, ZONE_CONDITIONS, type ZoneEditorProposal } from "@/features/hazards/zoneUpdatesApi";
 import type { AvoidanceZone } from "../adminApi";
@@ -21,7 +21,7 @@ export function ActiveZoneDetails({ zone, initialTab, onClose, onEdit, onViewMap
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [media, setMedia] = useState<string[] | null>(null);
   const queryClient = useQueryClient();
-  const fresh = useQuery({ queryKey: ["zone-details", zone.id], queryFn: () => apiClient.get<AvoidanceZone>(`/admin/zones/${zone.id}`), refetchInterval: 60000 });
+  const fresh = useQuery({ ...zoneDetailQuery(zone.id), refetchInterval: editorOpen ? false : 15_000 });
   const current = fresh.data ?? zone;
   const updates = useInfiniteQuery({ queryKey: ["zone-public-updates", zone.id], initialPageParam: undefined as number | undefined,
     queryFn: ({ pageParam }) => getZoneUpdates(zone.id, pageParam), getNextPageParam: page => page.next_before_id ?? undefined, refetchInterval: 30000 });

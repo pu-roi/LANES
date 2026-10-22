@@ -1,0 +1,15 @@
+# Paper-method notes: stronger revision attempt
+
+> **Last Updated:** October 14, 2026, 10:30 PM (Asia/Manila)
+
+The previously completed dataset still contains 400 AI-reviewed silver passages from 132 articles, with the original 280/60/60 research partitions. Its full captures, frozen annotations and backup are unchanged. Those original facts may be reported with their original limitations.
+
+The stronger revision is a separate, incomplete research attempt. It considered 300 additional candidate URLs within a January 2017–October 14, 2026 window and admitted 50 additional articles after source reading and provenance review. Its complete reviewed source register contains 192 articles. The annotation input contains 639 accepted silver records; 629 remain eligible after scope/duplicate/overlap exclusions. **Do not describe this pool as a completed new 400-sample training dataset.**
+
+Codex produced and checked the added labels from saved source passages. The same AI process supplied teacher/reviewer provenance; no independent human verification occurred. Deterministic string matching serialized explicitly reviewed names into character offsets; it was not a trained model or a source of independent ground truth. Unknown PSGC/OSM identities were retained, with a limited set of source-supported parent mentions. Source bodies were not rewritten to obtain desired labels or language totals. One Tagalog-only paragraph was excluded, and two passages containing substantive Filipino quotations were corrected from English to Taglish. Earlier revisions remain preserved.
+
+The proposed targets remain 200 English/200 Taglish, 140/140 training and 30/30 each validation/testing. Publisher diversity and English local-area/Taglish road support fail necessary pool checks, so no fresh partitions were frozen. The report does not establish that pending captured sources cannot close those gaps. Forty paired contextual proposals were prepared, 20 per language, using at least five articles per language from original training provenance. They remain drafts; depth/time/status/access/relationships and the five category minimums are not accepted or complete. They add zero independent location samples.
+
+Location entity-span prediction and contextual fact association are separate tasks. Forty is the developer's selected pilot scope, not a proven optimum. [spaCy NER documentation](https://spacy.io/api/entityrecognizer) describes entity recognition; [Prodigy annotation guidance](https://prodi.gy/docs/custom-interfaces) supports designing focused annotation interfaces.
+
+All sources remain research-only with unresolved reuse assessments. Training admission, actual DocBin export, trained-model metrics, human/gold reference counts and production acceptance remain zero. The 508 passing software checks verify tooling/regressions; they are not 508 training samples or a measure of model accuracy. Use source/sample registers and frozen hashes when preparing Chapter 3/4 tables, and distinguish the original finished cohort from this incomplete revision.

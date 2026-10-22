@@ -1,0 +1,113 @@
+{
+  "files": {
+    "final-test-freeze-20261016-v1/attempt.json": {
+      "bytes": 313,
+      "sha256": "18364ac9750ae607473a6e994f3b5c520a81f09cf25e93ad87718cdd17d3ae40"
+    },
+    "final-test-freeze-20261016-v1/manifest.json": {
+      "bytes": 38513,
+      "sha256": "498b0db49690c8bd7ca0dacde5902759e30e9052b8438b4fc9f1b99af4db6243"
+    },
+    "final-test-freeze-20261016-v1/seal.json": {
+      "bytes": 95,
+      "sha256": "043a9e900240889b67696dc348871202fccd8b7ca02c3e407328188cb0c734d8"
+    },
+    "heldout-test-evaluation-20261016-v1/errors.json": {
+      "bytes": 181237,
+      "sha256": "fc912b1c1205bd688655562093e89e9f540e2e879ad9c0d42980053d07d545bb"
+    },
+    "heldout-test-evaluation-20261016-v1/manifest.json": {
+      "bytes": 78445,
+      "sha256": "2ba96b256ded2c196b184b4399c88c09dcf7624759e5860789a83794129f03b1"
+    },
+    "heldout-test-evaluation-20261016-v1/predictions.json": {
+      "bytes": 183635,
+      "sha256": "d2a6e93d47d3511d46c33a99a00cf799eaf32ee066e9880cfcdce7ac73ae7127"
+    },
+    "heldout-test-evaluation-20261016-v1/request.json": {
+      "bytes": 142905,
+      "sha256": "95b654755aedaf0320e66144b513168a925d06273b5956a47ff0ae67f508f5b1"
+    },
+    "heldout-test-evaluation-20261016-v1/rules-predictions.json": {
+      "bytes": 21461,
+      "sha256": "de97c24900c153fc4b367eb489bf846c787e7aa3918a9237f1ece9f1035de828"
+    },
+    "heldout-test-evaluation-20261016-v1/status.json": {
+      "bytes": 77781,
+      "sha256": "ae9ca487c8bdd983a450dade923d577964cfbf51d3a8101cd21c34c832871dbe"
+    },
+    "heldout-test-evaluation-20261016-v1/worker.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "heldout-test-evaluation-20261016-v1/worker.stdout.log": {
+      "bytes": 56828,
+      "sha256": "d29a0985d0286ecb6a491a564efca375bd9b49e1b6c235a5c5b40be502518927"
+    },
+    "heldout-test-evaluation-20261016-v1/~/.cache/huggingface/hub/version.txt": {
+      "bytes": 1,
+      "sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+    },
+    "heldout-test-execution-20261016-v1/before.json": {
+      "bytes": 6646877,
+      "sha256": "ad0b8984d3fb24208732828cb02e55aeff3f1636a09a12cb4c2d233e5a6af75f"
+    },
+    "heldout-test-execution-20261016-v1/cli-before.py": {
+      "bytes": 26325,
+      "sha256": "143c663d46bdb66be6278139c91ac4010d85718d338f254898e707d0f6982180"
+    },
+    "heldout-test-execution-20261016-v1/completion-audit.json": {
+      "bytes": 802,
+      "sha256": "cc4968afbad919c28d7b6b66d6054f56aa94796338aca93e73ca825ac792be9c"
+    },
+    "heldout-test-execution-20261016-v1/evaluate-exit.json": {
+      "bytes": 18,
+      "sha256": "302c5fcf0227d427ee240abdbd2a948557ea7ab09699f9c3bdeb0f98b67375ce"
+    },
+    "heldout-test-execution-20261016-v1/evaluate.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "heldout-test-execution-20261016-v1/evaluate.stdout.log": {
+      "bytes": 66,
+      "sha256": "4fa879c3d4825a20d0e56883d35b5afd8feab0f294130549115af088f08b22cd"
+    },
+    "heldout-test-execution-20261016-v1/freeze-verified.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "heldout-test-execution-20261016-v1/freeze-verified.stdout.log": {
+      "bytes": 71,
+      "sha256": "56654a41f25571dab747c8ea12c2c5fb7f2879be1ab5a8e4beeca45333b0e73f"
+    },
+    "heldout-test-execution-20261016-v1/freeze.stderr.log": {
+      "bytes": 1336,
+      "sha256": "1571a6272896dd729a6344e57c9d2da31962b2cf2aaa5f7a495072d12c032410"
+    },
+    "heldout-test-execution-20261016-v1/freeze.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "heldout-test-execution-20261016-v1/preservation.json": {
+      "bytes": 643,
+      "sha256": "bc03efa31dfe8853b52092f9022892c62e37d04035129c9b5c0ac7a8b3c3eda4"
+    },
+    "heldout-test-execution-20261016-v1/reconciliation.json": {
+      "bytes": 890,
+      "sha256": "73cdad6d7341e9a48ad39cf7a2851a5667febe7d1f1f74e62505734bc3aaf438"
+    },
+    "heldout-test-execution-20261016-v1/session.json": {
+      "bytes": 206,
+      "sha256": "b8e295ba50bdae6a251d9b05ae4627d16739a997d3e7b610598cec6237f023b8"
+    },
+    "heldout-test-execution-20261016-v1/tests-initial.log": {
+      "bytes": 9435,
+      "sha256": "b79fead4ae3bc98fe103d1e9cb0705828545c1c9710af75e403ee116fc28396c"
+    },
+    "heldout-test-execution-20261016-v1/tests.log": {
+      "bytes": 9797,
+      "sha256": "db72213808edf749dd7f9576b9d45ff445a0bbb29cdf87ca4b66bdfd7c465e1f"
+    }
+  },
+  "scope": "New execution/freeze/evaluation files; excludes kernel caches and bytecode. Private inputs/logs/predictions/errors are hash-bound here without copying their contents."
+}

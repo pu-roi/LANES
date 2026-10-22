@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "aggregate_counts_reconciled": true,
+  "private_inputs_preserved": true,
+  "public_contains_article_passages": false,
+  "new_proposals_admitted": false,
+  "git_commit_or_push_performed": false,
+  "links_checked": 14,
+  "link_failures": []
+}

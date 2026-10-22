@@ -49,6 +49,9 @@ from app.schemas.news_telemetry import NewsTelemetryPage
 from app.services.news_telemetry_service import browse_telemetry
 from app.schemas.news_automation import NewsAutomationStatus
 from app.services.news_automation_service import read_news_automation
+from app.services.news_saved_run_service import SavedRunReadError, saved_run_summary
+from app.services.news_ner_durable.readers import get_news_read_context, read_native_group
+from app.schemas.news_results import NewsNativeGroupDetail
 
 
 router = APIRouter()
@@ -102,12 +105,16 @@ def browse_collection(
     search: str = Query(default="", max_length=200),
     publisher: str | None = Query(default=None, max_length=100),
     status: CollectionFilter = "attention",
+    retrieval: BodyStatus | None = None,
     db: Session = Depends(get_db),
     _staff: object = Depends(deps.get_current_active_admin),
+    processing_context: object = Depends(get_news_read_context),
 ) -> NewsCollectionPage:
     """Read saved articles needing collection or extraction attention."""
     try:
-        return browse_news_collection(db, page=page, page_size=page_size, search=search, publisher=publisher, status=status)
+        return browse_news_collection(db, page=page, page_size=page_size, search=search, publisher=publisher, status=status,processing_context=processing_context,retrieval=retrieval)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409,detail=str(exc)) from exc
     except SQLAlchemyError as exc:
         raise HTTPException(status_code=503, detail="News collection storage is unavailable") from exc
 
@@ -123,13 +130,33 @@ def browse_results(
     order: ResultOrder = "extraction_newest",
     db: Session = Depends(get_db),
     _staff: object = Depends(deps.get_current_active_admin),
+    processing_context: object = Depends(get_news_read_context),
 ) -> NewsResultPage:
     """Paginate reported locations from each article's newest recorded run."""
     try:
         return browse_news_results(db, page=page, page_size=page_size, search=search,
-            publisher=publisher, condition=condition, placement=placement, order=order)
+            publisher=publisher, condition=condition, placement=placement, order=order, processing_context=processing_context)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except SQLAlchemyError as exc:
         raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
+
+
+@router.get('/results/{run_id}/groups/{group_id}', response_model=NewsNativeGroupDetail)
+def read_result_group(
+    run_id: int = Path(ge=1), group_id: str = Path(pattern=r'^g[0-9]+$', max_length=32),
+    db: Session = Depends(get_db), _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsNativeGroupDetail:
+    from app.services.news_browsing_service import publisher_labels
+    try:
+        detail=read_native_group(db,run_id,group_id,publisher_labels())
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409,detail=str(exc)) from exc
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503,detail='News result storage is unavailable') from exc
+    if detail is None:
+        raise HTTPException(status_code=404,detail='News result not found')
+    return detail
 
 
 @router.get("/results/{run_id}/{claim_index}", response_model=NewsResultDetail)
@@ -142,6 +169,8 @@ def read_result(
     """Read one artifact ordinal and its immutable source; no lifecycle inference."""
     try:
         detail = read_news_result(db, run_id, claim_index)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except SQLAlchemyError as exc:
         raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
     if detail is None:
@@ -163,6 +192,8 @@ def preview_result_placement(
     from app.services.news_placement_preview_service import get_news_placement_preview_service
     try:
         detail = read_news_result(db, run_id, claim_index)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except SQLAlchemyError as exc:
         raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
     if detail is None:
@@ -185,11 +216,14 @@ def browse_articles(
     order: ArticleOrder = "recently_seen",
     db: Session = Depends(get_db),
     _staff: object = Depends(deps.get_current_active_admin),
+    processing_context: object = Depends(get_news_read_context),
 ) -> NewsArticlePage:
     """Read saved articles with server-owned filters, ordering and pagination."""
     try:
         return browse_news_articles(db, page=page, page_size=page_size, search=search,
-                                    publisher=publisher, body=body, processing=processing, order=order)
+                                    publisher=publisher, body=body, processing=processing, order=order,processing_context=processing_context)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409,detail=str(exc)) from exc
     except SQLAlchemyError as exc:
         raise HTTPException(status_code=503, detail="News article storage is unavailable") from exc
 
@@ -203,6 +237,8 @@ def read_article(
     """Read captured inputs and the newest twenty recorded runs; never recompute."""
     try:
         detail = read_news_article_detail(db, article_id)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except SQLAlchemyError as exc:
         raise HTTPException(status_code=503, detail="News article storage is unavailable") from exc
     if detail is None:
@@ -255,7 +291,10 @@ def saved_news_processing_status(
     from app.crud.news_processing import list_article_runs
     if db.get(NewsArticle, article_id) is None:
         raise HTTPException(status_code=404, detail="News article not found")
-    return [NewsExtractionRunSummary.model_validate(row) for row in list_article_runs(db, article_id)]
+    try:
+        return [saved_run_summary(row) for row in list_article_runs(db, article_id)]
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.post("/candidates/{article_id}/processing", response_model=NewsProcessingSummary)
@@ -356,9 +395,14 @@ def run_news_discovery(
 
 
 @router.get("/sources", response_model=list[NewsSourceSummary])
-def list_news_sources(_staff: object = Depends(deps.get_current_active_admin)) -> list[NewsSourceSummary]:
+def list_news_sources(db: Session = Depends(get_db),
+                      _staff: object = Depends(deps.get_current_active_admin)) -> list[NewsSourceSummary]:
     """Show configured runtime sources without changing moderation state."""
-    return [NewsSourceSummary.model_validate(asdict(source)) for source in load_news_sources()]
+    from app.services.news_source_health_service import read_source_health
+    try:
+        return read_source_health(db)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News source health is unavailable") from exc
 
 
 @router.post("/sources/{source_id}/probe", response_model=NewsSourceProbeResponse)

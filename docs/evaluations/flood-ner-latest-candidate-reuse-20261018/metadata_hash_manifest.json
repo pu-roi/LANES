@@ -1,0 +1,9 @@
+{
+  "schema": "lanes-latest-reuse-public-hashes-v1",
+  "files": {
+    "curator-aggregate-status.json": "b7680113d89f95297da8f66cfc7166ed9075978c5bee29054dc096b5d5070276",
+    "curator-verification-manifest.json": "67b805d716e09902efb85acfae96c6ac5f63d1ea791d1c346e2d4aa9c099c613",
+    "README.md": "e43d8bad74810019ab5a34989c8e99c2baf9cd08426096f58671df724c29a28a",
+    "verification.json": "644dc0d0ad45b240d513d3fb378877fbbaf09754f7519fd6393a6e0e1447857f"
+  }
+}

@@ -1,0 +1,595 @@
+{
+  "baseline_predictions": [
+    {
+      "case_id": "constructed-preflight-01",
+      "entities": [
+        {
+          "end": 33,
+          "label": "LOC",
+          "start": 19,
+          "text": "Bonifacio Road"
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 39,
+          "text": "Barangay Catmon"
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58,
+          "text": "Malabon City"
+        }
+      ],
+      "text_sha256": "ce1b1b9ae7166a1248090dd101ac57342abeb5f60cd679c881e4c6bfb2215417"
+    },
+    {
+      "case_id": "constructed-preflight-02",
+      "entities": [],
+      "text_sha256": "7067c47c0a0913c1ee0ef93776ebe0fee2f9a2f1a7b9885a37d17decb0ae3913"
+    },
+    {
+      "case_id": "constructed-preflight-03",
+      "entities": [],
+      "text_sha256": "1d4e4fe88620fa1a87d621bcbb0715b95d0cc0bf83eeece00ee911f9b17c0291"
+    },
+    {
+      "case_id": "constructed-preflight-04",
+      "entities": [],
+      "text_sha256": "e0f0937045567371307c29dd2ab2bd73c76a812d99ed644a683f2be1e82afdbe"
+    },
+    {
+      "case_id": "constructed-preflight-05",
+      "entities": [],
+      "text_sha256": "a6ff03f74043bad8a6b7278951ad53bf582fb5957951d813583a9eee9276897b"
+    },
+    {
+      "case_id": "constructed-preflight-06",
+      "entities": [
+        {
+          "end": 51,
+          "label": "LOC",
+          "start": 40,
+          "text": "Quezon City"
+        }
+      ],
+      "text_sha256": "3deb9403cad6778841ec1908e388475b5ef341a23b514e16506aa86c29b112fc"
+    },
+    {
+      "case_id": "constructed-preflight-07",
+      "entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0,
+          "text": "Sitio"
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 17,
+          "text": "Barangay San Jose"
+        },
+        {
+          "end": 53,
+          "label": "LOC",
+          "start": 36,
+          "text": "San Pedro, Laguna"
+        }
+      ],
+      "text_sha256": "f35d37b9d505a9c5b22fab073f1caa5703debdaf14843ab0a3976159967738fc"
+    },
+    {
+      "case_id": "constructed-preflight-08",
+      "entities": [
+        {
+          "end": 12,
+          "label": "LOC",
+          "start": 0,
+          "text": "MALABON CITY"
+        }
+      ],
+      "text_sha256": "705eced7c547b8bb377f3495d37a6c53ccd41a47e89a64bf009aa8b34c6c032b"
+    },
+    {
+      "case_id": "constructed-preflight-09",
+      "entities": [
+        {
+          "end": 16,
+          "label": "LOC",
+          "start": 0,
+          "text": "Central Terminal"
+        },
+        {
+          "end": 37,
+          "label": "LOC",
+          "start": 21,
+          "text": "Riverside Bridge"
+        },
+        {
+          "end": 68,
+          "label": "LOC",
+          "start": 57,
+          "text": "Luna Avenue"
+        }
+      ],
+      "text_sha256": "a9a77ea68fa0d92c2b3e1c8715bec163b34084d16c5574cc356d3cfdbd66b18f"
+    },
+    {
+      "case_id": "constructed-preflight-10",
+      "entities": [
+        {
+          "end": 22,
+          "label": "LOC",
+          "start": 0,
+          "text": "Barangay San Isidro in"
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 23,
+          "text": "Quezon City"
+        },
+        {
+          "end": 67,
+          "label": "LOC",
+          "start": 48,
+          "text": "Barangay San Isidro"
+        },
+        {
+          "end": 84,
+          "label": "LOC",
+          "start": 71,
+          "text": "Antipolo City"
+        },
+        {
+          "end": 91,
+          "label": "LOC",
+          "start": 86,
+          "text": "Rizal"
+        }
+      ],
+      "text_sha256": "371f69700f4a79e1ee6efb8f68ea9159576ab118b439b46973e24b82a1701e8f"
+    },
+    {
+      "case_id": "constructed-preflight-11",
+      "entities": [
+        {
+          "end": 40,
+          "label": "LOC",
+          "start": 27,
+          "text": "Mabini Street"
+        }
+      ],
+      "text_sha256": "e3fe7141a4fc720ad20e6cafe70d155e7c0682d98c2b2f3035cbb59594d24514"
+    },
+    {
+      "case_id": "constructed-preflight-12",
+      "entities": [],
+      "text_sha256": "3941550232c83af8a8de3509833a9c76076c554a04c26ed56a9bc4ac043cb4e8"
+    },
+    {
+      "case_id": "constructed-preflight-13",
+      "entities": [
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 25,
+          "text": "Bonifacio Road"
+        },
+        {
+          "end": 56,
+          "label": "LOC",
+          "start": 41,
+          "text": "Barangay Catmon"
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58,
+          "text": "Malabon City"
+        }
+      ],
+      "text_sha256": "d71c35154ed3a9633be6b816f8bcbdd09cf97b2f56cf90035035de107617c456"
+    },
+    {
+      "case_id": "constructed-preflight-14",
+      "entities": [
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 19,
+          "text": "Sitio Sais"
+        },
+        {
+          "end": 46,
+          "label": "LOC",
+          "start": 33,
+          "text": "Sitio Kuwatro"
+        }
+      ],
+      "text_sha256": "9924039457cd491239cc70203124b2b7afe86de1e442406d148ee8d8f19bc326"
+    },
+    {
+      "case_id": "constructed-preflight-15",
+      "entities": [
+        {
+          "end": 8,
+          "label": "LOC",
+          "start": 4,
+          "text": "Prk."
+        }
+      ],
+      "text_sha256": "d56189f40f206a036fb0b13cd3b125622004e74c0a0d4a4cdbf69c84ecbed4d1"
+    },
+    {
+      "case_id": "constructed-preflight-16",
+      "entities": [],
+      "text_sha256": "f2177fa7d13cc7789674f290b273a1fedffcb7111064b1b96a0c390dd870c2cb"
+    },
+    {
+      "case_id": "constructed-preflight-17",
+      "entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 41,
+          "text": "Phase III"
+        }
+      ],
+      "text_sha256": "9f3465ebe40ad9610bbecd66aeba73e5ec285633cdfdc3aee6497d2a6c53e04c"
+    },
+    {
+      "case_id": "constructed-preflight-18",
+      "entities": [
+        {
+          "end": 28,
+          "label": "LOC",
+          "start": 23,
+          "text": "Brgy."
+        },
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 29,
+          "text": "San Rafael"
+        },
+        {
+          "end": 59,
+          "label": "LOC",
+          "start": 43,
+          "text": "Bgy. Santo Tomas"
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 63,
+          "text": "Tarlac City"
+        }
+      ],
+      "text_sha256": "012a02d7ed042f61da197f1751ec44d86dd3c69eca99c5799a7d40dcc5c11af4"
+    },
+    {
+      "case_id": "constructed-preflight-19",
+      "entities": [
+        {
+          "end": 36,
+          "label": "LOC",
+          "start": 22,
+          "text": "Sitio Maligaya"
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 38,
+          "text": "Barangay Mabuhay"
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 56,
+          "text": "Biñan City, Laguna"
+        }
+      ],
+      "text_sha256": "60a76f63c251479c46b2563475391d61cdf3f6de2ca3b319589c540c1ebfef0d"
+    },
+    {
+      "case_id": "constructed-preflight-20",
+      "entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0,
+          "text": "CEBU CITY—-Purok 31-A"
+        }
+      ],
+      "text_sha256": "c360a402264589336a94eca64cbfae258e2f5235f1a608d45fc98c6479bdd9f6"
+    },
+    {
+      "case_id": "constructed-preflight-21",
+      "entities": [
+        {
+          "end": 24,
+          "label": "ORG",
+          "start": 12,
+          "text": "Civic Center"
+        },
+        {
+          "end": 42,
+          "label": "LOC",
+          "start": 28,
+          "text": "Sunrise Bridge"
+        },
+        {
+          "end": 66,
+          "label": "LOC",
+          "start": 54,
+          "text": "Roxas Avenue"
+        }
+      ],
+      "text_sha256": "961cf7a4210949facd1acf6dd37b5a3e0cdfffcc9fd1a01599cec7e0af733918"
+    },
+    {
+      "case_id": "constructed-preflight-22",
+      "entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 11,
+          "text": "Barangay San Isidro"
+        },
+        {
+          "end": 44,
+          "label": "LOC",
+          "start": 34,
+          "text": "Pasig City"
+        },
+        {
+          "end": 61,
+          "label": "LOC",
+          "start": 48,
+          "text": "Antipolo City"
+        }
+      ],
+      "text_sha256": "e92d17562a2f5287943b3d745aa0c285dc486796888bfd58c1c46ec35cc4ba2e"
+    },
+    {
+      "case_id": "constructed-preflight-23",
+      "entities": [
+        {
+          "end": 47,
+          "label": "LOC",
+          "start": 34,
+          "text": "Mabini Street"
+        }
+      ],
+      "text_sha256": "e6019f60ad10e20ea5aa9c7aae1fd73b597615e5d88538cecf742e7662d1c71f"
+    },
+    {
+      "case_id": "constructed-preflight-24",
+      "entities": [],
+      "text_sha256": "d7d25144b10fddb0005dbda62ae916fe5428605dd18f71c50021059bb80c2364"
+    }
+  ],
+  "mode": "cpu",
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "packages": {
+    "Jinja2": "3.1.6",
+    "MarkupSafe": "3.0.4",
+    "PyYAML": "6.0.3",
+    "Pygments": "2.21.0",
+    "annotated-doc": "0.0.5",
+    "annotated-types": "0.8.0",
+    "anyio": "4.15.1",
+    "blis": "0.7.11",
+    "catalogue": "2.0.10",
+    "certifi": "2026.7.22",
+    "charset-normalizer": "3.5.2",
+    "click": "8.5.0",
+    "cloudpathlib": "0.26.0",
+    "colorama": "0.4.6",
+    "confection": "0.1.5",
+    "coverage": "7.16.2",
+    "cupy-cuda12x": "13.6.0",
+    "cymem": "2.0.13",
+    "fastrlock": "0.8.3",
+    "filelock": "4.2.0",
+    "floret": "0.10.5",
+    "fsspec": "2026.9.0",
+    "h11": "0.16.0",
+    "httpcore": "1.0.9",
+    "httpx": "0.27.0",
+    "huggingface_hub": "0.36.2",
+    "idna": "3.20",
+    "iniconfig": "2.3.1",
+    "langcodes": "3.5.1",
+    "markdown-it-py": "4.2.0",
+    "mdurl": "0.1.2",
+    "mpmath": "1.3.0",
+    "murmurhash": "1.0.15",
+    "networkx": "3.6.1",
+    "numpy": "1.26.4",
+    "nvidia-cuda-nvrtc-cu12": "12.8.93",
+    "nvidia-cuda-runtime-cu12": "12.8.90",
+    "packaging": "26.3",
+    "pluggy": "1.6.0",
+    "preshed": "3.0.13",
+    "pydantic": "2.14.1",
+    "pydantic_core": "2.50.1",
+    "pytest": "8.2.2",
+    "pytest-asyncio": "0.23.7",
+    "pytest-cov": "5.0.0",
+    "regex": "2026.9.29",
+    "requests": "2.34.2",
+    "rich": "15.0.0",
+    "safetensors": "0.8.0",
+    "setuptools": "81.0.0",
+    "shellingham": "1.5.4",
+    "smart_open": "7.7.1",
+    "sniffio": "1.3.1",
+    "spacy": "3.7.5",
+    "spacy-alignments": "0.9.2",
+    "spacy-legacy": "3.0.12",
+    "spacy-loggers": "1.0.5",
+    "spacy-transformers": "1.2.5",
+    "srsly": "2.5.4",
+    "sympy": "1.14.0",
+    "thinc": "8.2.5",
+    "tokenizers": "0.13.3",
+    "torch": "2.11.0+cu128",
+    "tqdm": "4.70.1",
+    "transformers": "4.30.2",
+    "typer": "0.27.3",
+    "typer-slim": "0.24.0",
+    "typing-inspection": "0.4.4",
+    "typing_extensions": "4.16.0",
+    "urllib3": "2.8.0",
+    "wasabi": "1.1.3",
+    "weasel": "0.4.3",
+    "wrapt": "2.5.1"
+  },
+  "python_version": "3.11.17",
+  "resources": {
+    "load_ms": 638.2935999999972,
+    "native_inference": {
+      "batch_size": 1,
+      "measured_calls": 24,
+      "p50_ms": 11.620100000072853,
+      "p95_ms": 12.626400000044669,
+      "warmup_calls": 24
+    },
+    "peak_working_set_bytes": 925122560,
+    "trial_inference": {
+      "batch_size": 1,
+      "measured_calls": 24,
+      "p50_ms": 11.53505000002042,
+      "p95_ms": 12.35129999986384,
+      "warmup_calls": 24
+    }
+  },
+  "spacy_version": "3.7.5",
+  "torch_version": "2.11.0+cu128",
+  "trial_predictions": [
+    {
+      "case_id": "constructed-preflight-01",
+      "entities": [],
+      "text_sha256": "ce1b1b9ae7166a1248090dd101ac57342abeb5f60cd679c881e4c6bfb2215417"
+    },
+    {
+      "case_id": "constructed-preflight-02",
+      "entities": [],
+      "text_sha256": "7067c47c0a0913c1ee0ef93776ebe0fee2f9a2f1a7b9885a37d17decb0ae3913"
+    },
+    {
+      "case_id": "constructed-preflight-03",
+      "entities": [],
+      "text_sha256": "1d4e4fe88620fa1a87d621bcbb0715b95d0cc0bf83eeece00ee911f9b17c0291"
+    },
+    {
+      "case_id": "constructed-preflight-04",
+      "entities": [],
+      "text_sha256": "e0f0937045567371307c29dd2ab2bd73c76a812d99ed644a683f2be1e82afdbe"
+    },
+    {
+      "case_id": "constructed-preflight-05",
+      "entities": [],
+      "text_sha256": "a6ff03f74043bad8a6b7278951ad53bf582fb5957951d813583a9eee9276897b"
+    },
+    {
+      "case_id": "constructed-preflight-06",
+      "entities": [],
+      "text_sha256": "3deb9403cad6778841ec1908e388475b5ef341a23b514e16506aa86c29b112fc"
+    },
+    {
+      "case_id": "constructed-preflight-07",
+      "entities": [],
+      "text_sha256": "f35d37b9d505a9c5b22fab073f1caa5703debdaf14843ab0a3976159967738fc"
+    },
+    {
+      "case_id": "constructed-preflight-08",
+      "entities": [],
+      "text_sha256": "705eced7c547b8bb377f3495d37a6c53ccd41a47e89a64bf009aa8b34c6c032b"
+    },
+    {
+      "case_id": "constructed-preflight-09",
+      "entities": [],
+      "text_sha256": "a9a77ea68fa0d92c2b3e1c8715bec163b34084d16c5574cc356d3cfdbd66b18f"
+    },
+    {
+      "case_id": "constructed-preflight-10",
+      "entities": [],
+      "text_sha256": "371f69700f4a79e1ee6efb8f68ea9159576ab118b439b46973e24b82a1701e8f"
+    },
+    {
+      "case_id": "constructed-preflight-11",
+      "entities": [],
+      "text_sha256": "e3fe7141a4fc720ad20e6cafe70d155e7c0682d98c2b2f3035cbb59594d24514"
+    },
+    {
+      "case_id": "constructed-preflight-12",
+      "entities": [],
+      "text_sha256": "3941550232c83af8a8de3509833a9c76076c554a04c26ed56a9bc4ac043cb4e8"
+    },
+    {
+      "case_id": "constructed-preflight-13",
+      "entities": [],
+      "text_sha256": "d71c35154ed3a9633be6b816f8bcbdd09cf97b2f56cf90035035de107617c456"
+    },
+    {
+      "case_id": "constructed-preflight-14",
+      "entities": [],
+      "text_sha256": "9924039457cd491239cc70203124b2b7afe86de1e442406d148ee8d8f19bc326"
+    },
+    {
+      "case_id": "constructed-preflight-15",
+      "entities": [],
+      "text_sha256": "d56189f40f206a036fb0b13cd3b125622004e74c0a0d4a4cdbf69c84ecbed4d1"
+    },
+    {
+      "case_id": "constructed-preflight-16",
+      "entities": [],
+      "text_sha256": "f2177fa7d13cc7789674f290b273a1fedffcb7111064b1b96a0c390dd870c2cb"
+    },
+    {
+      "case_id": "constructed-preflight-17",
+      "entities": [],
+      "text_sha256": "9f3465ebe40ad9610bbecd66aeba73e5ec285633cdfdc3aee6497d2a6c53e04c"
+    },
+    {
+      "case_id": "constructed-preflight-18",
+      "entities": [],
+      "text_sha256": "012a02d7ed042f61da197f1751ec44d86dd3c69eca99c5799a7d40dcc5c11af4"
+    },
+    {
+      "case_id": "constructed-preflight-19",
+      "entities": [],
+      "text_sha256": "60a76f63c251479c46b2563475391d61cdf3f6de2ca3b319589c540c1ebfef0d"
+    },
+    {
+      "case_id": "constructed-preflight-20",
+      "entities": [],
+      "text_sha256": "c360a402264589336a94eca64cbfae258e2f5235f1a608d45fc98c6479bdd9f6"
+    },
+    {
+      "case_id": "constructed-preflight-21",
+      "entities": [],
+      "text_sha256": "961cf7a4210949facd1acf6dd37b5a3e0cdfffcc9fd1a01599cec7e0af733918"
+    },
+    {
+      "case_id": "constructed-preflight-22",
+      "entities": [],
+      "text_sha256": "e92d17562a2f5287943b3d745aa0c285dc486796888bfd58c1c46ec35cc4ba2e"
+    },
+    {
+      "case_id": "constructed-preflight-23",
+      "entities": [],
+      "text_sha256": "e6019f60ad10e20ea5aa9c7aae1fd73b597615e5d88538cecf742e7662d1c71f"
+    },
+    {
+      "case_id": "constructed-preflight-24",
+      "entities": [],
+      "text_sha256": "d7d25144b10fddb0005dbda62ae916fe5428605dd18f71c50021059bb80c2364"
+    }
+  ]
+}

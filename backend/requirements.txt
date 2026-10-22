@@ -8,6 +8,9 @@ sqlalchemy==2.0.30
 geoalchemy2==0.15.0
 psycopg[binary]==3.3.4
 spacy==3.7.5
+# Optional isolated research only: training/flood_ner/requirements-qualification.in
+# Optional isolated desktop GPU: training/flood_ner/requirements-gpu-qualification.in
+# Do not include that recipe in the production environment.
 scikit-learn==1.5.0
 # Explicit interval-AFT optimizer; compatible with spaCy's NumPy 1.x runtime.
 scipy==1.14.1

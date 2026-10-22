@@ -1,0 +1,93 @@
+{
+  "status": "passed_c2_local_qualification",
+  "tests_passed": 225,
+  "test_groups": {
+    "software": {
+      "passed": 211,
+      "case_seconds": 32.05
+    },
+    "postgres": {
+      "passed": 14,
+      "case_seconds": 12.593
+    }
+  },
+  "retained_replay": {
+    "status": "passed_retained_c2_replay",
+    "retained_rows": 355,
+    "saved_prediction_records_compared": 352,
+    "reviewed_predictions_preserved": 53,
+    "cached_inputs": 788,
+    "saved_graphs": 407,
+    "maximum_saved_result_bytes": 8203832,
+    "saved_result_limit_bytes": 8388608,
+    "kinds": {
+      "passage": 345,
+      "article": 6,
+      "stress": 3,
+      "reviewed": 1
+    },
+    "counts": {
+      "claims": 17,
+      "groups": 4525,
+      "facts": 5341,
+      "native_only": 139,
+      "no_eligible_observations": 202,
+      "projected": 14
+    },
+    "omission_reasons": {
+      "joint_or_collective_requires_native_consumer": 115,
+      "not_observed_flood_evidence": 4417,
+      "observation_time_not_resolved": 17,
+      "non_metro_locality": 56,
+      "status_not_supported": 93,
+      "locality_not_supported": 4353,
+      "depth_scalar_not_supported": 1,
+      "local_area_requires_native_consumer": 20,
+      "location_type_not_supported": 13,
+      "locality_ambiguous": 40,
+      "ambiguous_observation_partition": 8,
+      "approximate_depth": 2,
+      "barangay_parent_not_supported": 1,
+      "evidence_exceeds_legacy_contract": 1
+    },
+    "source_check_outcomes": {
+      "review": 17
+    },
+    "source_policy_fingerprint": "0ab2392f4a162bb5508196a94534297bf55874b1aed6022d7e30d2b6a3e779d1",
+    "neural_inference_runs": 0,
+    "synthetic_native_envelopes_only": true,
+    "automatic_processing_enabled": false,
+    "shared_or_cloud_changes": false,
+    "qualified_runtime_manifest_sha256": "8b079765472409592b99e4d2f380c95b3846ad799aa5ef437b6db46857c7d488"
+  },
+  "preserved_prior_packages": 5,
+  "preserved_prior_files": 1327,
+  "c1_source_bindings_preserved": 12,
+  "qualified_source_bindings_total": 1040,
+  "unchanged_frozen_bindings": 1032,
+  "schema_head": "e8a6f1c2d903",
+  "owned_postgis_stopped": true,
+  "new_schema_changes": false,
+  "new_dependencies": false,
+  "native_automatic_processing_enabled": false,
+  "scheduled_native_evaluator_enabled": false,
+  "neural_inference_runs": 0,
+  "runtime_requalification": false,
+  "shared_cloud_mutations": false,
+  "ui_changes": false,
+  "recorded_by": "Roi Cambe",
+  "verified_at": "2026-10-20T21:09:00+08:00",
+  "source_freeze_sha256": "42d9e72d01f3f528e4ef611437a5b701179f975002d91e1b82b9c9744530b72b",
+  "existing_source_delta_paths": [
+    "backend/app/api/v1/endpoints/admin_news.py",
+    "backend/app/crud/news_collection.py",
+    "backend/app/crud/news_processing.py",
+    "backend/app/crud/news_results.py",
+    "backend/app/models/news.py",
+    "backend/app/schemas/news_candidate.py",
+    "backend/app/services/news_browsing_service.py",
+    "backend/app/services/news_results_service.py"
+  ],
+  "receipt_package": "rss-ner-phase-c2-20261020-v1",
+  "failed_and_partial_receipts_preserved": true
+}

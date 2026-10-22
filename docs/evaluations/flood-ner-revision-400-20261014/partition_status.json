@@ -1,0 +1,31 @@
+{
+  "frozen": false,
+  "hold": "pool quotas fail; no validation/test assignment",
+  "proposed_targets": {
+    "dev": {
+      "english": 30,
+      "taglish": 30
+    },
+    "test": {
+      "english": 30,
+      "taglish": 30
+    },
+    "train": {
+      "english": 140,
+      "taglish": 140
+    }
+  },
+  "retained_pilot_ids": [
+    "location-81abb349bb5fe38ae7ca",
+    "location-88c7c0a6579afd822893",
+    "location-95ccf208233b102344af",
+    "location-a297873e7455d2c3222a",
+    "location-bd95f93c15138ebe64f3",
+    "location-c805fadee3a31d1cca2b",
+    "location-ca58809c7f156a80b5b3",
+    "location-cd6dfcac700b410780ac",
+    "location-cebe21af8fefbd04cc6f",
+    "location-d04ea15a62c61150439e"
+  ],
+  "selected_samples": 0
+}

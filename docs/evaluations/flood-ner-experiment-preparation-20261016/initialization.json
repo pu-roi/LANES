@@ -1,0 +1,97 @@
+{
+  "gpu_name": "NVIDIA GeForce RTX 3060 Ti",
+  "model_predictions_performed": false,
+  "operation": "initialize_only",
+  "optimizer_updates": 0,
+  "python_version": "3.11.17",
+  "seeds": [
+    {
+      "config_sha256": "11f63c56d6977ce694f51c906464473d40983a2ca1ebe01fc3c7cf4526c8ba77",
+      "configuration_loaded": true,
+      "cpu_upper_parameter_arrays": 2,
+      "gpu_parameter_arrays": 46,
+      "initialization": {
+        "encoder_sha256": "a80e0c1b627ddf8440bfa8292d6ac1a5dddb52d828d115d8955facd718682ea1",
+        "method": "fresh six-class NER head; copied pinned pretrained NER encoder; pinned static vocabulary",
+        "optimizer_updates": 0
+      },
+      "labels": [
+        "BARANGAY",
+        "CITY",
+        "LANDMARK",
+        "LOCAL_AREA",
+        "PROVINCE",
+        "ROAD"
+      ],
+      "optimizer_updates": 0,
+      "pipeline": [
+        "ner"
+      ],
+      "seed": 0,
+      "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+    },
+    {
+      "config_sha256": "609782de2e9ba5ed0d1d650c41efb8e7dedd072327e31c5510f9f6482939595d",
+      "configuration_loaded": true,
+      "cpu_upper_parameter_arrays": 2,
+      "gpu_parameter_arrays": 46,
+      "initialization": {
+        "encoder_sha256": "a80e0c1b627ddf8440bfa8292d6ac1a5dddb52d828d115d8955facd718682ea1",
+        "method": "fresh six-class NER head; copied pinned pretrained NER encoder; pinned static vocabulary",
+        "optimizer_updates": 0
+      },
+      "labels": [
+        "BARANGAY",
+        "CITY",
+        "LANDMARK",
+        "LOCAL_AREA",
+        "PROVINCE",
+        "ROAD"
+      ],
+      "optimizer_updates": 0,
+      "pipeline": [
+        "ner"
+      ],
+      "seed": 1,
+      "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+    },
+    {
+      "config_sha256": "7428185d29d51238536d91b6dfb3a5adffadea4578d9eebaae79a76004130530",
+      "configuration_loaded": true,
+      "cpu_upper_parameter_arrays": 2,
+      "gpu_parameter_arrays": 46,
+      "initialization": {
+        "encoder_sha256": "a80e0c1b627ddf8440bfa8292d6ac1a5dddb52d828d115d8955facd718682ea1",
+        "method": "fresh six-class NER head; copied pinned pretrained NER encoder; pinned static vocabulary",
+        "optimizer_updates": 0
+      },
+      "labels": [
+        "BARANGAY",
+        "CITY",
+        "LANDMARK",
+        "LOCAL_AREA",
+        "PROVINCE",
+        "ROAD"
+      ],
+      "optimizer_updates": 0,
+      "pipeline": [
+        "ner"
+      ],
+      "seed": 2,
+      "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+    }
+  ],
+  "spacy_version": "3.7.5",
+  "state": "passed",
+  "test_corpus_read": false,
+  "training_performed": false,
+  "training_policy": {
+    "batch_size": 8,
+    "dropout": 0.1,
+    "eval_frequency": 35,
+    "learning_rate": 0.001,
+    "max_epochs": 30,
+    "max_steps": 1000,
+    "patience": 175
+  }
+}

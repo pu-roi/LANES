@@ -1,0 +1,38 @@
+{
+  "additional_location_samples": 0,
+  "category_support": {
+    "collective_ranges": {
+      "english": 11,
+      "taglish": 5
+    },
+    "local_exceptions": {
+      "english": 1,
+      "taglish": 4
+    },
+    "negative_unknown_time": {
+      "english": 15,
+      "taglish": 15
+    },
+    "shared_observations": {
+      "english": 12,
+      "taglish": 7
+    },
+    "temporal_transitions": {
+      "english": 3,
+      "taglish": 7
+    }
+  },
+  "complete": true,
+  "errors": [],
+  "languages": {
+    "english": 20,
+    "taglish": 20
+  },
+  "records": 40,
+  "schema_version": "lanes-context-pilot-v1",
+  "scope_is_project_choice_not_optimal_sample_size": true,
+  "source_articles_by_language": {
+    "english": 14,
+    "taglish": 19
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "lanes-latest-candidate-reuse-verification-v1",
+  "fresh_broad_regressions": {
+    "passed": 311,
+    "failed": 0,
+    "skipped": 1,
+    "passing_subtests": 132,
+    "elapsed_seconds": 75.255,
+    "junit_sha256": "7418662d5e5e3a89a1bea53f42108f6a291096c2fe1a63c36c585abc861dd803"
+  },
+  "fresh_focused_regressions": {
+    "passed": 80,
+    "failed": 0,
+    "skipped": 0,
+    "passing_subtests": 84,
+    "elapsed_seconds": 24.343,
+    "junit_sha256": "d9d188b5be352b871842cf3d10a5c280dcf0b742e1336c5cb3789e28e0110fad"
+  },
+  "new_disclosure_tests": 9,
+  "original_v8_repair_tests_retained": 61,
+  "scope": "versioned conditional research proposal only; no release",
+  "command": "& .\\backend\\.venv\\Scripts\\python.exe -B -m pytest --noconftest -p no:cacheprovider -q .\\backend\\tests\\test_flood_ner_exposure_review.py .\\backend\\tests\\test_flood_ner_review_progress.py .\\backend\\tests\\test_flood_ner_research_capture.py .\\backend\\tests\\test_flood_ner_research_review.py .\\backend\\tests\\test_flood_ner_bounded_discovery.py .\\backend\\tests\\test_flood_ner_known_source_capture.py .\\backend\\tests\\test_flood_ner_history_inventory.py .\\backend\\tests\\test_flood_ner_repository_bytes.py .\\backend\\tests\\test_flood_ner_tooling.py .\\backend\\tests\\test_flood_ner_reference_selection.py .\\backend\\tests\\test_flood_ner_qualified_export.py",
+  "implementation_and_test_hashes": {
+    "backend/training/flood_ner/exposure_review.py": "86306afd048f28d3d333ee6497c4ad331b5dea4935b6d49ea8e20acbb44a5e11",
+    "backend/tests/test_flood_ner_exposure_review.py": "6e7b7013196d2f6ecbc605c4c4762b241fd4dbd32e443c324b783f90c7a4c8ae",
+    "backend/training/flood_ner/research_review.py": "88f82c11fbb8490c03eed5de6e16d3994eb7d4ff8283c318e0e0c12848fa8204",
+    "backend/training/flood_ner/research_capture.py": "6da4a7ac9370766ab08677ac498a07e4524dffff19cc38bca1d0857d1507b4fd",
+    "backend/training/flood_ner/review_progress.py": "6cd07bd6bf09fc0e13cc3def12bb6df0add1ce56fcbedfb8741e70dfc4e6e3d2"
+  },
+  "protected_inputs": {
+    "protected_files": 7159,
+    "unchanged_files": 7159,
+    "missing_files": 0,
+    "changed_files": 0
+  },
+  "protected_input_manifest_sha256": "177b670eb99dcaa427467df6c79ec8078a6eeb3441cd9caa743319da912ad279",
+  "network_operations": 0,
+  "new_collection": false,
+  "budget_increase": false,
+  "admission": false,
+  "partition_freeze": false,
+  "test_sealing": false,
+  "training_export": false,
+  "inference": false,
+  "training": false,
+  "upload": false,
+  "commit": false,
+  "push": false,
+  "production_api_changes": false,
+  "dependency_changes": false,
+  "database_schema_changes": false,
+  "final_preservation_receipt_sha256": "2a0e982a3352146bed7cc6c293dd12d2a779fe3b28694bf92d9df55c50bfc997",
+  "curator": {
+    "complete_references": 68,
+    "entity_spans": 107,
+    "guards_passed": 27,
+    "guards_failed": 0,
+    "mechanical_errors": 0,
+    "predecessor_files_unchanged": 310,
+    "safe_pair_validated": true,
+    "status_sha256": "b7680113d89f95297da8f66cfc7166ed9075978c5bee29054dc096b5d5070276",
+    "verification_sha256": "67b805d716e09902efb85acfae96c6ac5f63d1ea791d1c346e2d4aa9c099c613",
+    "private_output_manifest_sha256": "ff1890db360b9730193235d16482ec4996a63cfb5f3e0b551fcc6d6c3670756d"
+  },
+  "proposal": {
+    "training": 345,
+    "validation": 60,
+    "conditional_test": 56,
+    "english_positive": 27,
+    "english_negative": 3,
+    "taglish_positive": 23,
+    "taglish_negative": 3,
+    "missing_taglish_positive": 4,
+    "baseline": 49,
+    "baseline_removals": 0,
+    "gain": 7,
+    "gain_prior_metadata_only": 4,
+    "gain_latest_unchanged": 1,
+    "gain_latest_context_replacement": 1,
+    "gain_prior_saved_source_window": 1,
+    "already_supported_under_cap_sources_checked": 15,
+    "latest_original_dispositions": {
+      "unchanged_selected": 1,
+      "superseded_by_selected_context": 1,
+      "unusable": 9
+    },
+    "latest_unusable_reasons": {
+      "same_local_event": 3,
+      "exact_development_duplicate": 2,
+      "contemporaneous_component_uncertainty": 2,
+      "persistent_component": 1,
+      "organization_only_or_target_language": 1
+    },
+    "exhaustive_saved_segmentation_claim": false
+  },
+  "readiness": {
+    "coverage_complete": false,
+    "accounting_verified": false,
+    "history_verified": false,
+    "ready_for_admission": false,
+    "ready_for_training": false,
+    "test_sealed": false
+  }
+}

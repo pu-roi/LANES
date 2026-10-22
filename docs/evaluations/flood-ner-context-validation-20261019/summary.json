@@ -1,0 +1,235 @@
+{
+  "counts": {
+    "dev": 60
+  },
+  "decision": {
+    "checks": {
+      "negative_error_passages_preserved": true,
+      "no_introduced_FN": true,
+      "no_introduced_FP": false,
+      "overall_f1_improved": true,
+      "supported_slice_f1_preserved": true
+    },
+    "disposition": "does_not_qualify",
+    "qualifies_for_later_integration_proposal": false
+  },
+  "groups": {
+    "changed_groups": 3,
+    "connected_groups": 20,
+    "group_contributions_sorted": [
+      {
+        "changed_passages": 1,
+        "gained_TP": 2,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 1,
+        "resolved_FP": 2
+      },
+      {
+        "changed_passages": 1,
+        "gained_TP": 1,
+        "introduced_FN": 0,
+        "introduced_FP": 1,
+        "passages": 2,
+        "resolved_FP": 2
+      },
+      {
+        "changed_passages": 1,
+        "gained_TP": 1,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 6,
+        "resolved_FP": 1
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 6,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 5,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 5,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 4,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 4,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 4,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 3,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 3,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 3,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 2,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 2,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 2,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 2,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 2,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 2,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 1,
+        "resolved_FP": 0
+      },
+      {
+        "changed_passages": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "passages": 1,
+        "resolved_FP": 0
+      }
+    ]
+  },
+  "holdout_accessed": false,
+  "languages": {
+    "english": 38,
+    "taglish": 22
+  },
+  "limitations": [
+    "Motivated by exposed validation findings; reused-validation research, not blinded evaluation.",
+    "AI-assisted silver references and incomplete-history/accounting limitations remain.",
+    "No holdout evaluation, new data, annotation changes or further rule tuning."
+  ],
+  "model_selection_changed": false,
+  "neural_inference": false,
+  "primary_seed": 0,
+  "production_integration": false,
+  "record_dispositions": {
+    "changed_introduced_strict_error": 1,
+    "changed_no_new_strict_error": 2,
+    "original_prediction_preserved": 57
+  },
+  "retained": "v19_corrected_control_seed_0",
+  "rule_actions": {
+    "named_asset": {
+      "abstentions": 3,
+      "changed_spans": 3,
+      "matched_spans": 10
+    },
+    "shared_identifier": {
+      "abstentions": 0,
+      "changed_spans": 2,
+      "matched_spans": 2
+    }
+  },
+  "schema": "lanes-context-validation-result-v1",
+  "scope": "frozen_context_safeguard_validation_only",
+  "subset": [
+    "named_asset",
+    "shared_identifier"
+  ],
+  "training": false,
+  "transitions": {
+    "changed_passages": 3,
+    "changed_spans": 5,
+    "drops": 0,
+    "gained_TP": 4,
+    "introduced_FN": 0,
+    "introduced_FP": 1,
+    "lost_TP": 0,
+    "persistent_FN": 23,
+    "persistent_FP": 14,
+    "persistent_TP": 58,
+    "resolved_FP": 5,
+    "retags": 5
+  }
+}

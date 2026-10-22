@@ -1,0 +1,1576 @@
+{
+  "cases": [
+    {
+      "articles": 19,
+      "case": "sitio",
+      "evidence": [
+        {
+          "end": 167,
+          "entity_id": "e151",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-17980e2aa13d4c6196df",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature",
+          "start": 151
+        },
+        {
+          "end": 332,
+          "entity_id": "e318",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-19ec2d9140d31a6a685d",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished",
+          "start": 318
+        },
+        {
+          "end": 343,
+          "entity_id": "e336",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-272923bc929ad6f03eac",
+          "source_url": "https://www.abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106",
+          "start": 336
+        },
+        {
+          "end": 30,
+          "entity_id": "e14",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-31ffaef30fd70576e97c",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature",
+          "start": 14
+        },
+        {
+          "end": 105,
+          "entity_id": "e92",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-356d7077097baf6d5503",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river",
+          "start": 92
+        },
+        {
+          "end": 72,
+          "entity_id": "e60",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-3f9819645b137e5533a8",
+          "source_url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city",
+          "start": 60
+        },
+        {
+          "end": 119,
+          "entity_id": "e107",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-4090e2b8e6f4b258ce16",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay",
+          "start": 107
+        },
+        {
+          "end": 221,
+          "entity_id": "e212",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-4090e2b8e6f4b258ce16",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay",
+          "start": 212
+        },
+        {
+          "end": 248,
+          "entity_id": "e236",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-46d3b70d866d8bb7745d",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/636781/urduja-affects-nearly-160-000-people-in-eastern-visayas-caraga/story/",
+          "start": 236
+        },
+        {
+          "end": 303,
+          "entity_id": "e288",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-4f2107ce52c298ecb892",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die",
+          "start": 288
+        },
+        {
+          "end": 80,
+          "entity_id": "e68",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-53bf840ef1b4cf59fbad",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river",
+          "start": 68
+        },
+        {
+          "end": 108,
+          "entity_id": "e98",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-6d59c74794cd90a5f187",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/956608/over-p1b-dike-other-flood-control-projects-in-oriental-mindoro-missing-lacson/story/",
+          "start": 98
+        },
+        {
+          "end": 77,
+          "entity_id": "e61",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-849f04f6b5fa9fc226e4",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished",
+          "start": 61
+        },
+        {
+          "end": 22,
+          "entity_id": "e12",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-e2db63d4420e17ba8c55",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/956608/over-p1b-dike-other-flood-control-projects-in-oriental-mindoro-missing-lacson/story/",
+          "start": 12
+        },
+        {
+          "end": 31,
+          "entity_id": "e22",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-ecec0a81588a556433cb",
+          "source_url": "https://www.abs-cbn.com/news/09/25/17/ilang-barangay-sa-lapu-lapu-city-binaha",
+          "start": 22
+        },
+        {
+          "end": 88,
+          "entity_id": "e76",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-f941935fbb822a344432",
+          "source_url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks",
+          "start": 76
+        },
+        {
+          "end": 74,
+          "entity_id": "e004",
+          "label": "LOCAL_AREA",
+          "record_id": "location-d04ea15a62c61150439e",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+          "start": 67
+        },
+        {
+          "end": 429,
+          "entity_id": "e413",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-31f7d82646010159122f",
+          "source_url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028",
+          "start": 413
+        },
+        {
+          "end": 493,
+          "entity_id": "e483",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 483
+        },
+        {
+          "end": 1185,
+          "entity_id": "e1170",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 1170
+        },
+        {
+          "end": 301,
+          "entity_id": "e287",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-3ff16d2591b212a8f2a5",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/696896/students-in-opol-misamis-oriental-at-risk-as-they-pass-through-dilapidated-bridge-everyday/story/",
+          "start": 287
+        },
+        {
+          "end": 225,
+          "entity_id": "e213",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-77017b275bfa957b0b4c",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 213
+        },
+        {
+          "end": 55,
+          "entity_id": "e40",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-a5b5c76d264119920ab5",
+          "source_url": "https://www.abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha",
+          "start": 40
+        },
+        {
+          "end": 218,
+          "entity_id": "e202",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-b0e668efc023e4d4e7f9",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/660572/ilang-lugar-sa-malabon-binaha-dahil-sa-pag-apaw-ng-tubig-mula-sa-dike/story/",
+          "start": 202
+        },
+        {
+          "end": 239,
+          "entity_id": "e220",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-b0e668efc023e4d4e7f9",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/660572/ilang-lugar-sa-malabon-binaha-dahil-sa-pag-apaw-ng-tubig-mula-sa-dike/story/",
+          "start": 220
+        },
+        {
+          "end": 593,
+          "entity_id": "e580",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-ba6cb482e1e723eaf398",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/talakayan/954882/malaking-bahagi-ng-bundok-sa-angono-rizal-nakalbo-dahil-sa-quarrying/story/",
+          "start": 580
+        }
+      ],
+      "matched_spans": 26,
+      "passages": 23,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 6,
+      "case": "purok_prk",
+      "evidence": [
+        {
+          "end": 181,
+          "entity_id": "e173",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-4b8794ee43d0e5d8b3f0",
+          "source_url": "https://www.abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha",
+          "start": 173
+        },
+        {
+          "end": 213,
+          "entity_id": "e004",
+          "label": "LOCAL_AREA",
+          "record_id": "location-95ccf208233b102344af",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+          "start": 206
+        },
+        {
+          "end": 351,
+          "entity_id": "e006",
+          "label": "LOCAL_AREA",
+          "record_id": "location-95ccf208233b102344af",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+          "start": 331
+        },
+        {
+          "end": 694,
+          "entity_id": "e687",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 687
+        },
+        {
+          "end": 196,
+          "entity_id": "e189",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-44135653b79a061daad8",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/",
+          "start": 189
+        },
+        {
+          "end": 350,
+          "entity_id": "e343",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-44135653b79a061daad8",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/",
+          "start": 343
+        },
+        {
+          "end": 412,
+          "entity_id": "e403",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 403
+        },
+        {
+          "end": 606,
+          "entity_id": "e599",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-c9fc28e08a0aa54e9a50",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/",
+          "start": 599
+        }
+      ],
+      "matched_spans": 8,
+      "passages": 6,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 0,
+      "case": "block_blk",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 56,
+      "case": "barangay_variants",
+      "evidence": [
+        {
+          "end": 97,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 85
+        },
+        {
+          "end": 152,
+          "entity_id": "e006",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 140
+        },
+        {
+          "end": 180,
+          "entity_id": "e008",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 168
+        },
+        {
+          "end": 228,
+          "entity_id": "e011",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 216
+        },
+        {
+          "end": 15,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-06ebc2d761f6331afe35",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+          "start": 0
+        },
+        {
+          "end": 129,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-06ebc2d761f6331afe35",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+          "start": 108
+        },
+        {
+          "end": 232,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "cohort-0c975d3b1a4ce1358060",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/849559/floods-hit-bicol-visayas-areas-due-to-paeng/story/",
+          "start": 214
+        },
+        {
+          "end": 119,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-11adcf5a5da40427c142",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/881001/heavy-rains-from-habagat-cause-flooding-in-parts-of-the-country/story/",
+          "start": 100
+        },
+        {
+          "end": 92,
+          "entity_id": "e001",
+          "label": "BARANGAY",
+          "record_id": "cohort-1a013b75f223c9ecdf8f",
+          "source_url": "https://www.abs-cbn.com/news/2024/9/3/list-flooded-areas-due-to-sept-3-bad-weather-1223",
+          "start": 79
+        },
+        {
+          "end": 155,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-238e5fb262570ac788b0",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/998072/habagat-causes-floods-landslides-in-several-areas/story/",
+          "start": 140
+        },
+        {
+          "end": 94,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-27344ef78aa8fd2d0672",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 78
+        },
+        {
+          "end": 26,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-37067e8fb8ab7d98173d",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/998072/habagat-causes-floods-landslides-in-several-areas/story/",
+          "start": 3
+        },
+        {
+          "end": 234,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "cohort-3cb71cde3cbfb9239883",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 218
+        },
+        {
+          "end": 258,
+          "entity_id": "e005",
+          "label": "BARANGAY",
+          "record_id": "cohort-3cb71cde3cbfb9239883",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 239
+        },
+        {
+          "end": 19,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-403f66f0650ecce3a447",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+          "start": 0
+        },
+        {
+          "end": 177,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-430f7be0f1be227d85dc",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 158
+        },
+        {
+          "end": 299,
+          "entity_id": "e003",
+          "label": "BARANGAY",
+          "record_id": "cohort-430f7be0f1be227d85dc",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 281
+        },
+        {
+          "end": 62,
+          "entity_id": "e001",
+          "label": "BARANGAY",
+          "record_id": "cohort-441a76c8ac89bca29ba4",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 45
+        },
+        {
+          "end": 105,
+          "entity_id": "e003",
+          "label": "BARANGAY",
+          "record_id": "cohort-441a76c8ac89bca29ba4",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 87
+        },
+        {
+          "end": 163,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "cohort-441a76c8ac89bca29ba4",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 147
+        },
+        {
+          "end": 232,
+          "entity_id": "e008",
+          "label": "BARANGAY",
+          "record_id": "cohort-441a76c8ac89bca29ba4",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 216
+        },
+        {
+          "end": 18,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-5a6e950e28b12ed01fb0",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+          "start": 0
+        },
+        {
+          "end": 98,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-5c3db41fbe6768ab2659",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/998072/habagat-causes-floods-landslides-in-several-areas/story/",
+          "start": 81
+        },
+        {
+          "end": 47,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-66c932da40efa27bfbfa",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/857009/10-dead-due-to-rains-caused-by-low-pressure-area-ocd/story/",
+          "start": 30
+        },
+        {
+          "end": 193,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "cohort-6b2149374ba1da8094bc",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/953360/heavy-rains-from-habagat-trigger-floods-in-parts-of-metro-manila/story/",
+          "start": 180
+        },
+        {
+          "end": 317,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-7730d8600afea19dbd17",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/998072/habagat-causes-floods-landslides-in-several-areas/story/",
+          "start": 299
+        },
+        {
+          "end": 88,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-81bda6a7134ef34cfb3c",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/1000224/look-habagat-rains-trigger-floods-across-luzon/story/",
+          "start": 70
+        },
+        {
+          "end": 99,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-871691b321190a217fe2",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/849559/floods-hit-bicol-visayas-areas-due-to-paeng/story/",
+          "start": 79
+        },
+        {
+          "end": 16,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-91063a4cc69a462e4d22",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/953419/mmda-list-of-flooded-areas-as-of-tuesday-4-40-p-m/story/",
+          "start": 0
+        },
+        {
+          "end": 91,
+          "entity_id": "e001",
+          "label": "BARANGAY",
+          "record_id": "cohort-91063a4cc69a462e4d22",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/953419/mmda-list-of-flooded-areas-as-of-tuesday-4-40-p-m/story/",
+          "start": 77
+        },
+        {
+          "end": 251,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "cohort-92e715b5920bb4636feb",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/849559/floods-hit-bicol-visayas-areas-due-to-paeng/story/",
+          "start": 233
+        },
+        {
+          "end": 19,
+          "entity_id": "e000",
+          "label": "BARANGAY",
+          "record_id": "cohort-95fea3f819908a5f942d",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/999189/parts-of-metro-manila-flooded-as-enhanced-habagat-brought-relentless-rains/story/",
+          "start": 3
+        },
+        {
+          "end": 153,
+          "entity_id": "e005",
+          "label": "BARANGAY",
+          "record_id": "cohort-b7270de04509e16db0ff",
+          "source_url": "https://www.abs-cbn.com/news/2024/9/3/list-flooded-areas-due-to-sept-3-bad-weather-1223",
+          "start": 138
+        },
+        {
+          "end": 38,
+          "entity_id": "e001",
+          "label": "BARANGAY",
+          "record_id": "cohort-bf3c56e92e567fb42373",
+          "source_url": "https://www.abs-cbn.com/news/weather-traffic/2025/6/21/floods-swamp-several-roads-in-metro-manila-amid-heavy-downpour-1835",
+          "start": 17
+        },
+        {
+          "end": 303,
+          "entity_id": "e286",
+          "label": "BARANGAY",
+          "record_id": "continuation-01365a54c87d8110e45c",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/919233/some-provinces-reeling-from-enteng/story/",
+          "start": 286
+        },
+        {
+          "end": 175,
+          "entity_id": "e163",
+          "label": "BARANGAY",
+          "record_id": "continuation-0a87532a2ddca7e8d54f",
+          "source_url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+          "start": 163
+        },
+        {
+          "end": 176,
+          "entity_id": "e154",
+          "label": "BARANGAY",
+          "record_id": "continuation-0ad2f53b6ad2f36a4c9f",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/1000755/ilang-lugar-sa-hagonoy-bulacan-nananatiling-lubog-sa-baha-kahit-umaraw-na/story",
+          "start": 154
+        },
+        {
+          "end": 353,
+          "entity_id": "e329",
+          "label": "BARANGAY",
+          "record_id": "continuation-0b73740c9943dafb7d1d",
+          "source_url": "https://www.abs-cbn.com/news/10/26/20/marikina-govt-handa-sa-posibilidad-ng-pagbaha-dahil-sa-bagyong-quinta",
+          "start": 329
+        },
+        {
+          "end": 244,
+          "entity_id": "e231",
+          "label": "BARANGAY",
+          "record_id": "continuation-130a1fd911e14a888179",
+          "source_url": "https://www.abs-cbn.com/news/04/27/21/ilang-lugar-sa-davao-city-binaha-dahil-sa-thunderstorms",
+          "start": 231
+        },
+        {
+          "end": 105,
+          "entity_id": "e88",
+          "label": "BARANGAY",
+          "record_id": "continuation-2e3fd8a03bd9c3d55386",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die",
+          "start": 88
+        },
+        {
+          "end": 138,
+          "entity_id": "e120",
+          "label": "BARANGAY",
+          "record_id": "continuation-32aa42226aec5d6d77f1",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/763793/quezon-province-binaha-at-nagka-landslide-dahil-kay-ulysses/story/",
+          "start": 120
+        },
+        {
+          "end": 324,
+          "entity_id": "e302",
+          "label": "BARANGAY",
+          "record_id": "continuation-34c901f67e195db9849b",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/talakayan/998860/dating-magandang-subdivision-sa-hagonoy-bulacan-iniwan-ng-ilang-dating-nakatira-dahil-nalubog-na/story",
+          "start": 302
+        },
+        {
+          "end": 119,
+          "entity_id": "e107",
+          "label": "BARANGAY",
+          "record_id": "continuation-356d7077097baf6d5503",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river",
+          "start": 107
+        },
+        {
+          "end": 166,
+          "entity_id": "e149",
+          "label": "BARANGAY",
+          "record_id": "continuation-356d7077097baf6d5503",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river",
+          "start": 149
+        },
+        {
+          "end": 18,
+          "entity_id": "e3",
+          "label": "BARANGAY",
+          "record_id": "continuation-3f9819645b137e5533a8",
+          "source_url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city",
+          "start": 3
+        },
+        {
+          "end": 135,
+          "entity_id": "e121",
+          "label": "BARANGAY",
+          "record_id": "continuation-4090e2b8e6f4b258ce16",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay",
+          "start": 121
+        },
+        {
+          "end": 238,
+          "entity_id": "e225",
+          "label": "BARANGAY",
+          "record_id": "continuation-4090e2b8e6f4b258ce16",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay",
+          "start": 225
+        },
+        {
+          "end": 133,
+          "entity_id": "e122",
+          "label": "BARANGAY",
+          "record_id": "continuation-46b4d92017982d6c2708",
+          "source_url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+          "start": 122
+        },
+        {
+          "end": 266,
+          "entity_id": "e250",
+          "label": "BARANGAY",
+          "record_id": "continuation-46d3b70d866d8bb7745d",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/636781/urduja-affects-nearly-160-000-people-in-eastern-visayas-caraga/story/",
+          "start": 250
+        },
+        {
+          "end": 120,
+          "entity_id": "e105",
+          "label": "BARANGAY",
+          "record_id": "continuation-4b8794ee43d0e5d8b3f0",
+          "source_url": "https://www.abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha",
+          "start": 105
+        },
+        {
+          "end": 64,
+          "entity_id": "e44",
+          "label": "BARANGAY",
+          "record_id": "continuation-4e901cd2a705a161f305",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature",
+          "start": 44
+        },
+        {
+          "end": 331,
+          "entity_id": "e313",
+          "label": "BARANGAY",
+          "record_id": "continuation-4f2107ce52c298ecb892",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die",
+          "start": 313
+        },
+        {
+          "end": 102,
+          "entity_id": "e92",
+          "label": "BARANGAY",
+          "record_id": "continuation-5afed2f8e53966e74553",
+          "source_url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+          "start": 92
+        },
+        {
+          "end": 119,
+          "entity_id": "e104",
+          "label": "BARANGAY",
+          "record_id": "continuation-5afed2f8e53966e74553",
+          "source_url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+          "start": 104
+        },
+        {
+          "end": 135,
+          "entity_id": "e123",
+          "label": "BARANGAY",
+          "record_id": "continuation-5afed2f8e53966e74553",
+          "source_url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+          "start": 123
+        },
+        {
+          "end": 223,
+          "entity_id": "e207",
+          "label": "BARANGAY",
+          "record_id": "continuation-5dba6d2600246906f8f0",
+          "source_url": "https://www.abs-cbn.com/news/nation/2025/9/18/ici-inspects-flood-control-projects-in-quezon-city-2254",
+          "start": 207
+        },
+        {
+          "end": 61,
+          "entity_id": "e50",
+          "label": "BARANGAY",
+          "record_id": "continuation-5e38da6f4a5280f2dab1",
+          "source_url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+          "start": 50
+        },
+        {
+          "end": 215,
+          "entity_id": "e203",
+          "label": "BARANGAY",
+          "record_id": "continuation-5f9445ac13303b51567c",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/talakayan/998860/dating-magandang-subdivision-sa-hagonoy-bulacan-iniwan-ng-ilang-dating-nakatira-dahil-nalubog-na/story",
+          "start": 203
+        },
+        {
+          "end": 47,
+          "entity_id": "e28",
+          "label": "BARANGAY",
+          "record_id": "continuation-68271764c648734e3750",
+          "source_url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city",
+          "start": 28
+        },
+        {
+          "end": 64,
+          "entity_id": "e49",
+          "label": "BARANGAY",
+          "record_id": "continuation-68271764c648734e3750",
+          "source_url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city",
+          "start": 49
+        },
+        {
+          "end": 241,
+          "entity_id": "e219",
+          "label": "BARANGAY",
+          "record_id": "continuation-6c644c932bdf4e1851d1",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/1000867/11-anyos-na-lalaki-tinangay-ng-malakas-na-agos-ng-baha-at-nalunod-sa-creek-sa-valenzuela/story/",
+          "start": 219
+        },
+        {
+          "end": 245,
+          "entity_id": "e227",
+          "label": "BARANGAY",
+          "record_id": "continuation-787e178be24277c54349",
+          "source_url": "https://www.abs-cbn.com/news/06/25/19/matinding-baha-naranasan-sa-ilang-parte-ng-metro-manila",
+          "start": 227
+        },
+        {
+          "end": 94,
+          "entity_id": "e78",
+          "label": "BARANGAY",
+          "record_id": "continuation-7ed39f110dba947d0de4",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/760273/bata-sa-bangka-na-nag-aaral-dahil-sa-baha-sa-quezon/story/",
+          "start": 78
+        },
+        {
+          "end": 97,
+          "entity_id": "e79",
+          "label": "BARANGAY",
+          "record_id": "continuation-849f04f6b5fa9fc226e4",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished",
+          "start": 79
+        },
+        {
+          "end": 189,
+          "entity_id": "e173",
+          "label": "BARANGAY",
+          "record_id": "continuation-a6beb32adce35c8b5f15",
+          "source_url": "https://www.abs-cbn.com/news/09/08/21/baha-sa-ilang-bayan-sa-bulacan-humupa-na",
+          "start": 173
+        },
+        {
+          "end": 227,
+          "entity_id": "e211",
+          "label": "BARANGAY",
+          "record_id": "continuation-a9d791e6ae044a32c4c3",
+          "source_url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks",
+          "start": 211
+        },
+        {
+          "end": 219,
+          "entity_id": "e199",
+          "label": "BARANGAY",
+          "record_id": "continuation-b2eec3f4d345023317ae",
+          "source_url": "https://www.abs-cbn.com/news/08/11/18/baha-zero-visibility-dala-ng-walang-humpay-na-pag-ulan-sa-kamaynilaan",
+          "start": 199
+        },
+        {
+          "end": 329,
+          "entity_id": "e306",
+          "label": "BARANGAY",
+          "record_id": "continuation-cc5fe6600535911527a0",
+          "source_url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city",
+          "start": 306
+        },
+        {
+          "end": 69,
+          "entity_id": "e54",
+          "label": "BARANGAY",
+          "record_id": "continuation-cec073c0b468aaed4d00",
+          "source_url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa",
+          "start": 54
+        },
+        {
+          "end": 70,
+          "entity_id": "e53",
+          "label": "BARANGAY",
+          "record_id": "continuation-d362a2e7101db216eebb",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/763793/quezon-province-binaha-at-nagka-landslide-dahil-kay-ulysses/story/",
+          "start": 53
+        },
+        {
+          "end": 264,
+          "entity_id": "e244",
+          "label": "BARANGAY",
+          "record_id": "continuation-d362a2e7101db216eebb",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/763793/quezon-province-binaha-at-nagka-landslide-dahil-kay-ulysses/story/",
+          "start": 244
+        },
+        {
+          "end": 217,
+          "entity_id": "e201",
+          "label": "BARANGAY",
+          "record_id": "continuation-da72c73f76d447f43700",
+          "source_url": "https://www.abs-cbn.com/news/04/27/21/ilang-lugar-sa-davao-city-binaha-dahil-sa-thunderstorms",
+          "start": 201
+        },
+        {
+          "end": 131,
+          "entity_id": "e112",
+          "label": "BARANGAY",
+          "record_id": "continuation-dca908d33b4e17846395",
+          "source_url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks",
+          "start": 112
+        },
+        {
+          "end": 234,
+          "entity_id": "e218",
+          "label": "BARANGAY",
+          "record_id": "continuation-e2db63d4420e17ba8c55",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/956608/over-p1b-dike-other-flood-control-projects-in-oriental-mindoro-missing-lacson/story/",
+          "start": 218
+        },
+        {
+          "end": 93,
+          "entity_id": "e79",
+          "label": "BARANGAY",
+          "record_id": "continuation-e9615b0348f781ce7527",
+          "source_url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay",
+          "start": 79
+        },
+        {
+          "end": 106,
+          "entity_id": "e92",
+          "label": "BARANGAY",
+          "record_id": "continuation-f941935fbb822a344432",
+          "source_url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks",
+          "start": 92
+        },
+        {
+          "end": 284,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "location-81abb349bb5fe38ae7ca",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/",
+          "start": 267
+        },
+        {
+          "end": 417,
+          "entity_id": "e007",
+          "label": "BARANGAY",
+          "record_id": "location-81abb349bb5fe38ae7ca",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/",
+          "start": 403
+        },
+        {
+          "end": 588,
+          "entity_id": "e011",
+          "label": "BARANGAY",
+          "record_id": "location-81abb349bb5fe38ae7ca",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/",
+          "start": 570
+        },
+        {
+          "end": 813,
+          "entity_id": "e014",
+          "label": "BARANGAY",
+          "record_id": "location-81abb349bb5fe38ae7ca",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/",
+          "start": 798
+        },
+        {
+          "end": 233,
+          "entity_id": "e005",
+          "label": "BARANGAY",
+          "record_id": "location-95ccf208233b102344af",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+          "start": 215
+        },
+        {
+          "end": 372,
+          "entity_id": "e007",
+          "label": "BARANGAY",
+          "record_id": "location-95ccf208233b102344af",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+          "start": 355
+        },
+        {
+          "end": 269,
+          "entity_id": "e005",
+          "label": "BARANGAY",
+          "record_id": "location-c805fadee3a31d1cca2b",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/957494/parts-of-metro-manila-flooded-after-heavy-to-intense-rains/story/",
+          "start": 246
+        },
+        {
+          "end": 156,
+          "entity_id": "e004",
+          "label": "BARANGAY",
+          "record_id": "location-ca58809c7f156a80b5b3",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/875989/rains-flooding-reported-in-several-luzon-areas/story/",
+          "start": 140
+        },
+        {
+          "end": 600,
+          "entity_id": "e009",
+          "label": "BARANGAY",
+          "record_id": "location-ca58809c7f156a80b5b3",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/875989/rains-flooding-reported-in-several-luzon-areas/story/",
+          "start": 585
+        },
+        {
+          "end": 620,
+          "entity_id": "e010",
+          "label": "BARANGAY",
+          "record_id": "location-ca58809c7f156a80b5b3",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/875989/rains-flooding-reported-in-several-luzon-areas/story/",
+          "start": 605
+        },
+        {
+          "end": 61,
+          "entity_id": "e003",
+          "label": "BARANGAY",
+          "record_id": "location-cebe21af8fefbd04cc6f",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/1000340/heavy-rains-from-habagat-cause-floods-in-metro-manila/story/",
+          "start": 42
+        },
+        {
+          "end": 354,
+          "entity_id": "e012",
+          "label": "BARANGAY",
+          "record_id": "location-cebe21af8fefbd04cc6f",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/1000340/heavy-rains-from-habagat-cause-floods-in-metro-manila/story/",
+          "start": 335
+        },
+        {
+          "end": 570,
+          "entity_id": "e546",
+          "label": "BARANGAY",
+          "record_id": "revision-0c5383a6e83533b71498",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/989301/baha-metro-manila-malakas-ulan/story/",
+          "start": 546
+        },
+        {
+          "end": 295,
+          "entity_id": "e283",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 283
+        },
+        {
+          "end": 338,
+          "entity_id": "e324",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 324
+        },
+        {
+          "end": 361,
+          "entity_id": "e351",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 351
+        },
+        {
+          "end": 385,
+          "entity_id": "e375",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 375
+        },
+        {
+          "end": 428,
+          "entity_id": "e416",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 416
+        },
+        {
+          "end": 456,
+          "entity_id": "e443",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 443
+        },
+        {
+          "end": 483,
+          "entity_id": "e474",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 474
+        },
+        {
+          "end": 505,
+          "entity_id": "e496",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 496
+        },
+        {
+          "end": 557,
+          "entity_id": "e536",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 536
+        },
+        {
+          "end": 137,
+          "entity_id": "e117",
+          "label": "BARANGAY",
+          "record_id": "revision-13ea25d57a03515d2cc7",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/760146/bahagi-ng-maharlika-highway-sa-lopez-quezon-lubog-sa-baha/story",
+          "start": 117
+        },
+        {
+          "end": 240,
+          "entity_id": "e222",
+          "label": "BARANGAY",
+          "record_id": "revision-23b1585f176ae1a60e25",
+          "source_url": "https://www.abs-cbn.com/news/07/26/19/ilang-barangay-sa-santa-maria-bulacan-binaha",
+          "start": 222
+        },
+        {
+          "end": 150,
+          "entity_id": "e135",
+          "label": "BARANGAY",
+          "record_id": "revision-2f7cf654d4586d745dca",
+          "source_url": "https://www.abs-cbn.com/news/09/03/17/6-barangay-ng-bayan-sa-bukidnon-binaha",
+          "start": 135
+        },
+        {
+          "end": 446,
+          "entity_id": "e433",
+          "label": "BARANGAY",
+          "record_id": "revision-31f7d82646010159122f",
+          "source_url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028",
+          "start": 433
+        },
+        {
+          "end": 308,
+          "entity_id": "e292",
+          "label": "BARANGAY",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 292
+        },
+        {
+          "end": 712,
+          "entity_id": "e698",
+          "label": "BARANGAY",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 698
+        },
+        {
+          "end": 1204,
+          "entity_id": "e1189",
+          "label": "BARANGAY",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 1189
+        },
+        {
+          "end": 1372,
+          "entity_id": "e1357",
+          "label": "BARANGAY",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 1357
+        },
+        {
+          "end": 46,
+          "entity_id": "e26",
+          "label": "BARANGAY",
+          "record_id": "revision-44135653b79a061daad8",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/",
+          "start": 26
+        },
+        {
+          "end": 1043,
+          "entity_id": "e1023",
+          "label": "BARANGAY",
+          "record_id": "revision-44135653b79a061daad8",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/",
+          "start": 1023
+        },
+        {
+          "end": 268,
+          "entity_id": "e252",
+          "label": "BARANGAY",
+          "record_id": "revision-51cb0e44d3bf3b4a24ce",
+          "source_url": "https://www.abs-cbn.com/news/07/28/18/flash-flood-inundates-20-homes-in-zambo-del-sur",
+          "start": 252
+        },
+        {
+          "end": 44,
+          "entity_id": "e31",
+          "label": "BARANGAY",
+          "record_id": "revision-616984ca36a00c0ed182",
+          "source_url": "https://www.abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha",
+          "start": 31
+        },
+        {
+          "end": 106,
+          "entity_id": "e88",
+          "label": "BARANGAY",
+          "record_id": "revision-616984ca36a00c0ed182",
+          "source_url": "https://www.abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha",
+          "start": 88
+        },
+        {
+          "end": 93,
+          "entity_id": "e77",
+          "label": "BARANGAY",
+          "record_id": "revision-77017b275bfa957b0b4c",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 77
+        },
+        {
+          "end": 245,
+          "entity_id": "e229",
+          "label": "BARANGAY",
+          "record_id": "revision-77017b275bfa957b0b4c",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 229
+        },
+        {
+          "end": 166,
+          "entity_id": "e150",
+          "label": "BARANGAY",
+          "record_id": "revision-8af17aaf8b407a807778",
+          "source_url": "https://www.abs-cbn.com/news/11/02/22/mga-dadalaw-sa-sementeryo-sa-biliran-hirap-makatawid-sa-baha",
+          "start": 150
+        },
+        {
+          "end": 170,
+          "entity_id": "e156",
+          "label": "BARANGAY",
+          "record_id": "revision-b0e668efc023e4d4e7f9",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/660572/ilang-lugar-sa-malabon-binaha-dahil-sa-pag-apaw-ng-tubig-mula-sa-dike/story/",
+          "start": 156
+        },
+        {
+          "end": 427,
+          "entity_id": "e414",
+          "label": "BARANGAY",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 414
+        },
+        {
+          "end": 617,
+          "entity_id": "e604",
+          "label": "BARANGAY",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 604
+        },
+        {
+          "end": 1218,
+          "entity_id": "e1205",
+          "label": "BARANGAY",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 1205
+        },
+        {
+          "end": 2628,
+          "entity_id": "e2609",
+          "label": "BARANGAY",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 2609
+        },
+        {
+          "end": 3020,
+          "entity_id": "e3000",
+          "label": "BARANGAY",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 3000
+        },
+        {
+          "end": 151,
+          "entity_id": "e136",
+          "label": "BARANGAY",
+          "record_id": "revision-d3e18d9e6367d009f611",
+          "source_url": "https://www.abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan",
+          "start": 136
+        },
+        {
+          "end": 413,
+          "entity_id": "e394",
+          "label": "BARANGAY",
+          "record_id": "revision-d3e18d9e6367d009f611",
+          "source_url": "https://www.abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan",
+          "start": 394
+        },
+        {
+          "end": 441,
+          "entity_id": "e426",
+          "label": "BARANGAY",
+          "record_id": "revision-d3e18d9e6367d009f611",
+          "source_url": "https://www.abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan",
+          "start": 426
+        },
+        {
+          "end": 65,
+          "entity_id": "e51",
+          "label": "BARANGAY",
+          "record_id": "revision-f47fecc103a37ca88791",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/660572/ilang-lugar-sa-malabon-binaha-dahil-sa-pag-apaw-ng-tubig-mula-sa-dike/story/",
+          "start": 51
+        },
+        {
+          "end": 687,
+          "entity_id": "e674",
+          "label": "BARANGAY",
+          "record_id": "revision-fd735778837094abef7b",
+          "source_url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028",
+          "start": 674
+        }
+      ],
+      "matched_spans": 125,
+      "passages": 82,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 0,
+      "case": "zone",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 0,
+      "case": "phase",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 0,
+      "case": "lot",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 4,
+      "case": "area",
+      "evidence": [
+        {
+          "end": 230,
+          "entity_id": "e002",
+          "label": "LOCAL_AREA",
+          "record_id": "cohort-3d67792a6fd47372df3d",
+          "source_url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/",
+          "start": 221
+        },
+        {
+          "end": 311,
+          "entity_id": "e297",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-3f9e82e340d472170dab",
+          "source_url": "https://www.philstar.com/the-freeman/region/2018/01/04/1774478/agaton-leaves-bohol-flooded",
+          "start": 297
+        },
+        {
+          "end": 98,
+          "entity_id": "e88",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-ad916311ecdc6c776327",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/759628/mall-sa-quezon-city-pinasok-ng-baha/story/",
+          "start": 88
+        },
+        {
+          "end": 430,
+          "entity_id": "e408",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-887034604ffed4c9dff4",
+          "source_url": "https://www.abs-cbn.com/news/2024/9/3/panoorin-baha-sa-ilang-kalsada-sa-malabon-valenzuela-723",
+          "start": 408
+        }
+      ],
+      "matched_spans": 4,
+      "passages": 4,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 0,
+      "case": "unit",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 9,
+      "case": "numbered_localities",
+      "evidence": [
+        {
+          "end": 97,
+          "entity_id": "e002",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 85
+        },
+        {
+          "end": 152,
+          "entity_id": "e006",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 140
+        },
+        {
+          "end": 180,
+          "entity_id": "e008",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 168
+        },
+        {
+          "end": 228,
+          "entity_id": "e011",
+          "label": "BARANGAY",
+          "record_id": "cohort-03eee0b656fe5eaa8c1a",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+          "start": 216
+        },
+        {
+          "end": 343,
+          "entity_id": "e336",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-272923bc929ad6f03eac",
+          "source_url": "https://www.abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106",
+          "start": 336
+        },
+        {
+          "end": 181,
+          "entity_id": "e173",
+          "label": "LOCAL_AREA",
+          "record_id": "continuation-4b8794ee43d0e5d8b3f0",
+          "source_url": "https://www.abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha",
+          "start": 173
+        },
+        {
+          "end": 213,
+          "entity_id": "e004",
+          "label": "LOCAL_AREA",
+          "record_id": "location-95ccf208233b102344af",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+          "start": 206
+        },
+        {
+          "end": 351,
+          "entity_id": "e006",
+          "label": "LOCAL_AREA",
+          "record_id": "location-95ccf208233b102344af",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+          "start": 331
+        },
+        {
+          "end": 74,
+          "entity_id": "e004",
+          "label": "LOCAL_AREA",
+          "record_id": "location-d04ea15a62c61150439e",
+          "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+          "start": 67
+        },
+        {
+          "end": 483,
+          "entity_id": "e474",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 474
+        },
+        {
+          "end": 505,
+          "entity_id": "e496",
+          "label": "BARANGAY",
+          "record_id": "revision-1374146bfdb88d0d4a67",
+          "source_url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+          "start": 496
+        },
+        {
+          "end": 694,
+          "entity_id": "e687",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-3ec7af5d4a0c51976069",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/",
+          "start": 687
+        },
+        {
+          "end": 196,
+          "entity_id": "e189",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-44135653b79a061daad8",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/",
+          "start": 189
+        },
+        {
+          "end": 350,
+          "entity_id": "e343",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-44135653b79a061daad8",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/",
+          "start": 343
+        },
+        {
+          "end": 606,
+          "entity_id": "e599",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-c9fc28e08a0aa54e9a50",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/",
+          "start": 599
+        }
+      ],
+      "matched_spans": 15,
+      "passages": 9,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 1,
+      "case": "roman_localities",
+      "evidence": [
+        {
+          "end": 412,
+          "entity_id": "e403",
+          "label": "LOCAL_AREA",
+          "record_id": "revision-c73ea02b627d2d41eb12",
+          "source_url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/",
+          "start": 403
+        }
+      ],
+      "matched_spans": 1,
+      "passages": 1,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 0,
+      "case": "leading_zero_localities",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 0,
+      "case": "letter_suffix_localities",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    },
+    {
+      "articles": 1,
+      "case": "borrowed_number_spellings",
+      "evidence": [
+        {
+          "end": 241,
+          "entity_id": "e219",
+          "label": "BARANGAY",
+          "record_id": "continuation-6c644c932bdf4e1851d1",
+          "source_url": "https://www.gmanetwork.com/news/balitambayan/balita/1000867/11-anyos-na-lalaki-tinangay-ng-malakas-na-agos-ng-baha-at-nalunod-sa-creek-sa-valenzuela/story/",
+          "start": 219
+        }
+      ],
+      "matched_spans": 1,
+      "passages": 1,
+      "status": "source-observed lexical cue; interpretation follows reviewed label"
+    },
+    {
+      "articles": 0,
+      "case": "compound_block_lot_phase",
+      "evidence": [],
+      "matched_spans": 0,
+      "passages": 0,
+      "status": "gap: no selected entity span matches this cue"
+    }
+  ],
+  "constructed_examples_in_primary_cohort": false,
+  "method": "Metadata-only cue scan of reviewed entity names, not an exhaustive semantic coverage proof. Zero matches are retained gaps. Class/count quotas do not require every rare form.",
+  "number_family_gap": "Units/teens/tens/hundreds/large identifiers and spelling families lack systematic selected real-source coverage; prior supporting references and constructed regressions are outside the primary 400.",
+  "semantic_negatives": "40 paired reviews distinguish measurements and address/project/count/rainfall/schedule context; independent review remains open.",
+  "wikipedia_government_directories_in_primary_cohort": false
+}

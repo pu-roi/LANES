@@ -1,0 +1,16 @@
+{
+  "proposal_complete": true,
+  "training_ready": false,
+  "public_metadata_matches_private_aggregate_products": true,
+  "private_source_text_entities_identifiers_published": false,
+  "documentation_records_synchronized": 5,
+  "protected_prior_files_unchanged": 1207,
+  "safe_curator_metadata_files_unchanged": 2,
+  "sources_read_and_accounted": 91,
+  "membership_records_accounted": 565,
+  "known_alignment_failure_preserved": true,
+  "fresh_heldout_text_labels_opened": false,
+  "source_use_proposals_not_adoptions_or_admission": true,
+  "source_collection_admission_export_training_push": false,
+  "local_report_links_verified": 10
+}

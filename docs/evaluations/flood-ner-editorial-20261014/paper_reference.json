@@ -1,0 +1,109 @@
+{
+  "annotation_owner": "research team; manual annotations required",
+  "chapters": {
+    "II": "Methodology",
+    "III": "Results and Discussion",
+    "IV": "Conclusion and Recommendation"
+  },
+  "dataset_total": 400,
+  "document_revision_id": null,
+  "export_path": "backend/training/flood_ner/artifacts/editorial-20261014/paper-reference/LANES_Original.docx",
+  "export_sha256": "52f51cb32a189533051100cf0cc2588e427a1b482de6698c65900377970d02c3",
+  "external_document_modified": false,
+  "method": "Read-only authenticated browser DOCX export; XML paragraph text inspected.",
+  "ner_scope": "location entities; severity dictionary evaluated separately",
+  "paper_languages": [
+    "english",
+    "taglish"
+  ],
+  "paragraph_index_base": 0,
+  "partition_targets": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "requirements": [
+    {
+      "paragraph_index": 180,
+      "sha256": "5e3969b3a1a5487e39f49c890b68174390d08c9fa8da2bd9289255e4bd0ae952"
+    },
+    {
+      "paragraph_index": 181,
+      "sha256": "d73d9fb117684ead20c8d53c68a3ae595bfe4dd5982b5e64f583bcb662d60fb5"
+    },
+    {
+      "paragraph_index": 220,
+      "sha256": "56f78f8d899a2c95705b4f62a256abdf2c8cb1ccfdf62e50c66c25324413bdd1"
+    },
+    {
+      "paragraph_index": 223,
+      "sha256": "bd23aad50f99cbcaaeac34beb2945192cf3a2977e926d5c8afbd8180522dd86a"
+    },
+    {
+      "paragraph_index": 230,
+      "sha256": "ab8b0d158c3c5028fd188907fb1ffb1b63958a629365e9423d0c69b3637ce042"
+    },
+    {
+      "paragraph_index": 232,
+      "sha256": "2d726e23a7ddd9757b34808db40f1d1f76a3ff1a3056805293c14632bbd63cca"
+    },
+    {
+      "paragraph_index": 271,
+      "sha256": "c2a1d793660b571d2368843728643d5db550fa7de2a06477b3ce984821f93e19"
+    },
+    {
+      "paragraph_index": 272,
+      "sha256": "56fddbe40078c2b2df17eba88110953792c3d87b13dcca0a9a997dcfb1cb4409"
+    },
+    {
+      "paragraph_index": 278,
+      "sha256": "2fc06a8eb0d46b2eee6fe67908635870dcedc3643a31b4af757e0395927631d2"
+    },
+    {
+      "paragraph_index": 279,
+      "sha256": "22f87e3ab0bd21681f6ec41a1447f0f29c63086ab0c2bbea43ddb5f490277c96"
+    },
+    {
+      "paragraph_index": 293,
+      "sha256": "50266de234fed01a4b91cb77e995e13da38a2150423a8fc6b88472f993d083ed"
+    },
+    {
+      "paragraph_index": 302,
+      "sha256": "637461f7e432bf532cefb421cf4a14845923ead5f06cf4b37277975ff388843d"
+    },
+    {
+      "paragraph_index": 308,
+      "sha256": "bb667e5ffecfc743b909a463e5ec8b9e4a296da410383e481161414f59c74045"
+    },
+    {
+      "paragraph_index": 312,
+      "sha256": "891bf92aed82b3c39b6fc8999075f3ddc400ede05c5409d94da17aaaebeab3c8"
+    },
+    {
+      "paragraph_index": 313,
+      "sha256": "d1d25db030ae114059c406df830103060ab7133290b791df9274b191a68c4ac0"
+    },
+    {
+      "paragraph_index": 323,
+      "sha256": "be0202436657672a43ffaae4b1f24b9495ff2085241aa8e05e3656b58de14b99"
+    },
+    {
+      "paragraph_index": 324,
+      "sha256": "dd58e7353b3b2fc3d6dba67ce1c9e9df52a48c9de793cac90a872fed3de83a9b"
+    },
+    {
+      "paragraph_index": 838,
+      "sha256": "2d020cbd4cac00e9afab31268bd233f0c99cc1c86eb868fa1c53375b04b182ff"
+    },
+    {
+      "paragraph_index": 839,
+      "sha256": "cbbc1331f52921a5d2f0312171487cf04f76f092e9c25c16e2726b3d605b14a3"
+    }
+  ],
+  "reuse_assessment": "No publisher training-use grant or recorded institutional assessment identified in inspected methodology/ethics sections.",
+  "reviewed_at": "2026-10-14T06:37:17.176935+00:00",
+  "revision_note": "No Google revision ID supplied by export; last-edit UI is not an immutable revision identity.",
+  "schema_version": "lanes-paper-requirement-reference-v1",
+  "title": "LANES_Original",
+  "url": "https://docs.google.com/document/d/1FCtFhJ-cFm-m_gxdgGAf61WLJbY8_98iReSIyZ68_LA/edit"
+}

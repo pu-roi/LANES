@@ -35,7 +35,16 @@ def require_utc(now: datetime) -> datetime:
     return now.astimezone(timezone.utc)
 
 
-def validate_run(run: NewsExtractionRun, version: NewsArticleVersion) -> tuple[NewsArticleExtractorInput, NewsExtractionResult]:
+def validate_run(run: NewsExtractionRun, version: NewsArticleVersion, *, trusted=None) -> tuple[NewsArticleExtractorInput, NewsExtractionResult]:
+    if run.mode == 'ner_rules_v1':
+        from app.services.news_ner_durable.contracts import RunEvidence
+        from app.services.news_ner_durable.adapter import verify_saved_result
+        if trusted is None or run.status!='completed' or run.completed_at is None:
+            raise ValueError('extraction_not_completed')
+        context=RunEvidence.from_records(run,version)
+        result=verify_saved_result(context,run.result,trusted)
+        article=NewsArticleExtractorInput.model_validate({**context.input_snapshot,'article_id':context.article_id})
+        return article,result
     if run.status != "completed" or run.completed_at is None or run.mode != "rules_only":
         raise ValueError("extraction_not_completed")
     article = NewsArticleExtractorInput.model_validate({**version.input_snapshot, "article_id": version.article_id})
@@ -61,7 +70,7 @@ def validate_run(run: NewsExtractionRun, version: NewsArticleVersion) -> tuple[N
     return article, result
 
 
-def bind_completed_run(db: Session, run_id: int, policy_fingerprint: str, now: datetime) -> tuple[int, int]:
+def bind_completed_run(db: Session, run_id: int, policy_fingerprint: str, now: datetime, *, trusted=None) -> tuple[int, int]:
     """Serialize a run's bindings; retries reuse sources and policy evaluations.
 
     New runs get separate unpublished cases. Cross-run continuity is intentionally
@@ -75,8 +84,11 @@ def bind_completed_run(db: Session, run_id: int, policy_fingerprint: str, now: d
     run = db.scalar(select(NewsExtractionRun).where(NewsExtractionRun.id == run_id).with_for_update())
     if run is None:
         raise ValueError("extraction_not_found")
+    if run.mode == 'ner_rules_v1':
+        from app.services.news_ner_durable.collection import require_native_storage
+        require_native_storage(db)
     version = db.get(NewsArticleVersion, run.article_version_id)
-    _, result = validate_run(run, version)
+    _, result = validate_run(run, version, trusted=trusted)
     # Validate every existing immutable binding before creating any new rows.
     existing = {row.claim_ordinal: row for row in db.scalars(select(NewsClaimSource).where(
         NewsClaimSource.extraction_run_id == run_id)).all()}

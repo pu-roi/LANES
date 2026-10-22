@@ -1,0 +1,30 @@
+{
+  "kind": "prospective_successor_finalization_and_training_handoff",
+  "executed": false,
+  "training_authorized_by_this_outline": false,
+  "prerequisites": [
+    "A jointly feasible60-passage independent test:30English/30Taglish,27positives+3genuine negatives per language.",
+    "Resolve material source-history/use/reference gaps; retain explicit scoped archive limits.",
+    "Preserve fitted-source training anchors, developmental groups and historical artifacts."
+  ],
+  "next_task_steps": [
+    "Admit only qualified successor records into a new versioned package, freeze grouped memberships and seal the test through its isolated curator.",
+    "Qualify exact corpus-tokenizer alignment, then prepare and verify successor-specific train/validation exports while test content stays isolated.",
+    "Prepare a versioned desktop GPU package with pinned model/tokenizer/data/configuration identities, verification-only preflight and clear manual training instructions."
+  ],
+  "subsequent_task": "Run the reviewed GPU training configuration on the desktop; preserve historical models/results; evaluate after development selection is complete.",
+  "existing_tooling_constraints": [
+    {
+      "path": "backend/training/flood_ner/qualified_export.py",
+      "finding": "Historical exporter validates400records,1465location spans and280/60/60counts; it is not a ready successor export path."
+    },
+    {
+      "path": "backend/training/flood_ner/manual_training.py",
+      "finding": "Historical launcher binds experiment-preparation-20261016-v2 and historical seed/configuration artifacts; do not relaunch it for successor training."
+    }
+  ],
+  "current_training_proposal": 345,
+  "current_validation_proposal": 60,
+  "proposed_465_total_is_conditional_not_admitted": true,
+  "no_cpu_fallback_or_training_run_performed": true
+}

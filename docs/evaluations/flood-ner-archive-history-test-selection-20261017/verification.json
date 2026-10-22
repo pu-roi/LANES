@@ -1,0 +1,20 @@
+{
+  "archive_reconciliation_complete": true,
+  "training_ready": false,
+  "protected_files_unchanged": 4077,
+  "v3_payload_entries_accounted": 3863,
+  "local_payload_status": {
+    "identical": 3863
+  },
+  "zip_objects_content_hash_verified": 2357,
+  "historical_archives_verified": 7,
+  "source_only_variants_checked": 907,
+  "source_evidence_files_unchanged": 1691,
+  "metadata_supplement_contains_annotation_fields_or_source_text": false,
+  "source_only_bundle_contains_annotations_model_outputs_fresh_test_content": false,
+  "coordinator_opened_fresh_test_content": false,
+  "unknown_history_preserved": true,
+  "archive_helpers_executed_or_restore_performed": false,
+  "remote_bytes_rehashed": false,
+  "public_api_dependencies_database_unchanged": true
+}

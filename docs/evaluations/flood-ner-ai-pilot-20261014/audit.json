@@ -1,0 +1,33 @@
+{
+  "annotation_schema_matches_runtime": true,
+  "artifact_hashes": {
+    "annotation_register.json": "f9311bb69acce0223e5b91e55e7cdfb19057c435c22c3092f8126d5dcca14a42",
+    "context_drafts.jsonl": "56df6c21abd22a16442772d4f5992351e861af17f64634182942dd7a633a1ffe",
+    "coverage.json": "d7e1e5ad6fe3b18382bedf1ebbf8ae899dadf8093a4355ffb98f33f9d4cf8ab7",
+    "location_annotations.jsonl": "cd052c986672f7b202eb1983c6ede51f4f5332f557ec491370c36d4fe38b1b70"
+  },
+  "automated_regression_result": {
+    "does_not_measure_model_accuracy": true,
+    "elapsed_seconds": 108.81,
+    "failed": 0,
+    "passed": 400,
+    "scope": "offline NER tooling plus existing location, heading, temporal, source and processing regressions",
+    "warnings": 1
+  },
+  "contextual_status_recession_not_clearance": true,
+  "documentation_link_check": {
+    "local_targets": 1204,
+    "missing_targets": 0
+  },
+  "human_or_gold_claims": false,
+  "no_geographic_ids_invented": true,
+  "paired_drafts_not_extra_samples": true,
+  "pinhayan_pinyahan_parent_occurrences_verified": true,
+  "schema_version": "lanes-flood-ner-ai-pilot-audit-v1",
+  "separate_raw_spellings_preserved": true,
+  "source_admission_unchanged": true,
+  "source_exact_context_drafts": 12,
+  "source_exact_location_records": 12,
+  "split_memberships_unchanged": true,
+  "validation_errors": []
+}

@@ -1,0 +1,112 @@
+{
+  "candidate_local_area_spans": 0,
+  "candidate_negatives": 101,
+  "context_pairs": 40,
+  "cpu_import_probe": {
+    "memory_or_speed_qualified": false,
+    "model_loaded": false,
+    "python": "3.11.17",
+    "require_cpu_passed": true,
+    "spacy": "3.7.5",
+    "training_performed": false
+  },
+  "fresh_heldout_private_data_inspected": false,
+  "frozen_evaluator_launcher_recipe_files_verified": 8,
+  "frozen_qualification_implementation_files_verified": 2,
+  "future_training_device": "existing_qualified_desktop_gpu",
+  "laptop_role": "review_validation_preparation",
+  "new_candidates": 179,
+  "new_draft_alignment_errors": 1,
+  "new_draft_training_splits_assigned": 0,
+  "new_drafts": 244,
+  "new_held_unscored": 65,
+  "new_training_performed": false,
+  "newly_admitted": 0,
+  "old_and_new_location_profile": "location-only-v1",
+  "old_and_new_schema": "lanes-flood-ner-v1",
+  "original_admission_hashes_verified": 52,
+  "original_candidate_alignment_errors": 0,
+  "original_inputs_preserved": 460,
+  "original_languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "original_records": 400,
+  "original_sources": 138,
+  "original_spans": 1465,
+  "original_splits": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "pipeline_boundaries": [
+    {
+      "checkpoint": "desktop-relocation-20261016-162313/qualification",
+      "implementation_files_verified": 0,
+      "manifest_files_verified": 10
+    },
+    {
+      "checkpoint": "qualified-export-20261016-v1",
+      "implementation_files_verified": 2,
+      "manifest_files_verified": 8
+    },
+    {
+      "checkpoint": "experiment-preparation-20261016-v2",
+      "implementation_files_verified": 4,
+      "manifest_files_verified": 9
+    }
+  ],
+  "qualification_export_preparation_input_bindings_equal": true,
+  "ready_for_new_training": false,
+  "records_replaced": 0,
+  "remaining": [
+    "Future corpus size and compatibility/version decision",
+    "Resolve source/reference/language/grouping and tokenizer holds",
+    "Close positive-label and publisher/event coverage gaps",
+    "Seal independent fresh held-out package",
+    "Version and qualify the next export/configuration on the actual desktop; never reuse old completed-run destinations"
+  ],
+  "schema": "lanes-ner-pretraining-consistency-review-v1",
+  "schema_validated_records": 684,
+  "selected_models": [
+    {
+      "config_verified": true,
+      "files_verified": 11,
+      "name": "original-seed-0",
+      "test_path_in_training": false
+    },
+    {
+      "config_verified": true,
+      "files_verified": 11,
+      "name": "original-seed-1",
+      "test_path_in_training": false
+    },
+    {
+      "config_verified": true,
+      "files_verified": 11,
+      "name": "original-seed-2",
+      "test_path_in_training": false
+    },
+    {
+      "config_verified": true,
+      "files_verified": 11,
+      "name": "A-seed-0",
+      "test_path_in_training": false
+    },
+    {
+      "config_verified": true,
+      "files_verified": 11,
+      "name": "A-seed-1",
+      "test_path_in_training": false
+    },
+    {
+      "config_verified": true,
+      "files_verified": 11,
+      "name": "A-seed-2",
+      "test_path_in_training": false
+    }
+  ],
+  "source_schema_or_dependency_modified": false,
+  "tokenizer_changed": false,
+  "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+}

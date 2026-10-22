@@ -5,6 +5,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
+    # Local, transient extraction preview; never enabled by default or in prod.
+    NEWS_NER_PREVIEW_ENABLED: bool = False
+    NEWS_NER_PREVIEW_BUNDLE: str = ""
+    NEWS_NER_PREVIEW_BUNDLE_SHA256: str = ""
+    NEWS_NER_PREVIEW_DOCKER: str = "docker"
     PROJECT_NAME: str = "LANES"
     NEWS_SCHEDULER_AUDIENCE: str = ""
     NEWS_SCHEDULER_SERVICE_ACCOUNT: str = ""

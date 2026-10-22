@@ -1,0 +1,171 @@
+{
+  "schema_version": "lanes-successor-proposal-v1",
+  "reviewed_on": "2026-10-17",
+  "proposal_complete": true,
+  "training_ready": false,
+  "saved_sources_reviewed": 91,
+  "saved_body_characters_read": 219454,
+  "records_accounted": 565,
+  "records_by_pool": {
+    "original_train": 280,
+    "reviewed_additional": 244,
+    "saved_source_window": 41
+  },
+  "dispositions": {
+    "propose_include": 402,
+    "hold": 99,
+    "exclude": 64
+  },
+  "dispositions_by_pool": {
+    "original_train": {
+      "propose_include": 214,
+      "hold": 31,
+      "exclude": 35
+    },
+    "reviewed_additional": {
+      "propose_include": 168,
+      "hold": 47,
+      "exclude": 29
+    },
+    "saved_source_window": {
+      "hold": 21,
+      "propose_include": 20
+    }
+  },
+  "provisional_combined_coverage": {
+    "records": 402,
+    "languages": {
+      "english": 207,
+      "taglish": 195
+    },
+    "positive_passages": 272,
+    "empty_location_passages": 130,
+    "label_spans": {
+      "BARANGAY": 102,
+      "CITY": 328,
+      "LANDMARK": 63,
+      "LOCAL_AREA": 31,
+      "PROVINCE": 179,
+      "ROAD": 215
+    },
+    "topics": {
+      "observed_flooding": 188,
+      "recovery": 97,
+      "warning_forecast": 52,
+      "prevention_project": 65
+    }
+  },
+  "original_training_coverage": {
+    "records": 214,
+    "languages": {
+      "english": 108,
+      "taglish": 106
+    },
+    "positive_passages": 182,
+    "empty_location_passages": 32,
+    "label_spans": {
+      "BARANGAY": 68,
+      "CITY": 265,
+      "LANDMARK": 44,
+      "LOCAL_AREA": 17,
+      "PROVINCE": 133,
+      "ROAD": 180
+    },
+    "topics": {
+      "observed_flooding": 110,
+      "recovery": 32,
+      "warning_forecast": 35,
+      "prevention_project": 37
+    }
+  },
+  "additional_coverage": {
+    "records": 188,
+    "languages": {
+      "taglish": 89,
+      "english": 99
+    },
+    "positive_passages": 90,
+    "empty_location_passages": 98,
+    "label_spans": {
+      "BARANGAY": 34,
+      "CITY": 63,
+      "LANDMARK": 19,
+      "LOCAL_AREA": 14,
+      "PROVINCE": 46,
+      "ROAD": 35
+    },
+    "topics": {
+      "recovery": 65,
+      "observed_flooding": 78,
+      "prevention_project": 28,
+      "warning_forecast": 17
+    }
+  },
+  "new_saved_window_coverage": {
+    "records": 20,
+    "languages": {
+      "english": 15,
+      "taglish": 5
+    },
+    "positive_passages": 20,
+    "empty_location_passages": 0,
+    "label_spans": {
+      "BARANGAY": 7,
+      "CITY": 6,
+      "LANDMARK": 7,
+      "LOCAL_AREA": 14,
+      "PROVINCE": 2,
+      "ROAD": 11
+    },
+    "topics": {
+      "observed_flooding": 13,
+      "recovery": 2,
+      "warning_forecast": 1,
+      "prevention_project": 4
+    }
+  },
+  "saved_source_topics": {
+    "observed_flooding": 46,
+    "prevention_project": 21,
+    "recovery": 19,
+    "warning_forecast": 5
+  },
+  "saved_source_dispositions": {
+    "held_opportunity": 39,
+    "selected": 16,
+    "not_selected": 26,
+    "language_out_of_scope": 10
+  },
+  "saved_source_use_proposals": {
+    "regional_scope_hold": 4,
+    "gno_selected_text_proposal": 44,
+    "rmn_no_saved_basis": 27,
+    "mixed_origin_hold": 16
+  },
+  "duplicate_candidate_counts": {
+    "exact_passages": 0,
+    "normalized_passages": 0,
+    "near_passages": 2,
+    "article_aliases": 0,
+    "exact_source_bodies": 0,
+    "near_source_bodies": 0
+  },
+  "grouping_summary": {
+    "prior_cross_pool_links": 75,
+    "new_source_reading_series_assessments": 9,
+    "shared_storm_reference_guards": 126,
+    "components": 140,
+    "components_with_provisional_candidates": 58,
+    "historical_nontrain_metadata_component_overlap": 0,
+    "independence_certified": false
+  },
+  "additional_capped_theme_language_capacity": 169,
+  "additional_required": 240,
+  "known_alignment_failures_preserved": 1,
+  "new_saved_window_alignment_failures": 0,
+  "new_admissions_exports_partitions_training": 0,
+  "prior_source_use_decisions_changed": false,
+  "fresh_test_text_labels_opened": false,
+  "fresh_test_ready": false,
+  "evidence_quality": "Codex source-reading silver; no independent human gold or model improvement claim."
+}

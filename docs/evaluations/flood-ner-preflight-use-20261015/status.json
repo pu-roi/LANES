@@ -1,0 +1,39 @@
+{
+  "case_languages": {
+    "english": 12,
+    "taglish": 12
+  },
+  "constructed_cases": 24,
+  "dependency_check": "passed",
+  "exported": 0,
+  "git_publication": false,
+  "independently_verified_gold": 0,
+  "main_python_environment_unchanged": true,
+  "measured_inference_calls": 240,
+  "model": "tl_calamancy_md",
+  "model_bytes": 161970218,
+  "model_files_verified": 23,
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "model_version": "0.1.0",
+  "native_tokenizer_reference_alignment_gaps": 2,
+  "news_dataset_evaluation": 0,
+  "news_dataset_samples": 400,
+  "news_model_inference": 0,
+  "predicted_entities": {
+    "LOC": 38,
+    "ORG": 1,
+    "PER": 0
+  },
+  "preflight_state": "passed",
+  "production_runtime_and_six_class_accuracy_qualified": false,
+  "raw_news_or_weights_published": false,
+  "research_environment_installed": true,
+  "research_installation_is_production_qualification": false,
+  "research_python_version": "3.11.17",
+  "reuse_decisions": "12 separate publisher/use outcomes unresolved; packet does not admit sources",
+  "schema_version": "lanes-ner-preflight-use-status-v1",
+  "source_articles": 139,
+  "study_packet_prepared": true,
+  "training_admitted": 0,
+  "training_performed": false
+}

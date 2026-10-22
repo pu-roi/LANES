@@ -16,6 +16,7 @@ import { createRoot, type Root } from "react-dom/client";
 import BaseMap from "@/shared/ui/map/BaseMap";
 import { getFloodsOffline } from "@/lib/offline/storage";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
+import { useFloodHeatmapLayer } from "./hooks/useFloodHeatmapLayer";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
 import { useNoahHazardLayer } from "./hooks/useNoahHazardLayer";
 import type { NoahHazardScenario } from "./MapContext";
@@ -300,6 +301,7 @@ export default function MapCanvas() {
     setPointFromMap, activePoint, setActivePoint, isPickingOnMap,
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
+    showSavedPlaces, selectedSavedPlaceId,
     savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
     floodIsBidirectional, floodOppositeGeometry, floodShowMarkers,
     draftReports,
@@ -327,7 +329,7 @@ export default function MapCanvas() {
 
   const { data: heatmapData } = useQuery({
     queryKey: ["analytics", "heatmap"],
-    queryFn: () => apiClient.get<any>("/analytics/heatmap"),
+    queryFn: () => apiClient.get<GeoJSON.FeatureCollection>("/analytics/heatmap"),
     enabled: shouldShowHeatmap,
   });
 
@@ -562,7 +564,7 @@ export default function MapCanvas() {
     });
     savedPlacesMarkersRef.current = [];
 
-    savedPlaces.forEach((place) => {
+    savedPlaces.filter((place) => showSavedPlaces || place.id === selectedSavedPlaceId).forEach((place) => {
       const el = document.createElement("div");
       el.className = "cursor-pointer";
       
@@ -598,7 +600,7 @@ export default function MapCanvas() {
 
       savedPlacesMarkersRef.current.push({ marker, root });
     });
-  }, [savedPlaces, isLoaded]);
+  }, [savedPlaces, showSavedPlaces, selectedSavedPlaceId, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -1018,13 +1020,15 @@ export default function MapCanvas() {
     const onClear = () => clearHighlight();
 
     const onFlyToLocation = (e: Event) => {
-      const { latitude, longitude, zoom, duration, pitch } = (e as CustomEvent).detail || {};
+      const { latitude, longitude, zoom, duration, pitch, showPulse = true } = (e as CustomEvent).detail || {};
       if (!map || latitude == null || longitude == null) return;
       flyToCoordinates(map, [longitude, latitude], {
         zoom: zoom ?? 16,
         pitch: pitch ?? map.getPitch(),
         duration: duration ?? 1500,
       });
+
+      if (!showPulse) return;
 
       // Temporary pulsing red circle indicator
       const el = document.createElement("div");
@@ -1160,58 +1164,9 @@ export default function MapCanvas() {
     };
   }, [draftReports, isLoaded]);
 
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current) return;
-    const map = mapRef.current;
-    if (!map.getStyle()) return;
-    
-    try {
-      if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
-      if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
-    } catch {}
-
-    const showAnalytics = (isAnalyticsOpen && !isAnalyticsCollapsed) || pathname === "/admin/analytics";
-    if (!showAnalytics || !heatmapData || !heatmapData.features || heatmapData.features.length === 0) return;
-
-    try {
-      map.addSource("heatmap-source", {
-        type: "geojson",
-        data: heatmapData
-      });
-
-      map.addLayer({
-        id: "heatmap-layer",
-        type: "heatmap",
-        source: "heatmap-source",
-        maxzoom: 15,
-        paint: {
-          "heatmap-weight": ["get", "weight"],
-          "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 15, 3],
-          "heatmap-color": [
-            "interpolate",
-            "linear",
-            ["heatmap-density"],
-            0, "rgba(0, 0, 255, 0)",
-            0.2, "royalblue",
-            0.4, "cyan",
-            0.6, "lime",
-            0.8, "yellow",
-            1, "red"
-          ],
-          "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 15, 20],
-          "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 15, 0]
-        } as any
-      });
-    } catch {}
-
-    return () => {
-      try {
-        if (!map || !map.getStyle()) return;
-        if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
-        if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
-      } catch {}
-    };
-  }, [heatmapData, isLoaded, pathname, isAnalyticsOpen, isAnalyticsCollapsed]);
+  useFloodHeatmapLayer(mapInstance, isLoaded, heatmapData, shouldShowHeatmap, {
+    onError: message => { if (message) showError(message); },
+  });
 
   return (
     <><BaseMap

@@ -1,0 +1,92 @@
+[
+  {
+    "annotation_acceptance_applied": 0,
+    "candidate_count_including_fixed": 811,
+    "conflict_edges": 0,
+    "fixed_records": 332,
+    "optimality_proven": false,
+    "replay": {
+      "same_inputs_and_status": true,
+      "scenario": "existing_publishers_unused_only",
+      "seconds": 0.015,
+      "solver_status": 2,
+      "status": "proven_infeasible",
+      "witness": false
+    },
+    "scenario": "existing_publishers_unused_only",
+    "seconds": 0.016,
+    "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+    "solver_status": 2,
+    "source_use_admission": 0,
+    "status": "proven_infeasible",
+    "time_limit_seconds": 60
+  },
+  {
+    "annotation_acceptance_applied": 0,
+    "candidate_count_including_fixed": 854,
+    "conflict_edges": 0,
+    "fixed_records": 332,
+    "optimality_proven": false,
+    "replay": {
+      "same_inputs_and_status": true,
+      "scenario": "existing_publishers_with_shortening",
+      "seconds": 0.0,
+      "solver_status": 2,
+      "status": "proven_infeasible",
+      "witness": false
+    },
+    "scenario": "existing_publishers_with_shortening",
+    "seconds": 0.0,
+    "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+    "solver_status": 2,
+    "source_use_admission": 0,
+    "status": "proven_infeasible",
+    "time_limit_seconds": 60
+  },
+  {
+    "annotation_acceptance_applied": 0,
+    "candidate_count_including_fixed": 1225,
+    "conflict_edges": 0,
+    "fixed_records": 332,
+    "optimality_proven": false,
+    "replay": {
+      "same_inputs_and_status": true,
+      "scenario": "additional_rmn_unused_only",
+      "seconds": 0.016,
+      "solver_status": 2,
+      "status": "proven_infeasible",
+      "witness": false
+    },
+    "scenario": "additional_rmn_unused_only",
+    "seconds": 0.016,
+    "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+    "solver_status": 2,
+    "source_use_admission": 0,
+    "status": "proven_infeasible",
+    "time_limit_seconds": 60
+  },
+  {
+    "annotation_acceptance_applied": 0,
+    "candidate_count_including_fixed": 917,
+    "conflict_edges": 0,
+    "fixed_records": 332,
+    "negative_paragraph_candidates": 63,
+    "optimality_proven": false,
+    "replay": {
+      "same_inputs_and_status": true,
+      "scenario": "expanded_shortening",
+      "seconds": 0.0,
+      "solver_status": 2,
+      "status": "proven_infeasible",
+      "witness": false
+    },
+    "scenario": "existing_publishers_with_positive_and_negative_paragraph_proposals",
+    "seconds": 0.015,
+    "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+    "solver_status": 2,
+    "source_use_admission": 0,
+    "status": "proven_infeasible",
+    "time_limit_seconds": 60,
+    "total_paragraph_candidates": 106
+  }
+]

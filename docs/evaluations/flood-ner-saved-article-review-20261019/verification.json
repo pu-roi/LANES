@@ -1,0 +1,20 @@
+{
+  "article_url_returned": true,
+  "database_writes": false,
+  "depth_expression_facts_source_exact": 52,
+  "extraction_rules_or_model_changed": false,
+  "facts_reviewed": 59,
+  "frontend_changed": false,
+  "frozen_v41_code_test_files_unchanged": 55,
+  "groups": 31,
+  "junction_rows_with_incomplete_collective_scope": 19,
+  "measured_source_rows_reviewed": 26,
+  "neural_mentions": 53,
+  "new_accuracy_measurement": false,
+  "normal_preview_flag_enabled": false,
+  "publisher_page_fetched": false,
+  "read_only_database_api_calls": 1,
+  "status": "api_source_link_passed_extraction_gaps_found",
+  "tests_passed": 379,
+  "unassigned_facts": 13
+}

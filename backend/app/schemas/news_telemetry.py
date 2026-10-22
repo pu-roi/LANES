@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 
 class FeedAttempt(BaseModel):
@@ -17,6 +17,11 @@ class FeedAttempt(BaseModel):
     candidates_saved: int
     body_errors: int
     scope_unresolved: int
+
+    @computed_field
+    @property
+    def articles_saved_or_seen(self) -> int:
+        return self.candidates_saved
 
 
 class FallbackLead(BaseModel):

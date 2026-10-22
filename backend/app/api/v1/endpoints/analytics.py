@@ -6,6 +6,7 @@ import json
 
 from app import models
 from app.core.database import get_db
+from app.services.flood_heatmap_service import severity_weight
 
 router = APIRouter()
 
@@ -29,15 +30,12 @@ def get_heatmap_data(db: Session = Depends(get_db)) -> Any:
         if r.geojson:
             geometry = json.loads(r.geojson)
             # Map severity to a numerical weight for the heatmap
-            weight = 2
             if hasattr(r.severity, "value"):
                 severity_val = r.severity.value
             else:
                 severity_val = str(r.severity)
                 
-            if severity_val == "low": weight = 1
-            elif severity_val == "high": weight = 3
-            elif severity_val == "extreme": weight = 5
+            weight = severity_weight(severity_val)
             
             features.append({
                 "type": "Feature",

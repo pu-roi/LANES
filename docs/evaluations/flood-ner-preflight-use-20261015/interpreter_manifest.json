@@ -1,0 +1,22 @@
+{
+  "binary_hashes": {
+    "python.exe": "f20112d2e928e92a1c026b144aaacf30a86c5440748a5b06fcc7aa71988ea1f5",
+    "python3.dll": "70bc2b2b4187a714d4ebfe433138a2118f60473c2234ff531f30aef497781f20",
+    "python311.dll": "13adfd2c6e2944fb70063b259c325842d45df42c5fb0574d02d032f047b714c9"
+  },
+  "build": "20261013",
+  "directory": "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\interpreters\\cpython-3.11.17-windows-x86_64-none",
+  "distribution_origin": "Astral python-build-standalone",
+  "future_setup_flags": [
+    "--no-bin",
+    "--no-registry"
+  ],
+  "launcher_restore": {
+    "InterpreterKept": true,
+    "RemovedOnlyTaskEntry": true
+  },
+  "main_python_default": "3.12",
+  "managed_by_uv": "0.13.1",
+  "python": "3.11.17 (main, Oct 14 2026, 01:04:22) [MSC v.1944 64 bit (AMD64)]",
+  "venv_include_system_site_packages": false
+}

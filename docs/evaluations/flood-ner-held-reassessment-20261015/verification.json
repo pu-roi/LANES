@@ -1,0 +1,59 @@
+{
+  "actual_project_decision_and_source_flags_unchanged": true,
+  "articles_reconciled": 139,
+  "capture_file_references_hash_verified": 31,
+  "clause_pointers_verified": 21,
+  "contextual_pairs": 40,
+  "csv_unicode_round_trip_articles": 139,
+  "desktop_private_checkpoint_byte_reconciliation": "not performed; unavailable locally",
+  "duplicate_or_missing_articles": 0,
+  "duplicate_or_missing_sample_ids": 0,
+  "export_destination_created": false,
+  "focused_tests": {
+    "historical_broader_suites_rerun": false,
+    "new_runtime_regressions_added": false,
+    "passed": 64,
+    "seconds": 10.5,
+    "selection": [
+      "test_flood_ner_academic_proposal.py",
+      "test_flood_ner_academic_use.py"
+    ],
+    "warning_count": 1
+  },
+  "frozen_source_text_unchanged": true,
+  "held_articles_four_factor_complete": 69,
+  "historical_proposal_zero_decisions_not_current_desktop_disposition_count": true,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "model_artifact_files_hash_verified_without_loading": 23,
+  "new_assessor_human_approval_or_permission_claimed": false,
+  "new_proposal_count_not_applied_decision_count": true,
+  "new_runtime_regression_tests_added": false,
+  "nine_original_proposal_bindings_verified": true,
+  "no_runtime_validation_code_changed": true,
+  "nonacademic_outcomes_unchanged": true,
+  "prior_files_unchanged": 1402,
+  "proposal_validator_result": {
+    "actual_project_decisions": 0,
+    "articles": 139,
+    "contextual_pairs": 40,
+    "docbin_exported": 0,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "samples": 400,
+    "training_admitted": 0
+  },
+  "qa_normalized_body_match_on_both_hosts": true,
+  "research_only_export_refusal_records": 400,
+  "sample_memberships": 400,
+  "splits": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "verified_at": "2026-10-15T19:43:46.475282+08:00"
+}

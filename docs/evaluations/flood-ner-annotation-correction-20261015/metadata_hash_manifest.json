@@ -1,0 +1,14 @@
+{
+  "files": {
+    "README.md": "c22ad10c89e0a4a7fe2c24c41ac83e200a0e71259868a533d1721eba07372573",
+    "audit.json": "bf557254ac7dde98eba672279550a23aab613fb7aa6d217c2b24e845ba7572b8",
+    "bundle_register.json": "4d831c5aebb6a64f962acd41024fec015648732683d9f037d83de76c34c87579",
+    "comparison.json": "d82107ed4b6f1284fdb7b72d46dd5dd9da8b96b7768e515751f904fe47a58461",
+    "context_coverage.json": "e1f002dd69019713b8e8309743201084e5f731b99aaa4d0fbb69c5819b1f8578",
+    "correction_register.json": "597fc574ed607d3b2c24c2e918a828e126cc36bbfb4c2177f94cebb456c2240f",
+    "coverage.json": "13cd9f8fd9e28e49f50049b86febefe9476ab3d123c24a250954b2d826f39ca4",
+    "methods-notes.md": "0b0e9ee4eab68fdd3c699a80e681ba892a8d82bfad6a4169873fe40afc32a0d8",
+    "partition_manifest.json": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a",
+    "selection_register.json": "4400dce3cdfe38d653f606de7154affaefb2408a27abd2bbb3a06ff9498e064a"
+  }
+}

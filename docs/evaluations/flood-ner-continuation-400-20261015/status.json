@@ -1,0 +1,36 @@
+{
+  "annotation_accepted": 400,
+  "annotation_revision_complete": true,
+  "context_accepted": 40,
+  "context_manifest_sha256": "5cc5f2a1c6f8c030238b69e2dcb9b034802fcc627d99981e00aacae08a616da8",
+  "cumulative_additional_admitted_articles": 200,
+  "cumulative_additional_urls": 300,
+  "eligible_languages": {
+    "english": 591,
+    "taglish": 740
+  },
+  "eligible_pool": 1331,
+  "exported": 0,
+  "failed_urls_http_retried": 36,
+  "frozen_partition_manifest_sha256": "386b13f7e1f7d125f38ad77903ab96bc7ef3440e1ce1dcee8037d16ee7388d92",
+  "independently_verified_gold": 0,
+  "labels": "AI-created silver, same-agent review",
+  "model_trained": false,
+  "pending_captures_reviewed": 156,
+  "rendered_body_versions_imported": 93,
+  "rendered_snapshots": 106,
+  "research_source_articles": 342,
+  "reviewed_location_inputs": 1340,
+  "schema_version": "lanes-ner-continuation-status-v1",
+  "selected_source_articles": 139,
+  "source_reuse_status": "unresolved",
+  "source_review_outcomes": {
+    "accepted": 153,
+    "annotation_hold": 26,
+    "excluded": 39,
+    "prior_article_preserved": 14,
+    "publication_hold": 1,
+    "reviewed_not_admitted_article_limit": 19
+  },
+  "training_admitted": 0
+}

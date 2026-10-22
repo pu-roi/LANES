@@ -1,0 +1,18 @@
+[
+  {
+    "stage": "initial optional Torch selection",
+    "result": "CPU checkpoint Torch 2.14.1 CUDA 12.8 wheel was absent from official index; selected documented Torch 2.11.0+cu128 instead; original CPU lock unchanged"
+  },
+  {
+    "stage": "first parent import",
+    "result": "shared preflight imports httpx through sources.py; added existing httpx==0.27.0 explicitly to GPU recipe and generated new lock v2"
+  },
+  {
+    "stage": "sandbox execution",
+    "result": "new managed interpreter could not create output folder (WinError 5); same authorized script succeeded through permitted execution; no Windows security policy changed"
+  },
+  {
+    "stage": "dependency recheck cache",
+    "result": "sandbox cache lock denied; read-only uv --no-cache pip check passed"
+  }
+]

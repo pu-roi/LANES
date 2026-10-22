@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Home, Map as MapIcon, User, Newspaper, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,23 @@ const MOBILE_NAV_ITEMS = [
 
 export default function MobileNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useAuth();
+
+  const handleFeedClick = () => {
+    if (pathname.startsWith("/feed")) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+      document.body.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (pathname === "/feed") {
+        if (typeof window !== "undefined" && window.location.search) {
+          router.push("/feed");
+        }
+        window.dispatchEvent(new CustomEvent("lanes:refresh-feed"));
+      }
+    }
+  };
 
   const redirectTarget = (!pathname.startsWith("/login") && !pathname.startsWith("/register") && !pathname.startsWith("/verify"))
     ? pathname
@@ -38,6 +54,7 @@ export default function MobileNav() {
             <Link
               key={item.href}
               href={actualHref}
+              onClick={item.href === "/feed" ? handleFeedClick : undefined}
               className={cn(
                 "relative flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-300 tap-highlight-transparent z-10",
                 isActive ? "text-white" : "text-gray-500 hover:text-gray-900"

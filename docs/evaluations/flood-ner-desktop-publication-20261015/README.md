@@ -1,0 +1,11 @@
+# NER desktop publication checkpoint — October 15, 2026
+
+The researcher requested publication to `roi-branch` to open the repository on the RTX desktop. This checkpoint includes the read-only academic-proposal validator, 38 proposal tests, the standard-library desktop inventory and its 20 test cases, metadata-only proposal/clarification/readiness reports and synchronized task records. Full verification: **721 passed, one skipped**, in 67.31 seconds, with one existing spaCy/Click warning. The skipped Windows symlink test could not create its test link. No dependency manifest, SQL model or Alembic migration changed, so migration execution is not applicable.
+
+[Verification](verification.json), [manifest](metadata_hash_manifest.json), [desktop instructions](../../guides/ner-desktop-preflight.md). The guide now describes pulling the published branch; the earlier ignored handoff ZIP remains a preserved historical snapshot. Existing metadata manifests verify against raw bytes; scoped Git attributes protect the new hash-bound helpers/tests and guide across Windows checkouts.
+
+The branch carries tooling, tests, source metadata and documentation. The 400 full-text samples, 40 contextual-v3 pairs, article captures, private decision packets, model weights, downloads and Python environments remain ignored. They are not transferred by Git. The earlier corrected study backup is available through the verified owner-only Drive arrangement; restore required research artifacts separately and recreate environments on the desktop rather than copying a virtual environment. No new artifact upload occurred during this push preparation.
+
+All dataset membership, annotations, frozen partitions and source-use holds are preserved. Publisher correspondence remains optional clarification under the existing permission/applicable-exception alternatives; this publication does not decide the 69 held cases or grant training admission. Actual RTX desktop execution, GPU dependency installation, training, runtime integration and deployment remain pending. The current-machine result is MX330 laptop evidence only.
+
+Commit and remote identity are verified after the Git operation and reported in the completion message. Existing edits are included under the repository's stage-all push protocol. No force push is authorized or needed at this checkpoint.

@@ -1,0 +1,52 @@
+{
+  "status": "passed_phase_c_method_boundary_only",
+  "tests_passed": 93,
+  "software_tests_passed": 81,
+  "postgres_tests_passed": 12,
+  "test_groups": {
+    "tests.test_news_ner_method_boundary": 36,
+    "tests.test_news_processing": 18,
+    "tests.test_news_browsing": 8,
+    "tests.test_news_results": 19,
+    "tests.test_news_ner_method_postgres": 8,
+    "tests.test_news_processing_postgres": 4
+  },
+  "software_seconds": 25.24,
+  "postgres_seconds": 16.16,
+  "owned_postgis_containers": [
+    {
+      "owned": true,
+      "loopback_only": true,
+      "stopped": true,
+      "image": "sha256:3f4a5d48e0be9580ed70ed618cd039ce57bbb2dd113053d3836e28513f1f87cd"
+    },
+    {
+      "owned": true,
+      "loopback_only": true,
+      "stopped": true,
+      "image": "sha256:3f4a5d48e0be9580ed70ed618cd039ce57bbb2dd113053d3836e28513f1f87cd"
+    }
+  ],
+  "schema_head": "e8a6f1c2d903",
+  "new_schema_changes": false,
+  "native_automatic_writes_enabled": false,
+  "native_projection_qualified": false,
+  "native_source_checking_qualified": false,
+  "neural_inference_runs": 0,
+  "shared_cloud_mutations": false,
+  "ui_changes": false,
+  "dependency_changes": false,
+  "preserved_prior_receipt_packages": 4,
+  "qualified_source_bindings_total": 1040,
+  "unchanged_frozen_bindings": 1032,
+  "authorized_current_source_delta_paths": [
+    "backend/app/api/v1/endpoints/admin_news.py",
+    "backend/app/crud/news_collection.py",
+    "backend/app/crud/news_processing.py",
+    "backend/app/crud/news_results.py",
+    "backend/app/models/news.py",
+    "backend/app/schemas/news_candidate.py",
+    "backend/app/services/news_browsing_service.py",
+    "backend/app/services/news_results_service.py"
+  ]
+}

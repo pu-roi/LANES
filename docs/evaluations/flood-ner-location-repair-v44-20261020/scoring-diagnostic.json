@@ -1,0 +1,33 @@
+{
+  "status": "saved_output_diagnostic_only_frozen_score_not_replaced",
+  "cause": "Frozen new-case scorer compares JSON list spans with tuple spans. In-memory authoring tests did not exercise JSON serialization.",
+  "no_extraction_or_inference": true,
+  "no_expectation_changes": true,
+  "no_frozen_code_changes": true,
+  "frozen_scoring_gate_remains_blocked": true,
+  "new_fixture_sha256": "f7a07217f2c0ad76e8aab8ddcdb1fce3b5e6ae5a394c199d3323cff81de1bcec",
+  "normalized_saved_case_checks": {
+    "missing_junction": {
+      "passed": 36,
+      "total": 36
+    },
+    "boundary_replacement": {
+      "passed": 36,
+      "total": 36
+    },
+    "junction_type": {
+      "passed": 36,
+      "total": 36
+    },
+    "combined": {
+      "passed": 36,
+      "total": 36
+    }
+  },
+  "preserved_fixture_conflicts": {
+    "missing_junction": 1,
+    "boundary_replacement": 1,
+    "junction_type": 1,
+    "combined": 3
+  }
+}

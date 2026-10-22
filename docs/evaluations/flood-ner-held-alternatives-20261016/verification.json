@@ -1,0 +1,100 @@
+{
+  "conditional_replay_file_count": 6,
+  "conditional_witness_passes_all_quotas_given_hypotheses": true,
+  "current_contextual_pairs": 40,
+  "current_location_records": 400,
+  "deterministic_replay": true,
+  "existing_tooling_files_preserved": 35,
+  "exports": 0,
+  "fixed_records_exactly_preserved_in_both_witnesses": 383,
+  "fresh_pytest_run": false,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "model_files_hashed_without_loading": 23,
+  "negative_artifact_check_count": 17,
+  "negative_artifact_checks": {
+    "bad_evidence_hash": {
+      "reason": "review evidence hash mismatch",
+      "result": "rejected"
+    },
+    "draft_promotion": {
+      "reason": "provisional annotations must remain draft",
+      "result": "rejected"
+    },
+    "duplicate_record": {
+      "reason": "exact unique 400 required",
+      "result": "rejected"
+    },
+    "explicit_duplicate_near_copy_conflict": {
+      "reason": "overlap/near copy conflict",
+      "result": "rejected"
+    },
+    "false_unconditional_feasibility": {
+      "reason": "drafts require conditional result",
+      "result": "rejected"
+    },
+    "fixed_partition_movement": {
+      "reason": "selected annotation/source/token alignment invalid",
+      "result": "rejected"
+    },
+    "fixed_record_metadata_change": {
+      "reason": "fixed record or partition changed",
+      "result": "rejected"
+    },
+    "missing_fixed_record": {
+      "reason": "exact unique 400 required",
+      "result": "rejected"
+    },
+    "passage_hash_mismatch": {
+      "reason": "selected annotation/source/token alignment invalid",
+      "result": "rejected"
+    },
+    "refuse_overwrite": {
+      "reason": "new proposal destination required",
+      "result": "rejected"
+    },
+    "road_quota_violation": {
+      "reason": "independent quota failure",
+      "result": "rejected"
+    },
+    "unchanged_content_scope": {
+      "reason": "unchanged held content scope slipped through",
+      "result": "rejected"
+    },
+    "unsupported_exports": {
+      "reason": "proposal cannot claim admission or acceptance",
+      "result": "rejected"
+    },
+    "unsupported_new_annotation_acceptances": {
+      "reason": "proposal cannot claim admission or acceptance",
+      "result": "rejected"
+    },
+    "unsupported_new_reviewed_cohort": {
+      "reason": "proposal cannot claim clearance or a new frozen cohort",
+      "result": "rejected"
+    },
+    "unsupported_source_use_resolved": {
+      "reason": "proposal cannot claim clearance or a new frozen cohort",
+      "result": "rejected"
+    },
+    "unsupported_training_admitted": {
+      "reason": "proposal cannot claim admission or acceptance",
+      "result": "rejected"
+    }
+  },
+  "new_annotation_acceptances": 0,
+  "nonacademic_outcomes_unchanged": 12,
+  "pilots_preserved": 10,
+  "prior_files_preserved": 2839,
+  "research_only_export_refused_for_records": 400,
+  "reviewed_replay_file_count": 12,
+  "reviewed_union_records": 1450,
+  "reviewed_witness_passes_all_quotas": true,
+  "source_capture_publication_group_reviews_verified": 342,
+  "test_records_preserved": 60,
+  "tokenizer_hash": "e489899630ba84b61f5823dd44b0e7dc373c5f15465dc06e911d44245c591384",
+  "training_admitted": 0,
+  "unicode_round_trip": true
+}

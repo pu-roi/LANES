@@ -1,0 +1,296 @@
+[
+  {
+    "evidence": {
+      "end": 268,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "e6b3a2d9c484749dc2ec1e2d775fd5e86b256cfeb6615671536f233730d3d353",
+      "start": 263
+    },
+    "observed_causal_name": "Ester",
+    "original_proposed_group": "provisional:2022:rain-flood-2022-07",
+    "review_status": "proposal_only",
+    "source_id": "GMA-20220730-839934",
+    "source_version": "298401874cd4",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 1705,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "798ae072ba4af06335f19ec8e087161f2059b6a2a940443288dd2c664be1a40d",
+      "start": 1699
+    },
+    "observed_causal_name": "Songda",
+    "original_proposed_group": "provisional:2022:rain-flood-2022-07",
+    "review_status": "proposal_only",
+    "source_id": "GMA-20220730-839934",
+    "source_version": "298401874cd4",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 189,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "df666bd294238b519cd3f26e8e7356fd86d11cbd4da3e1f7f34f0b710ee4179f",
+      "start": 184
+    },
+    "observed_causal_name": "Gardo",
+    "original_proposed_group": "provisional:2022:rain-flood-2022-09",
+    "review_status": "proposal_only",
+    "source_id": "news-b4a16919f4acbe0b",
+    "source_version": "30662e40de41e1f49d8363c066945314d03c9e8a80a1d78cc9f697ddf2db1052",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 122,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "5596b01ed18e4740ac6444b8bad92fca1a09479a93eeb3cbc7142c5d92e3c821",
+      "start": 116
+    },
+    "observed_causal_name": "Neneng",
+    "original_proposed_group": "provisional:2022:rain-flood-2022-10",
+    "review_status": "proposal_only",
+    "source_id": "news-ab39c678c2ff04d8",
+    "source_version": "0eb834c16d05a5700064a4482ac2dc52a49af36f40d7a376dbb13feec76ef5b2",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 1025,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "723cd1890d868dee8548d68f4d358a4b4bb65643b8a1715a15bbdf151af911d1",
+      "start": 1019
+    },
+    "observed_causal_name": "Maymay",
+    "original_proposed_group": "provisional:2022:rain-flood-2022-10",
+    "review_status": "proposal_only",
+    "source_id": "news-ab39c678c2ff04d8",
+    "source_version": "0eb834c16d05a5700064a4482ac2dc52a49af36f40d7a376dbb13feec76ef5b2",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 150,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "eca3f5d84d9e824b8ac8d0dddaca7f72469673894c67fe1dd000b5dca8695d00",
+      "start": 145
+    },
+    "observed_causal_name": "Amang",
+    "original_proposed_group": "provisional:2023:rain-flood-2023-04",
+    "review_status": "proposal_only",
+    "source_id": "news-8ab200d37e36c0fa",
+    "source_version": "36eaa8384ea89f6c6d4cec08867f00938348344c47a99de7240a68fe0c438c46",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 126,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "8cdf1ea4888b99285ce657ef59cd8f0e4b8ca50fa202666ad6ca4d23b7dcf2aa",
+      "start": 119
+    },
+    "observed_causal_name": "Chedeng",
+    "original_proposed_group": "provisional:2023:rain-flood-2023-06",
+    "review_status": "proposal_only",
+    "source_id": "news-b15c6a3442c00913",
+    "source_version": "d56f022e272245b2ba956c9ff851ea7a737156301ee4724be9ec100ddae1446a",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 1622,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "ad6ea672ecddad8aab18bf0adc8330ba8e5b9728ab402154834f9dbd0f653839",
+      "start": 1618
+    },
+    "observed_causal_name": "Egay",
+    "original_proposed_group": "provisional:2023:rain-flood-2023-08",
+    "review_status": "proposal_only",
+    "source_id": "news-73fb660d8cf943c3",
+    "source_version": "9b853932ee81835e3485bfff57ab71b14f14e9991a15e390ebf5f908bd501faa",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 1633,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "beac5ecc982f82ee4d00161c68a989becb1aa8ca90980c87e07db167113c2dfd",
+      "start": 1627
+    },
+    "observed_causal_name": "Falcon",
+    "original_proposed_group": "provisional:2023:rain-flood-2023-08",
+    "review_status": "proposal_only",
+    "source_id": "news-73fb660d8cf943c3",
+    "source_version": "9b853932ee81835e3485bfff57ab71b14f14e9991a15e390ebf5f908bd501faa",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 1444,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "d3fc3547346f0ef9cc47b9d5951912559bda2322ed3a2794d0ae49f76110dc61",
+      "start": 1439
+    },
+    "observed_causal_name": "Hanna",
+    "original_proposed_group": "provisional:2023:rain-flood-2023-09",
+    "review_status": "proposal_only",
+    "source_id": "news-8e266121254eaa21",
+    "source_version": "309e8e55f35c00d71ddabb3664b098b9ffb5f8937fc92cfb809b491754455fd3",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 151,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "3113adc8317bcdc61c695401752ddbb79dd3746f555ea9b9b4a5f4183632977e",
+      "start": 146
+    },
+    "observed_causal_name": "Aghon",
+    "original_proposed_group": "provisional:2024:rain-flood-2024-05",
+    "review_status": "proposal_only",
+    "source_id": "news-6a27663514765a05",
+    "source_version": "26adef6a92fc9d62bce476f6608dc2a18f312db12a56b8e8c920f866ca1d4b2f",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 401,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "a9a9b2590845db9e9d8b1fe97e4cab15815044c7439443187f499cc428f3eb01",
+      "start": 395
+    },
+    "observed_causal_name": "Enteng",
+    "original_proposed_group": "provisional:2024:rain-flood-2024-09",
+    "review_status": "proposal_only",
+    "source_id": "news-03d87549f9d07348",
+    "source_version": "b6b50142f54c06aafecb5a7f30a9eaf47029b5a89a73d6a2371dbcb8355c6919",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 1602,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "91d3f6be4b745d12e702cecf5a7260b79e5e34f4bc756bdbbee86619ffe99590",
+      "start": 1596
+    },
+    "observed_causal_name": "Bising",
+    "original_proposed_group": "provisional:2025:rain-flood-2025-07",
+    "review_status": "proposal_only",
+    "source_id": "news-07f788d7312f9773",
+    "source_version": "5762b2cf2d772cd2026c3ff8204640c3835cced5cae907f9c7f888c0c3fbb2d5",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 90,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "91d3f6be4b745d12e702cecf5a7260b79e5e34f4bc756bdbbee86619ffe99590",
+      "start": 84
+    },
+    "observed_causal_name": "Bising",
+    "original_proposed_group": "provisional:2025:rain-flood-2025-07",
+    "review_status": "proposal_only",
+    "source_id": "news-795b097f04147922",
+    "source_version": "df5febc755d2b27bea5387cc0de26cac2cce791877d9cbe6d86c3976e7cd53dc",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 115,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "d19f2638faf4ceedced21b8f8ed2fa56a92945f87e9996580e7a2515957e24ba",
+      "start": 110
+    },
+    "observed_causal_name": "Isang",
+    "original_proposed_group": "provisional:2025:rain-flood-2025-08",
+    "review_status": "proposal_only",
+    "source_id": "news-72e6b068187f871e",
+    "source_version": "1468ab16ab8e5d5afd13395cdf35fa56cfba02e5bfe2e75675939c7a4b4066a9",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 205,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "84f58c06f5cfebe04c8cafedc7b7ae5261eb10b7a7b12a12f5e89878876d141a",
+      "start": 200
+    },
+    "observed_causal_name": "Inday",
+    "original_proposed_group": "provisional:2026:rain-flood-2026-07",
+    "review_status": "proposal_only",
+    "source_id": "GMA-20260710-994434",
+    "source_version": "bfd9d195d38c",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 7347,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "1be075b9041a58b82be347b54e9f3d7f5d84dc57935bcc769106748a9eb237e8",
+      "start": 7343
+    },
+    "observed_causal_name": "Luis",
+    "original_proposed_group": "provisional:2026:rain-flood-2026-08",
+    "review_status": "proposal_only",
+    "source_id": "GMA-997943",
+    "source_version": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 7358,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "723cd1890d868dee8548d68f4d358a4b4bb65643b8a1715a15bbdf151af911d1",
+      "start": 7352
+    },
+    "observed_causal_name": "Maymay",
+    "original_proposed_group": "provisional:2026:rain-flood-2026-08",
+    "review_status": "proposal_only",
+    "source_id": "GMA-997943",
+    "source_version": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 65,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "a9a9b2590845db9e9d8b1fe97e4cab15815044c7439443187f499cc428f3eb01",
+      "start": 59
+    },
+    "observed_causal_name": "Enteng",
+    "original_proposed_group": "provisional:2024:rain-flood-2024-09",
+    "review_status": "proposal_only",
+    "source_id": "ABS-BROWSER-abs-2024",
+    "source_version": "86c841f5ec5c4ecad44a0e0aca6e8a19d68decb4d4fd92e830058cc033b53369",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 329,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "496c0456fa019e0586dcea780bf016b07e636cd78c0853ea6b714140720284c0",
+      "start": 323
+    },
+    "observed_causal_name": "Pepito",
+    "original_proposed_group": "provisional:2024:rain-flood-2024-11",
+    "review_status": "proposal_only",
+    "source_id": "news-c8ab20cd76ce8e6f",
+    "source_version": "01292975d5184cbe12c51ceef7d090f1d23608ca5c9c6d657ad4b0de56ffffc0",
+    "split_frozen": false
+  },
+  {
+    "evidence": {
+      "end": 435,
+      "reason": "Observed storm attribution in reporting; source dates and alias/event continuity still require group review.",
+      "sha256": "57d44291603313751ea3a6c203be5f2e951c3c9d3e3f8289eac5da5bf17a3a61",
+      "start": 431
+    },
+    "observed_causal_name": "Nika",
+    "original_proposed_group": "provisional:2024:rain-flood-2024-11",
+    "review_status": "proposal_only",
+    "source_id": "news-dce3c6472e2b014d",
+    "source_version": "89a69459f74d89636b266eecd0e86575f9437b0b619946e0b5251be5c339c3bd",
+    "split_frozen": false
+  }
+]

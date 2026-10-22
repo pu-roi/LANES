@@ -1,0 +1,608 @@
+[
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 1165,
+    "complete": true,
+    "context_record_id": "context-88c7c0a6579afd822893",
+    "entity_counts": {
+      "CITY": 1,
+      "LANDMARK": 5,
+      "LOCAL_AREA": 1,
+      "ROAD": 13
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "english",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "D.A.R. and abbreviated road/crossing names remain unresolved geographic identities; no acronym expansion or PSGC/OSM IDs supplied."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 29,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 17,
+        "text": "Metro Manila"
+      }
+    ],
+    "passage_end": 1165,
+    "passage_start": 0,
+    "record_id": "location-88c7c0a6579afd822893",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-d4ad93228fbfb786",
+    "source_text_sha256": "ef73893a17b63a7274bb05a7cbc4839cfcc7b99372e41e68422cf08e592d5e9c",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/914492/list-flooded-areas-in-metro-manila-on-wednesday-july-24-2024/story/",
+    "source_version": "a41fcf54646096cb477cfc627b2ffeda707d50d0d12cbd2e51c59feb7cc367d2",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "a1c1351ebb6dbec1d57c6240615e5787adddbf5b009d6db70f6b008ef1e3b417"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 631,
+    "complete": false,
+    "context_record_id": "context-c49f571e60422a508b74",
+    "entity_counts": {
+      "BARANGAY": 5,
+      "CITY": 2,
+      "LANDMARK": 2,
+      "LOCAL_AREA": 1,
+      "ROAD": 11
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending",
+      "label_type_adjudication_pending"
+    ],
+    "language": "english",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Maysan/Paso de blas/Rincon/Pasolo/Bypass may denote roads or local areas in this compressed list; label-type adjudication remains open.",
+      "Malabon collective clearance has explicit local exceptions; it does not establish every road is dry."
+    ],
+    "out_of_scope_mentions": [],
+    "passage_end": 2143,
+    "passage_start": 1512,
+    "record_id": "location-c49f571e60422a508b74",
+    "review_status": "unresolved",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "GMA-20240902-918977",
+    "source_text_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+    "source_version": "15153a2a97a3",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "4465e67e5f44508b190c329dbad846b430113ea6c60919398e0bf4cd1286727f"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 651,
+    "complete": false,
+    "context_record_id": "context-a8126620163c0ef51a91",
+    "entity_counts": {
+      "LOCAL_AREA": 1,
+      "ROAD": 15
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending",
+      "label_type_adjudication_pending"
+    ],
+    "language": "english",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Sgt.River and compressed road-name pairs require label/type and crossing adjudication; preserve the raw spelling.",
+      "The passage supplies no parent city for these abbreviated roads."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 26,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 14,
+        "text": "Metro Manila"
+      },
+      {
+        "end": 158,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 110,
+        "text": "Metropolitan Manila Development Authority (MMDA)"
+      }
+    ],
+    "passage_end": 651,
+    "passage_start": 0,
+    "record_id": "location-a8126620163c0ef51a91",
+    "review_status": "unresolved",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-61bde888c0935e15",
+    "source_text_sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/919102/enteng-continues-to-flood-parts-of-metro-manila/story/",
+    "source_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "47be563b1e89b3c9a687310501c70791ba2e10ce1409b69d8590609eaa8bc011"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 880,
+    "complete": true,
+    "context_record_id": "context-cd6dfcac700b410780ac",
+    "entity_counts": {
+      "CITY": 3,
+      "LANDMARK": 4,
+      "ROAD": 3
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "english",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 63,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 34,
+        "text": "National Capital Region (NCR)"
+      },
+      {
+        "end": 193,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 145,
+        "text": "Metropolitan Manila Development Authority (MMDA)"
+      }
+    ],
+    "passage_end": 880,
+    "passage_start": 0,
+    "record_id": "location-cd6dfcac700b410780ac",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-7e3cff6275b06366",
+    "source_text_sha256": "215d316b06db162d38fb1e07d57545b650b54edd719dcc8d4b3790f509dc4480",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/958113/list-flooded-roads-in-metro-manila-amid-habagat-rains/story/",
+    "source_version": "f2772685a13d229a90a1912c7b876dbfd6331c0cae07419f427fde7cd13dd977",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "f7f452d6ca9297adc291bf2a2ad7e8f9e766cc6faa22b8d99c582f1f897dd923"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 155,
+    "complete": true,
+    "context_record_id": "context-d04ea15a62c61150439e",
+    "entity_counts": {
+      "BARANGAY": 3,
+      "CITY": 1,
+      "LANDMARK": 2,
+      "LOCAL_AREA": 1
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "english",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy."
+    ],
+    "out_of_scope_mentions": [],
+    "passage_end": 8154,
+    "passage_start": 7999,
+    "record_id": "location-d04ea15a62c61150439e",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "GMA-20260817-998778",
+    "source_text_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+    "source_version": "f746dffb4918",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "d18d10702f82112108590e1339ce9c92f8186458ea7343cb2f531e87e113336c"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 642,
+    "complete": true,
+    "context_record_id": "context-95ccf208233b102344af",
+    "entity_counts": {
+      "BARANGAY": 2,
+      "CITY": 2,
+      "LOCAL_AREA": 2,
+      "PROVINCE": 1
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "english",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Purok 9 has no explicit municipality in the selected passage; do not borrow Nabunturan from the later Puroks 5–8 clause."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 77,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 65,
+        "text": "Davao Region"
+      },
+      {
+        "end": 636,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 627,
+        "text": "Region XI"
+      }
+    ],
+    "passage_end": 642,
+    "passage_start": 0,
+    "record_id": "location-95ccf208233b102344af",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-cbbe7131c73d0250",
+    "source_text_sha256": "9b53076db840aebcb64d1c3fb7d11b1aad7c97548b788701194ba4a8907f3d1b",
+    "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+    "source_version": "8b5a24ff75b4ddef6ef3a8e18743649cb1aef3eaacdf298d5eaccf8c40b846d9",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "a20d898e571611109b2399c7fa3ecca2905491f096decb0c1ec4ef7cd26b25bb"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 582,
+    "complete": true,
+    "context_record_id": "context-cebe21af8fefbd04cc6f",
+    "entity_counts": {
+      "BARANGAY": 2,
+      "CITY": 3,
+      "LOCAL_AREA": 2,
+      "ROAD": 1
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "taglish",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy."
+    ],
+    "out_of_scope_mentions": [],
+    "passage_end": 1864,
+    "passage_start": 1282,
+    "record_id": "location-cebe21af8fefbd04cc6f",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-0b427220c91c3b1e",
+    "source_text_sha256": "603563fb109e8305b7b92f9bc953db5324499a70f314fb7ea30ddcc369274ea1",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/1000340/heavy-rains-from-habagat-cause-floods-in-metro-manila/story/",
+    "source_version": "da70308dbf6421d48bf133518e2378e06ccb83b6501798d0e6b37665831ed43f",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "0fd57ba7142a6f42ee0294edb901d9405b2ac6c1c9431e174eea31e95ebbb38b"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 851,
+    "complete": true,
+    "context_record_id": "context-ca58809c7f156a80b5b3",
+    "entity_counts": {
+      "BARANGAY": 3,
+      "CITY": 3,
+      "PROVINCE": 1
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "taglish",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Inside-home knee-high water is different from calf-high water in the barangay; P50 is a fare, not water depth."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 38,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 33,
+        "text": "Luzon"
+      }
+    ],
+    "passage_end": 851,
+    "passage_start": 0,
+    "record_id": "location-ca58809c7f156a80b5b3",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-cc7893469af71cb1",
+    "source_text_sha256": "6b8809ba8b609c75d3e0c02c98e9f3c63bb7d7c01bb82ad0e94a9eaa3bdc552d",
+    "source_url": "https://www.gmanetwork.com/news/topstories/regions/875989/rains-flooding-reported-in-several-luzon-areas/story/",
+    "source_version": "5acd7e69b877051250d6c17b80e24d7e76898ac28190463d6c181a5122da0fb3",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "34dc5172c7ebe29965d2f68ae95e4848975c7ed6de4eb800aec94dc4e73a4ced"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 931,
+    "complete": true,
+    "context_record_id": "context-81abb349bb5fe38ae7ca",
+    "entity_counts": {
+      "BARANGAY": 4,
+      "CITY": 4,
+      "ROAD": 2
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "taglish",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Pinhayan and Pinyahan are different raw spellings in narrative/embedded reporting; no automatic identity merge or source correction."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 113,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 101,
+        "text": "Metro Manila"
+      }
+    ],
+    "passage_end": 931,
+    "passage_start": 0,
+    "record_id": "location-81abb349bb5fe38ae7ca",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-5100fc1563858052",
+    "source_text_sha256": "4529a8e8c2246eb334a3383c0a317222a7fd607f5e635cb8c57257596d4bce3a",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/",
+    "source_version": "561839fb492bee794c8e895361ff998159661a28f567eb115f73bc4001de855f",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "a6d92cfb262277636b7a8278f79205400364bb0e6eceae0c616662d334bab466"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 832,
+    "complete": true,
+    "context_record_id": "context-a297873e7455d2c3222a",
+    "entity_counts": {
+      "PROVINCE": 1
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "taglish",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Camarines Sur is the visit location; regional access claims do not prove that the named province or a specific road is the target."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 103,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 91,
+        "text": "Bicol Region"
+      }
+    ],
+    "passage_end": 832,
+    "passage_start": 0,
+    "record_id": "location-a297873e7455d2c3222a",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-6b591d0fbc9779c5",
+    "source_text_sha256": "cf10050d20ce5d3b6bb9879b5acbd8a48bb9da663bfd23b3b591a2c52dc6fe5a",
+    "source_url": "https://www.gmanetwork.com/news/topstories/nation/925009/marcos-relief-efforts-struggle-in-bicol-region-due-to-floods-even-after-kristine/story/",
+    "source_version": "4dfec6d72aabb9cb329736a4431c3000c0c7277bf36594ca6503e2dddeeb6ddf",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "2ecab198eeb1fe235bf6a8425dfd75370fa151d334f5730af997774fa8ce9c42"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 1257,
+    "complete": true,
+    "context_record_id": "context-bd95f93c15138ebe64f3",
+    "entity_counts": {
+      "CITY": 3,
+      "LANDMARK": 2
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "taglish",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Manila Bay/Camanava are outside the six-label pilot taxonomy; jeepney access cannot establish closure of all vehicle classes."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 29,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 21,
+        "text": "Camanava"
+      },
+      {
+        "end": 53,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 41,
+        "text": "Metro Manila"
+      },
+      {
+        "end": 704,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 694,
+        "text": "Manila Bay"
+      },
+      {
+        "end": 592,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 529,
+        "text": "Malabon City Disaster Risk Reduction Management Office (CDRRMO)"
+      }
+    ],
+    "passage_end": 1257,
+    "passage_start": 0,
+    "record_id": "location-bd95f93c15138ebe64f3",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-6caf0c129b6d7069",
+    "source_text_sha256": "9e872c92d374ceaa5c461ba002b4cb74ea6b6908a2de2f5bbdd146aa7d6655eb",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/954052/camanava-still-flooded-due-to-damaged-gate-inadequate-pumps/story/",
+    "source_version": "c0147cfdd238c7e5654ce0faf3c5e88eee6c834f486bb66a7eefcdc7d4167be4",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "e6426b5ca85e69708e6f0d440a4dc27c8f13bb4f9f6bf736c733f77bfe23cf5a"
+  },
+  {
+    "admission_status": "research_only",
+    "annotation_method": "AI source-reading; same-teacher review",
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "annotation_revision": "ai-pilot-location-v2",
+    "characters": 1316,
+    "complete": true,
+    "context_record_id": "context-c805fadee3a31d1cca2b",
+    "entity_counts": {
+      "BARANGAY": 1,
+      "CITY": 1,
+      "ROAD": 2
+    },
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "split_assignment_pending",
+      "independent_evaluation_review_pending"
+    ],
+    "language": "taglish",
+    "notes": [
+      "Developer-authorized offline AI annotation; not manual researcher labeling, independent gold or field verification.",
+      "Source is research-only; training-use, event/syndication grouping and split admission remain pending.",
+      "Complete is scoped to the declared six-place-label profile, not all geographic classes or flood-fact association.",
+      "Regional aggregates, water bodies and organization-only geography are explicitly outside this pilot taxonomy.",
+      "Vehicle roof and average human height are source gauges, not exact water measurements; in less than an hour is a change interval, not a known onset clock."
+    ],
+    "out_of_scope_mentions": [
+      {
+        "end": 33,
+        "reason": "Outside six-place-label profile or organization-only mention",
+        "start": 21,
+        "text": "Metro Manila"
+      }
+    ],
+    "passage_end": 1316,
+    "passage_start": 0,
+    "record_id": "location-c805fadee3a31d1cca2b",
+    "review_status": "accepted",
+    "reviewer": "Codex source-reading review, same AI teacher; no independent human review",
+    "source_id": "news-026d02c37bac6f5c",
+    "source_text_sha256": "32c4ef0b633889125126416cab3fdf6760eb875a455b6159df6781cf1b88cc32",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/957494/parts-of-metro-manila-flooded-after-heavy-to-intense-rains/story/",
+    "source_version": "653c89592e53d6ef022d51757acc64c8a707e45ef5d3bde72d3d24ea24c1c097",
+    "split": null,
+    "teacher": "Codex assistant; current session 01a136d2-80f9-7082-9ee8-8c7ece51d01e; exact model build not recorded",
+    "text_sha256": "5efdfd127290dde2be6ea44b46626a789b3846ae9fae199124e1d37d5b8c4df6"
+  }
+]

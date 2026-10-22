@@ -1,0 +1,86 @@
+{
+  "annotations_unchanged": true,
+  "configs": [
+    {
+      "L2": 0.05,
+      "L2_is_weight_decay": true,
+      "config_sha256": "90341b94b242141694adf7c45333ffa1283e5ae4b16930df52ccfe596aee0141",
+      "optimizer_updates": 0,
+      "seed": 0
+    },
+    {
+      "L2": 0.05,
+      "L2_is_weight_decay": true,
+      "config_sha256": "5b6f01dc4388dfe2d81af9a03f2ea541547cae784204bf20ffc843b1d4701795",
+      "optimizer_updates": 0,
+      "seed": 1
+    },
+    {
+      "L2": 0.05,
+      "L2_is_weight_decay": true,
+      "config_sha256": "a7d22967e6128c2a8f0a6bd071164cbfaecbba76d698a2aa7f2b9bd04f48e8e0",
+      "optimizer_updates": 0,
+      "seed": 2
+    }
+  ],
+  "configuration_schemas_verified": 3,
+  "counts": {
+    "dev": 60,
+    "train": 345
+  },
+  "export_hashes": {
+    "dev.spacy": "6b98529d3d65e1f5b5664a843220e9f19d49028b9d5edb10d86d538e60bffb02",
+    "tokenizer.bin": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "train.spacy": "6fc6edcefef912d06d099650edd8d7589fb34b60f580ddce00fb21078aeb0415"
+  },
+  "gpu_verified": false,
+  "historical_anchors_preserved_by_identical_partitions": 280,
+  "holdout_accessed": false,
+  "inference_performed": false,
+  "labels": {
+    "dev": {
+      "BARANGAY": 19,
+      "CITY": 23,
+      "LANDMARK": 7,
+      "LOCAL_AREA": 12,
+      "PROVINCE": 10,
+      "ROAD": 14
+    },
+    "train": {
+      "BARANGAY": 85,
+      "CITY": 308,
+      "LANDMARK": 58,
+      "LOCAL_AREA": 19,
+      "PROVINCE": 169,
+      "ROAD": 201
+    }
+  },
+  "languages": {
+    "dev": {
+      "english": 38,
+      "taglish": 22
+    },
+    "train": {
+      "english": 170,
+      "taglish": 175
+    }
+  },
+  "membership_grouping_unchanged": true,
+  "optimizer_updates": 0,
+  "pipeline_created": false,
+  "preserved": {
+    "file_bindings": 374,
+    "holdout_metadata_entries": 55
+  },
+  "pretrained_neural_weights_loaded": false,
+  "private_delivery_complete": false,
+  "python_version": "3.11.17",
+  "records_qualified": 405,
+  "schema": "lanes-regularization-cpu-qualification-v1",
+  "serialization_reload_verified": true,
+  "source_partition_sha256": "931083a155c4b964b43fd1dd4528ef8bc394114614884fdcdc1fc3c689f1b781",
+  "spacy_version": "3.7.5",
+  "state": "qualified",
+  "tokenizer_unchanged": true,
+  "training_performed": false
+}

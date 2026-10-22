@@ -1,0 +1,1141 @@
+[
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 880,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "local_exceptions",
+        "evidence": [
+          {
+            "end": 880,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported local_exceptions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 880,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 880,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "f7f452d6ca9297adc291bf2a2ad7e8f9e766cc6faa22b8d99c582f1f897dd923",
+    "record_id": "location-cd6dfcac700b410780ac",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 1165,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 1165,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "a1c1351ebb6dbec1d57c6240615e5787adddbf5b009d6db70f6b008ef1e3b417",
+    "record_id": "location-88c7c0a6579afd822893",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 155,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 155,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "d18d10702f82112108590e1339ce9c92f8186458ea7343cb2f531e87e113336c",
+    "record_id": "location-d04ea15a62c61150439e",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 510,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 510,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 510,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "8ebe6314c235ec5ff0a3ac7ac9ebee05b36202be8902a720df6c7f5a9aae0356",
+    "record_id": "cohort-06745e20b8d295b9fbef",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 188,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 188,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 188,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "357ccc02469317462ae67907ded6ec90449501787bbbf93759a1497eb35fbd45",
+    "record_id": "cohort-39bd8b539f135d0eec65",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 247,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 247,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 247,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "e8849b4425b486d314f4d6bcb85f28404d43dc8c207882eb4e8a3e96db392659",
+    "record_id": "cohort-593b5f5ce7434da3ee30",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 464,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 464,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 464,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "5f782855fa36e3d739d7ce6fccb3c30441005b7d012db48d8d530d32c165c01c",
+    "record_id": "cohort-5a6e950e28b12ed01fb0",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 319,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "20e10e209f5f8e4a2a71743506f0e6961cefa4f747478eebec20c77329683707",
+    "record_id": "cohort-27344ef78aa8fd2d0672",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 366,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "5f0752f3cab592dd28aa753bb0554a3f5a8be136652a0a63be4745d8e718d074",
+    "record_id": "cohort-37067e8fb8ab7d98173d",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 371,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 371,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "9803189fa34dfc5ab6a0494ba8a6f786c60c7043bbfa1916fecfb7b996ef51e5",
+    "record_id": "cohort-58aa3a4cc5ae71fc946d",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 307,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 307,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 307,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "51b88486d05d502ce436234c8484c7675f2a8150812cc17c1a172112a786b891",
+    "record_id": "cohort-871691b321190a217fe2",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 293,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 293,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 293,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "ede315fca5731ae363a4bc1662f293e43764f9566b70f17696ffcc791939efbe",
+    "record_id": "cohort-1501a07f96ca50253fb2",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 259,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 259,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 259,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "b4260a30d018ee7f28711ffeb8a0e7c5764dd0cabdd04b3eecf5958153566ebb",
+    "record_id": "cohort-6fd40e44ac94d7dfdc20",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 236,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "df8b1b35170a30da2e8f370a438db21460cd04cac2a2830758354f21c7201993",
+    "record_id": "cohort-2a02cadf4a9203343cd2",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 306,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "979658ddb2583efa8d803dd3701432646f0cc2fc450cde1c54f5ec2e4633f0d9",
+    "record_id": "continuation-1e0c29755fdbfb554d89",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 275,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "9aa04a25c732d8f3cff0a4840281d99d43e95005dd7da335c5ecb70ae3dbab10",
+    "record_id": "continuation-e9615b0348f781ce7527",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 218,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "492ea7e4e2280d3cbd61fbcafeb34b1711f25fcb74a845e823dbc43d2aadde23",
+    "record_id": "continuation-441ff1a75dc482a1a9c5",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 435,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "b9b3520834386456072d740f606a53c1fee1d17f7164109e2ac802f6505daf43",
+    "record_id": "continuation-a2550f98acb8e9e80afd",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 450,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "ce8f793ade0aae6bb07603e24ea888edfdc38099b26c14e8335090fcf2347e03",
+    "record_id": "continuation-884d15d09ef76838a35b",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 282,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 282,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 282,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "00c39aed0c43e1380e699dbd2b24b15ac90cd451519114b16a77ef9eb5aa6cf8",
+    "record_id": "cohort-2090e0fa9cf513faf589",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "local_exceptions",
+        "evidence": [
+          {
+            "end": 851,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported local_exceptions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 851,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 851,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "34dc5172c7ebe29965d2f68ae95e4848975c7ed6de4eb800aec94dc4e73a4ced",
+    "record_id": "location-ca58809c7f156a80b5b3",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "local_exceptions",
+        "evidence": [
+          {
+            "end": 1316,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported local_exceptions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 1316,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "5efdfd127290dde2be6ea44b46626a789b3846ae9fae199124e1d37d5b8c4df6",
+    "record_id": "location-c805fadee3a31d1cca2b",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 582,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "local_exceptions",
+        "evidence": [
+          {
+            "end": 582,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported local_exceptions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 582,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "0fd57ba7142a6f42ee0294edb901d9405b2ac6c1c9431e174eea31e95ebbb38b",
+    "record_id": "location-cebe21af8fefbd04cc6f",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 931,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 931,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "a6d92cfb262277636b7a8278f79205400364bb0e6eceae0c616662d334bab466",
+    "record_id": "location-81abb349bb5fe38ae7ca",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 1257,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 1257,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "e6426b5ca85e69708e6f0d440a4dc27c8f13bb4f9f6bf736c733f77bfe23cf5a",
+    "record_id": "location-bd95f93c15138ebe64f3",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 832,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "2ecab198eeb1fe235bf6a8425dfd75370fa151d334f5730af997774fa8ce9c42",
+    "record_id": "location-a297873e7455d2c3222a",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 304,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 304,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 304,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "eb90cc4a7173870eff8b269352d70342db9ebef85899f9142da13b8e966dcd03",
+    "record_id": "continuation-80398f210d1fde4e2341",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 207,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 207,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 207,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "9d0e8178b70d7ae555a9683b61c60f43287483eead0d2a30a4af476552bb9645",
+    "record_id": "continuation-e7d2ad1e2b119d78197c",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 313,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 313,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "ef834ca83ff993722c382abeaf57e19771d8d4cb52bec02a7dc8ef4c53fea28c",
+    "record_id": "continuation-3f9819645b137e5533a8",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 510,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 510,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "fdbccb9a7a8ab46f5959ca771a92aa168207d21e2bf0380c8c1841fa025532ba",
+    "record_id": "continuation-2313ddef67ba9d5251b5",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 374,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "9c998931a8c189d788889886b0a3b4b514014bf389afe1bed05a9e6e21a7b816",
+    "record_id": "continuation-226d50217e8daf36907b",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 195,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 195,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "b6bcc2c9e3cfe30667c8f9049df0a668b3a08958191270ec98fe86c935c09c96",
+    "record_id": "continuation-c6ddf9c215e39bfc3dcb",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 264,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "2721090f8c844af37f84e39d8cbf1ae040fab32b7c1d0f05f307eb28b4dd7db7",
+    "record_id": "continuation-74a96d8b49a566d464e1",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 202,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "ca6824d8950bb2fb40296e06f0531e6c67a5cfd6d4a71fc8f02a2f72b36c3b65",
+    "record_id": "continuation-3db14ea4682ea0360f88",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 372,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 372,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 372,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "89587d743f1ea7b587e66648d7523d29f7b3eea50e9e237bbb84e5e25eec3803",
+    "record_id": "continuation-6eac855adf2c30cfc624",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "collective_ranges",
+        "evidence": [
+          {
+            "end": 1111,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported collective_ranges; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 1111,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 1111,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "fd418c63fdba6ddffa6e2a46b236eba32ec95429ef192744234015a29dbacfa3",
+    "record_id": "revision-44135653b79a061daad8",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [],
+    "passage_sha256": "73274c78c88a427fecd81495f4d8524408ba57077ee1f41e2c563daff2d59116",
+    "record_id": "continuation-d19f3015e287df333132",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 314,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "f9aa06b4dd5759f9193f241098714addd59d0eb87dd77763491570126a5efec2",
+    "record_id": "continuation-3fa1686a1a29a783b349",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 310,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "f97c82aa34c6ee3f6edb4bd725ed3d733f9d4af896123402dc41b3078d525e7f",
+    "record_id": "continuation-0015463c16667c6768ae",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  },
+  {
+    "categories": [
+      {
+        "category": "local_exceptions",
+        "evidence": [
+          {
+            "end": 1179,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported local_exceptions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "negative_unknown_time",
+        "evidence": [
+          {
+            "end": 1179,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported negative_unknown_time; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "shared_observations",
+        "evidence": [
+          {
+            "end": 1179,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported shared_observations; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      },
+      {
+        "category": "temporal_transitions",
+        "evidence": [
+          {
+            "end": 1179,
+            "start": 0
+          }
+        ],
+        "rationale": "Source-supported temporal_transitions; preserve local scope, qualifiers and unknown chronology. Overrides are local/temporal refinements, never invented shared uniform measurements."
+      }
+    ],
+    "passage_sha256": "b9775aa5762bfdca53dd044ce75cb2af76bc1997b7f86863078a0d295df699a6",
+    "record_id": "revision-0c5383a6e83533b71498",
+    "reviewer": "Codex same-agent contextual source reviewer; silver, no independent human validation",
+    "schema_version": "lanes-context-pilot-review-v1"
+  }
+]

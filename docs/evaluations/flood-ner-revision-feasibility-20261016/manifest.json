@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": "5a6aaf0c5a5623df87a009aedaf8065cf550d71adad2025c38a8710a964b35c6",
+    "candidate-register.csv": "cda9e8275c7172831b17af8ee4eb040b5491dc76c6a29ebbb610e96f34374171",
+    "context-impact.json": "65744ad6fcba3ccf77ecbc0cce237c42e1d7f70782cacde009a060440c744370",
+    "exclusion-register.csv": "a932dd2a6a4f466e822843efc8edb7a97ff75c197b3c27631a0006a417679252",
+    "paper-method-notes.md": "1762dd29232f54583d54803f8ecbc2f519c7921e00108a90b223982d6c009059",
+    "quota-blockers.json": "b900a07a7b6dafea48ed7905ff45ba15de3db189912ed7496e042ab4f563b9fd",
+    "scenarios.json": "ec73c52ed6122bccb45aa102569ab6a2afd927e674d5d93c353c7a9aa6d0d873",
+    "software-checks.json": "a2dac469fa6a24f97655f3b8684f546f964714e380ff2cb11eaed109ba060c85",
+    "source-use-gaps.csv": "4ce8acb0d7d0bbebdea136b357e8767234c43c120589006312c5a820feb277f4",
+    "status.json": "74b2437d8225c7306ec4dac672755fc5a7cad6c3d44f3339de643b3572dd58ed",
+    "verification.json": "18aa75629b7bf53c3a862edc91cb1e04ee2db0dc9d2031af0e831360e0b21dac"
+  },
+  "private_final_manifest_sha256": "3942d91a5580a57e20b79bc97ee31a3f487a7521f84b79d885ada2fbb6ae2781",
+  "schema_version": "lanes-saved-pool-feasibility-metadata-v1"
+}

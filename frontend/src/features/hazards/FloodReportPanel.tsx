@@ -360,7 +360,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       setEndInput(label);
       setActivePoint(null);
       setIsPickingOnMap(false);
-      setActivePanel(null);
+      setActivePanel("flood");
     }
   }, [activePoint, mapCenter, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap, setActivePanel]);
 

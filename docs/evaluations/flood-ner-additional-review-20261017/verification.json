@@ -1,0 +1,33 @@
+{
+  "review_complete": true,
+  "training_ready": false,
+  "new_drafts_reviewed_once": 244,
+  "full_saved_articles_read": 49,
+  "new_prior_holds_reconciled_once": 65,
+  "original_prior_holds_reconciled_once": 33,
+  "prior_new_hold_reason_entries_accounted": 67,
+  "new_proposals": 5,
+  "shared_validation_records_checked": 282,
+  "unexpected_validation_failures": [],
+  "known_failure_preserved": true,
+  "all_proposals_strictly_aligned": true,
+  "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+  "tokenizer_serialization_unchanged": true,
+  "protected_input_files_unchanged": 1174,
+  "original_admission_hashes_verified": 52,
+  "additional_manifest_hashes_verified": 565,
+  "selected_models": 6,
+  "model_files_verified": 66,
+  "original_review_package_unchanged": true,
+  "source_use_decisions_unchanged": true,
+  "originals_new_drafts_models_scores_unchanged": true,
+  "no_fresh_heldout_texts_labels_read": true,
+  "no_training_predictions_or_export": true,
+  "no_partition_assignment": true,
+  "no_api_dependencies_or_database_change": true,
+  "guard_scenarios": {
+    "duplicate_and_missing_id_rejected": true,
+    "changed_span_rejected": true
+  },
+  "known_unaligned_draft_count": 1
+}

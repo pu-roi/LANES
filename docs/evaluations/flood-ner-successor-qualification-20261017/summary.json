@@ -1,0 +1,39 @@
+{
+  "qualification_complete": true,
+  "training_ready": false,
+  "considered_records": 565,
+  "dispositions": {
+    "propose_include": 402,
+    "hold": 99,
+    "exclude": 64
+  },
+  "qualified_proposal_members": 402,
+  "proposed_allocation": {
+    "train": 345,
+    "dev": 57
+  },
+  "new_member_holds": 0,
+  "source_cases_checked": 149,
+  "source_case_outcomes": {
+    "supported_scoped_project_basis": 149
+  },
+  "source_cases_by_route": {
+    "preserved_historical_exact_selection_basis": 88,
+    "additional_recorded_basis": 45,
+    "new_selected_window_basis": 16
+  },
+  "new_case_specific_basis_adoptions": 16,
+  "records_covered_by_new_basis_adoptions": 20,
+  "relationship_entries_accounted": 259,
+  "relationship_qualification_outcomes": {
+    "supported_conservative_development_guard": 259
+  },
+  "remaining_relationship_admission_holds": 0,
+  "physical_incident_identities_resolved_or_independence_certified": false,
+  "all_280_fitted_anchors_preserved": true,
+  "known_alignment_failure_preserved": true,
+  "unresolved_cross_computer_history_gap": true,
+  "original_datasets_reviews_and_source_use_decisions_changed": false,
+  "actual_corpus_admission_partition_freeze_export_inference_training_or_push": false,
+  "reference_quality": "AI-assisted silver; not human gold"
+}

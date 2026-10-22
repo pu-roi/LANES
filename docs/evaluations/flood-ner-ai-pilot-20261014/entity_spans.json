@@ -1,0 +1,2442 @@
+[
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 257,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 246,
+        "text": "Quezon City"
+      },
+      {
+        "comparison_key": null,
+        "end": 273,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 258,
+        "text": "Mindanao Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 291,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 274,
+        "text": "Congressional Ave"
+      },
+      {
+        "comparison_key": null,
+        "end": 378,
+        "id": "e007",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 366,
+        "text": "Commonwealth"
+      },
+      {
+        "comparison_key": null,
+        "end": 390,
+        "id": "e008",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 379,
+        "text": "Pearl Drive"
+      },
+      {
+        "comparison_key": null,
+        "end": 473,
+        "id": "e011",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 460,
+        "text": "Quezon Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 496,
+        "id": "e012",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 474,
+        "text": "Capitol Medical Center"
+      },
+      {
+        "comparison_key": null,
+        "end": 591,
+        "id": "e015",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 579,
+        "text": "A. Bonifacio"
+      },
+      {
+        "comparison_key": null,
+        "end": 613,
+        "id": "e016",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 592,
+        "text": "Balintawak Cloverleaf"
+      },
+      {
+        "comparison_key": null,
+        "end": 701,
+        "id": "e019",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 689,
+        "text": "C5 Katipunan"
+      },
+      {
+        "comparison_key": null,
+        "end": 713,
+        "id": "e020",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 702,
+        "text": "C.P. Garcia"
+      },
+      {
+        "comparison_key": null,
+        "end": 787,
+        "id": "e023",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 783,
+        "text": "EDSA"
+      },
+      {
+        "comparison_key": null,
+        "end": 800,
+        "id": "e024",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 788,
+        "text": "Dario Bridge"
+      },
+      {
+        "comparison_key": null,
+        "end": 880,
+        "id": "e027",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 876,
+        "text": "EDSA"
+      },
+      {
+        "comparison_key": null,
+        "end": 891,
+        "id": "e028",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 881,
+        "text": "Balintawak"
+      },
+      {
+        "comparison_key": null,
+        "end": 979,
+        "id": "e031",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 967,
+        "text": "C5 Katipunan"
+      },
+      {
+        "comparison_key": null,
+        "end": 993,
+        "id": "e032",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 980,
+        "text": "Ateneo Gate 3"
+      },
+      {
+        "comparison_key": null,
+        "end": 1084,
+        "id": "e035",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 1069,
+        "text": "Elliptical Road"
+      },
+      {
+        "comparison_key": null,
+        "end": 1099,
+        "id": "e036",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 1085,
+        "text": "Visayas Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 1106,
+        "id": "e037",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 1100,
+        "text": "D.A.R."
+      }
+    ],
+    "passage_end": 1165,
+    "passage_start": 0,
+    "record_id": "location-88c7c0a6579afd822893",
+    "review_status": "accepted",
+    "source_id": "news-d4ad93228fbfb786",
+    "source_version": "a41fcf54646096cb477cfc627b2ffeda707d50d0d12cbd2e51c59feb7cc367d2",
+    "text_sha256": "a1c1351ebb6dbec1d57c6240615e5787adddbf5b009d6db70f6b008ef1e3b417"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 12,
+        "id": "e001",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 0,
+        "text": "Malabon City"
+      },
+      {
+        "comparison_key": null,
+        "end": 112,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e001"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Malabon City"
+        ],
+        "start": 102,
+        "text": "Silverswan"
+      },
+      {
+        "comparison_key": null,
+        "end": 125,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e001"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Malabon City"
+        ],
+        "start": 117,
+        "text": "Panghulo"
+      },
+      {
+        "comparison_key": null,
+        "end": 179,
+        "id": "e006",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 164,
+        "text": "Valenzuela City"
+      },
+      {
+        "comparison_key": null,
+        "end": 254,
+        "id": "e008",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 233,
+        "text": "Footbridge Dalandanan"
+      },
+      {
+        "comparison_key": null,
+        "end": 275,
+        "id": "e009",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 258,
+        "text": "Macarthur Highway"
+      },
+      {
+        "comparison_key": null,
+        "end": 318,
+        "id": "e011",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 312,
+        "text": "Maysan"
+      },
+      {
+        "comparison_key": null,
+        "end": 331,
+        "id": "e012",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 319,
+        "text": "Paso de blas"
+      },
+      {
+        "comparison_key": null,
+        "end": 336,
+        "id": "e013",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 332,
+        "text": "NLEX"
+      },
+      {
+        "comparison_key": null,
+        "end": 348,
+        "id": "e014",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 339,
+        "text": "Bagbaguin"
+      },
+      {
+        "comparison_key": null,
+        "end": 362,
+        "id": "e015",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 349,
+        "text": "Bartolome St."
+      },
+      {
+        "comparison_key": null,
+        "end": 371,
+        "id": "e016",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 363,
+        "text": "Malanday"
+      },
+      {
+        "comparison_key": null,
+        "end": 405,
+        "id": "e018",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 399,
+        "text": "Rincon"
+      },
+      {
+        "comparison_key": null,
+        "end": 417,
+        "id": "e019",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 411,
+        "text": "Pasolo"
+      },
+      {
+        "comparison_key": null,
+        "end": 452,
+        "id": "e021",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 444,
+        "text": "JP Rizal"
+      },
+      {
+        "comparison_key": null,
+        "end": 466,
+        "id": "e022",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 457,
+        "text": "Fortaleza"
+      },
+      {
+        "comparison_key": null,
+        "end": 485,
+        "id": "e023",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 467,
+        "text": "Arty 2 Subdivision"
+      },
+      {
+        "comparison_key": null,
+        "end": 495,
+        "id": "e024",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 486,
+        "text": "Karuhatan"
+      },
+      {
+        "comparison_key": null,
+        "end": 580,
+        "id": "e026",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 569,
+        "text": "T. Santiago"
+      },
+      {
+        "comparison_key": null,
+        "end": 594,
+        "id": "e027",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 588,
+        "text": "Bypass"
+      },
+      {
+        "comparison_key": null,
+        "end": 608,
+        "id": "e028",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 595,
+        "text": "Veinte Reales"
+      }
+    ],
+    "passage_end": 2143,
+    "passage_start": 1512,
+    "record_id": "location-c49f571e60422a508b74",
+    "review_status": "unresolved",
+    "source_id": "GMA-20240902-918977",
+    "source_version": "15153a2a97a3",
+    "text_sha256": "4465e67e5f44508b190c329dbad846b430113ea6c60919398e0bf4cd1286727f"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 261,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 259,
+        "text": "C3"
+      },
+      {
+        "comparison_key": null,
+        "end": 277,
+        "id": "e005",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 262,
+        "text": "North Bay Blvd."
+      },
+      {
+        "comparison_key": null,
+        "end": 317,
+        "id": "e008",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 301,
+        "text": "Katipunan Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 331,
+        "id": "e009",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [],
+        "start": 319,
+        "text": "White Plains"
+      },
+      {
+        "comparison_key": null,
+        "end": 361,
+        "id": "e012",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 352,
+        "text": "Sgt.River"
+      },
+      {
+        "comparison_key": null,
+        "end": 373,
+        "id": "e013",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 362,
+        "text": "A.Bonifacio"
+      },
+      {
+        "comparison_key": null,
+        "end": 413,
+        "id": "e016",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 404,
+        "text": "UN Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 418,
+        "id": "e017",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 414,
+        "text": "Taft"
+      },
+      {
+        "comparison_key": null,
+        "end": 467,
+        "id": "e020",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 456,
+        "text": "E Rodriguez"
+      },
+      {
+        "comparison_key": null,
+        "end": 475,
+        "id": "e021",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 468,
+        "text": "Araneta"
+      },
+      {
+        "comparison_key": null,
+        "end": 505,
+        "id": "e024",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 501,
+        "text": "Taft"
+      },
+      {
+        "comparison_key": null,
+        "end": 511,
+        "id": "e025",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 506,
+        "text": "Ayala"
+      },
+      {
+        "comparison_key": null,
+        "end": 537,
+        "id": "e028",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 535,
+        "text": "C3"
+      },
+      {
+        "comparison_key": null,
+        "end": 552,
+        "id": "e029",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 538,
+        "text": "NLEX Connector"
+      },
+      {
+        "comparison_key": null,
+        "end": 606,
+        "id": "e033",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 600,
+        "text": "Aurora"
+      },
+      {
+        "comparison_key": null,
+        "end": 614,
+        "id": "e034",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [],
+        "start": 607,
+        "text": "Araneta"
+      }
+    ],
+    "passage_end": 651,
+    "passage_start": 0,
+    "record_id": "location-a8126620163c0ef51a91",
+    "review_status": "unresolved",
+    "source_id": "news-61bde888c0935e15",
+    "source_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936",
+    "text_sha256": "47be563b1e89b3c9a687310501c70791ba2e10ce1409b69d8590609eaa8bc011"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 265,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 259,
+        "text": "Manila"
+      },
+      {
+        "comparison_key": null,
+        "end": 281,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Manila"
+        ],
+        "start": 266,
+        "text": "Quirino Station"
+      },
+      {
+        "comparison_key": null,
+        "end": 305,
+        "id": "e005",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Manila"
+        ],
+        "start": 289,
+        "text": "Vito Cruz Street"
+      },
+      {
+        "comparison_key": null,
+        "end": 383,
+        "id": "e007",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Manila"
+        ],
+        "start": 368,
+        "text": "Quirino Station"
+      },
+      {
+        "comparison_key": null,
+        "end": 473,
+        "id": "e009",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Manila"
+        ],
+        "start": 457,
+        "text": "Pedro Gil Street"
+      },
+      {
+        "comparison_key": null,
+        "end": 552,
+        "id": "e011",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e014"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Manila"
+        ],
+        "start": 537,
+        "text": "Quirino Station"
+      },
+      {
+        "comparison_key": null,
+        "end": 567,
+        "id": "e012",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e014"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Manila"
+        ],
+        "start": 556,
+        "text": "Taft Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 683,
+        "id": "e014",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 677,
+        "text": "Manila"
+      },
+      {
+        "comparison_key": null,
+        "end": 725,
+        "id": "e016",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 714,
+        "text": "Mandaluyong"
+      },
+      {
+        "comparison_key": null,
+        "end": 742,
+        "id": "e017",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e016"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Mandaluyong"
+        ],
+        "start": 726,
+        "text": "EDSA-Shaw tunnel"
+      }
+    ],
+    "passage_end": 880,
+    "passage_start": 0,
+    "record_id": "location-cd6dfcac700b410780ac",
+    "review_status": "accepted",
+    "source_id": "news-7e3cff6275b06366",
+    "source_version": "f2772685a13d229a90a1912c7b876dbfd6331c0cae07419f427fde7cd13dd977",
+    "text_sha256": "f7f452d6ca9297adc291bf2a2ad7e8f9e766cc6faa22b8d99c582f1f897dd923"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 12,
+        "id": "e001",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 0,
+        "text": "Malabon City"
+      },
+      {
+        "comparison_key": null,
+        "end": 65,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e001"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Malabon City"
+        ],
+        "start": 59,
+        "text": "Catmon"
+      },
+      {
+        "comparison_key": null,
+        "end": 74,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Catmon"
+        ],
+        "start": 67,
+        "text": "Sitio 6"
+      },
+      {
+        "comparison_key": null,
+        "end": 95,
+        "id": "e006",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e001"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Malabon City"
+        ],
+        "start": 87,
+        "text": "Panghulo"
+      },
+      {
+        "comparison_key": null,
+        "end": 108,
+        "id": "e007",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e006"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Panghulo"
+        ],
+        "start": 97,
+        "text": "Silver Swan"
+      },
+      {
+        "comparison_key": null,
+        "end": 127,
+        "id": "e009",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e001"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Malabon City"
+        ],
+        "start": 121,
+        "text": "Tañong"
+      },
+      {
+        "comparison_key": null,
+        "end": 143,
+        "id": "e010",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e009"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Tañong"
+        ],
+        "start": 129,
+        "text": "Central Market"
+      }
+    ],
+    "passage_end": 8154,
+    "passage_start": 7999,
+    "record_id": "location-d04ea15a62c61150439e",
+    "review_status": "accepted",
+    "source_id": "GMA-20260817-998778",
+    "source_version": "f746dffb4918",
+    "text_sha256": "d18d10702f82112108590e1339ce9c92f8186458ea7343cb2f531e87e113336c"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 130,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "PROVINCE",
+        "parent_names": [],
+        "start": 118,
+        "text": "Davao de Oro"
+      },
+      {
+        "comparison_key": null,
+        "end": 213,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e005"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Barangay Poblacion"
+        ],
+        "start": 206,
+        "text": "Purok 9"
+      },
+      {
+        "comparison_key": null,
+        "end": 233,
+        "id": "e005",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Davao de Oro"
+        ],
+        "start": 215,
+        "text": "Barangay Poblacion"
+      },
+      {
+        "comparison_key": null,
+        "end": 351,
+        "id": "e006",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e007"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Barangay Magading"
+        ],
+        "start": 331,
+        "text": "Purok 5, 6, 7, and 8"
+      },
+      {
+        "comparison_key": null,
+        "end": 372,
+        "id": "e007",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e008"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Nabunturan town"
+        ],
+        "start": 355,
+        "text": "Barangay Magading"
+      },
+      {
+        "comparison_key": null,
+        "end": 391,
+        "id": "e008",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [
+          "Davao de Oro"
+        ],
+        "start": 376,
+        "text": "Nabunturan town"
+      },
+      {
+        "comparison_key": null,
+        "end": 480,
+        "id": "e009",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [
+          "Davao de Oro"
+        ],
+        "start": 470,
+        "text": "Compostela"
+      }
+    ],
+    "passage_end": 642,
+    "passage_start": 0,
+    "record_id": "location-95ccf208233b102344af",
+    "review_status": "accepted",
+    "source_id": "news-cbbe7131c73d0250",
+    "source_version": "8b5a24ff75b4ddef6ef3a8e18743649cb1aef3eaacdf298d5eaccf8c40b846d9",
+    "text_sha256": "a20d898e571611109b2399c7fa3ecca2905491f096decb0c1ec4ef7cd26b25bb"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 14,
+        "id": "e001",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 0,
+        "text": "Parañaque City"
+      },
+      {
+        "comparison_key": null,
+        "end": 38,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Barangay San Isidro"
+        ],
+        "start": 18,
+        "text": "San Antonio Valley 2"
+      },
+      {
+        "comparison_key": null,
+        "end": 61,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e004"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Parañaque City"
+        ],
+        "start": 42,
+        "text": "Barangay San Isidro"
+      },
+      {
+        "comparison_key": null,
+        "end": 77,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 63,
+        "text": "Parañaque City"
+      },
+      {
+        "comparison_key": null,
+        "end": 312,
+        "id": "e010",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e011"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "San Antonio Valley 2"
+        ],
+        "start": 298,
+        "text": "San Felipe St."
+      },
+      {
+        "comparison_key": null,
+        "end": 333,
+        "id": "e011",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e012"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LOCAL_AREA",
+        "parent_names": [
+          "Barangay San Isidro"
+        ],
+        "start": 313,
+        "text": "San Antonio Valley 2"
+      },
+      {
+        "comparison_key": null,
+        "end": 354,
+        "id": "e012",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e013"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Parañaque City"
+        ],
+        "start": 335,
+        "text": "Barangay San Isidro"
+      },
+      {
+        "comparison_key": null,
+        "end": 370,
+        "id": "e013",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 356,
+        "text": "Parañaque City"
+      }
+    ],
+    "passage_end": 1864,
+    "passage_start": 1282,
+    "record_id": "location-cebe21af8fefbd04cc6f",
+    "review_status": "accepted",
+    "source_id": "news-0b427220c91c3b1e",
+    "source_version": "da70308dbf6421d48bf133518e2378e06ccb83b6501798d0e6b37665831ed43f",
+    "text_sha256": "0fd57ba7142a6f42ee0294edb901d9405b2ac6c1c9431e174eea31e95ebbb38b"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 120,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "PROVINCE",
+        "parent_names": [],
+        "start": 113,
+        "text": "Bulacan"
+      },
+      {
+        "comparison_key": null,
+        "end": 138,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [
+          "Bulacan"
+        ],
+        "start": 123,
+        "text": "Meycauayan City"
+      },
+      {
+        "comparison_key": null,
+        "end": 156,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e003"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Meycauayan City"
+        ],
+        "start": 140,
+        "text": "Barangay Salusoy"
+      },
+      {
+        "comparison_key": null,
+        "end": 569,
+        "id": "e008",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [
+          "Bulacan"
+        ],
+        "start": 559,
+        "text": "Meycauayan"
+      },
+      {
+        "comparison_key": null,
+        "end": 600,
+        "id": "e009",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e008"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Meycauayan"
+        ],
+        "start": 585,
+        "text": "Barangay Bayugo"
+      },
+      {
+        "comparison_key": null,
+        "end": 620,
+        "id": "e010",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e008"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Meycauayan"
+        ],
+        "start": 605,
+        "text": "Barangay Longos"
+      },
+      {
+        "comparison_key": null,
+        "end": 690,
+        "id": "e011",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 684,
+        "text": "Bocaue"
+      }
+    ],
+    "passage_end": 851,
+    "passage_start": 0,
+    "record_id": "location-ca58809c7f156a80b5b3",
+    "review_status": "accepted",
+    "source_id": "news-cc7893469af71cb1",
+    "source_version": "5acd7e69b877051250d6c17b80e24d7e76898ac28190463d6c181a5122da0fb3",
+    "text_sha256": "34dc5172c7ebe29965d2f68ae95e4848975c7ed6de4eb800aec94dc4e73a4ced"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 263,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e004"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Barangay Pinhayan"
+        ],
+        "start": 246,
+        "text": "Mapagmahal Street"
+      },
+      {
+        "comparison_key": null,
+        "end": 284,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e005"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 267,
+        "text": "Barangay Pinhayan"
+      },
+      {
+        "comparison_key": null,
+        "end": 297,
+        "id": "e005",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 286,
+        "text": "Quezon City"
+      },
+      {
+        "comparison_key": null,
+        "end": 399,
+        "id": "e006",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e007"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Brgy. Pinyahan"
+        ],
+        "start": 382,
+        "text": "Mapagmahal Street"
+      },
+      {
+        "comparison_key": null,
+        "end": 417,
+        "id": "e007",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e008"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 403,
+        "text": "Brgy. Pinyahan"
+      },
+      {
+        "comparison_key": null,
+        "end": 430,
+        "id": "e008",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 419,
+        "text": "Quezon City"
+      },
+      {
+        "comparison_key": null,
+        "end": 588,
+        "id": "e011",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e012"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 570,
+        "text": "Barangay Karuhatan"
+      },
+      {
+        "comparison_key": null,
+        "end": 605,
+        "id": "e012",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 590,
+        "text": "Valenzuela City"
+      },
+      {
+        "comparison_key": null,
+        "end": 813,
+        "id": "e014",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e015"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Valenzuela City"
+        ],
+        "start": 798,
+        "text": "Brgy. Karuhatan"
+      },
+      {
+        "comparison_key": null,
+        "end": 830,
+        "id": "e015",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 815,
+        "text": "Valenzuela City"
+      }
+    ],
+    "passage_end": 931,
+    "passage_start": 0,
+    "record_id": "location-81abb349bb5fe38ae7ca",
+    "review_status": "accepted",
+    "source_id": "news-5100fc1563858052",
+    "source_version": "561839fb492bee794c8e895361ff998159661a28f567eb115f73bc4001de855f",
+    "text_sha256": "a6d92cfb262277636b7a8278f79205400364bb0e6eceae0c616662d334bab466"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 443,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "PROVINCE",
+        "parent_names": [],
+        "start": 430,
+        "text": "Camarines Sur"
+      }
+    ],
+    "passage_end": 832,
+    "passage_start": 0,
+    "record_id": "location-a297873e7455d2c3222a",
+    "review_status": "accepted",
+    "source_id": "news-6b591d0fbc9779c5",
+    "source_version": "4dfec6d72aabb9cb329736a4431c3000c0c7277bf36594ca6503e2dddeeb6ddf",
+    "text_sha256": "2ecab198eeb1fe235bf6a8425dfd75370fa151d334f5730af997774fa8ce9c42"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 173,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 166,
+        "text": "Malabon"
+      },
+      {
+        "comparison_key": null,
+        "end": 601,
+        "id": "e003",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 594,
+        "text": "Malabon"
+      },
+      {
+        "comparison_key": null,
+        "end": 1036,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e005"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Malabon"
+        ],
+        "start": 1027,
+        "text": "City Hall"
+      },
+      {
+        "comparison_key": null,
+        "end": 1051,
+        "id": "e005",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 1044,
+        "text": "Malabon"
+      },
+      {
+        "comparison_key": null,
+        "end": 1241,
+        "id": "e006",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e005"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "LANDMARK",
+        "parent_names": [
+          "Malabon"
+        ],
+        "start": 1232,
+        "text": "City Hall"
+      }
+    ],
+    "passage_end": 1257,
+    "passage_start": 0,
+    "record_id": "location-bd95f93c15138ebe64f3",
+    "review_status": "accepted",
+    "source_id": "news-6caf0c129b6d7069",
+    "source_version": "c0147cfdd238c7e5654ce0faf3c5e88eee6c834f486bb66a7eefcdc7d4167be4",
+    "text_sha256": "e6426b5ca85e69708e6f0d440a4dc27c8f13bb4f9f6bf736c733f77bfe23cf5a"
+  },
+  {
+    "annotation_profile": "location-only-v1",
+    "annotation_quality": "silver",
+    "entities": [
+      {
+        "comparison_key": null,
+        "end": 128,
+        "id": "e002",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "CITY",
+        "parent_names": [],
+        "start": 117,
+        "text": "Quezon City"
+      },
+      {
+        "comparison_key": null,
+        "end": 242,
+        "id": "e004",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e005"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Barangay South Triangle"
+        ],
+        "start": 221,
+        "text": "Mother Ignacia Avenue"
+      },
+      {
+        "comparison_key": null,
+        "end": 269,
+        "id": "e005",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e002"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "BARANGAY",
+        "parent_names": [
+          "Quezon City"
+        ],
+        "start": 246,
+        "text": "Barangay South Triangle"
+      },
+      {
+        "comparison_key": null,
+        "end": 307,
+        "id": "e006",
+        "identity": {
+          "osm_id": null,
+          "osm_type": null,
+          "parent_entity_ids": [
+            "e005"
+          ],
+          "psgc_code": null,
+          "reference_url": null,
+          "state": "unresolved"
+        },
+        "label": "ROAD",
+        "parent_names": [
+          "Barangay South Triangle"
+        ],
+        "start": 286,
+        "text": "Mother Ignacia Avenue"
+      }
+    ],
+    "passage_end": 1316,
+    "passage_start": 0,
+    "record_id": "location-c805fadee3a31d1cca2b",
+    "review_status": "accepted",
+    "source_id": "news-026d02c37bac6f5c",
+    "source_version": "653c89592e53d6ef022d51757acc64c8a707e45ef5d3bde72d3d24ea24c1c097",
+    "text_sha256": "5efdfd127290dde2be6ea44b46626a789b3846ae9fae199124e1d37d5b8c4df6"
+  }
+]

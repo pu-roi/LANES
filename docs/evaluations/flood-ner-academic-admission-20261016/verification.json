@@ -1,0 +1,236 @@
+{
+  "all_context_requirements_pass": true,
+  "all_quotas_pass": true,
+  "artifact_checks_are_not_software_tests_or_model_accuracy": true,
+  "calamancy_corpus_tokenizer_qualified": false,
+  "changed_fields": [
+    "source.admission_status",
+    "source.reuse_status",
+    "source.reuse_terms"
+  ],
+  "contextual_pairs": 40,
+  "copy_inventory": {
+    "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/copy-inventory.json",
+    "sha256": "6f0de53d8880212cbac67097043919d44ec16ceb7bf4cc598da953d3d7c833c8"
+  },
+  "dataset_license_granted": false,
+  "decision_provenance_counts": {
+    "adopt_private_academic_basis": 69,
+    "prior_desktop_reported_adoption": 68,
+    "prior_local_adoption": 1
+  },
+  "desktop_predecessor_unreconciled": true,
+  "deterministic_replay": true,
+  "evaluation_partition_records": 120,
+  "exact_three_policy_fields_changed_in_records": 440,
+  "existing_tooling_files_preserved": 35,
+  "export_status": "Source-policy eligibility applied only. Existing exporter does not enforce the remaining model-tokenizer workflow gate. No export invoked on admitted data.",
+  "exports": 0,
+  "fresh_pytest_run": false,
+  "generated_complete_body_field_representations": 960,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "location_records": 400,
+  "location_spans": 1465,
+  "model_files_hashed_without_loading": 23,
+  "model_inference_performed": false,
+  "model_trained": false,
+  "negative_artifact_check_count": 41,
+  "negative_artifact_checks": {
+    "broader_article_scope": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "broader_project_scope": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "broader_reuse_terms": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "broken_evidence": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "changed_annotation": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "changed_membership_split": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "changed_nonacademic_outcomes": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "changed_offset": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "changed_partition": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "changed_scope_hash": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "changed_unicode_offset": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "context_fact_metadata_change": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "context_source_policy_mismatch": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "dataset_license_claim": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "duplicate_article": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "duplicate_location_record": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "duplicate_membership": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "false_canonical_predecessor": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "false_desktop_reconciliation": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "false_export_count": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "false_model_qualification": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "invented_human_assessor": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "legal_approval_claim": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "missing_article": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "missing_context_pair": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "missing_evidence": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "missing_location_record": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "missing_membership": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "numeric_false_claim": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "numeric_true_admission": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "publisher_permission_claim": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "refuse_outside_destination": {
+      "reason": "derivative destination must be under new ignored checkpoint",
+      "result": "rejected"
+    },
+    "refuse_primary_overwrite": {
+      "reason": "refuse existing admission destination: D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\academic-admission-20261016-v1\\admitted",
+      "result": "rejected"
+    },
+    "refuse_replay_overwrite": {
+      "reason": "refuse existing admission destination: D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\academic-admission-20261016-v1\\replay",
+      "result": "rejected"
+    },
+    "unqualified_source_status": {
+      "reason": "derivative differs outside exact three-field admission overlay",
+      "result": "rejected"
+    },
+    "unsupported_decision": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "wrong_capture_version": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "wrong_cohort_binding": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "wrong_context_binding": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "wrong_evidence_path": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    },
+    "wrong_source_hash": {
+      "reason": "admission ledger differs from exact reviewed scope, evidence, provenance or permitted claims",
+      "result": "rejected"
+    }
+  },
+  "negative_passages": 48,
+  "next_task": "Corpus qualification against pinned calamanCy tokenizer and frozen evaluation contract",
+  "no_selection_or_model_load_calls": true,
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "prior_checkpoint_capture_files_preserved": 5101,
+  "publisher_permission_claimed": false,
+  "replayed_generated_files": 21,
+  "research_only_export_refusals": {
+    "contexts": 40,
+    "locations": 400
+  },
+  "schema_version": "lanes-private-academic-admission-verification-v1",
+  "scope": "private_owner_only_academic_training_evaluation",
+  "source_articles": 138,
+  "test_samples_preserved": 60,
+  "training_admitted": 400,
+  "training_partition_records": 280,
+  "training_pilots_preserved": 10,
+  "unchanged_nonacademic_outcomes": 12,
+  "unicode_round_trip": true,
+  "validation_samples_preserved": 60
+}

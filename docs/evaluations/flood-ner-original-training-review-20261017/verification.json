@@ -1,0 +1,32 @@
+{
+  "review_complete": true,
+  "training_ready": false,
+  "training_records_reviewed": 280,
+  "full_saved_articles_read": 94,
+  "each_training_id_reviewed_once": true,
+  "shared_validator_records_passed": 301,
+  "schema_offset_overlap_identity_failures": [],
+  "original_spans_strictly_aligned": 966,
+  "proposed_spans_strictly_aligned": 73,
+  "alignment_errors": 0,
+  "unresolved_references_counted_as_negatives": 0,
+  "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+  "tokenizer_unchanged": true,
+  "pipeline_or_predictions_loaded": false,
+  "training_performed": false,
+  "snapshot_files_unchanged": 1073,
+  "original_admission_hashes_verified": 52,
+  "additional_manifest_files_verified": 565,
+  "six_selected_model_files_verified": 66,
+  "existing_original_group_key_leaks": 0,
+  "new_244_drafts_changed": false,
+  "fresh_heldout_text_or_labels_accessed": false,
+  "original_records_or_scores_changed": false,
+  "public_api_dependency_or_database_changes": false,
+  "contract_bindings": {
+    "backend/training/flood_ner/annotation/schema.py": "f43c50101c729ccae1d01036760289b865be6b2fdfba168173046e27932954a2",
+    "backend/training/flood_ner/annotation/validation.py": "a2753a90badf3d6dbea24e5d50398e3d21005242a7640085eb238755dcbe6c75",
+    "docs/guides/flood-ner-annotation-v1.md": "f713ecea17574a146ca5d4446bb1b3f83c5fa8fc1101ce496a6233b9a19c2f3d",
+    "docs/guides/flood-ner-reference-scope-addendum-v1.md": "cf18e95508130c92ad98be3302fd1a21e1a869d6e3ad3bceaf870adc1980c10c"
+  }
+}

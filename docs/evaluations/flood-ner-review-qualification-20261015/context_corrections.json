@@ -1,0 +1,111 @@
+[
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f2",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 365,
+    "source_start": 335
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f5",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 459,
+    "source_start": 429
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f8",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 578,
+    "source_start": 548
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f11",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 688,
+    "source_start": 658
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f14",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 782,
+    "source_start": 752
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f17",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 875,
+    "source_start": 845
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f20",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 966,
+    "source_start": 936
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f23",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 1068,
+    "source_start": 1038
+  },
+  {
+    "after": "light_vehicle_closed",
+    "before": "passable_unspecified",
+    "fact_id": "f26",
+    "reason": "Case-insensitive explicit access negation; exact phrase evidence.",
+    "record_id": "location-88c7c0a6579afd822893",
+    "source_end": 1164,
+    "source_start": 1134
+  },
+  {
+    "after": "unknown",
+    "before": "impassable_all",
+    "fact_id": "f2",
+    "reason": "Closure reported, but all-vehicle scope not stated; boats/tractors or motorists do not justify universal all-vehicle closure.",
+    "record_id": "cohort-27344ef78aa8fd2d0672"
+  },
+  {
+    "after": "unspecified",
+    "before": "onset",
+    "fact_id": "f4",
+    "reason": "Rainfall onset is not established flood onset; qualifier and raw time preserved.",
+    "record_id": "continuation-226d50217e8daf36907b"
+  },
+  {
+    "after": "unknown",
+    "before": "impassable_all",
+    "fact_id": "f2",
+    "reason": "Closure reported, but all-vehicle scope not stated; boats/tractors or motorists do not justify universal all-vehicle closure.",
+    "record_id": "continuation-6eac855adf2c30cfc624"
+  },
+  {
+    "after": "unknown",
+    "before": "impassable_all",
+    "fact_id": "f2",
+    "reason": "Closure reported, but all-vehicle scope not stated; boats/tractors or motorists do not justify universal all-vehicle closure.",
+    "record_id": "revision-44135653b79a061daad8"
+  }
+]

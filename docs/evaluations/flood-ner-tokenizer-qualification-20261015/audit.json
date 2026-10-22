@@ -1,0 +1,38 @@
+{
+  "authoritative_document_audit": {
+    "bug-log": "candidate fix and final artifact failure guard recorded",
+    "database-design-plan": "reviewed; no models/migrations",
+    "decisions": "reviewed; no major architectural pivot",
+    "feature-reference": "existing offline news section only",
+    "progress": "latest measured milestone first",
+    "system-documentation": "offline CLI only; no UI/endpoints",
+    "task_plan": "constructed qualification complete; source use and cohort alignment open",
+    "tech-stack": "separate candidate; no dependency changes"
+  },
+  "candidate_controls_failed": 0,
+  "candidate_controls_passed": 56,
+  "candidate_reference_alignment_errors": 0,
+  "documentation_links_missing": [],
+  "exported": 0,
+  "final_artifact_failure_revokes_success": true,
+  "git_diff_check": "pass",
+  "gpu_setup_performed": false,
+  "main_environment_and_packages_unchanged": true,
+  "model_files_verified": 23,
+  "new_regression_cases": 39,
+  "news_samples_processed": 0,
+  "original_24_native_predictions_unchanged": true,
+  "prior_artifact_files_unchanged": 26584,
+  "prior_public_metadata_hashes_unchanged": true,
+  "retained_baseline": 586,
+  "runtime_database_deployment_git_publication": "none",
+  "software_tests_passed": 625,
+  "source_text_unchanged": true,
+  "test_seconds": 40.66,
+  "tokenizer_bytes_and_predictions_replay_identical": true,
+  "training_admitted": 0,
+  "training_performed": false,
+  "warnings": [
+    "Existing spaCy/Click deprecation warning"
+  ]
+}

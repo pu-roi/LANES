@@ -1,0 +1,164 @@
+# Successor NER desktop handoff
+
+> **Last Updated:** October 18, 2026, 11:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current NER handoff: the regularization experiment is verified on private Drive; matching code and instructions accompany this roi-branch publication.** The 345 training / 60 validation exports are unchanged. One L2 = 0.05 candidate has seed 0/1/2 configs and a fixed maximum-three-run protocol. All four uploaded files match authenticated readback; parent, destination and files are owner-only. Desktop receipt and GPU verification remain pending. No training, inference or holdout access occurred during delivery. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next on the desktop:** preserve local changes, pull roi-branch with --ff-only, authenticate and extract the delivered archive into an absent destination, then run read-only GPU/schema verification and STOP. Actual training is a separate explicit task after verification; the completed research holdout stays outside tuning.
+
+[Delivery report](../evaluations/flood-ner-regularization-delivery-20261018/README.md) · [Desktop instructions](ner-regularization-experiment.md) · [Private Drive handoff](https://drive.google.com/drive/folders/1vKssoZurLa6WjuJPftXRbJ7GcoefimKq)
+
+**Earlier dated checkpoints below are historical.**
+
+**Current NER status: v19 diagnosis and the one-time frozen research evaluation are complete on the laptop.** Dataset 345/60/60 and validation-selected control/seed 0 stay unchanged. V19 seed 0 training/validation/holdout F1: **98.09% / 71.60% / 73.63%**. Historical v16 seed 0 holdout 74.74%; rules 53.49%. Holdout three-seed means: control 70.34%, v16 75.13%. These results do not establish an overall v19 improvement or authorize choosing a model using the holdout.
+
+**Next:** a separate development plan from the existing training/validation error review; no new articles or automatic retraining. Gate 3 research measurement is complete, while operational qualification, integration and release remain open. The holdout has now been evaluated and must not be tuned against or evaluated again under this protocol. AI-assisted silver, incomplete history/accounting and no certified-fresh claim remain. No collection, new training, reference/partition change, integration, upload, commit or push occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+[Diagnosis/evaluation report](../evaluations/flood-ner-v19-diagnosis-evaluation-20261018/README.md) · [Laptop evaluation guide](ner-corrected-holdout-laptop.md)
+
+**Historical checkpoints follow.** Their “current/next” wording describes earlier dated tasks and is superseded by the status above.
+
+**Current handoff: corrected v19 packages are verified on Drive; matching public code and instructions accompany this roi-branch publication.** Dataset remains 345 training / 60 validation / 60 separate research holdout. Three twelve-file packages and the fixed future protocol are delivered; all uploaded bytes match authenticated readback and five owner-only permission checks pass. No training, inference or holdout access occurred. [Delivery report](../evaluations/flood-ner-corrected-experiment-delivery-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next: desktop receipt and read-only GPU verification for all three packages, then STOP.** Preserve local work, pull roi-branch with --ff-only and receive the new private ZIP from [Drive](https://drive.google.com/drive/folders/1LDO770D82NXHZRiYNZrHe5oyLo7-vJU7). Actual desktop receipt/GPU checks remain pending. A Git pull does not deliver ignored data; do not rerun preparation or historical v16 training commands. Actual training is a separate explicit task. [Exact commands and copyable desktop prompt](../guides/ner-corrected-experiment-desktop.md).
+
+**Historical completed task: corrected-data experiment preparation on the laptop.** A separate 345 training / 60 validation revision adopts only 12 supported training-boundary corrections across nine records. Validation, tokenizer and partition/group bytes remain unchanged; the 60-passage research holdout stays unopened. Three twelve-file trainer packages and all nine seed/config schemas qualify in Python 3.11.17/spaCy 3.7.5. Fresh 367 tests / 35 subtests pass, including 83 new tests. No new articles/passages, inference or training occurred. [Preparation report](../evaluations/flood-ner-corrected-experiment-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Prior preparation next-step (delivery now completed; desktop verification still pending): publish/deliver the corrected packages and frozen experiment protocol.** At that earlier preparation checkpoint, delivery/GPU verification were pending and no upload, commit or push had occurred. The specified future study uses five runs if control wins screening, otherwise at most seven. No guaranteed score follows. The desktop can remain off. [Operator guide](../guides/ner-corrected-experiment-preparation.md).
+
+**Historical completed task: existing-data development audit.** All three models reproduce desktop validation scores on CPU across 345 training / 60 validation records (1215 predictions); the separate 60 research-holdout passages remain unopened. Seed 0 training F1 is 99.40% versus validation 66.67%, consistent with overfitting/example differences. Source-bound review proposes 12 training-span boundary corrections across 9 existing records; one validation-boundary question remains unresolved, with its frozen scored reference retained. No data, partitions or models changed. Fresh 209 tests / 35 subtests pass, including 53 new audit tests. [Audit report](../evaluations/flood-ner-development-error-audit-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Prior audit next-step (now completed as preparation above): choose supported corrections and define a bounded regularization experiment using existing data only.** No new articles/passages, corpus admission, replacement export, holdout access, training, upload, commit or push occurred in this task. The desktop can remain off. [Operator guide](ner-development-error-audit.md).
+
+Earlier training/publication checkpoints below remain historical; the current user constraint is no new data collection.
+
+
+
+**Publication checkpoint:** Matching combined launcher and three-seed reports are included in this `roi-branch` publication. The new [private v17 Drive backup](https://drive.google.com/drive/folders/1ZFFNL9Vu-dg5xLyWsSR2wd99_qsGTE_J) preserves the combined trainer and all three selected checkpoints/logs; all eleven uploaded files pass full SHA-256 readback and all twelve folder/file permission checks are owner-only. Older folders remain unchanged. The local `.env` change stays outside the commit. [Publication evidence](../evaluations/flood-ner-successor-publication-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](../evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Historical v16 commands below are completed-run examples, not current instructions.** Use the new v19 receipt/GPU guide above.
+
+**Completed-run examples:** the v16 retry output names shown below are now occupied. Do not rerun them or reuse those destinations. Further training requires a new explicitly authorized run; the current next task is delivering the separately qualified corrected-data packages/protocol, with held-out comparison still separate.
+
+Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
+
+**Configuration correction v16:** the desktop reported that seed 0 stopped before optimizer updates; seeds 1 and 2 were not started. The v15 package builder lowercased spaCy's case-sensitive `L2`, `L2_is_weight_decay` and `nO` arguments. Its earlier syntax-only validation missed the defect. The replacement v16 package restores those names, and the launcher now resolves all three configs against actual spaCy 3.7.5 registry schemas before a run can start. [Correction evidence](../evaluations/flood-ner-successor-config-correction-20261018/README.md).
+
+**Preserve the failed seed-0 directory, logs and v15 package. Do not edit its configs in place, rerun an old command or reuse its output directory.** Receive the new matching code and v16 private package, then stop at read-only GPU verification. This desktop user has now authorized a new seed-0 retry followed by seeds 1/2 only if each preceding run succeeds; use the separately bound Windows derivative after successful read-only verification.
+
+The dataset stays **345 training / 60 validation / 60 research-holdout passages**. All eight non-config trainer files are byte-identical to v15; labels, membership, tokenizer and hyperparameter values are unchanged. The research holdout remains separate on the laptop. No training or inference was performed for this correction. A Git pull alone does not transfer private datasets.
+
+**Windows derivative:** use `successor-desktop-handoff-20261018-v16-configfix-windows-runtime-v1` for the combined launcher. It retains all eleven v16 payload files and changes only the launcher binding; manifest SHA-256 is `18aacb9ad1c285392adfaa4b995edca4d05baec81fdb3ae9ba1bbbf0d753b986`. Preserve the received original package.
+
+The corrected private ZIP is delivered to the owner-only [v16 Drive folder](https://drive.google.com/drive/folders/15sxU7utCM9Nf429BXWUQlXgtEoC1nTQH). Its complete downloaded bytes match the local archive. Desktop receipt and GPU re-verification of this correction remain pending.
+
+## Historical v16 receipt instructions — use the v19 guide above for the current task
+
+Open PowerShell in the actual desktop LANES checkout. Preserve local changes: if the first check reports any, stop and review them before continuing. Do not reset, stash, overwrite or restore archives automatically.
+
+```powershell
+$NerChanges = @(git status --porcelain)
+if ($LASTEXITCODE -ne 0) { throw "Not a usable Git checkout." }
+if ($NerChanges.Count -gt 0) { throw "Local changes exist. Preserve and review them before pulling." }
+git switch roi-branch
+if ($LASTEXITCODE -ne 0) { throw "Branch switch failed; stop." }
+git pull --ff-only origin roi-branch
+if ($LASTEXITCODE -ne 0) { throw "Fast-forward pull failed; stop without resetting." }
+```
+
+Using `roicambe02@gmail.com`, download [the private ZIP](https://drive.google.com/file/d/1TWFzEQVE6EFlxeOVrYf7YR0d1SaPhcjK/view?usp=drivesdk), `SHA256SUMS.txt` and `START-HERE.md` from the new Drive folder. The ZIP is **153,999 bytes**, containing exactly the twelve trainer files beneath one package directory. Its SHA-256 is:
+
+```text
+b581ed97a7e54e3d6db7f9b3504ff94d8a48bb341437f7e84ed31bf39b2b41c7
+```
+
+Extract through a new staging directory, verify the manifest and every payload file, then move the package to its absent destination. The atomic directory move refuses an existing destination; no `-Force` is used. Keep the small empty staging directory as transfer evidence.
+
+```powershell
+$NerZip = (Resolve-Path -LiteralPath (Read-Host "Full path to the downloaded successor ZIP")).Path
+if ((Get-Item -LiteralPath $NerZip).Length -ne 153999) { throw "ZIP size mismatch." }
+if ((Get-FileHash -LiteralPath $NerZip -Algorithm SHA256).Hash.ToLowerInvariant() -ne "b581ed97a7e54e3d6db7f9b3504ff94d8a48bb341437f7e84ed31bf39b2b41c7") { throw "ZIP checksum mismatch." }
+$NerArtifacts = Join-Path (Get-Location).Path "backend\training\flood_ner\artifacts"
+$NerPackageName = "successor-desktop-handoff-20261018-v16-configfix"
+$NerDestination = Join-Path $NerArtifacts $NerPackageName
+if (Test-Path -LiteralPath $NerDestination) { throw "Destination already exists. Verify it separately; do not overwrite it." }
+if (-not (Test-Path -LiteralPath $NerArtifacts)) { New-Item -ItemType Directory -Path $NerArtifacts -ErrorAction Stop | Out-Null }
+$NerStaging = Join-Path $NerArtifacts ("successor-delivery-staging-" + [guid]::NewGuid().ToString("N"))
+New-Item -ItemType Directory -Path $NerStaging -ErrorAction Stop | Out-Null
+Expand-Archive -LiteralPath $NerZip -DestinationPath $NerStaging -ErrorAction Stop
+$NerStagedPackage = Join-Path $NerStaging $NerPackageName
+$NerManifestPath = Join-Path $NerStagedPackage "handoff-manifest.json"
+if ((Get-FileHash -LiteralPath $NerManifestPath -Algorithm SHA256).Hash.ToLowerInvariant() -ne "40fda6b9df92ea1d51d99d167b1830fa38da64308203168d5ca5457a05a2738f") { throw "Package manifest mismatch." }
+$NerManifest = Get-Content -LiteralPath $NerManifestPath -Raw | ConvertFrom-Json
+if (@(Get-ChildItem -LiteralPath $NerStagedPackage -Force).Count -ne 12) { throw "Unexpected package contents." }
+foreach ($NerEntry in $NerManifest.files.PSObject.Properties) {
+    $NerFile = Join-Path $NerStagedPackage $NerEntry.Name
+    if ((Get-FileHash -LiteralPath $NerFile -Algorithm SHA256).Hash.ToLowerInvariant() -ne $NerEntry.Value) { throw "Payload file checksum mismatch." }
+}
+[System.IO.Directory]::Move($NerStagedPackage, $NerDestination)
+```
+
+This is delivery of **345 training / 60 validation** records to the trainer. The separately prepared **60 research-holdout** records remain on the laptop. Once code and payload are present, continue with read-only GPU verification below. [Correction verification](../evaluations/flood-ner-successor-config-correction-20261018/README.md). The original v15 delivery report remains historical.
+
+## What must reach the desktop
+
+Use the current successor code and its unchanged registry from `roi-branch`. Preserve desktop local changes; never reset or overwrite a checkout. Do not run the older fixed-400 exporters or launchers for this successor.
+
+Privately copy the **complete** `backend/training/flood_ner/artifacts/successor-desktop-handoff-20261018-v16-configfix/` directory. It contains eleven files plus `handoff-manifest.json`: train/dev DocBins, tokenizer, three portable seed configs, qualification, model contract, evaluation contract and GPU qualification metadata. Its manifest SHA-256 is:
+
+```text
+40fda6b9df92ea1d51d99d167b1830fa38da64308203168d5ca5457a05a2738f
+```
+
+Keep that directory exact: no extra files, renamed configs or research-holdout data. The isolated holdout export remains separate on the laptop and is not an input to the trainer. The pinned model and qualified GPU environment are separate existing prerequisites; do not install or replace them automatically.
+
+The [October 16 Drive folder](https://drive.google.com/drive/folders/1JrrMzZ3FyP0LGU00xWKF54enyyC87ffX) is a **historical handoff**, not delivery of this successor package. Its files must not be used as evidence that the new private payload exists on the desktop.
+
+## Read-only verification
+
+Open PowerShell in the actual desktop LANES checkout. Confirm its branch and inspect changes:
+
+```powershell
+git branch --show-current
+git status --short
+```
+
+Set explicit paths. The examples below refer to the recorded desktop GPU environment and the complete saved model directory. Change them to the actual existing qualified paths if needed; a missing path means stop and report it.
+
+```powershell
+$NerCheckout = (Get-Location).Path
+$NerPython = (Resolve-Path .\backend\training\flood_ner\artifacts\gpu-qualification-20261015\research-env\Scripts\python.exe).Path
+$NerModel = (Resolve-Path .\backend\training\flood_ner\artifacts\gpu-qualification-20261015\model).Path
+$NerPackage = (Resolve-Path .\backend\training\flood_ner\artifacts\successor-desktop-handoff-20261018-v16-configfix-windows-runtime-v1).Path
+Get-FileHash (Join-Path $NerPackage handoff-manifest.json) -Algorithm SHA256
+
+& $NerPython -I -B .\backend\training\flood_ner\successor_training.py --checkout $NerCheckout --preparation $NerPackage --python $NerPython --model-dir $NerModel --verify-gpu
+```
+
+This verifies package, code, model and config hashes, Python 3.11/spaCy 3.7.5, actual configuration-schema resolution for seeds 0/1/2, and the currently available GPU against recorded qualification. It writes no training run. Successful output must say `verified_read_only`, `gpu_verified: true`, `configuration_schema_verified: true`, and `training_started: false`. Without `--verify-gpu`, the default verifies files/runtime/config schemas and reports `gpu_verified: false`; that is insufficient to start training.
+
+The complete model has 23 pinned files, including its wheel. The laptop's older GPU model copy lacked the wheel; the complete existing preflight model was used instead, without changing any model bytes. A different GPU/runtime requires separate qualification; there is no automatic CPU fallback. RAM does not replace GPU compute.
+
+## Later explicit training action
+
+Only after delivery and successful desktop verification, start a seed explicitly. **These commands were not run by preparation.** Keep each output directory new. The examples use direct children of the existing artifacts directory.
+
+```powershell
+& $NerPython -I -B .\backend\training\flood_ner\successor_training.py --checkout $NerCheckout --preparation $NerPackage --python $NerPython --model-dir $NerModel --start-training --seed 0 --output .\backend\training\flood_ner\artifacts\successor-training-seed-0-v16-retry1
+```
+
+After seed 0 finishes, run seeds 1 and 2 sequentially by changing both `--seed` and the new output name. The launcher rejects concurrent runs and existing destinations. A failed run retains logs/output; do not delete an active lock or reuse a failed destination automatically. Inspect the recorded process state before any interrupted-run recovery.
+
+The unchanged recipe uses a fresh six-label NER head, the pinned pretrained encoder/vocabulary and frozen tokenizer, batch size 8, dropout 0.1, Adam learning rate 0.001, up to 1,000 steps/30 epochs, and development checks every 35 steps. The selected checkpoint uses development entity F1 with the earliest step breaking ties. Configs have no holdout corpus.
+
+## Interpretation and evaluation
+
+These are **AI-assisted silver** references for a research comparison against available recorded history. Original search/transport records and some historical scope remain incomplete. Neither admission nor the 60-passage count establishes certified freshness, human gold or measured improvement.
+
+Validation has no Taglish ROAD spans and only one Taglish LANDMARK span; the holdout has no LOCAL_AREA spans. Unsupported class performance remains unmeasured. Holdout theme metadata is incomplete. The exact evaluation contract accompanies the private payload. Later isolated evaluation must compare baseline and successor on the same locked holdout; older scores from other texts do not establish improvement.
+
+Copyable desktop-chat prompt:
+
+> Read the current task plan, this guide and the configuration-correction report. Preserve the failed seed-0 logs, old package and output directory. The corrected package is v16-configfix; do not patch v15 in place. Verify that the latest code and exact private successor trainer payload are actually present; a Git pull is insufficient. Preserve local changes, historical data/models/results and all ignored files. Use explicit checkout, interpreter, model and package paths. Run only the read-only successor launcher with GPU verification, report its outcome and missing prerequisites, require configuration_schema_verified true in addition to verified_read_only/gpu_verified true/training_started false, and do not open holdout references. Do not collect, reinstall models/environments, restore archives, push, run old fixed-400 helpers or start training during verification. Training is a later explicit action after delivery and successful GPU verification.

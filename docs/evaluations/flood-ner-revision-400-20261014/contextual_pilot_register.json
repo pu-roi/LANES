@@ -1,0 +1,378 @@
+{
+  "additional_location_samples": 0,
+  "articles_per_language": {
+    "english": 10,
+    "taglish": 19
+  },
+  "category_review_status": "unreviewed; no category minimum claimed",
+  "drafts": 40,
+  "languages": {
+    "english": 20,
+    "taglish": 20
+  },
+  "partition_status": "original training candidates; no fresh revision partition assignment",
+  "records": [
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "a1c1351ebb6dbec1d57c6240615e5787adddbf5b009d6db70f6b008ef1e3b417",
+      "proposed_split": "train",
+      "record_id": "location-88c7c0a6579afd822893",
+      "source_id": "news-d4ad93228fbfb786",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "f7f452d6ca9297adc291bf2a2ad7e8f9e766cc6faa22b8d99c582f1f897dd923",
+      "proposed_split": "train",
+      "record_id": "location-cd6dfcac700b410780ac",
+      "source_id": "news-7e3cff6275b06366",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "8ebe6314c235ec5ff0a3ac7ac9ebee05b36202be8902a720df6c7f5a9aae0356",
+      "proposed_split": "train",
+      "record_id": "cohort-06745e20b8d295b9fbef",
+      "source_id": "GMA-20260817-998778",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "ede315fca5731ae363a4bc1662f293e43764f9566b70f17696ffcc791939efbe",
+      "proposed_split": "train",
+      "record_id": "cohort-1501a07f96ca50253fb2",
+      "source_id": "GMA-20250722-953419",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "8ae1dde3e33d55f7d399f47f996c7af5c63b32ac641515649da7a0e6a6a0a222",
+      "proposed_split": "train",
+      "record_id": "cohort-1e28e606538146cd9ad8",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "5ed96f0c8a9eff68ff9e9cd3845665f9231fd7c5bea12d4052be7ca96025fadc",
+      "proposed_split": "train",
+      "record_id": "cohort-963f6acbff7d296e8b3c",
+      "source_id": "GMA-20250806-954964",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "b8c81fb9f1d971dcdb08b48a9159ed04f9065b9b7aa396a4fd1c29b3a01ae492",
+      "proposed_split": "train",
+      "record_id": "cohort-b33f3c1ffdef0628ca23",
+      "source_id": "news-1885abddb1dc6962",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "2f91df9c80547800539c9e7a2fc8ed907bd900e2975bba35115c9462f0cc973b",
+      "proposed_split": "train",
+      "record_id": "cohort-b7165dc43d49f817d581",
+      "source_id": "news-5b6d22c0e26ec49e",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "b4c68aab3cfd997604e7033202d9abea5733739d20c633ad81f66ad220fa83e8",
+      "proposed_split": "train",
+      "record_id": "cohort-5a2e28c9bf847b07bb3b",
+      "source_id": "GMA-20260710-994434",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "587f5bc154a32290a745c10af13dc2a20ad61210af3b065be4b611b5bacdc79c",
+      "proposed_split": "train",
+      "record_id": "cohort-d214b996fe3c07ced172",
+      "source_id": "GMA-20230831-880633",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "5f782855fa36e3d739d7ce6fccb3c30441005b7d012db48d8d530d32c165c01c",
+      "proposed_split": "train",
+      "record_id": "cohort-5a6e950e28b12ed01fb0",
+      "source_id": "GMA-20260817-998778",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "e220d0bfaa1729b42b91c83df68bd132195e53137f1ece012450d1a1491b8d48",
+      "proposed_split": "train",
+      "record_id": "cohort-f0acfade9d39a9f161d9",
+      "source_id": "GMA-20260817-998778",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "5984c0645f1b53bbb58125956373d8bf62bb8234c7e81fcc8f84031219fa002a",
+      "proposed_split": "train",
+      "record_id": "cohort-4c3bf2418bd0d3dc59a0",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "843bef7de770a6a41a3f9c8555ee83f63c9cccbabc278f2fd7b89aa24107cdbd",
+      "proposed_split": "train",
+      "record_id": "cohort-6b2149374ba1da8094bc",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "642d2a2c301ccf9a1383b4a0d858dd4dec9d8cff5f4006036a1cdfc5b35bcf69",
+      "proposed_split": "train",
+      "record_id": "cohort-9cf0b713dad1c34b031c",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "c938425b05360e150389c69cf05e2e5a6378fa233dc7d1aa6438d9869e184874",
+      "proposed_split": "train",
+      "record_id": "cohort-bfc123aab3d764dd3a02",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "8151bcb8499967702432e43f678d2be1c97ccbb3d038b693ef6492981bb92c32",
+      "proposed_split": "train",
+      "record_id": "cohort-c220bd90028daa65a7c7",
+      "source_id": "GMA-20250722-953419",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "4f4be2384888f1b3838fc1d42766cf89bfbe1baec174cd0058ad93263e0dd17c",
+      "proposed_split": "train",
+      "record_id": "cohort-cda5df5e982a4534f6c8",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "3c0fb16d60c09c897b0a68dbfa7a3005a83ab5a3ffd6bf6a60a60fedb15944c2",
+      "proposed_split": "train",
+      "record_id": "cohort-e718674aebadc4f9a09e",
+      "source_id": "GMA-20250722-953419",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "english",
+      "passage_sha256": "0154f8343c883b1559e45f4c5dcd055b581f36ddd5eeafda0fd0873034ac2e2f",
+      "proposed_split": "train",
+      "record_id": "cohort-29f42fbf3134ba20cee7",
+      "source_id": "GMA-20250722-953360",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "091946bd8046e1c4fc23259452ba2ae839fcafbfae4880a44ef666dbdde431f7",
+      "proposed_split": "train",
+      "record_id": "cohort-bc09b9847d2ce75c15b1",
+      "source_id": "news-80c943f006857a0e",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "ddeb39eeb1e8352230cb9487d5c4e1c12ae6a2a4778dc1764abde0d470ada829",
+      "proposed_split": "train",
+      "record_id": "cohort-379cf07ae399feae85cb",
+      "source_id": "news-5d09e2046cab66e8",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "b9a8d41235193b70ccc233764c12d650701cd5c2cfb0542d4c17159035248dc9",
+      "proposed_split": "train",
+      "record_id": "cohort-77490725c44bc0a43403",
+      "source_id": "news-2a63ee3f20e53039",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "a6d92cfb262277636b7a8278f79205400364bb0e6eceae0c616662d334bab466",
+      "proposed_split": "train",
+      "record_id": "location-81abb349bb5fe38ae7ca",
+      "source_id": "news-5100fc1563858052",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "68e5a8d5f9bb8769b41dcc5fe5bf642082548a5b1bb307e960e3c8cb5cfc6b70",
+      "proposed_split": "train",
+      "record_id": "cohort-32ce8b03d06a53a9dcb0",
+      "source_id": "news-344bf3f37308486f",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "7120c327c7bd9fceaee25104ac3d71ae1aa203e114b000c94b3156d23edf893c",
+      "proposed_split": "train",
+      "record_id": "cohort-efff197d0c2aef65a14a",
+      "source_id": "news-e5d8ce545177ef93",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "0fd57ba7142a6f42ee0294edb901d9405b2ac6c1c9431e174eea31e95ebbb38b",
+      "proposed_split": "train",
+      "record_id": "location-cebe21af8fefbd04cc6f",
+      "source_id": "news-0b427220c91c3b1e",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "17cdb05895c643ad03832fb1754a641260a2e3039e57adbeeb9cd316dc7c5ae8",
+      "proposed_split": "train",
+      "record_id": "cohort-0e770041c41b0d17bc28",
+      "source_id": "news-c1ed9be4942a57a1",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "6c927f5ac03e413902e31a9b1bbc03440b87a7c6dac2e644c9f598eaf19653d6",
+      "proposed_split": "train",
+      "record_id": "cohort-69e81cf465f5b717460a",
+      "source_id": "news-313d62f4a2b495c5",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "3e1de79846139661073a4b922e17b107678059074df18c404cc2e3ee26f1db74",
+      "proposed_split": "train",
+      "record_id": "cohort-0029bc2575601fbe469d",
+      "source_id": "news-3f6505339a9b17db",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "80fcfb426cd7cfa64cf37e7b2835c8266feb91135c456efa73786444078536dd",
+      "proposed_split": "train",
+      "record_id": "cohort-b60c527530ba4215ee5d",
+      "source_id": "news-e5d8ce545177ef93",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "ceaebb4662ed3614e4101ef45089a936604a25b185925c87e0be84d265ea16a1",
+      "proposed_split": "train",
+      "record_id": "cohort-062bf7b029d5b5208fd4",
+      "source_id": "news-b97c192c7465e45a",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "a7ddf1d851ecb71e10a58384eda770002eb842f255980886592a28a9e55cc339",
+      "proposed_split": "train",
+      "record_id": "cohort-0f9a4d49d2aef61cf903",
+      "source_id": "news-be08c01881009b7b",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "eb52e12996635f0b1de455efe8899e3023ab35d785a6e95414f38d2a57b31a75",
+      "proposed_split": "train",
+      "record_id": "cohort-103d145c4401e049db6f",
+      "source_id": "news-73de73b216e2ab61",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "a1a941dec3614abadd7b81f4e55ea55226c1f53f94463c206c1e94897411230b",
+      "proposed_split": "train",
+      "record_id": "cohort-1e5417fa0066e759e992",
+      "source_id": "news-9a06e60e0f00c9eb",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "60c3c7fba75f0d35c9936bda67b12baab8ee450cb2e551cb4e20648dc37e8f7e",
+      "proposed_split": "train",
+      "record_id": "cohort-208c1e70c1c7d6eda9e0",
+      "source_id": "news-9522fe13a6ca5a7d",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "535cf550070ab24b3b17acb512e91a98c9f30ac95c935c31a0530d9c7401db1d",
+      "proposed_split": "train",
+      "record_id": "cohort-26f791487ba3f7f6890f",
+      "source_id": "news-68cd14af74c2df54",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "5bc89ac622d4598b7eb679a195873bbd8ec2d69e24a6035359fd0155efaa35b4",
+      "proposed_split": "train",
+      "record_id": "cohort-27d45b6eaba6a016e68b",
+      "source_id": "news-c5f128725aa9782b",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "a835677b4c32fb129cd7b597f55fb26feff25018275089045daaa4b44d971cff",
+      "proposed_split": "train",
+      "record_id": "cohort-2e000d52bf920c66214d",
+      "source_id": "news-6e87d774a4c29920",
+      "status": "draft"
+    },
+    {
+      "frozen_split": null,
+      "language": "taglish",
+      "passage_sha256": "d9a4222cad75ef336dd121f19d1147d98f543e459eb994b1fbf828a961d9c268",
+      "proposed_split": "train",
+      "record_id": "cohort-33babc4b3d01ba7bd8db",
+      "source_id": "news-4bfeded995f695d4",
+      "status": "draft"
+    }
+  ],
+  "reviewed_complete": 0,
+  "schema_version": "lanes-context-pilot-proposal-v1"
+}

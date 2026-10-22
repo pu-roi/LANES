@@ -1,0 +1,127 @@
+{
+  "all_uploaded_bytes_readback_verified": true,
+  "branch": "roi-branch",
+  "checkpoint_archive_bytes": 208875788,
+  "checkpoint_archive_sha256": "ba3c84c4532b46d9acf65b8219d63d33877853838e2abdf36f8c0215f3ef01ff",
+  "checkpoint_parts": 7,
+  "drive_folder": "https://drive.google.com/drive/folders/1ZFFNL9Vu-dg5xLyWsSR2wd99_qsGTE_J",
+  "env_excluded_from_commit": true,
+  "environments_or_credentials_uploaded": false,
+  "files": [
+    {
+      "bytes": 154453,
+      "full_readback_verified": true,
+      "id": "16jx96gyBV_Vm9e9uK5YyUWgBGJp_2Khw",
+      "name": "successor-v16-windows-trainer.zip",
+      "owner_only": true,
+      "sha256": "d06fdf5ad1a0aa77a998443228a4bfc22c5f26dbaedebda25aa751e3f605ca4a",
+      "url": "https://drive.google.com/file/d/16jx96gyBV_Vm9e9uK5YyUWgBGJp_2Khw/view?usp=drivesdk"
+    },
+    {
+      "bytes": 16511,
+      "full_readback_verified": true,
+      "id": "1IODN6AknXXGpHrYUUzZPjl3lhYLDH2KJ",
+      "name": "checkpoint-backup-manifest.json",
+      "owner_only": true,
+      "sha256": "7d5cb15c52f39146b0048bcebb2a528672dbe1c0711be8e34bac1fd82669618a",
+      "url": "https://drive.google.com/file/d/1IODN6AknXXGpHrYUUzZPjl3lhYLDH2KJ/view?usp=drivesdk"
+    },
+    {
+      "bytes": 33554432,
+      "full_readback_verified": true,
+      "id": "1F7obil5hvGb-BozjDKb9dx7ZesTIZii4",
+      "name": "successor-v16-selected-checkpoints.zip.part001",
+      "owner_only": true,
+      "sha256": "0fc0affa136a63bb2d9df777c824bf0493dd5e37065dc69d235b9a13b07c0c6e",
+      "url": "https://drive.google.com/file/d/1F7obil5hvGb-BozjDKb9dx7ZesTIZii4/view?usp=drivesdk"
+    },
+    {
+      "bytes": 33554432,
+      "full_readback_verified": true,
+      "id": "1EzbIdgB1Y9jJ12OSJ1cCHZvQpj6YcPSO",
+      "name": "successor-v16-selected-checkpoints.zip.part002",
+      "owner_only": true,
+      "sha256": "fc99951d14ab95836e3079cf83b804407eb62e7994a9101ac85150e659357dd5",
+      "url": "https://drive.google.com/file/d/1EzbIdgB1Y9jJ12OSJ1cCHZvQpj6YcPSO/view?usp=drivesdk"
+    },
+    {
+      "bytes": 33554432,
+      "full_readback_verified": true,
+      "id": "1yFV6UceIBgKU7WHg7CfeYTJLAhXigSoV",
+      "name": "successor-v16-selected-checkpoints.zip.part003",
+      "owner_only": true,
+      "sha256": "c2051b34a9fc6988da6d5884c5e4605556e2aa39f007403fe11808ae4e09b77c",
+      "url": "https://drive.google.com/file/d/1yFV6UceIBgKU7WHg7CfeYTJLAhXigSoV/view?usp=drivesdk"
+    },
+    {
+      "bytes": 33554432,
+      "full_readback_verified": true,
+      "id": "1jCf16nnOuUopF6krNhqdiszX9PpCqzOQ",
+      "name": "successor-v16-selected-checkpoints.zip.part004",
+      "owner_only": true,
+      "sha256": "ce45ff4f508f65121c564a882baa73b69ab43ec646bb0ea11d21c8a3e629b8b2",
+      "url": "https://drive.google.com/file/d/1jCf16nnOuUopF6krNhqdiszX9PpCqzOQ/view?usp=drivesdk"
+    },
+    {
+      "bytes": 33554432,
+      "full_readback_verified": true,
+      "id": "1A9u5sqBf0UK2hvu28tAyNmVwKTay_dhz",
+      "name": "successor-v16-selected-checkpoints.zip.part005",
+      "owner_only": true,
+      "sha256": "c269ae2e62f0af6d3bec8892ee013fabe2bf1cf853d14dc4d83df6a4f0bfb2ea",
+      "url": "https://drive.google.com/file/d/1A9u5sqBf0UK2hvu28tAyNmVwKTay_dhz/view?usp=drivesdk"
+    },
+    {
+      "bytes": 33554432,
+      "full_readback_verified": true,
+      "id": "1SFviQ2AaY58hCIk-JcTD4z9-PufjHPFN",
+      "name": "successor-v16-selected-checkpoints.zip.part006",
+      "owner_only": true,
+      "sha256": "a0679248cd19d453ca59703ee737f66ba4c91f66eadb1d4bee394e819160a89d",
+      "url": "https://drive.google.com/file/d/1SFviQ2AaY58hCIk-JcTD4z9-PufjHPFN/view?usp=drivesdk"
+    },
+    {
+      "bytes": 7549196,
+      "full_readback_verified": true,
+      "id": "1TBRvhpvXkqJ4og28HlyE6ASp5hOKPLLK",
+      "name": "successor-v16-selected-checkpoints.zip.part007",
+      "owner_only": true,
+      "sha256": "7bf15fda575a9b987d336c5eb110f6b7c26f93d06dd003c660b9f1158574c2e9",
+      "url": "https://drive.google.com/file/d/1TBRvhpvXkqJ4og28HlyE6ASp5hOKPLLK/view?usp=drivesdk"
+    },
+    {
+      "bytes": 1094,
+      "full_readback_verified": true,
+      "id": "121i4djQFikKnxf-_nTwuL5AzhI0ovqWe",
+      "name": "SHA256SUMS.txt",
+      "owner_only": true,
+      "sha256": "30ca34b7940d739119f1461c6fe94e804ffdec29797534db1fb529d58594f89d",
+      "url": "https://drive.google.com/file/d/121i4djQFikKnxf-_nTwuL5AzhI0ovqWe/view?usp=drivesdk"
+    },
+    {
+      "bytes": 2500,
+      "full_readback_verified": true,
+      "id": "1cRfvGFHNeV0aCNsfE0MhKSClmtwTr6sF",
+      "name": "START-HERE.md",
+      "owner_only": true,
+      "sha256": "87823a9e95d9fad409620cf1ac9063d4eeb9754ceedaf78195000876a9d0ac7e",
+      "url": "https://drive.google.com/file/d/1cRfvGFHNeV0aCNsfE0MhKSClmtwTr6sF/view?usp=drivesdk"
+    }
+  ],
+  "git_publication_requested": true,
+  "holdout_uploaded": false,
+  "new_dependencies_or_migrations": false,
+  "old_drive_folders_changed": false,
+  "owner_only_items_verified": 12,
+  "passing_implementation_and_test_bindings_verified": true,
+  "primary_seed": 0,
+  "schema": "lanes-successor-publication-checkpoint-v1",
+  "selected_seeds": [
+    0,
+    1,
+    2
+  ],
+  "tests_passed": 75,
+  "trainer_zip_members": 12,
+  "uploaded_files": 11
+}

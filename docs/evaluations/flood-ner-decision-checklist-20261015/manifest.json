@@ -1,0 +1,14 @@
+{
+  "schema_version": "lanes-checklist-completion-report-manifest-v1",
+  "files": {
+    "README.md": {
+      "sha256": "1ab5ebc77a3f0b7b948643b5d0bb7577fce310989920bb513cf525abba729b48",
+      "bytes": 3874
+    },
+    "summary.json": {
+      "sha256": "4a9d0c5f2fc66cbfdc48168d281b07670dbb55bdb863cea3556d9f93d8c3ff9a",
+      "bytes": 9338
+    }
+  },
+  "self_excluded": true
+}

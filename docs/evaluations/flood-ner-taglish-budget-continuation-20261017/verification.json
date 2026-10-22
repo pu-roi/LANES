@@ -1,0 +1,66 @@
+{
+  "preservation": {
+    "protected_files": 6896,
+    "unchanged": 6896,
+    "failures": []
+  },
+  "curator_safe_hashes": {
+    "aggregate-status.json": "24edada27e1749fe187f9b55fa79393fd63c1cd61d3dd791bf59dca0b13d90e4",
+    "verification-manifest.json": "c204cf02db21ad554531ba64300de94c7dbe0baa7060bf0056563425239cd65a"
+  },
+  "authorization_sha256": "3dbceb512266aeb27d300404c30486dbe85cfcb83e0f6b7bbf0b84b34f4fbf48",
+  "private_manifest_hash_verified_without_reading_contents": true,
+  "curator_verification": {
+    "additional_unknown_exposure_count": null,
+    "aggregate_status_sha256": "24edada27e1749fe187f9b55fa79393fd63c1cd61d3dd791bf59dca0b13d90e4",
+    "all_manifest_hashes_rechecked": true,
+    "authorization_sha256": "3dbceb512266aeb27d300404c30486dbe85cfcb83e0f6b7bbf0b84b34f4fbf48",
+    "baseline_members_conditionally_retained": 49,
+    "baseline_members_newly_quarantined": 4,
+    "claimed_47_url_and_16_publisher_allowances_unavailable": true,
+    "claimed_publisher_attempts": 84,
+    "collection_closed": true,
+    "complete_references_mechanically_verified": 128,
+    "completed": true,
+    "conditional_test": 49,
+    "contains_source_text_urls_titles_entities_or_individual_labels": false,
+    "coordinator_read_allowlist": [
+      "aggregate-status.json",
+      "verification-manifest.json"
+    ],
+    "entity_spans_mechanically_verified": 166,
+    "exhaustive_outbound_accounting_verified": false,
+    "exposure_snapshot_bindings_verified": 4,
+    "fresh_guard_checks_failed": 0,
+    "fresh_guard_checks_passed": 27,
+    "inherited_uncertain_slots_preserved": 4,
+    "missing_evidence_requirements": [
+      "Recover byte-original complete request arguments and unfiltered complete tool result receipts for all 11 v5 search calls, with tool-call IDs/timestamps and request/result bindings. Hand-written query/content summaries or reconstructed URLs are insufficient.",
+      "Reconcile every original tool response identity, alias, ambiguous token and any truncation against the append-only reservations and 649-entry recorded union; retain original unverified reservation releases and all exposure uncertainty until reconciled.",
+      "Recover independent outbound publisher/transport receipts for the inherited 84-attempt history, including failures, redirects, interruptions and retry settings; ledger inheritance alone cannot exclude hidden or unrecorded attempts.",
+      "Resolve unknown extent of possible omitted v5 response identities. It is additional to the four inherited uncertain slots and has no defensible numerical count or finite exposure upper bound from supplied evidence.",
+      "Resolve source-specific history, reuse and reference-completeness holds before any later admission; unknown references remain held and unscored.",
+      "Obtain 11 eligible independent Taglish positive passages after the supported exposure quarantine; original baseline artifacts remain preserved."
+    ],
+    "new_network_operations": 0,
+    "no_admission_freeze_seal_export_inference_training_upload_push": true,
+    "original_tool_receipt_gate_passed": false,
+    "package": "heldout-taglish-budget-continuation-20261017-v6",
+    "predecessor_files_unchanged": 111,
+    "predecessor_hash_failures": 0,
+    "private_output_files_hashed": 23,
+    "private_output_manifest_sha256": "35fd08a2bc6440e7a51a2f32493c5ebe483e0a4999cfeadbf1794af7d43825b3",
+    "raw_identity_exhaustiveness_verified": false,
+    "raw_identity_union_replayed_count": 649,
+    "ready": false,
+    "remaining_taglish_positive_deficit": 11,
+    "review_outcome": "blocked_no_network",
+    "safe_for_parent": true,
+    "schema": "lanes-ner-verification-manifest-v6",
+    "schema_tokenizer_errors": 0,
+    "sealed": false
+  },
+  "coordinator_privacy_and_aggregate_arithmetic_checks_passed": true,
+  "production_public_api_dependency_schema_changes": false,
+  "historical_unit_suite_not_rerun_no_source_changes": true
+}

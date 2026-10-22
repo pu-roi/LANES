@@ -1,0 +1,98 @@
+{
+  "ai_assisted_silver": true,
+  "boundaries": {
+    "application_connected": false,
+    "dataset_changed": false,
+    "holdout_accessed": false,
+    "neural_inference": false,
+    "training_started": false,
+    "upload_commit_push": false,
+    "validation_records_reviewed": 0
+  },
+  "fictional_acceptance": {
+    "behavior_extraction_executed": false,
+    "cases": 40,
+    "contrasts": 2,
+    "corpus_members": 0,
+    "families": 10,
+    "languages": 2
+  },
+  "hashes": {
+    "fixture_matrix": "11d0db9d7f8e06cf7c42f9dce66b84970272f456c6c7ec02fd70d809d86adc50",
+    "freeze": "58f574a3321e31295b6adb426d0fb34cf5511315ae2f0ca513bd672e6aab0e07",
+    "preservation_receipt": "501011b908154e305d8bfad49aae3e5f6cb3e2b8b8ea8040531d14b648ee274e",
+    "private_manifest": "b17141432cd2bed43b82ca62de2ad94d1195a203578734523f7a58a70320f73c",
+    "protocol": "6b285166024091b783699cba3a00781e9f946d43a2ae4e1205314f404b6d5a03",
+    "public_specification": "ef3685b36c62fe0cfb729bc6c898a7e62f70e27e13349071f582663fa56477e8",
+    "qualification_bundle": "29fb14621933482015c2f1440259077b34e139da22ba3f7cc68164d28bbbbf00",
+    "qualification_receipt": "19ba61037fbd76f97372ea2d82e822f440dd86b397a1bca90d2fe32eda656ed1",
+    "reference_proposals": "7f96dd098110f114d605958d98674570519db753432661c9dea150803b4a3bfb",
+    "regression_receipt": "64571866915f5e4550920ba58cd53321dd8fd87f1ed1f16b714cbcd6b6592144"
+  },
+  "human_gold_verified": false,
+  "learned_depth_time_unfinished": true,
+  "membership_preserved": {
+    "research_holdout": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "next_task": "bounded_offline_association_repairs_before_separate_read_only_LANES_connection",
+  "no_accuracy_claim": true,
+  "not_blinded": true,
+  "reference_proposals": {
+    "complete_contextual_negative_records": 0,
+    "context_entities": {
+      "DEPTH": 35,
+      "TIME": 22
+    },
+    "depth_scopes": {
+      "collective": 10,
+      "maximum": 4,
+      "point": 27,
+      "range": 1
+    },
+    "dispositions": {
+      "correct_proposed": 4,
+      "hold": 2,
+      "retain_proposed": 20
+    },
+    "eligible_reference_proposals": 24,
+    "holds": 2,
+    "languages": {
+      "english": 11,
+      "taglish": 13
+    },
+    "real_onset_or_clearance_references": 0,
+    "records": 26,
+    "relation_scopes": {
+      "collective": 21,
+      "local": 43,
+      "shared": 22,
+      "unresolved": 2
+    },
+    "time_roles": {
+      "observation": 8,
+      "report": 8,
+      "unspecified": 6
+    },
+    "unassigned_facts": 21
+  },
+  "runtime": {
+    "cpu_only": true,
+    "python": "3.12.14",
+    "spacy": "3.7.5"
+  },
+  "schema": "lanes-context-acceptance-safe-aggregate-v33",
+  "selected_priority": "limited_interim_location_model_plus_depth_time_rules",
+  "status": "qualified_reference_package",
+  "verification": {
+    "fresh_tests_passed": 753,
+    "frozen_tokenizer_reconstructed": true,
+    "holdout_stat_only_verified": 55,
+    "new_acceptance_checks": 94,
+    "prior_v32_entry_sizes_and_snapshot_verified": 135,
+    "prior_validation_study_stat_only_verified": 27,
+    "protected_file_hashes_verified": 1383,
+    "source_review_complete_dispositions": 26
+  }
+}

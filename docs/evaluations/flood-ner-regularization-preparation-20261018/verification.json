@@ -1,0 +1,48 @@
+{
+  "L2": 0.05,
+  "configs": 3,
+  "counts": {
+    "dev": 60,
+    "train": 345
+  },
+  "gpu_verified": false,
+  "hashes": {
+    "baseline_metrics": "785a67d0182554bd354112658803ec3e157013b2cf5c6ce5ffabc401f0894585",
+    "cpu_qualification": "e68e322914df63a89d4a0443103817531a513e5f50a19676dbe6a797c46ccda7",
+    "experiment_manifest": "35050682217749d945a3c5fecbe5d3771212b1df1276f9f5f95bad4c7d6a0e78",
+    "grant": "4469a651021461070513aa16b00c3e1a83c454282f0560271d42948d15cf1e83",
+    "protocol": "a67620cb5c0ca458cf56bedf089ac72bf97087f8d7c53696194895db3739cee3",
+    "trainer_manifest": "aea4d8dfe7f259deb44822c93b30e8b6797b0a5da17ed21d32a2dc9bd7eed6fd"
+  },
+  "packages": 1,
+  "preserved": {
+    "file_bindings": 374,
+    "holdout_metadata_entries": 55
+  },
+  "private_delivery_complete": false,
+  "public_outputs": {
+    "README.md": "15d58372f3208947bb581e58cbdcf477bc2e3c8f93321e309f789665c72e8d49",
+    "baseline-summary.json": "f6daed8ee74202ab70042ac773744e7d68ae98395cc270dd7f49a64d2896d98b",
+    "cpu-qualification.json": "67b56d9e021310b4edddc3067692554bb443a05a54d19d83fa32c378a90ac022",
+    "experiment-protocol.json": "a67620cb5c0ca458cf56bedf089ac72bf97087f8d7c53696194895db3739cee3"
+  },
+  "qualification": {
+    "configs": 3,
+    "inference_performed": false,
+    "optimizer_updates": 0,
+    "pipeline_created": false,
+    "records": 405
+  },
+  "schema": "lanes-regularization-preparation-verification-v1",
+  "state": "verified_read_only",
+  "tests": {
+    "additional_unique_tests": false,
+    "backend_passed": 341,
+    "new_constructed_passed": 72,
+    "pinned_runtime_rechecks": 72,
+    "subtests_passed": 4,
+    "warnings": 1
+  },
+  "training_authorized": false,
+  "training_started": false
+}

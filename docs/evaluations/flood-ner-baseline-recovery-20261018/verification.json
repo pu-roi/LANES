@@ -1,0 +1,90 @@
+{
+  "schema": "lanes-baseline-recovery-checks-v1",
+  "fresh_broad_regression_suite": {
+    "passed": 302,
+    "failed": 0,
+    "skipped": 1,
+    "passing_subtests": 123,
+    "seconds": 97.122,
+    "junit_sha256": "1dbc52e1656a329bcb603d2125fbf5e747417921cd7775dbfc93d9e5721c0cfb"
+  },
+  "fresh_focused_reporting_and_repairs_suite": {
+    "passed": 71,
+    "failed": 0,
+    "skipped": 0,
+    "passing_subtests": 75,
+    "seconds": 16.536,
+    "junit_sha256": "c16968fee9cf70db038938992fed3f9b84880399eb758b7fb21645e4bdafc3c2"
+  },
+  "new_reporting_test_methods": 10,
+  "original_repair_test_methods": 61,
+  "command": "& .\\backend\\.venv\\Scripts\\python.exe -B -m pytest --noconftest -p no:cacheprovider -q .\\backend\\tests\\test_flood_ner_review_progress.py .\\backend\\tests\\test_flood_ner_research_capture.py .\\backend\\tests\\test_flood_ner_research_review.py .\\backend\\tests\\test_flood_ner_bounded_discovery.py .\\backend\\tests\\test_flood_ner_known_source_capture.py .\\backend\\tests\\test_flood_ner_history_inventory.py .\\backend\\tests\\test_flood_ner_repository_bytes.py .\\backend\\tests\\test_flood_ner_tooling.py .\\backend\\tests\\test_flood_ner_reference_selection.py .\\backend\\tests\\test_flood_ner_qualified_export.py",
+  "protected_inputs": {
+    "protected_files": 7124,
+    "unchanged_files": 7124,
+    "missing_files": 0,
+    "changed_files": 0
+  },
+  "protected_input_manifest_sha256": "5ae8fe1dd841293e095f6fc33193e316fc55d591a6131c4b35f389375049990c",
+  "implementation_and_test_hashes": {
+    "backend/training/flood_ner/review_progress.py": "6cd07bd6bf09fc0e13cc3def12bb6df0add1ce56fcbedfb8741e70dfc4e6e3d2",
+    "backend/tests/test_flood_ner_review_progress.py": "37b52eaad35c261c22b3dc8170e9061263e95b3b81fa95ec4c60ab36caeddc24",
+    "backend/training/flood_ner/research_review.py": "88f82c11fbb8490c03eed5de6e16d3994eb7d4ff8283c318e0e0c12848fa8204",
+    "backend/training/flood_ner/research_capture.py": "6da4a7ac9370766ab08677ac498a07e4524dffff19cc38bca1d0857d1507b4fd"
+  },
+  "guard_notes": [
+    "All fixtures are constructed; no private test content enters software tests.",
+    "Preserved research_review.py and research_capture.py are unchanged from v8.",
+    "The progress helper never authorizes admission, collection, sealing, export or training.",
+    "One existing Windows symlink test is skipped; existing spaCy/Click warning remains."
+  ],
+  "network_operations": 0,
+  "collection": false,
+  "production_api_changes": false,
+  "dependency_changes": false,
+  "database_schema_changes": false,
+  "admission": false,
+  "partition_freeze": false,
+  "test_sealing": false,
+  "training_export": false,
+  "inference": false,
+  "training": false,
+  "upload": false,
+  "commit": false,
+  "push": false,
+  "recovery": {
+    "historical_baseline": 49,
+    "recovered_conditional_test": 49,
+    "baseline_members_removed": 0,
+    "v8_reductions_reversed": 27,
+    "history_only_reversals": 10,
+    "grouping_only_reversals": 10,
+    "combined_reversals": 7,
+    "archived_compatible_witness": 53,
+    "prior_exposure_holds_retained": 4,
+    "new_v7_windows_held": 11,
+    "current_taglish_positive_gap": 11,
+    "historical_candidate_gap": 7
+  },
+  "curator": {
+    "complete_references": 139,
+    "entity_spans": 182,
+    "unknown_reference_holds": 62,
+    "guards_passed": 26,
+    "guards_failed": 0,
+    "predecessor_files_unchanged": 334,
+    "safe_pair_validation_passed": true,
+    "status_sha256": "d270ad4fd8f837acadd5d1e85894fa413f35c9f92bc7b0e728519d774aaea5cf",
+    "verification_sha256": "e6017b5df44031bbf13526060012da13bebe51073c06ddc759fe10c68448a43a",
+    "private_output_manifest_sha256": "335ac963ffde9c1ec4f968612e0f34e291db504b3a20325d721c53457e567b17"
+  },
+  "readiness": {
+    "accounting_verified": false,
+    "history_verified": false,
+    "ready_for_admission": false,
+    "ready_for_training": false,
+    "test_sealed": false,
+    "new_article_collection_requirement": null
+  },
+  "final_preservation_receipt_sha256": "51ce94dac6e612afa8ce04a8c01ddcedbcff419eccc913c1c19e89686ff77ce3"
+}

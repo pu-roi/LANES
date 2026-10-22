@@ -1,0 +1,2632 @@
+{
+  "baseline": {
+    "labels": {
+      "BARANGAY": {
+        "FN": 0,
+        "FP": 0,
+        "TP": 85,
+        "f1": 1.0,
+        "passages": 345,
+        "precision": 1.0,
+        "predicted_spans": 85,
+        "recall": 1.0,
+        "reference_spans": 85,
+        "supported": true
+      },
+      "CITY": {
+        "FN": 3,
+        "FP": 1,
+        "TP": 305,
+        "f1": 0.993485342019544,
+        "passages": 345,
+        "precision": 0.9967320261437909,
+        "predicted_spans": 306,
+        "recall": 0.9902597402597403,
+        "reference_spans": 308,
+        "supported": true
+      },
+      "LANDMARK": {
+        "FN": 6,
+        "FP": 4,
+        "TP": 52,
+        "f1": 0.9122807017543859,
+        "passages": 345,
+        "precision": 0.9285714285714286,
+        "predicted_spans": 56,
+        "recall": 0.896551724137931,
+        "reference_spans": 58,
+        "supported": true
+      },
+      "LOCAL_AREA": {
+        "FN": 1,
+        "FP": 0,
+        "TP": 18,
+        "f1": 0.972972972972973,
+        "passages": 345,
+        "precision": 1.0,
+        "predicted_spans": 18,
+        "recall": 0.9473684210526315,
+        "reference_spans": 19,
+        "supported": true
+      },
+      "PROVINCE": {
+        "FN": 1,
+        "FP": 2,
+        "TP": 168,
+        "f1": 0.9911504424778761,
+        "passages": 345,
+        "precision": 0.9882352941176471,
+        "predicted_spans": 170,
+        "recall": 0.9940828402366864,
+        "reference_spans": 169,
+        "supported": true
+      },
+      "ROAD": {
+        "FN": 8,
+        "FP": 6,
+        "TP": 193,
+        "f1": 0.965,
+        "passages": 345,
+        "precision": 0.9698492462311558,
+        "predicted_spans": 199,
+        "recall": 0.9601990049751243,
+        "reference_spans": 201,
+        "supported": true
+      }
+    },
+    "language_labels": {
+      "english": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 34,
+          "f1": 1.0,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 34,
+          "recall": 1.0,
+          "reference_spans": 34,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 1,
+          "FP": 1,
+          "TP": 185,
+          "f1": 0.9946236559139785,
+          "passages": 170,
+          "precision": 0.9946236559139785,
+          "predicted_spans": 186,
+          "recall": 0.9946236559139785,
+          "reference_spans": 186,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 3,
+          "FP": 4,
+          "TP": 35,
+          "f1": 0.9090909090909091,
+          "passages": 170,
+          "precision": 0.8974358974358975,
+          "predicted_spans": 39,
+          "recall": 0.9210526315789473,
+          "reference_spans": 38,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 6,
+          "f1": 1.0,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 6,
+          "recall": 1.0,
+          "reference_spans": 6,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 105,
+          "f1": 0.995260663507109,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 105,
+          "recall": 0.9905660377358491,
+          "reference_spans": 106,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 3,
+          "TP": 147,
+          "f1": 0.9639344262295082,
+          "passages": 170,
+          "precision": 0.98,
+          "predicted_spans": 150,
+          "recall": 0.9483870967741935,
+          "reference_spans": 155,
+          "supported": true
+        }
+      },
+      "taglish": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 51,
+          "f1": 1.0,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 51,
+          "recall": 1.0,
+          "reference_spans": 51,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 2,
+          "FP": 0,
+          "TP": 120,
+          "f1": 0.9917355371900827,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 120,
+          "recall": 0.9836065573770492,
+          "reference_spans": 122,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 3,
+          "FP": 0,
+          "TP": 17,
+          "f1": 0.918918918918919,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 17,
+          "recall": 0.85,
+          "reference_spans": 20,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 12,
+          "f1": 0.96,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 12,
+          "recall": 0.9230769230769231,
+          "reference_spans": 13,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 0,
+          "FP": 2,
+          "TP": 63,
+          "f1": 0.984375,
+          "passages": 175,
+          "precision": 0.9692307692307692,
+          "predicted_spans": 65,
+          "recall": 1.0,
+          "reference_spans": 63,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 0,
+          "FP": 3,
+          "TP": 46,
+          "f1": 0.968421052631579,
+          "passages": 175,
+          "precision": 0.9387755102040817,
+          "predicted_spans": 49,
+          "recall": 1.0,
+          "reference_spans": 46,
+          "supported": true
+        }
+      }
+    },
+    "language_macro": {
+      "english": {
+        "f1": 0.9771516091235841,
+        "supported_labels": 6
+      },
+      "taglish": {
+        "f1": 0.9705750847900968,
+        "supported_labels": 6
+      }
+    },
+    "languages": {
+      "english": {
+        "FN": 13,
+        "FP": 8,
+        "TP": 512,
+        "f1": 0.9799043062200957,
+        "passages": 170,
+        "precision": 0.9846153846153847,
+        "predicted_spans": 520,
+        "recall": 0.9752380952380952,
+        "reference_spans": 525
+      },
+      "taglish": {
+        "FN": 6,
+        "FP": 5,
+        "TP": 309,
+        "f1": 0.9825119236883942,
+        "passages": 175,
+        "precision": 0.9840764331210191,
+        "predicted_spans": 314,
+        "recall": 0.9809523809523809,
+        "reference_spans": 315
+      }
+    },
+    "macro": {
+      "f1": 0.9724815765374631,
+      "supported_labels": 6
+    },
+    "negative_passages": {
+      "english": {
+        "false_positive_passages": 0,
+        "negative_passages": 38,
+        "rate": 0.0
+      },
+      "overall": {
+        "false_positive_passages": 0,
+        "negative_passages": 103,
+        "rate": 0.0
+      },
+      "taglish": {
+        "false_positive_passages": 0,
+        "negative_passages": 65,
+        "rate": 0.0
+      }
+    },
+    "overall": {
+      "FN": 19,
+      "FP": 13,
+      "TP": 821,
+      "f1": 0.980884109916368,
+      "passages": 345,
+      "precision": 0.9844124700239808,
+      "predicted_spans": 834,
+      "recall": 0.9773809523809524,
+      "reference_spans": 840
+    }
+  },
+  "combined": {
+    "labels": {
+      "BARANGAY": {
+        "FN": 0,
+        "FP": 0,
+        "TP": 85,
+        "f1": 1.0,
+        "passages": 345,
+        "precision": 1.0,
+        "predicted_spans": 85,
+        "recall": 1.0,
+        "reference_spans": 85,
+        "supported": true
+      },
+      "CITY": {
+        "FN": 3,
+        "FP": 1,
+        "TP": 305,
+        "f1": 0.993485342019544,
+        "passages": 345,
+        "precision": 0.9967320261437909,
+        "predicted_spans": 306,
+        "recall": 0.9902597402597403,
+        "reference_spans": 308,
+        "supported": true
+      },
+      "LANDMARK": {
+        "FN": 6,
+        "FP": 2,
+        "TP": 52,
+        "f1": 0.9285714285714286,
+        "passages": 345,
+        "precision": 0.9629629629629629,
+        "predicted_spans": 54,
+        "recall": 0.896551724137931,
+        "reference_spans": 58,
+        "supported": true
+      },
+      "LOCAL_AREA": {
+        "FN": 0,
+        "FP": 0,
+        "TP": 19,
+        "f1": 1.0,
+        "passages": 345,
+        "precision": 1.0,
+        "predicted_spans": 19,
+        "recall": 1.0,
+        "reference_spans": 19,
+        "supported": true
+      },
+      "PROVINCE": {
+        "FN": 1,
+        "FP": 2,
+        "TP": 168,
+        "f1": 0.9911504424778761,
+        "passages": 345,
+        "precision": 0.9882352941176471,
+        "predicted_spans": 170,
+        "recall": 0.9940828402366864,
+        "reference_spans": 169,
+        "supported": true
+      },
+      "ROAD": {
+        "FN": 6,
+        "FP": 5,
+        "TP": 195,
+        "f1": 0.972568578553616,
+        "passages": 345,
+        "precision": 0.975,
+        "predicted_spans": 200,
+        "recall": 0.9701492537313433,
+        "reference_spans": 201,
+        "supported": true
+      }
+    },
+    "language_labels": {
+      "english": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 34,
+          "f1": 1.0,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 34,
+          "recall": 1.0,
+          "reference_spans": 34,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 1,
+          "FP": 1,
+          "TP": 185,
+          "f1": 0.9946236559139785,
+          "passages": 170,
+          "precision": 0.9946236559139785,
+          "predicted_spans": 186,
+          "recall": 0.9946236559139785,
+          "reference_spans": 186,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 3,
+          "FP": 2,
+          "TP": 35,
+          "f1": 0.9333333333333333,
+          "passages": 170,
+          "precision": 0.9459459459459459,
+          "predicted_spans": 37,
+          "recall": 0.9210526315789473,
+          "reference_spans": 38,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 6,
+          "f1": 1.0,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 6,
+          "recall": 1.0,
+          "reference_spans": 6,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 105,
+          "f1": 0.995260663507109,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 105,
+          "recall": 0.9905660377358491,
+          "reference_spans": 106,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 6,
+          "FP": 3,
+          "TP": 149,
+          "f1": 0.9706840390879479,
+          "passages": 170,
+          "precision": 0.9802631578947368,
+          "predicted_spans": 152,
+          "recall": 0.9612903225806452,
+          "reference_spans": 155,
+          "supported": true
+        }
+      },
+      "taglish": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 51,
+          "f1": 1.0,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 51,
+          "recall": 1.0,
+          "reference_spans": 51,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 2,
+          "FP": 0,
+          "TP": 120,
+          "f1": 0.9917355371900827,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 120,
+          "recall": 0.9836065573770492,
+          "reference_spans": 122,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 3,
+          "FP": 0,
+          "TP": 17,
+          "f1": 0.918918918918919,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 17,
+          "recall": 0.85,
+          "reference_spans": 20,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 13,
+          "f1": 1.0,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 13,
+          "recall": 1.0,
+          "reference_spans": 13,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 0,
+          "FP": 2,
+          "TP": 63,
+          "f1": 0.984375,
+          "passages": 175,
+          "precision": 0.9692307692307692,
+          "predicted_spans": 65,
+          "recall": 1.0,
+          "reference_spans": 63,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 0,
+          "FP": 2,
+          "TP": 46,
+          "f1": 0.9787234042553191,
+          "passages": 175,
+          "precision": 0.9583333333333334,
+          "predicted_spans": 48,
+          "recall": 1.0,
+          "reference_spans": 46,
+          "supported": true
+        }
+      }
+    },
+    "language_macro": {
+      "english": {
+        "f1": 0.9823169486403948,
+        "supported_labels": 6
+      },
+      "taglish": {
+        "f1": 0.9789588100607202,
+        "supported_labels": 6
+      }
+    },
+    "languages": {
+      "english": {
+        "FN": 11,
+        "FP": 6,
+        "TP": 514,
+        "f1": 0.9837320574162679,
+        "passages": 170,
+        "precision": 0.9884615384615385,
+        "predicted_spans": 520,
+        "recall": 0.979047619047619,
+        "reference_spans": 525
+      },
+      "taglish": {
+        "FN": 5,
+        "FP": 4,
+        "TP": 310,
+        "f1": 0.985691573926868,
+        "passages": 175,
+        "precision": 0.9872611464968153,
+        "predicted_spans": 314,
+        "recall": 0.9841269841269841,
+        "reference_spans": 315
+      }
+    },
+    "macro": {
+      "f1": 0.9809626319370773,
+      "supported_labels": 6
+    },
+    "negative_passages": {
+      "english": {
+        "false_positive_passages": 0,
+        "negative_passages": 38,
+        "rate": 0.0
+      },
+      "overall": {
+        "false_positive_passages": 0,
+        "negative_passages": 103,
+        "rate": 0.0
+      },
+      "taglish": {
+        "false_positive_passages": 0,
+        "negative_passages": 65,
+        "rate": 0.0
+      }
+    },
+    "overall": {
+      "FN": 16,
+      "FP": 10,
+      "TP": 824,
+      "f1": 0.984468339307049,
+      "passages": 345,
+      "precision": 0.988009592326139,
+      "predicted_spans": 834,
+      "recall": 0.9809523809523809,
+      "reference_spans": 840
+    }
+  },
+  "eligible_subset": {
+    "labels": {
+      "BARANGAY": {
+        "FN": 0,
+        "FP": 0,
+        "TP": 85,
+        "f1": 1.0,
+        "passages": 345,
+        "precision": 1.0,
+        "predicted_spans": 85,
+        "recall": 1.0,
+        "reference_spans": 85,
+        "supported": true
+      },
+      "CITY": {
+        "FN": 3,
+        "FP": 1,
+        "TP": 305,
+        "f1": 0.993485342019544,
+        "passages": 345,
+        "precision": 0.9967320261437909,
+        "predicted_spans": 306,
+        "recall": 0.9902597402597403,
+        "reference_spans": 308,
+        "supported": true
+      },
+      "LANDMARK": {
+        "FN": 6,
+        "FP": 2,
+        "TP": 52,
+        "f1": 0.9285714285714286,
+        "passages": 345,
+        "precision": 0.9629629629629629,
+        "predicted_spans": 54,
+        "recall": 0.896551724137931,
+        "reference_spans": 58,
+        "supported": true
+      },
+      "LOCAL_AREA": {
+        "FN": 0,
+        "FP": 0,
+        "TP": 19,
+        "f1": 1.0,
+        "passages": 345,
+        "precision": 1.0,
+        "predicted_spans": 19,
+        "recall": 1.0,
+        "reference_spans": 19,
+        "supported": true
+      },
+      "PROVINCE": {
+        "FN": 1,
+        "FP": 2,
+        "TP": 168,
+        "f1": 0.9911504424778761,
+        "passages": 345,
+        "precision": 0.9882352941176471,
+        "predicted_spans": 170,
+        "recall": 0.9940828402366864,
+        "reference_spans": 169,
+        "supported": true
+      },
+      "ROAD": {
+        "FN": 6,
+        "FP": 5,
+        "TP": 195,
+        "f1": 0.972568578553616,
+        "passages": 345,
+        "precision": 0.975,
+        "predicted_spans": 200,
+        "recall": 0.9701492537313433,
+        "reference_spans": 201,
+        "supported": true
+      }
+    },
+    "language_labels": {
+      "english": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 34,
+          "f1": 1.0,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 34,
+          "recall": 1.0,
+          "reference_spans": 34,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 1,
+          "FP": 1,
+          "TP": 185,
+          "f1": 0.9946236559139785,
+          "passages": 170,
+          "precision": 0.9946236559139785,
+          "predicted_spans": 186,
+          "recall": 0.9946236559139785,
+          "reference_spans": 186,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 3,
+          "FP": 2,
+          "TP": 35,
+          "f1": 0.9333333333333333,
+          "passages": 170,
+          "precision": 0.9459459459459459,
+          "predicted_spans": 37,
+          "recall": 0.9210526315789473,
+          "reference_spans": 38,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 6,
+          "f1": 1.0,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 6,
+          "recall": 1.0,
+          "reference_spans": 6,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 105,
+          "f1": 0.995260663507109,
+          "passages": 170,
+          "precision": 1.0,
+          "predicted_spans": 105,
+          "recall": 0.9905660377358491,
+          "reference_spans": 106,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 6,
+          "FP": 3,
+          "TP": 149,
+          "f1": 0.9706840390879479,
+          "passages": 170,
+          "precision": 0.9802631578947368,
+          "predicted_spans": 152,
+          "recall": 0.9612903225806452,
+          "reference_spans": 155,
+          "supported": true
+        }
+      },
+      "taglish": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 51,
+          "f1": 1.0,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 51,
+          "recall": 1.0,
+          "reference_spans": 51,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 2,
+          "FP": 0,
+          "TP": 120,
+          "f1": 0.9917355371900827,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 120,
+          "recall": 0.9836065573770492,
+          "reference_spans": 122,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 3,
+          "FP": 0,
+          "TP": 17,
+          "f1": 0.918918918918919,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 17,
+          "recall": 0.85,
+          "reference_spans": 20,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 13,
+          "f1": 1.0,
+          "passages": 175,
+          "precision": 1.0,
+          "predicted_spans": 13,
+          "recall": 1.0,
+          "reference_spans": 13,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 0,
+          "FP": 2,
+          "TP": 63,
+          "f1": 0.984375,
+          "passages": 175,
+          "precision": 0.9692307692307692,
+          "predicted_spans": 65,
+          "recall": 1.0,
+          "reference_spans": 63,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 0,
+          "FP": 2,
+          "TP": 46,
+          "f1": 0.9787234042553191,
+          "passages": 175,
+          "precision": 0.9583333333333334,
+          "predicted_spans": 48,
+          "recall": 1.0,
+          "reference_spans": 46,
+          "supported": true
+        }
+      }
+    },
+    "language_macro": {
+      "english": {
+        "f1": 0.9823169486403948,
+        "supported_labels": 6
+      },
+      "taglish": {
+        "f1": 0.9789588100607202,
+        "supported_labels": 6
+      }
+    },
+    "languages": {
+      "english": {
+        "FN": 11,
+        "FP": 6,
+        "TP": 514,
+        "f1": 0.9837320574162679,
+        "passages": 170,
+        "precision": 0.9884615384615385,
+        "predicted_spans": 520,
+        "recall": 0.979047619047619,
+        "reference_spans": 525
+      },
+      "taglish": {
+        "FN": 5,
+        "FP": 4,
+        "TP": 310,
+        "f1": 0.985691573926868,
+        "passages": 175,
+        "precision": 0.9872611464968153,
+        "predicted_spans": 314,
+        "recall": 0.9841269841269841,
+        "reference_spans": 315
+      }
+    },
+    "macro": {
+      "f1": 0.9809626319370773,
+      "supported_labels": 6
+    },
+    "negative_passages": {
+      "english": {
+        "false_positive_passages": 0,
+        "negative_passages": 38,
+        "rate": 0.0
+      },
+      "overall": {
+        "false_positive_passages": 0,
+        "negative_passages": 103,
+        "rate": 0.0
+      },
+      "taglish": {
+        "false_positive_passages": 0,
+        "negative_passages": 65,
+        "rate": 0.0
+      }
+    },
+    "overall": {
+      "FN": 16,
+      "FP": 10,
+      "TP": 824,
+      "f1": 0.984468339307049,
+      "passages": 345,
+      "precision": 0.988009592326139,
+      "predicted_spans": 834,
+      "recall": 0.9809523809523809,
+      "reference_spans": 840
+    }
+  },
+  "individual_rules": {
+    "agency_actor": {
+      "labels": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 85,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 85,
+          "recall": 1.0,
+          "reference_spans": 85,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 3,
+          "FP": 1,
+          "TP": 305,
+          "f1": 0.993485342019544,
+          "passages": 345,
+          "precision": 0.9967320261437909,
+          "predicted_spans": 306,
+          "recall": 0.9902597402597403,
+          "reference_spans": 308,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 6,
+          "FP": 4,
+          "TP": 52,
+          "f1": 0.9122807017543859,
+          "passages": 345,
+          "precision": 0.9285714285714286,
+          "predicted_spans": 56,
+          "recall": 0.896551724137931,
+          "reference_spans": 58,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 18,
+          "f1": 0.972972972972973,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 18,
+          "recall": 0.9473684210526315,
+          "reference_spans": 19,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 2,
+          "TP": 168,
+          "f1": 0.9911504424778761,
+          "passages": 345,
+          "precision": 0.9882352941176471,
+          "predicted_spans": 170,
+          "recall": 0.9940828402366864,
+          "reference_spans": 169,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 6,
+          "TP": 193,
+          "f1": 0.965,
+          "passages": 345,
+          "precision": 0.9698492462311558,
+          "predicted_spans": 199,
+          "recall": 0.9601990049751243,
+          "reference_spans": 201,
+          "supported": true
+        }
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 34,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 34,
+            "recall": 1.0,
+            "reference_spans": 34,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 1,
+            "FP": 1,
+            "TP": 185,
+            "f1": 0.9946236559139785,
+            "passages": 170,
+            "precision": 0.9946236559139785,
+            "predicted_spans": 186,
+            "recall": 0.9946236559139785,
+            "reference_spans": 186,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 4,
+            "TP": 35,
+            "f1": 0.9090909090909091,
+            "passages": 170,
+            "precision": 0.8974358974358975,
+            "predicted_spans": 39,
+            "recall": 0.9210526315789473,
+            "reference_spans": 38,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 6,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 1.0,
+            "reference_spans": 6,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 105,
+            "f1": 0.995260663507109,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 105,
+            "recall": 0.9905660377358491,
+            "reference_spans": 106,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 3,
+            "TP": 147,
+            "f1": 0.9639344262295082,
+            "passages": 170,
+            "precision": 0.98,
+            "predicted_spans": 150,
+            "recall": 0.9483870967741935,
+            "reference_spans": 155,
+            "supported": true
+          }
+        },
+        "taglish": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 51,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 51,
+            "recall": 1.0,
+            "reference_spans": 51,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 2,
+            "FP": 0,
+            "TP": 120,
+            "f1": 0.9917355371900827,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 120,
+            "recall": 0.9836065573770492,
+            "reference_spans": 122,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 0,
+            "TP": 17,
+            "f1": 0.918918918918919,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 17,
+            "recall": 0.85,
+            "reference_spans": 20,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 12,
+            "f1": 0.96,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 12,
+            "recall": 0.9230769230769231,
+            "reference_spans": 13,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 63,
+            "f1": 0.984375,
+            "passages": 175,
+            "precision": 0.9692307692307692,
+            "predicted_spans": 65,
+            "recall": 1.0,
+            "reference_spans": 63,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 0,
+            "FP": 3,
+            "TP": 46,
+            "f1": 0.968421052631579,
+            "passages": 175,
+            "precision": 0.9387755102040817,
+            "predicted_spans": 49,
+            "recall": 1.0,
+            "reference_spans": 46,
+            "supported": true
+          }
+        }
+      },
+      "language_macro": {
+        "english": {
+          "f1": 0.9771516091235841,
+          "supported_labels": 6
+        },
+        "taglish": {
+          "f1": 0.9705750847900968,
+          "supported_labels": 6
+        }
+      },
+      "languages": {
+        "english": {
+          "FN": 13,
+          "FP": 8,
+          "TP": 512,
+          "f1": 0.9799043062200957,
+          "passages": 170,
+          "precision": 0.9846153846153847,
+          "predicted_spans": 520,
+          "recall": 0.9752380952380952,
+          "reference_spans": 525
+        },
+        "taglish": {
+          "FN": 6,
+          "FP": 5,
+          "TP": 309,
+          "f1": 0.9825119236883942,
+          "passages": 175,
+          "precision": 0.9840764331210191,
+          "predicted_spans": 314,
+          "recall": 0.9809523809523809,
+          "reference_spans": 315
+        }
+      },
+      "macro": {
+        "f1": 0.9724815765374631,
+        "supported_labels": 6
+      },
+      "negative_passages": {
+        "english": {
+          "false_positive_passages": 0,
+          "negative_passages": 38,
+          "rate": 0.0
+        },
+        "overall": {
+          "false_positive_passages": 0,
+          "negative_passages": 103,
+          "rate": 0.0
+        },
+        "taglish": {
+          "false_positive_passages": 0,
+          "negative_passages": 65,
+          "rate": 0.0
+        }
+      },
+      "overall": {
+        "FN": 19,
+        "FP": 13,
+        "TP": 821,
+        "f1": 0.980884109916368,
+        "passages": 345,
+        "precision": 0.9844124700239808,
+        "predicted_spans": 834,
+        "recall": 0.9773809523809524,
+        "reference_spans": 840
+      }
+    },
+    "attribution_role": {
+      "labels": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 85,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 85,
+          "recall": 1.0,
+          "reference_spans": 85,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 3,
+          "FP": 1,
+          "TP": 305,
+          "f1": 0.993485342019544,
+          "passages": 345,
+          "precision": 0.9967320261437909,
+          "predicted_spans": 306,
+          "recall": 0.9902597402597403,
+          "reference_spans": 308,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 6,
+          "FP": 4,
+          "TP": 52,
+          "f1": 0.9122807017543859,
+          "passages": 345,
+          "precision": 0.9285714285714286,
+          "predicted_spans": 56,
+          "recall": 0.896551724137931,
+          "reference_spans": 58,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 18,
+          "f1": 0.972972972972973,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 18,
+          "recall": 0.9473684210526315,
+          "reference_spans": 19,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 2,
+          "TP": 168,
+          "f1": 0.9911504424778761,
+          "passages": 345,
+          "precision": 0.9882352941176471,
+          "predicted_spans": 170,
+          "recall": 0.9940828402366864,
+          "reference_spans": 169,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 6,
+          "TP": 193,
+          "f1": 0.965,
+          "passages": 345,
+          "precision": 0.9698492462311558,
+          "predicted_spans": 199,
+          "recall": 0.9601990049751243,
+          "reference_spans": 201,
+          "supported": true
+        }
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 34,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 34,
+            "recall": 1.0,
+            "reference_spans": 34,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 1,
+            "FP": 1,
+            "TP": 185,
+            "f1": 0.9946236559139785,
+            "passages": 170,
+            "precision": 0.9946236559139785,
+            "predicted_spans": 186,
+            "recall": 0.9946236559139785,
+            "reference_spans": 186,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 4,
+            "TP": 35,
+            "f1": 0.9090909090909091,
+            "passages": 170,
+            "precision": 0.8974358974358975,
+            "predicted_spans": 39,
+            "recall": 0.9210526315789473,
+            "reference_spans": 38,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 6,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 1.0,
+            "reference_spans": 6,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 105,
+            "f1": 0.995260663507109,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 105,
+            "recall": 0.9905660377358491,
+            "reference_spans": 106,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 3,
+            "TP": 147,
+            "f1": 0.9639344262295082,
+            "passages": 170,
+            "precision": 0.98,
+            "predicted_spans": 150,
+            "recall": 0.9483870967741935,
+            "reference_spans": 155,
+            "supported": true
+          }
+        },
+        "taglish": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 51,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 51,
+            "recall": 1.0,
+            "reference_spans": 51,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 2,
+            "FP": 0,
+            "TP": 120,
+            "f1": 0.9917355371900827,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 120,
+            "recall": 0.9836065573770492,
+            "reference_spans": 122,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 0,
+            "TP": 17,
+            "f1": 0.918918918918919,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 17,
+            "recall": 0.85,
+            "reference_spans": 20,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 12,
+            "f1": 0.96,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 12,
+            "recall": 0.9230769230769231,
+            "reference_spans": 13,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 63,
+            "f1": 0.984375,
+            "passages": 175,
+            "precision": 0.9692307692307692,
+            "predicted_spans": 65,
+            "recall": 1.0,
+            "reference_spans": 63,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 0,
+            "FP": 3,
+            "TP": 46,
+            "f1": 0.968421052631579,
+            "passages": 175,
+            "precision": 0.9387755102040817,
+            "predicted_spans": 49,
+            "recall": 1.0,
+            "reference_spans": 46,
+            "supported": true
+          }
+        }
+      },
+      "language_macro": {
+        "english": {
+          "f1": 0.9771516091235841,
+          "supported_labels": 6
+        },
+        "taglish": {
+          "f1": 0.9705750847900968,
+          "supported_labels": 6
+        }
+      },
+      "languages": {
+        "english": {
+          "FN": 13,
+          "FP": 8,
+          "TP": 512,
+          "f1": 0.9799043062200957,
+          "passages": 170,
+          "precision": 0.9846153846153847,
+          "predicted_spans": 520,
+          "recall": 0.9752380952380952,
+          "reference_spans": 525
+        },
+        "taglish": {
+          "FN": 6,
+          "FP": 5,
+          "TP": 309,
+          "f1": 0.9825119236883942,
+          "passages": 175,
+          "precision": 0.9840764331210191,
+          "predicted_spans": 314,
+          "recall": 0.9809523809523809,
+          "reference_spans": 315
+        }
+      },
+      "macro": {
+        "f1": 0.9724815765374631,
+        "supported_labels": 6
+      },
+      "negative_passages": {
+        "english": {
+          "false_positive_passages": 0,
+          "negative_passages": 38,
+          "rate": 0.0
+        },
+        "overall": {
+          "false_positive_passages": 0,
+          "negative_passages": 103,
+          "rate": 0.0
+        },
+        "taglish": {
+          "false_positive_passages": 0,
+          "negative_passages": 65,
+          "rate": 0.0
+        }
+      },
+      "overall": {
+        "FN": 19,
+        "FP": 13,
+        "TP": 821,
+        "f1": 0.980884109916368,
+        "passages": 345,
+        "precision": 0.9844124700239808,
+        "predicted_spans": 834,
+        "recall": 0.9773809523809524,
+        "reference_spans": 840
+      }
+    },
+    "explicit_barangay": {
+      "labels": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 85,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 85,
+          "recall": 1.0,
+          "reference_spans": 85,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 3,
+          "FP": 1,
+          "TP": 305,
+          "f1": 0.993485342019544,
+          "passages": 345,
+          "precision": 0.9967320261437909,
+          "predicted_spans": 306,
+          "recall": 0.9902597402597403,
+          "reference_spans": 308,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 6,
+          "FP": 4,
+          "TP": 52,
+          "f1": 0.9122807017543859,
+          "passages": 345,
+          "precision": 0.9285714285714286,
+          "predicted_spans": 56,
+          "recall": 0.896551724137931,
+          "reference_spans": 58,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 18,
+          "f1": 0.972972972972973,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 18,
+          "recall": 0.9473684210526315,
+          "reference_spans": 19,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 2,
+          "TP": 168,
+          "f1": 0.9911504424778761,
+          "passages": 345,
+          "precision": 0.9882352941176471,
+          "predicted_spans": 170,
+          "recall": 0.9940828402366864,
+          "reference_spans": 169,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 6,
+          "TP": 193,
+          "f1": 0.965,
+          "passages": 345,
+          "precision": 0.9698492462311558,
+          "predicted_spans": 199,
+          "recall": 0.9601990049751243,
+          "reference_spans": 201,
+          "supported": true
+        }
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 34,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 34,
+            "recall": 1.0,
+            "reference_spans": 34,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 1,
+            "FP": 1,
+            "TP": 185,
+            "f1": 0.9946236559139785,
+            "passages": 170,
+            "precision": 0.9946236559139785,
+            "predicted_spans": 186,
+            "recall": 0.9946236559139785,
+            "reference_spans": 186,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 4,
+            "TP": 35,
+            "f1": 0.9090909090909091,
+            "passages": 170,
+            "precision": 0.8974358974358975,
+            "predicted_spans": 39,
+            "recall": 0.9210526315789473,
+            "reference_spans": 38,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 6,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 1.0,
+            "reference_spans": 6,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 105,
+            "f1": 0.995260663507109,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 105,
+            "recall": 0.9905660377358491,
+            "reference_spans": 106,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 3,
+            "TP": 147,
+            "f1": 0.9639344262295082,
+            "passages": 170,
+            "precision": 0.98,
+            "predicted_spans": 150,
+            "recall": 0.9483870967741935,
+            "reference_spans": 155,
+            "supported": true
+          }
+        },
+        "taglish": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 51,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 51,
+            "recall": 1.0,
+            "reference_spans": 51,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 2,
+            "FP": 0,
+            "TP": 120,
+            "f1": 0.9917355371900827,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 120,
+            "recall": 0.9836065573770492,
+            "reference_spans": 122,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 0,
+            "TP": 17,
+            "f1": 0.918918918918919,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 17,
+            "recall": 0.85,
+            "reference_spans": 20,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 12,
+            "f1": 0.96,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 12,
+            "recall": 0.9230769230769231,
+            "reference_spans": 13,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 63,
+            "f1": 0.984375,
+            "passages": 175,
+            "precision": 0.9692307692307692,
+            "predicted_spans": 65,
+            "recall": 1.0,
+            "reference_spans": 63,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 0,
+            "FP": 3,
+            "TP": 46,
+            "f1": 0.968421052631579,
+            "passages": 175,
+            "precision": 0.9387755102040817,
+            "predicted_spans": 49,
+            "recall": 1.0,
+            "reference_spans": 46,
+            "supported": true
+          }
+        }
+      },
+      "language_macro": {
+        "english": {
+          "f1": 0.9771516091235841,
+          "supported_labels": 6
+        },
+        "taglish": {
+          "f1": 0.9705750847900968,
+          "supported_labels": 6
+        }
+      },
+      "languages": {
+        "english": {
+          "FN": 13,
+          "FP": 8,
+          "TP": 512,
+          "f1": 0.9799043062200957,
+          "passages": 170,
+          "precision": 0.9846153846153847,
+          "predicted_spans": 520,
+          "recall": 0.9752380952380952,
+          "reference_spans": 525
+        },
+        "taglish": {
+          "FN": 6,
+          "FP": 5,
+          "TP": 309,
+          "f1": 0.9825119236883942,
+          "passages": 175,
+          "precision": 0.9840764331210191,
+          "predicted_spans": 314,
+          "recall": 0.9809523809523809,
+          "reference_spans": 315
+        }
+      },
+      "macro": {
+        "f1": 0.9724815765374631,
+        "supported_labels": 6
+      },
+      "negative_passages": {
+        "english": {
+          "false_positive_passages": 0,
+          "negative_passages": 38,
+          "rate": 0.0
+        },
+        "overall": {
+          "false_positive_passages": 0,
+          "negative_passages": 103,
+          "rate": 0.0
+        },
+        "taglish": {
+          "false_positive_passages": 0,
+          "negative_passages": 65,
+          "rate": 0.0
+        }
+      },
+      "overall": {
+        "FN": 19,
+        "FP": 13,
+        "TP": 821,
+        "f1": 0.980884109916368,
+        "passages": 345,
+        "precision": 0.9844124700239808,
+        "predicted_spans": 834,
+        "recall": 0.9773809523809524,
+        "reference_spans": 840
+      }
+    },
+    "explicit_locality": {
+      "labels": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 85,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 85,
+          "recall": 1.0,
+          "reference_spans": 85,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 3,
+          "FP": 1,
+          "TP": 305,
+          "f1": 0.993485342019544,
+          "passages": 345,
+          "precision": 0.9967320261437909,
+          "predicted_spans": 306,
+          "recall": 0.9902597402597403,
+          "reference_spans": 308,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 6,
+          "FP": 4,
+          "TP": 52,
+          "f1": 0.9122807017543859,
+          "passages": 345,
+          "precision": 0.9285714285714286,
+          "predicted_spans": 56,
+          "recall": 0.896551724137931,
+          "reference_spans": 58,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 18,
+          "f1": 0.972972972972973,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 18,
+          "recall": 0.9473684210526315,
+          "reference_spans": 19,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 2,
+          "TP": 168,
+          "f1": 0.9911504424778761,
+          "passages": 345,
+          "precision": 0.9882352941176471,
+          "predicted_spans": 170,
+          "recall": 0.9940828402366864,
+          "reference_spans": 169,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 6,
+          "TP": 193,
+          "f1": 0.965,
+          "passages": 345,
+          "precision": 0.9698492462311558,
+          "predicted_spans": 199,
+          "recall": 0.9601990049751243,
+          "reference_spans": 201,
+          "supported": true
+        }
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 34,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 34,
+            "recall": 1.0,
+            "reference_spans": 34,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 1,
+            "FP": 1,
+            "TP": 185,
+            "f1": 0.9946236559139785,
+            "passages": 170,
+            "precision": 0.9946236559139785,
+            "predicted_spans": 186,
+            "recall": 0.9946236559139785,
+            "reference_spans": 186,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 4,
+            "TP": 35,
+            "f1": 0.9090909090909091,
+            "passages": 170,
+            "precision": 0.8974358974358975,
+            "predicted_spans": 39,
+            "recall": 0.9210526315789473,
+            "reference_spans": 38,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 6,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 1.0,
+            "reference_spans": 6,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 105,
+            "f1": 0.995260663507109,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 105,
+            "recall": 0.9905660377358491,
+            "reference_spans": 106,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 3,
+            "TP": 147,
+            "f1": 0.9639344262295082,
+            "passages": 170,
+            "precision": 0.98,
+            "predicted_spans": 150,
+            "recall": 0.9483870967741935,
+            "reference_spans": 155,
+            "supported": true
+          }
+        },
+        "taglish": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 51,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 51,
+            "recall": 1.0,
+            "reference_spans": 51,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 2,
+            "FP": 0,
+            "TP": 120,
+            "f1": 0.9917355371900827,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 120,
+            "recall": 0.9836065573770492,
+            "reference_spans": 122,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 0,
+            "TP": 17,
+            "f1": 0.918918918918919,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 17,
+            "recall": 0.85,
+            "reference_spans": 20,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 12,
+            "f1": 0.96,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 12,
+            "recall": 0.9230769230769231,
+            "reference_spans": 13,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 63,
+            "f1": 0.984375,
+            "passages": 175,
+            "precision": 0.9692307692307692,
+            "predicted_spans": 65,
+            "recall": 1.0,
+            "reference_spans": 63,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 0,
+            "FP": 3,
+            "TP": 46,
+            "f1": 0.968421052631579,
+            "passages": 175,
+            "precision": 0.9387755102040817,
+            "predicted_spans": 49,
+            "recall": 1.0,
+            "reference_spans": 46,
+            "supported": true
+          }
+        }
+      },
+      "language_macro": {
+        "english": {
+          "f1": 0.9771516091235841,
+          "supported_labels": 6
+        },
+        "taglish": {
+          "f1": 0.9705750847900968,
+          "supported_labels": 6
+        }
+      },
+      "languages": {
+        "english": {
+          "FN": 13,
+          "FP": 8,
+          "TP": 512,
+          "f1": 0.9799043062200957,
+          "passages": 170,
+          "precision": 0.9846153846153847,
+          "predicted_spans": 520,
+          "recall": 0.9752380952380952,
+          "reference_spans": 525
+        },
+        "taglish": {
+          "FN": 6,
+          "FP": 5,
+          "TP": 309,
+          "f1": 0.9825119236883942,
+          "passages": 175,
+          "precision": 0.9840764331210191,
+          "predicted_spans": 314,
+          "recall": 0.9809523809523809,
+          "reference_spans": 315
+        }
+      },
+      "macro": {
+        "f1": 0.9724815765374631,
+        "supported_labels": 6
+      },
+      "negative_passages": {
+        "english": {
+          "false_positive_passages": 0,
+          "negative_passages": 38,
+          "rate": 0.0
+        },
+        "overall": {
+          "false_positive_passages": 0,
+          "negative_passages": 103,
+          "rate": 0.0
+        },
+        "taglish": {
+          "false_positive_passages": 0,
+          "negative_passages": 65,
+          "rate": 0.0
+        }
+      },
+      "overall": {
+        "FN": 19,
+        "FP": 13,
+        "TP": 821,
+        "f1": 0.980884109916368,
+        "passages": 345,
+        "precision": 0.9844124700239808,
+        "predicted_spans": 834,
+        "recall": 0.9773809523809524,
+        "reference_spans": 840
+      }
+    },
+    "named_asset": {
+      "labels": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 85,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 85,
+          "recall": 1.0,
+          "reference_spans": 85,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 3,
+          "FP": 1,
+          "TP": 305,
+          "f1": 0.993485342019544,
+          "passages": 345,
+          "precision": 0.9967320261437909,
+          "predicted_spans": 306,
+          "recall": 0.9902597402597403,
+          "reference_spans": 308,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 6,
+          "FP": 2,
+          "TP": 52,
+          "f1": 0.9285714285714286,
+          "passages": 345,
+          "precision": 0.9629629629629629,
+          "predicted_spans": 54,
+          "recall": 0.896551724137931,
+          "reference_spans": 58,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 1,
+          "FP": 0,
+          "TP": 18,
+          "f1": 0.972972972972973,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 18,
+          "recall": 0.9473684210526315,
+          "reference_spans": 19,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 2,
+          "TP": 168,
+          "f1": 0.9911504424778761,
+          "passages": 345,
+          "precision": 0.9882352941176471,
+          "predicted_spans": 170,
+          "recall": 0.9940828402366864,
+          "reference_spans": 169,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 6,
+          "FP": 6,
+          "TP": 195,
+          "f1": 0.9701492537313433,
+          "passages": 345,
+          "precision": 0.9701492537313433,
+          "predicted_spans": 201,
+          "recall": 0.9701492537313433,
+          "reference_spans": 201,
+          "supported": true
+        }
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 34,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 34,
+            "recall": 1.0,
+            "reference_spans": 34,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 1,
+            "FP": 1,
+            "TP": 185,
+            "f1": 0.9946236559139785,
+            "passages": 170,
+            "precision": 0.9946236559139785,
+            "predicted_spans": 186,
+            "recall": 0.9946236559139785,
+            "reference_spans": 186,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 2,
+            "TP": 35,
+            "f1": 0.9333333333333333,
+            "passages": 170,
+            "precision": 0.9459459459459459,
+            "predicted_spans": 37,
+            "recall": 0.9210526315789473,
+            "reference_spans": 38,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 6,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 1.0,
+            "reference_spans": 6,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 105,
+            "f1": 0.995260663507109,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 105,
+            "recall": 0.9905660377358491,
+            "reference_spans": 106,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 6,
+            "FP": 3,
+            "TP": 149,
+            "f1": 0.9706840390879479,
+            "passages": 170,
+            "precision": 0.9802631578947368,
+            "predicted_spans": 152,
+            "recall": 0.9612903225806452,
+            "reference_spans": 155,
+            "supported": true
+          }
+        },
+        "taglish": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 51,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 51,
+            "recall": 1.0,
+            "reference_spans": 51,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 2,
+            "FP": 0,
+            "TP": 120,
+            "f1": 0.9917355371900827,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 120,
+            "recall": 0.9836065573770492,
+            "reference_spans": 122,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 0,
+            "TP": 17,
+            "f1": 0.918918918918919,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 17,
+            "recall": 0.85,
+            "reference_spans": 20,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 12,
+            "f1": 0.96,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 12,
+            "recall": 0.9230769230769231,
+            "reference_spans": 13,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 63,
+            "f1": 0.984375,
+            "passages": 175,
+            "precision": 0.9692307692307692,
+            "predicted_spans": 65,
+            "recall": 1.0,
+            "reference_spans": 63,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 0,
+            "FP": 3,
+            "TP": 46,
+            "f1": 0.968421052631579,
+            "passages": 175,
+            "precision": 0.9387755102040817,
+            "predicted_spans": 49,
+            "recall": 1.0,
+            "reference_spans": 46,
+            "supported": true
+          }
+        }
+      },
+      "language_macro": {
+        "english": {
+          "f1": 0.9823169486403948,
+          "supported_labels": 6
+        },
+        "taglish": {
+          "f1": 0.9705750847900968,
+          "supported_labels": 6
+        }
+      },
+      "languages": {
+        "english": {
+          "FN": 11,
+          "FP": 6,
+          "TP": 514,
+          "f1": 0.9837320574162679,
+          "passages": 170,
+          "precision": 0.9884615384615385,
+          "predicted_spans": 520,
+          "recall": 0.979047619047619,
+          "reference_spans": 525
+        },
+        "taglish": {
+          "FN": 6,
+          "FP": 5,
+          "TP": 309,
+          "f1": 0.9825119236883942,
+          "passages": 175,
+          "precision": 0.9840764331210191,
+          "predicted_spans": 314,
+          "recall": 0.9809523809523809,
+          "reference_spans": 315
+        }
+      },
+      "macro": {
+        "f1": 0.9760549066288609,
+        "supported_labels": 6
+      },
+      "negative_passages": {
+        "english": {
+          "false_positive_passages": 0,
+          "negative_passages": 38,
+          "rate": 0.0
+        },
+        "overall": {
+          "false_positive_passages": 0,
+          "negative_passages": 103,
+          "rate": 0.0
+        },
+        "taglish": {
+          "false_positive_passages": 0,
+          "negative_passages": 65,
+          "rate": 0.0
+        }
+      },
+      "overall": {
+        "FN": 17,
+        "FP": 11,
+        "TP": 823,
+        "f1": 0.983273596176822,
+        "passages": 345,
+        "precision": 0.986810551558753,
+        "predicted_spans": 834,
+        "recall": 0.9797619047619047,
+        "reference_spans": 840
+      }
+    },
+    "shared_identifier": {
+      "labels": {
+        "BARANGAY": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 85,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 85,
+          "recall": 1.0,
+          "reference_spans": 85,
+          "supported": true
+        },
+        "CITY": {
+          "FN": 3,
+          "FP": 1,
+          "TP": 305,
+          "f1": 0.993485342019544,
+          "passages": 345,
+          "precision": 0.9967320261437909,
+          "predicted_spans": 306,
+          "recall": 0.9902597402597403,
+          "reference_spans": 308,
+          "supported": true
+        },
+        "LANDMARK": {
+          "FN": 6,
+          "FP": 4,
+          "TP": 52,
+          "f1": 0.9122807017543859,
+          "passages": 345,
+          "precision": 0.9285714285714286,
+          "predicted_spans": 56,
+          "recall": 0.896551724137931,
+          "reference_spans": 58,
+          "supported": true
+        },
+        "LOCAL_AREA": {
+          "FN": 0,
+          "FP": 0,
+          "TP": 19,
+          "f1": 1.0,
+          "passages": 345,
+          "precision": 1.0,
+          "predicted_spans": 19,
+          "recall": 1.0,
+          "reference_spans": 19,
+          "supported": true
+        },
+        "PROVINCE": {
+          "FN": 1,
+          "FP": 2,
+          "TP": 168,
+          "f1": 0.9911504424778761,
+          "passages": 345,
+          "precision": 0.9882352941176471,
+          "predicted_spans": 170,
+          "recall": 0.9940828402366864,
+          "reference_spans": 169,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 5,
+          "TP": 193,
+          "f1": 0.9674185463659147,
+          "passages": 345,
+          "precision": 0.9747474747474747,
+          "predicted_spans": 198,
+          "recall": 0.9601990049751243,
+          "reference_spans": 201,
+          "supported": true
+        }
+      },
+      "language_labels": {
+        "english": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 34,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 34,
+            "recall": 1.0,
+            "reference_spans": 34,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 1,
+            "FP": 1,
+            "TP": 185,
+            "f1": 0.9946236559139785,
+            "passages": 170,
+            "precision": 0.9946236559139785,
+            "predicted_spans": 186,
+            "recall": 0.9946236559139785,
+            "reference_spans": 186,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 4,
+            "TP": 35,
+            "f1": 0.9090909090909091,
+            "passages": 170,
+            "precision": 0.8974358974358975,
+            "predicted_spans": 39,
+            "recall": 0.9210526315789473,
+            "reference_spans": 38,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 6,
+            "f1": 1.0,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 1.0,
+            "reference_spans": 6,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 0,
+            "TP": 105,
+            "f1": 0.995260663507109,
+            "passages": 170,
+            "precision": 1.0,
+            "predicted_spans": 105,
+            "recall": 0.9905660377358491,
+            "reference_spans": 106,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 3,
+            "TP": 147,
+            "f1": 0.9639344262295082,
+            "passages": 170,
+            "precision": 0.98,
+            "predicted_spans": 150,
+            "recall": 0.9483870967741935,
+            "reference_spans": 155,
+            "supported": true
+          }
+        },
+        "taglish": {
+          "BARANGAY": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 51,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 51,
+            "recall": 1.0,
+            "reference_spans": 51,
+            "supported": true
+          },
+          "CITY": {
+            "FN": 2,
+            "FP": 0,
+            "TP": 120,
+            "f1": 0.9917355371900827,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 120,
+            "recall": 0.9836065573770492,
+            "reference_spans": 122,
+            "supported": true
+          },
+          "LANDMARK": {
+            "FN": 3,
+            "FP": 0,
+            "TP": 17,
+            "f1": 0.918918918918919,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 17,
+            "recall": 0.85,
+            "reference_spans": 20,
+            "supported": true
+          },
+          "LOCAL_AREA": {
+            "FN": 0,
+            "FP": 0,
+            "TP": 13,
+            "f1": 1.0,
+            "passages": 175,
+            "precision": 1.0,
+            "predicted_spans": 13,
+            "recall": 1.0,
+            "reference_spans": 13,
+            "supported": true
+          },
+          "PROVINCE": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 63,
+            "f1": 0.984375,
+            "passages": 175,
+            "precision": 0.9692307692307692,
+            "predicted_spans": 65,
+            "recall": 1.0,
+            "reference_spans": 63,
+            "supported": true
+          },
+          "ROAD": {
+            "FN": 0,
+            "FP": 2,
+            "TP": 46,
+            "f1": 0.9787234042553191,
+            "passages": 175,
+            "precision": 0.9583333333333334,
+            "predicted_spans": 48,
+            "recall": 1.0,
+            "reference_spans": 46,
+            "supported": true
+          }
+        }
+      },
+      "language_macro": {
+        "english": {
+          "f1": 0.9771516091235841,
+          "supported_labels": 6
+        },
+        "taglish": {
+          "f1": 0.9789588100607202,
+          "supported_labels": 6
+        }
+      },
+      "languages": {
+        "english": {
+          "FN": 13,
+          "FP": 8,
+          "TP": 512,
+          "f1": 0.9799043062200957,
+          "passages": 170,
+          "precision": 0.9846153846153847,
+          "predicted_spans": 520,
+          "recall": 0.9752380952380952,
+          "reference_spans": 525
+        },
+        "taglish": {
+          "FN": 5,
+          "FP": 4,
+          "TP": 310,
+          "f1": 0.985691573926868,
+          "passages": 175,
+          "precision": 0.9872611464968153,
+          "predicted_spans": 314,
+          "recall": 0.9841269841269841,
+          "reference_spans": 315
+        }
+      },
+      "macro": {
+        "f1": 0.9773891721029534,
+        "supported_labels": 6
+      },
+      "negative_passages": {
+        "english": {
+          "false_positive_passages": 0,
+          "negative_passages": 38,
+          "rate": 0.0
+        },
+        "overall": {
+          "false_positive_passages": 0,
+          "negative_passages": 103,
+          "rate": 0.0
+        },
+        "taglish": {
+          "false_positive_passages": 0,
+          "negative_passages": 65,
+          "rate": 0.0
+        }
+      },
+      "overall": {
+        "FN": 18,
+        "FP": 12,
+        "TP": 822,
+        "f1": 0.982078853046595,
+        "passages": 345,
+        "precision": 0.9856115107913669,
+        "predicted_spans": 834,
+        "recall": 0.9785714285714285,
+        "reference_spans": 840
+      }
+    }
+  }
+}

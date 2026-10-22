@@ -4,6 +4,7 @@ import { getApiBaseUrl } from "@/lib/apiClient";
 
 import { Fragment, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { LegalNoticeTrigger } from "@/features/legal/LegalNoticeTrigger";
 import { useQueryClient } from "@tanstack/react-query";
 import { authClient } from "../api/authClient";
 import { LocationPickerModal, LocationItem } from "./LocationPickerModal";
@@ -594,6 +595,15 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
               }
             }}
           >
+            {currentStep === 1 && (
+              <p className="mb-5 text-sm leading-6 text-white/90 lg:text-slate-600">
+                We use your details to create and protect your account. Read our{" "}
+                <LegalNoticeTrigger notice="privacy" className="font-semibold underline underline-offset-2 hover:text-white lg:text-blue-700 lg:hover:text-blue-800">Privacy Policy</LegalNoticeTrigger>
+                {" and "}
+                <LegalNoticeTrigger notice="terms" className="font-semibold underline underline-offset-2 hover:text-white lg:text-blue-700 lg:hover:text-blue-800">Terms of Service</LegalNoticeTrigger>
+                {" before continuing."}
+              </p>
+            )}
             <div ref={scrollContainerRef} className="w-full">
               <AnimatePresence mode="wait">
               {currentStep === 1 && (

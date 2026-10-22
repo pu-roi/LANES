@@ -1,0 +1,67 @@
+{
+  "accepted_bounded_repair": true,
+  "application_connected": false,
+  "code_files_unchanged": 55,
+  "container_stopped_pid_zero": true,
+  "context_inputs": 24,
+  "eligible_references": 23,
+  "freeze_sha256": "9678017c183f5b9372ef22b33ccf76aba890738a51742c7330ca0061f15f5abe",
+  "generalization_claim": false,
+  "held_references_unchanged": 3,
+  "historical_metadata_entries_unchanged": 1539,
+  "independent_association_counts": {
+    "combined": {
+      "fn": 1,
+      "fp": 0,
+      "tp": 104
+    },
+    "explicit_road": {
+      "fn": 7,
+      "fp": 0,
+      "tp": 98
+    },
+    "original": {
+      "fn": 7,
+      "fp": 0,
+      "tp": 98
+    },
+    "shared_locality": {
+      "fn": 5,
+      "fp": 0,
+      "tp": 100
+    },
+    "transport_asset": {
+      "fn": 3,
+      "fp": 0,
+      "tp": 102
+    }
+  },
+  "independent_verifier_sha256": "3409c04b68ca054d4ddc652429cd23e09a9e138e6f6b72ef7ad44cdecfa6f046",
+  "isolation_mount_sources_verified": true,
+  "location_proposals_byte_bound_and_unchanged": true,
+  "location_recognition_rerun_on_study_data": false,
+  "neural_inference": false,
+  "new_regressions_passed": 36,
+  "no_post_result_tuning": true,
+  "old_fixtures_passed_by_view": {
+    "combined": 238,
+    "explicit_road": 238,
+    "original": 238,
+    "shared_locality": 238,
+    "transport_asset": 238
+  },
+  "preservation_limit": "Broad historical/excluded packages checked by size/mtime; explicit training evidence checked by SHA256.",
+  "protected_evidence_hashes_unchanged": 208,
+  "raw_records": 334,
+  "saved_location_fixtures_preserved": 36,
+  "saved_training_location_rows_preserved": 345,
+  "single_claim": true,
+  "software_checks_passed": 419,
+  "status": "independently_verified_context_repair",
+  "system_connection_cleared": false,
+  "temporal_passed": 36,
+  "training_started": false,
+  "validation_holdout_contents_opened": false,
+  "validation_holdout_metadata_entries_unchanged": 82,
+  "verified_at_utc": "2026-10-19T14:18:50.674975+00:00"
+}

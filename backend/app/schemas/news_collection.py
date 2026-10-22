@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.news_browsing import NewsArticleListItem, NewsPublisherOption
 
@@ -26,4 +26,5 @@ class NewsCollectionPage(BaseModel):
     pages: int
     publishers: list[NewsPublisherOption]
     counts: dict[CollectionStatus, int]
+    retrieval_counts: dict[str, int] = Field(default_factory=dict)
     read_only: Literal[True] = True

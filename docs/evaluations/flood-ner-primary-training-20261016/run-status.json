@@ -1,0 +1,17 @@
+{
+  "state": "completed",
+  "seed": 0,
+  "started_at": "2026-10-16T17:31:17.380667+08:00",
+  "training_completed": true,
+  "test_predictions_performed": false,
+  "exit_code": 0,
+  "selection": {
+    "metric": "strict six-class entity micro F1",
+    "model": "model",
+    "partition": "dev",
+    "score": 0.6715328467153284,
+    "step": 455,
+    "tie_break": "earlier checkpoint step"
+  },
+  "ended_at": "2026-10-16T17:33:45.515467+08:00"
+}

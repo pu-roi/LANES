@@ -1,0 +1,150 @@
+{
+  "bindings": {
+    "admission_manifest": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/hash-manifest.json",
+      "sha256": "0b3bea737fa6004c600cb6c55141718bca54b4283c7a88583222d95b02de4f14"
+    },
+    "article_memberships_unique_and_complete": true,
+    "candidate_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "current_article_evidence_and_provenance_references_verified": 5,
+    "model_files_verified": 23,
+    "research_only_derivative_diff_limited_to_three_source_fields": true
+  },
+  "counts": {
+    "contextual_pairs": 40,
+    "languages": {
+      "english": 200,
+      "taglish": 200
+    },
+    "location_records": 400,
+    "location_spans": 1465,
+    "negative_passages": 48,
+    "partitions": {
+      "dev": 60,
+      "test": 60,
+      "train": 280
+    },
+    "source_articles": 138
+  },
+  "dependencies_changed": false,
+  "desktop_decision_predecessor_formally_reconciled": false,
+  "execution_outputs": {
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/before.json": "1401793ec6bd46b69658df8c8b2bb1c7fda916ee4f42e87d82ae422a3ec9f99f",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/qualification-exit-code.txt": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/qualification-started-at.txt": "d4eeea40a539dfe5d29965ad6ec5934ba77337b28296e341bcf0e1594255f57c",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/qualification.stderr.txt": "50cc4513f70ec576c30f442e22910411a5aaa4312a742d2cc421b9ab54d25ca0",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/qualification.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/relocation-path.txt": "33957887386281bbf62f610c93c2472aabbde0e3e2bd8a6d7df12b41e7cdce07",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/restore.json": "d9f83b6328db141d15876c04b30409d92ca0863432663fcf428955d502fe9824",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/restore.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/verify-only.json": "86af42ff272e3c9fa6c4256bf06a077d72ccd68aea1c326884146a4adf651bee",
+    "backend/training/flood_ner/artifacts/desktop-execution-20261016-run-01/verify-only.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "exports": 0,
+  "git_commit_or_push_performed": false,
+  "historical_evidence_references": [
+    {
+      "actual_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1/manifest.json"
+    },
+    {
+      "actual_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1/delegation-record.json"
+    },
+    {
+      "actual_sha256": "a102ac899848d2934bb26539562200868b22e83bd41f6ec3eaf542f68a3bd8a7",
+      "current_bytes_match_reference": false,
+      "expected_sha256": "2f87e31c25ea9af7bd20c522e1a7a80b055192311dcce56b1b0fc141741bd56a",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json"
+    }
+  ],
+  "historical_software_result": {
+    "not_revalidated_by_this_run": true,
+    "passed": 880,
+    "skipped": 1
+  },
+  "initial_head": "b84c4640b4e33d219d8e2e266472f604e3cbcb3d",
+  "input_bindings": {
+    "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/admission-ledger.json": "5563206da2830f1e107e4c883c780b4b186d2d5b86c36acdeeb69ff3c47115ad",
+    "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/cohort-admitted-v1/partition_manifest.json": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8",
+    "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/contextual-admitted-v1/manifest.json": "4a0fbd7760730ecb4055fd6c837da1d3cf37884a8f0fb8a09ef54a80d7ad2c78",
+    "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/hash-manifest.json": "0b3bea737fa6004c600cb6c55141718bca54b4283c7a88583222d95b02de4f14",
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/model-manifest.json": "362c266324a8f11f5c5b0f804d5eba2ea9ebf27f32368211e4c5cf248734efe6",
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/tokenizer-manifest.json": "9575ef0e7f5f1e32bbfa26b71d9d6d1e9b47cd916e559ceeae26815f585e3823",
+    "backend/training/flood_ner/artifacts/preflight-use-20261015/model_manifest.json": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+    "backend/training/flood_ner/artifacts/tokenizer-qualification-20261015/final-v5/tokenizer_manifest.json": "4257f8f8d6bc56157624cd8332263e834ecc3333caeed3617ce329abcc95689c",
+    "backend/training/flood_ner/corpus_tokenizer_qualification.py": "87fb2f00e0bb5cf2428f694d56e5a1efe3cac0c70713971f4b54039ddadc8c71",
+    "backend/training/flood_ner/corpus_tokenizer_worker.py": "4f08368a98211ea2b0c893960f7dd621253c180bcbda5833512b7dc05fd717d0",
+    "backend/training/flood_ner/desktop_handoff.py": "30bb1a621e126975e8176ae50c863211afbf1895d69685f23a1fee40e1dae57e"
+  },
+  "model_predictions_performed": false,
+  "preservation": {
+    "changed_or_missing_artifacts": [],
+    "env_unchanged": true,
+    "excluded_download_caches_and_tool_runtimes": [
+      "gpu-qualification-20261015/cache",
+      "gpu-qualification-20261015/python",
+      "gpu-qualification-20261015/tools"
+    ],
+    "existing_artifact_files_hashed": 9744,
+    "research_environment_added": [],
+    "research_environment_changed_or_missing": [],
+    "research_environment_files_compared": 22759
+  },
+  "qualification": {
+    "alignment_results_available": false,
+    "attempts": 1,
+    "cli_package_versions": {
+      "numpy": "2.5.1",
+      "scipy": "1.18.0",
+      "spacy": "3.7.5",
+      "thinc": "8.2.4"
+    },
+    "error": "ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject",
+    "exit_code": 1,
+    "failure_stage": "outer_cli_spacy_import_before_worker",
+    "no_retry": true,
+    "qualification_output_exists": false,
+    "serialization_reload_result_available": false,
+    "started_at": "2026-10-16T16:08:52.4572516+08:00",
+    "state": "blocked",
+    "tokenization_performed": false,
+    "worker_started": false
+  },
+  "recorded_at": "2026-10-16T08:10:38.929410+00:00",
+  "relocation": {
+    "manifest_sha256": "99c54d27de7e72b20dfdf3050670032fd1da3e8c5676e4ae010169cf2946abee",
+    "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823",
+    "prepared_only": true,
+    "qualification_pass_claimed": false
+  },
+  "relocation_outputs": {
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/QUALIFY.ps1": "05db3a1ba8f532d3b595d0b94b1270b7fe74787733003a5d86810ef9bd7301f7",
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/candidate.tokenizer.bin": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/model-manifest.json": "362c266324a8f11f5c5b0f804d5eba2ea9ebf27f32368211e4c5cf248734efe6",
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/relocation.json": "99c54d27de7e72b20dfdf3050670032fd1da3e8c5676e4ae010169cf2946abee",
+    "backend/training/flood_ner/artifacts/desktop-relocation-20261016-160823/tokenizer-manifest.json": "9575ef0e7f5f1e32bbfa26b71d9d6d1e9b47cd916e559ceeae26815f585e3823"
+  },
+  "restoration": {
+    "archive_bytes": 28476420,
+    "archive_sha256": "afe11aa15398d9b88e7ef268c75f7d51c79107206a60f29ac4313264f4dba65f",
+    "conflicts": 0,
+    "identical_files_skipped": 1060,
+    "post_restore_all_payload_files_identical": true,
+    "restored_files": 697,
+    "verified_payload_files": 1757
+  },
+  "schema_version": "lanes-desktop-restoration-verification-v1",
+  "software_tests_rerun": false,
+  "training_performed": false,
+  "updated_head": "4736cea39f904af5dd7863d56f99f5938b9ad255",
+  "validation_limitation": "Standard-library hash, record, pairing and membership checks only; framework-backed corpus validation and tokenizer checks did not execute because the CLI failed during spaCy import.",
+  "windows_policy_changed": false
+}

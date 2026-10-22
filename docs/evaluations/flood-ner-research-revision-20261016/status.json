@@ -1,0 +1,52 @@
+{
+  "additional_reference_changes": 2,
+  "all_hard_quotas_passed": true,
+  "annotation_accepted": 400,
+  "articles": 138,
+  "batch_size": 20,
+  "contextual_pairs_accepted": 40,
+  "contextual_requirements_passed": true,
+  "desktop_predecessor_unreconciled": true,
+  "exports": 0,
+  "language_counts": {
+    "english": 200,
+    "taglish": 200
+  },
+  "model_trained": false,
+  "new_windows_accepted": 110,
+  "new_windows_rejected": 10,
+  "new_windows_reviewed": 120,
+  "partitions": {
+    "dev": {
+      "english": 30,
+      "taglish": 30
+    },
+    "test": {
+      "english": 30,
+      "taglish": 30
+    },
+    "train": {
+      "english": 140,
+      "taglish": 140
+    }
+  },
+  "project_basis_derived_articles": 126,
+  "project_basis_derived_samples": 351,
+  "publishers": {
+    "ABS-CBN News": 160,
+    "GMA News": 160,
+    "Philstar": 80
+  },
+  "reference_change_budget": 20,
+  "research_revision_complete": true,
+  "schema_version": "lanes-bounded-research-revision-v1",
+  "software_tests_passed": 772,
+  "software_tests_skipped": 1,
+  "source_use_assessments_are_ai_project_assessments_not_permission": true,
+  "source_use_held_articles": 12,
+  "source_use_held_samples": 49,
+  "test_samples_unchanged": 60,
+  "training_admitted": 0,
+  "training_pilots_unchanged": 10,
+  "unchanged_unaffected_references": 330
+}

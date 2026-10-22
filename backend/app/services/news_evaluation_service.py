@@ -46,6 +46,7 @@ class EvaluationPolicy:
     expiry_minutes: dict[str, int] | None = None
     retention_hours: int | None = None
     publication_admission_at: datetime | None = None
+    native_assets: object | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         if self.publication_admission_at is None:
@@ -239,7 +240,13 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                                on_progress: Callable[[dict], None] | None = None) -> EvaluationSummary:
     if not 1 <= limit <= 200:
         raise ValueError("Evaluation limit must be between 1 and 200")
-    auditor = auditor if auditor is not None else NewsClaimAuditor()
+    from app.services.news_claim_auditor import AuditorConfigurationError
+    try:
+        auditor = auditor if auditor is not None else NewsClaimAuditor()
+    except AuditorConfigurationError as exc:
+        return EvaluationSummary(error_code=exc.code)
+    if getattr(auditor, 'config', None) and auditor.config.error_code():
+        return EvaluationSummary(error_code=auditor.config.error_code())
     if client is None:
         async with httpx.AsyncClient(timeout=httpx.Timeout(60, connect=5, write=10, pool=5),
                                      follow_redirects=False) as scoped_client:

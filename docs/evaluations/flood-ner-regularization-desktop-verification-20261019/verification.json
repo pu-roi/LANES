@@ -1,0 +1,106 @@
+{
+  "schema": "lanes-regularization-desktop-verification-v1",
+  "verified_at": "2026-10-19T00:04:59.963479+08:00",
+  "branch": "roi-branch",
+  "previous_commit": "882049cb3a709099ef3547a98dad57905f90f84a",
+  "checkout_commit": "4875cef4f03ecc4fdc2b3b0ff9d7e7bc43f36bad",
+  "archive": {
+    "name": "regularization-desktop-20261018-v21.zip",
+    "bytes": 216866,
+    "sha256": "2336dbafdb93832323c702c61d142ad68b9bfce2371c84fbb27c50117183884f"
+  },
+  "transfer_manifest_sha256": "5f9c5c58b34356826ba6427ee0c60820f8cb92e59e0eb7ee9452e0ac10f7784e",
+  "experiment_manifest_sha256": "35050682217749d945a3c5fecbe5d3771212b1df1276f9f5f95bad4c7d6a0e78",
+  "extraction": {
+    "files": 20,
+    "state": "extracted_verified",
+    "trainer_files": 12,
+    "training_started": false
+  },
+  "actual_desktop_verification": {
+    "configuration_schema_verified": true,
+    "counts": {
+      "dev": 60,
+      "train": 345
+    },
+    "gpu_verified": true,
+    "runtime": {
+      "cupy_version": "13.6.0",
+      "gpu_compute_capability": [
+        8,
+        6
+      ],
+      "gpu_name": "NVIDIA GeForce RTX 3060 Ti",
+      "python_version": "3.11.17",
+      "spacy_version": "3.7.5",
+      "torch_version": "2.11.0+cu128"
+    },
+    "state": "verified_read_only",
+    "training_started": false
+  },
+  "configuration_seeds_verified": [
+    0,
+    1,
+    2
+  ],
+  "pinned_model_files_verified": 23,
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "source_and_test_bindings_verified": 14,
+  "delivery_helper_verified": true,
+  "tests": {
+    "passed": 248,
+    "failed": 0,
+    "warnings": 3,
+    "seconds": 57.87,
+    "isolated": true,
+    "noconftest": true,
+    "new_private_basetemp": true,
+    "suites": [
+      "regularization_delivery",
+      "regularization_experiment",
+      "successor_preparation",
+      "successor_windows_runtime",
+      "successor_experiment"
+    ]
+  },
+  "preservation": {
+    "protected_entries_checked": 6304,
+    "unchanged_protected_entries": 6303,
+    "expected_incoming_changes": [
+      ".gitattributes"
+    ],
+    "git_attributes_match_incoming_commit": true,
+    "historical_packages_runs_models_and_source_backups_unchanged": true,
+    "private_backup_files": 19,
+    "private_backups_unchanged": true,
+    "env_unchanged": true,
+    "package_files_unchanged": true,
+    "pinned_model_files_unchanged": true
+  },
+  "collection_repair": {
+    "head_blob_matched_transfer_binding": true,
+    "difference_was_line_endings_only": true,
+    "original_bytes_backed_up": true,
+    "exact_git_bytes_restored": true
+  },
+  "private_evidence_directory": "backend/training/flood_ner/artifacts/regularization-desktop-verification-20261018-v1",
+  "private_log_sha256": {
+    "extraction.stdout.json": "bcbcdac60cbb78ad9d77b2fc4a6de7868c00b577f0028b3d6b9d2b8a7d8179f2",
+    "extraction.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gpu-verification.stdout.json": "02bfdc46ac3199f788d57f49359a9c8700e1e7ca31785821a6c14d17816e7431",
+    "gpu-verification.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pytest.stdout.log": "f1a7129e3b21e35d0c13b2fc84f348e63fc6aa824e402cd3a03ddc4f76645bac",
+    "pytest.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "preservation-final.json": "70c29db7d5065656df1bb72e0c4aab0fd02e87a98b8f0c27dbe55d2d4e98881c"
+  },
+  "training_started": false,
+  "inference_performed": false,
+  "holdout_accessed": false,
+  "new_training_destination": false,
+  "training_lock_exists": false,
+  "installed": false,
+  "committed": false,
+  "pushed": false,
+  "next_task": "Separate explicit training authorization; completed research holdout excluded from tuning and repeat evaluation.",
+  "limitations": "Limited-provenance AI-assisted silver research; incomplete history/accounting; no new accuracy measurement or guaranteed improvement."
+}

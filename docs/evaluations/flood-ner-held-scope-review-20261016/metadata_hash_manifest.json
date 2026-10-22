@@ -1,0 +1,26 @@
+{
+  "article_or_passage_text_included": false,
+  "exports": 0,
+  "files": {
+    "README.md": "072307d0b8fce0695ca9e099a798479edd0ab8ea907293b27a15eeb958d40459",
+    "article-links.csv": "b159e7f93dc6fb5c0739ab35a09367f03c62e23eaa92bdbe359d39ff900529cd",
+    "candidate-reviews.json": "53cd400f0813112698e159fd9a213736232846d14afe25f6dd3b8ecffba469f8",
+    "case-assessments.json": "5667a39e47bc26e9ba5d0ae2666a3b78e06a6ef7a1bda4abe7b6fdb7fe4ce713",
+    "context-coverage.json": "4ab0319bc5073e0484eb36c741d308ad6dec0b5469159aefe393a023f88fffd5",
+    "context-linkage.json": "e5645bb94f739840d6c45f7833dd9227e87a44af6227375ffc53485f7c338c61",
+    "copy-inventory.json": "702d3659332e61c767192613689523d32b20c133426b30f9c1dde8af5576f892",
+    "input-bindings.json": "48e95c23c96a92cd9e58246fa72f0c016d0d328cc72d41183404c46ba025cabf",
+    "location-coverage.json": "44665dc74928bf539dd364829eb912548e0dde7c578656d6331784bca4580be0",
+    "negative-comparison.json": "3f9fc595e0e1dd3717ab5d173bf5a3ff6f030d3f0f002285989aca0e0c3fd84e",
+    "paper-method-notes.md": "102112d991eaee11f61b95311441bf9d7fa2f23a9710b68a510adc6d12239923",
+    "proposed-article-coverage-index.json": "04da73b690f437a5f77f77695a80bd23079decf54e47825a85c5c7d48e5345c5",
+    "proposed-selection-register.csv": "0b3f750a9b712c400902e286174fcfea6126c824b3ecaf0f9df844e9b9b96871",
+    "retained-confirmations.json": "ab3e7b45494525f34b6f44101ff0ddc490803bfdc822ee323c7ee606df3bd7a1",
+    "status.json": "c90af8ebc1d865bc77efbac8ef9671ff770a7c0f13a5085d2c82d275431f2b65",
+    "verification.json": "8ddb03f736f808d3554a51903d425fcc31c4921a5695aa1176994f02ca3e3f44",
+    "web-evidence-observation.json": "07564caf8d500fc612098ba67ddccfe820aac1bac2165a7ed0a9eb11060933e7"
+  },
+  "new_frozen_cohort_created": false,
+  "schema_version": "lanes-metadata-files-v1",
+  "training_admitted": 0
+}

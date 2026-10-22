@@ -1,0 +1,50 @@
+{
+  "captured_at": "2026-10-15T07:30:52.101590+00:00",
+  "collector_sha256": "59db629693f3a07c00109633bca27bb74831d0a8504b34ae5b5d762f22a79d04",
+  "errors": [],
+  "gpu_training_qualified": false,
+  "gpus": [
+    {
+      "driver_version": "610.47",
+      "matches_reported_target": true,
+      "memory_free_mib": 6680,
+      "memory_total_mib": 8192,
+      "name": "NVIDIA GeForce RTX 3060 Ti"
+    }
+  ],
+  "model_loaded": false,
+  "news_processed": false,
+  "packages_installed": false,
+  "query": {
+    "arguments": [
+      "--query-gpu=name,driver_version,memory.total,memory.free",
+      "--format=csv,noheader,nounits"
+    ],
+    "executable": "C:\\WINDOWS\\system32\\nvidia-smi.EXE",
+    "stderr": "",
+    "stdout": "NVIDIA GeForce RTX 3060 Ti, 610.47, 8192, 6680\n"
+  },
+  "remaining_checks": [
+    "Finalize the supported source-use decision before news-model processing.",
+    "Resolve and hash-lock an isolated CPython 3.11/spaCy 3.7.5 GPU environment.",
+    "Verify CuPy/spaCy GPU selection and the pinned model with constructed inputs.",
+    "Measure a constructed training step, CUDA memory and CPU replay before news training."
+  ],
+  "runner_python": {
+    "executable": "C:\\Users\\CAMBE\\AppData\\Roaming\\uv\\python\\cpython-3.14-windows-x86_64-none\\python.exe",
+    "is_research_environment_qualification": false,
+    "version": "3.14.6"
+  },
+  "schema_version": "lanes-desktop-inventory-v1",
+  "source_admission_changed": false,
+  "state": "target_inventory_ready",
+  "system": {
+    "architecture": "AMD64",
+    "logical_cpus": 8,
+    "os": "Windows",
+    "output_volume_free_bytes": 153958469632,
+    "physical_memory_bytes": 17110949888,
+    "processor": "Intel64 Family 6 Model 158 Stepping 13, GenuineIntel",
+    "release": "10"
+  }
+}

@@ -21,6 +21,7 @@ from app.services.news_sources import NewsSource
 
 if TYPE_CHECKING:
     from app.models.news import NewsArticle
+    from app.services.news_ner_durable.collection import NativeCollectionContext
 
 
 # Broad discovery terms; body evidence and geographic gates qualify local leads.
@@ -354,7 +355,7 @@ def _same_article_continuation(article_url: str, href: str) -> bool:
     return bool(re.fullmatch(re.escape(current_path) + r"/(?:page/)?[2-9]\d*", target_path))
 
 
-def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Client) -> tuple[str | None, str | None]:
+def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Client, *, preserve_whitespace: bool=False) -> tuple[str | None, str | None]:
     """Fetch a public article from an approved publisher domain with strict bounds."""
     if canonical_article_url(article_url, source) is None:
         return None, "Article URL is outside the publisher domains"
@@ -393,11 +394,13 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                     return None, "Article has a continuation page; full body was not extracted"
                 # Keep paragraph/list boundaries: flattening a multi-location
                 # list into one sentence assigns one road's depth to another.
-                lines = (" ".join(line.split()) for line in "".join(parser.parts).splitlines())
-                text = "\n".join(line for line in lines if line)
+                captured = ''.join(parser.parts)
+                lines = (" ".join(line.split()) for line in captured.splitlines())
+                readable = "\n".join(line for line in lines if line)
+                text = captured if preserve_whitespace else readable
                 if len(text) > MAX_ARTICLE_CHARS:
                     return None, "Article text exceeds processing limit; full body was not extracted"
-                if len(text) < MIN_ARTICLE_CHARS:
+                if len(readable) < MIN_ARTICLE_CHARS:
                     return None, "Article text unavailable or too short"
                 return text, None
         return None, "Too many article redirects"
@@ -406,14 +409,19 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
 
 
 def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Session | None = None,
-                  *, actor_id: int | None = None) -> DiscoveryRun:
+                  *, actor_id: int | None = None,
+                  processing_context: NativeCollectionContext | None = None) -> DiscoveryRun:
     """Persist operational attempts for staff and collector; dry runs stay pure."""
     if db is None:
+        if processing_context is not None:
+            raise ValueError('Native collection requires a disposable database')
         return _discover_news(sources, client)
+    if processing_context is not None:
+        processing_context.validate(db)
     from app.services.news_telemetry_service import begin_discovery, finish_discovery
     id = begin_discovery(db, actor_id)
     try:
-        result = _discover_news(sources, client, db, telemetry_id=id)
+        result = _discover_news(sources, client, db, telemetry_id=id, processing_context=processing_context)
         finish_discovery(db, id, "feed_partial_failure" if any(probe.error for probe in result.probes) else None)
         return result
     except Exception:
@@ -423,11 +431,34 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
 
 
 def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Session | None = None,
-                   *, telemetry_id: int | None = None) -> DiscoveryRun:
+                   *, telemetry_id: int | None = None,
+                   processing_context: NativeCollectionContext | None = None) -> DiscoveryRun:
     """Run verified feeds; with a session, persist checkpoints and shortlisted evidence."""
     # Local import avoids coupling the read-only probe path to database operations.
     from app.crud import news as news_crud
     from app.services.local_news_relevance import body_has_commuter_news, metadata_has_commuter_news
+
+    def save(entry: NewsEntry, candidate: NewsCandidate | None, *, local_update_only: bool = False) -> None:
+        news_crud.save_candidate(db, entry, candidate, local_update_only=local_update_only,
+                                 **({'processing_context': processing_context} if processing_context is not None else {}))
+
+    def known(entry: NewsEntry, article: NewsArticle) -> bool:
+        if processing_context is not None:
+            # An admitted candidate remains refreshable before its first model
+            # result, too. This is capture eligibility, not proof of flooding.
+            if article.review_state == 'pending' and article.article_text:
+                return True
+            from app.services.news_ner_durable.collection import had_native_flood_evidence
+            if had_native_flood_evidence(db, article.id, processing_context.trusted):
+                return True
+        return previously_verified_article(db, entry, article)
+
+    def flood_candidate(entry: NewsEntry, body: str) -> bool:
+        if processing_context is None:
+            return body_has_metro_manila_flood_claim(entry, body)
+        # Shortlisting does not need a legacy place/status counterpart. Final
+        # locality, forecast and observation eligibility belong to native output.
+        return bool(FLOOD_TERMS.search(f'{entry.title} {entry.excerpt}') or FLOOD_TERMS.search(body))
 
     probes: list[FeedProbe] = []
     candidates: list[NewsCandidate] = []
@@ -499,7 +530,7 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 metadata_outside = not metadata_local and metadata_names_only_outside_metro_places(entry)
                 if not has_flood_metadata or metadata_outside:
                     known_evidence = (existing is not None and existing.review_state != "local_update"
-                                      and previously_verified_article(db, entry, existing))
+                                      and known(entry, existing))
                     if not known_evidence and not commuter_metadata:
                         if metadata_outside:
                             notices.append(DiscoveryNotice(source.id, entry.article_url, "Feed metadata names only non-Metro Manila places"))
@@ -515,7 +546,7 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 seen_urls.add(entry.article_url)
                 if duplicate:
                     if db is not None and entry.article_url in accepted_urls:
-                        news_crud.save_candidate(db, entry, None,
+                        save(entry, None,
                             local_update_only=existing is not None and existing.review_state == "local_update")
                         saved_urls.add(entry.article_url)
                     continue
@@ -532,13 +563,13 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     if refresh_due:
                         notices.append(DiscoveryNotice(source.id, entry.article_url,
                             "Article refresh limit reached; saved evidence retained"))
-                    flood_body = body_has_metro_manila_flood_claim(entry, existing.article_text)
+                    flood_body = flood_candidate(entry, existing.article_text) or (processing_context is not None and existing.review_state == 'pending')
                     if flood_body or body_has_commuter_news(entry, existing.article_text):
                         accepted_urls.add(entry.article_url)
                         if entry.excerpt:
                             seen_fingerprints.add(fingerprint)
                         if db is not None:
-                            news_crud.save_candidate(db, entry, None, local_update_only=not flood_body)
+                            save(entry, None, local_update_only=not flood_body)
                             saved_urls.add(entry.article_url)
                     else:
                         notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
@@ -559,7 +590,8 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                         notices.append(DiscoveryNotice(source.id, entry.article_url, "Location body-probe limit reached; scope unresolved"))
                         continue
                     body_probes += 1
-                article_text, article_error = fetch_article_text(source, entry.article_url, client)
+                article_text, article_error = fetch_article_text(source, entry.article_url, client,
+                    **({'preserve_whitespace':True} if processing_context is not None else {}))
                 if article_error:
                     body_errors += 1
                 # A prior publisher denial can be the current body while its
@@ -567,12 +599,12 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 # later retrieval failure visible for that known article too,
                 # including when the revised metadata lacks a local place clue.
                 if (article_text is None and db is not None and existing is not None
-                        and (existing.review_state == "local_update" or previously_verified_article(db, entry, existing))):
+                        and (existing.review_state == "local_update" or known(entry, existing))):
                     failed = NewsCandidate(source_id=entry.source_id, publisher=entry.publisher,
                         feed_id=entry.feed_id, article_url=entry.article_url, title=entry.title,
                         excerpt=entry.excerpt, published_at=entry.published_at,
                         fetched_at=datetime.now(timezone.utc), article_text=None, article_error=article_error)
-                    news_crud.save_candidate(db, entry, failed,
+                    save(entry, failed,
                         local_update_only=existing.review_state == "local_update")
                 if not metadata_local and not commuter_only_probe:
                     if article_text is None:
@@ -587,7 +619,9 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     notices.append(DiscoveryNotice(source.id, entry.article_url,
                         f"Article not collected: body verification unavailable ({article_error or 'no article text'})"))
                     continue
-                flood_body = body_has_metro_manila_flood_claim(entry, article_text)
+                flood_body = flood_candidate(entry, article_text)
+                if processing_context is not None and existing is not None and existing.review_state != 'local_update':
+                    flood_body = True  # Capture a known correction even with no new flood wording.
                 commuter_body = body_has_commuter_news(entry, article_text)
                 if not flood_body and not commuter_body:
                     notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
@@ -619,7 +653,7 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 if flood_body or (existing is not None and existing.review_state != "local_update"):
                     candidates.append(candidate)
                 if db is not None:
-                    news_crud.save_candidate(db, entry, candidate, local_update_only=not flood_body)
+                    save(entry, candidate, local_update_only=not flood_body)
                     saved_urls.add(entry.article_url)
             if db is not None:
                 news_crud.save_checkpoint(db, probe)

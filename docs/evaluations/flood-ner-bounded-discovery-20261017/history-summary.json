@@ -1,0 +1,27 @@
+{
+  "recorded_desktop_files": 6369,
+  "desktop_read_errors": 0,
+  "recorded_backup_payloads": 3863,
+  "identical_backup_payloads": 3382,
+  "helper_rule_exclusions": 478,
+  "explicit_exclusions": 3,
+  "additional_artifact_accounting": {
+    "additional_research_artifact_entries": 35,
+    "identical_prior_inventory_hash": 1,
+    "identical_available_payload": 20,
+    "verified_archive_byte_range": 2,
+    "unprovided_backup_receipt_transport_payloads": 12,
+    "explanation": "Consolidates three newly recovered exact payloads into the earlier 17 available payloads. The consumed curator-input.json remains an immutable dispatch snapshot; its inherited available-payload subtotal of 17 predates these recoveries. The separate fifteen-case ledger and curator outcome already record three resolved and twelve remaining. No source identity, use decision or eligibility changes."
+  },
+  "previous_unavailable_payloads": 15,
+  "new_exact_recoveries": 3,
+  "still_unavailable": 12,
+  "companion_checksums_verified": 18,
+  "new_source_identities": 0,
+  "priority_missing_evidence": "Exact source-stats.json payload with its inventory-bound checksum, to assess historical collection scope. Other named unavailable helper/transport receipts remain individually listed in the private evidence requests; their filenames alone do not establish another corpus.",
+  "user_statement": "Older collections stayed only inside LANES, to the user knowledge.",
+  "verified_scope_limits": "Recorded readable roots only. Exclusions, deleted/unrecorded history and unspecified folders are not certified absent. Known Drive folders were inspected; no exhaustive whole-Drive search is claimed.",
+  "history_certified_complete": false,
+  "archived_scripts_executed": false,
+  "archives_restored": false
+}

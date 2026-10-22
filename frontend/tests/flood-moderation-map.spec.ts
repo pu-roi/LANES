@@ -49,6 +49,9 @@ async function setup(page: Page, status: Status = "pending") {
       body = current;
     } else if (path.endsWith("/admin/reports/pending")) body = state.status === "pending" ? [current] : [];
     else if (path.endsWith("/reports/active-zones")) body = state.activeZone ? [zone] : [];
+    else if (path.endsWith("/admin/zones/queue")) body = { items: [], zones: [], total: state.activeZone ? 1 : 0, item_total: state.activeZone ? 1 : 0,
+      counts: { all: state.activeZone ? 1 : 0, user_reports: state.activeZone ? 1 : 0, news: 0, official: 0, other: 0 }, facets: { cities: [], barangays: [] }, page: 1, pages: 1, page_size: 20, read_only: true };
+    else if (path.endsWith("/admin/zones/groups/9/members")) body = { zone_id: 9, zones: state.activeZone ? [zone] : [], total: state.activeZone ? 1 : 0, page: 1, pages: 1, page_size: 20, group_reason: "Nearby active zones", read_only: true };
     else if (path.endsWith("/admin/zones/all")) body = { zones: state.activeZone ? [zone] : [], total: state.activeZone ? 1 : 0 };
     else if (path.endsWith("/admin/review/items")) body = { items: [], total: 0, pages: 1, page: 1, counts: { all: 0, news_claims: 0, user_reports: 0 } };
     else if (path.endsWith("/items/user_report:42")) body = { key: "user_report:42", source: "user_report",

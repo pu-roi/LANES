@@ -1,0 +1,730 @@
+{
+  "corrections": [
+    {
+      "after_entities": [
+        {
+          "comparison_key": "ilocos sur",
+          "end": 228,
+          "id": "e218",
+          "identity": null,
+          "label": "PROVINCE",
+          "start": 218,
+          "text": "Ilocos Sur"
+        },
+        {
+          "comparison_key": "barangay nanguneg west",
+          "end": 324,
+          "id": "e302",
+          "identity": null,
+          "label": "BARANGAY",
+          "start": 302,
+          "text": "Barangay Nanguneg West"
+        },
+        {
+          "comparison_key": "narvacan",
+          "end": 334,
+          "id": "e326",
+          "identity": null,
+          "label": "CITY",
+          "start": 326,
+          "text": "Narvacan"
+        },
+        {
+          "comparison_key": "ilocos sur",
+          "end": 346,
+          "id": "e336",
+          "identity": null,
+          "label": "PROVINCE",
+          "start": 336,
+          "text": "Ilocos Sur"
+        }
+      ],
+      "before_entities": [
+        {
+          "comparison_key": "barangay nanguneg west",
+          "end": 324,
+          "id": "e302",
+          "identity": null,
+          "label": "BARANGAY",
+          "start": 302,
+          "text": "Barangay Nanguneg West"
+        },
+        {
+          "comparison_key": "narvacan",
+          "end": 334,
+          "id": "e326",
+          "identity": null,
+          "label": "CITY",
+          "start": 326,
+          "text": "Narvacan"
+        },
+        {
+          "comparison_key": "ilocos sur",
+          "end": 346,
+          "id": "e336",
+          "identity": null,
+          "label": "PROVINCE",
+          "start": 336,
+          "text": "Ilocos Sur"
+        }
+      ],
+      "context_target_qualifiers": {},
+      "original_record_sha256": "d9813285dd4c18fe6cc06c417c1472c7a7f7e8e6399a0882fc79bcacc679049f",
+      "passage_sha256": "04ce819d7dc18329e37743cda394a84283c9e9101910282997519d3742f5e70b",
+      "reason": "Add explicit locative province mention after DPWH sa; retain the later province occurrence.",
+      "record_id": "continuation-34c901f67e195db9849b",
+      "reviewed_at": "2026-10-15T11:28:51+08:00",
+      "reviewer": "Codex AI correction review; same-agent silver, no independent human verification",
+      "revision": "location-review-correction-20261015-v2"
+    },
+    {
+      "after_entities": [
+        {
+          "comparison_key": "edsa",
+          "end": 277,
+          "id": "e273",
+          "identity": null,
+          "label": "ROAD",
+          "start": 273,
+          "text": "EDSA"
+        },
+        {
+          "comparison_key": "edsa",
+          "end": 310,
+          "id": "e306",
+          "identity": null,
+          "label": "ROAD",
+          "start": 306,
+          "text": "EDSA"
+        },
+        {
+          "comparison_key": "balintawak",
+          "end": 321,
+          "id": "e311",
+          "identity": null,
+          "label": "LOCAL_AREA",
+          "start": 311,
+          "text": "Balintawak"
+        },
+        {
+          "comparison_key": "edsa muñoz",
+          "end": 494,
+          "id": "e484",
+          "identity": null,
+          "label": "ROAD",
+          "start": 484,
+          "text": "EDSA Muñoz"
+        },
+        {
+          "comparison_key": "edsa",
+          "end": 533,
+          "id": "e529",
+          "identity": null,
+          "label": "ROAD",
+          "start": 529,
+          "text": "EDSA"
+        },
+        {
+          "comparison_key": "barangay apolonio samson",
+          "end": 570,
+          "id": "e546",
+          "identity": null,
+          "label": "BARANGAY",
+          "start": 546,
+          "text": "Barangay Apolonio Samson"
+        },
+        {
+          "comparison_key": "roxas boulevard",
+          "end": 784,
+          "id": "e769",
+          "identity": null,
+          "label": "ROAD",
+          "start": 769,
+          "text": "Roxas Boulevard"
+        },
+        {
+          "comparison_key": "pasay",
+          "end": 793,
+          "id": "e788",
+          "identity": null,
+          "label": "CITY",
+          "start": 788,
+          "text": "Pasay"
+        },
+        {
+          "comparison_key": "maynila",
+          "end": 840,
+          "id": "e833",
+          "identity": null,
+          "label": "CITY",
+          "start": 833,
+          "text": "Maynila"
+        },
+        {
+          "comparison_key": "taft avenue",
+          "end": 902,
+          "id": "e891",
+          "identity": null,
+          "label": "ROAD",
+          "start": 891,
+          "text": "Taft Avenue"
+        },
+        {
+          "comparison_key": "un avenue",
+          "end": 919,
+          "id": "e910",
+          "identity": null,
+          "label": "ROAD",
+          "start": 910,
+          "text": "UN Avenue"
+        },
+        {
+          "comparison_key": "quirino avenue",
+          "end": 966,
+          "id": "e952",
+          "identity": null,
+          "label": "ROAD",
+          "start": 952,
+          "text": "Quirino Avenue"
+        },
+        {
+          "comparison_key": "españa boulevard",
+          "end": 1024,
+          "id": "e1008",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1008,
+          "text": "España Boulevard"
+        },
+        {
+          "comparison_key": "quezon city",
+          "end": 1107,
+          "id": "e1096",
+          "identity": null,
+          "label": "CITY",
+          "start": 1096,
+          "text": "Quezon City"
+        },
+        {
+          "comparison_key": "maynila",
+          "end": 1116,
+          "id": "e1109",
+          "identity": null,
+          "label": "CITY",
+          "start": 1109,
+          "text": "Maynila"
+        },
+        {
+          "comparison_key": "valenzuela",
+          "end": 1128,
+          "id": "e1118",
+          "identity": null,
+          "label": "CITY",
+          "start": 1118,
+          "text": "Valenzuela"
+        },
+        {
+          "comparison_key": "caloocan",
+          "end": 1138,
+          "id": "e1130",
+          "identity": null,
+          "label": "CITY",
+          "start": 1130,
+          "text": "Caloocan"
+        },
+        {
+          "comparison_key": "malabon",
+          "end": 1149,
+          "id": "e1142",
+          "identity": null,
+          "label": "CITY",
+          "start": 1142,
+          "text": "Malabon"
+        }
+      ],
+      "before_entities": [
+        {
+          "comparison_key": "edsa",
+          "end": 277,
+          "id": "e273",
+          "identity": null,
+          "label": "ROAD",
+          "start": 273,
+          "text": "EDSA"
+        },
+        {
+          "comparison_key": "edsa-balintawak",
+          "end": 321,
+          "id": "e306",
+          "identity": null,
+          "label": "ROAD",
+          "start": 306,
+          "text": "EDSA-Balintawak"
+        },
+        {
+          "comparison_key": "edsa muñoz",
+          "end": 494,
+          "id": "e484",
+          "identity": null,
+          "label": "ROAD",
+          "start": 484,
+          "text": "EDSA Muñoz"
+        },
+        {
+          "comparison_key": "edsa",
+          "end": 533,
+          "id": "e529",
+          "identity": null,
+          "label": "ROAD",
+          "start": 529,
+          "text": "EDSA"
+        },
+        {
+          "comparison_key": "barangay apolonio samson",
+          "end": 570,
+          "id": "e546",
+          "identity": null,
+          "label": "BARANGAY",
+          "start": 546,
+          "text": "Barangay Apolonio Samson"
+        },
+        {
+          "comparison_key": "roxas boulevard",
+          "end": 784,
+          "id": "e769",
+          "identity": null,
+          "label": "ROAD",
+          "start": 769,
+          "text": "Roxas Boulevard"
+        },
+        {
+          "comparison_key": "pasay",
+          "end": 793,
+          "id": "e788",
+          "identity": null,
+          "label": "CITY",
+          "start": 788,
+          "text": "Pasay"
+        },
+        {
+          "comparison_key": "maynila",
+          "end": 840,
+          "id": "e833",
+          "identity": null,
+          "label": "CITY",
+          "start": 833,
+          "text": "Maynila"
+        },
+        {
+          "comparison_key": "taft avenue",
+          "end": 902,
+          "id": "e891",
+          "identity": null,
+          "label": "ROAD",
+          "start": 891,
+          "text": "Taft Avenue"
+        },
+        {
+          "comparison_key": "un avenue",
+          "end": 919,
+          "id": "e910",
+          "identity": null,
+          "label": "ROAD",
+          "start": 910,
+          "text": "UN Avenue"
+        },
+        {
+          "comparison_key": "quirino avenue",
+          "end": 966,
+          "id": "e952",
+          "identity": null,
+          "label": "ROAD",
+          "start": 952,
+          "text": "Quirino Avenue"
+        },
+        {
+          "comparison_key": "españa boulevard",
+          "end": 1024,
+          "id": "e1008",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1008,
+          "text": "España Boulevard"
+        },
+        {
+          "comparison_key": "quezon city",
+          "end": 1107,
+          "id": "e1096",
+          "identity": null,
+          "label": "CITY",
+          "start": 1096,
+          "text": "Quezon City"
+        },
+        {
+          "comparison_key": "maynila",
+          "end": 1116,
+          "id": "e1109",
+          "identity": null,
+          "label": "CITY",
+          "start": 1109,
+          "text": "Maynila"
+        },
+        {
+          "comparison_key": "valenzuela",
+          "end": 1128,
+          "id": "e1118",
+          "identity": null,
+          "label": "CITY",
+          "start": 1118,
+          "text": "Valenzuela"
+        },
+        {
+          "comparison_key": "caloocan",
+          "end": 1138,
+          "id": "e1130",
+          "identity": null,
+          "label": "CITY",
+          "start": 1130,
+          "text": "Caloocan"
+        },
+        {
+          "comparison_key": "malabon",
+          "end": 1149,
+          "id": "e1142",
+          "identity": null,
+          "label": "CITY",
+          "start": 1142,
+          "text": "Malabon"
+        }
+      ],
+      "context_target_qualifiers": {
+        "e306": "EDSA target is limited to the source-mentioned EDSA-Balintawak northbound lane; no separate locality-wide flooding assertion."
+      },
+      "original_record_sha256": "f4b1ed189f9b1893ea1ca5ddbd243e9117716863380a98715b3099c9dc4d20e2",
+      "passage_sha256": "b9775aa5762bfdca53dd044ce75cb2af76bc1997b7f86863078a0d295df699a6",
+      "reason": "Use the accepted pilot convention: EDSA ROAD plus Balintawak LOCAL_AREA, with hyphen outside both spans.",
+      "record_id": "revision-0c5383a6e83533b71498",
+      "reviewed_at": "2026-10-15T11:28:51+08:00",
+      "reviewer": "Codex AI correction review; same-agent silver, no independent human verification",
+      "revision": "location-review-correction-20261015-v2"
+    },
+    {
+      "after_entities": [
+        {
+          "comparison_key": "quezon city",
+          "end": 151,
+          "id": "e140",
+          "identity": null,
+          "label": "CITY",
+          "start": 140,
+          "text": "Quezon City"
+        },
+        {
+          "comparison_key": "panay avenue",
+          "end": 306,
+          "id": "e294",
+          "identity": null,
+          "label": "ROAD",
+          "start": 294,
+          "text": "Panay Avenue"
+        },
+        {
+          "comparison_key": "mother ignacia avenue",
+          "end": 1161,
+          "id": "e1140",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1140,
+          "text": "Mother Ignacia Avenue"
+        },
+        {
+          "comparison_key": "edsa-north avenue",
+          "end": 1302,
+          "id": "e1285",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1285,
+          "text": "EDSA-North Avenue"
+        },
+        {
+          "comparison_key": "edsa",
+          "end": 1316,
+          "id": "e1312",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1312,
+          "text": "EDSA"
+        },
+        {
+          "comparison_key": "balintawak",
+          "end": 1327,
+          "id": "e1317",
+          "identity": null,
+          "label": "LOCAL_AREA",
+          "start": 1317,
+          "text": "Balintawak"
+        },
+        {
+          "comparison_key": "aranta avenue",
+          "end": 1497,
+          "id": "e1484",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1484,
+          "text": "Aranta Avenue"
+        },
+        {
+          "comparison_key": "p. florentino st.",
+          "end": 1522,
+          "id": "e1505",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1505,
+          "text": "P. Florentino St."
+        },
+        {
+          "comparison_key": "araneta avenue",
+          "end": 1628,
+          "id": "e1614",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1614,
+          "text": "Araneta Avenue"
+        },
+        {
+          "comparison_key": "e. rodriguez",
+          "end": 1648,
+          "id": "e1636",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1636,
+          "text": "E. Rodriguez"
+        },
+        {
+          "comparison_key": "quirino avenue",
+          "end": 1761,
+          "id": "e1747",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1747,
+          "text": "Quirino Avenue"
+        },
+        {
+          "comparison_key": "roxas boulevard",
+          "end": 1835,
+          "id": "e1820",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1820,
+          "text": "Roxas Boulevard"
+        },
+        {
+          "comparison_key": "libertad avenue",
+          "end": 1860,
+          "id": "e1845",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1845,
+          "text": "Libertad Avenue"
+        },
+        {
+          "comparison_key": "u.n.",
+          "end": 1933,
+          "id": "e1929",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1929,
+          "text": "U.N."
+        },
+        {
+          "comparison_key": "taft avenue",
+          "end": 1948,
+          "id": "e1937",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1937,
+          "text": "Taft Avenue"
+        },
+        {
+          "comparison_key": "edsa-munoz",
+          "end": 1975,
+          "id": "e1965",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1965,
+          "text": "EDSA-Munoz"
+        },
+        {
+          "comparison_key": "edsa monumento",
+          "end": 1999,
+          "id": "e1985",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1985,
+          "text": "EDSA Monumento"
+        }
+      ],
+      "before_entities": [
+        {
+          "comparison_key": "quezon city",
+          "end": 151,
+          "id": "e140",
+          "identity": null,
+          "label": "CITY",
+          "start": 140,
+          "text": "Quezon City"
+        },
+        {
+          "comparison_key": "panay avenue",
+          "end": 306,
+          "id": "e294",
+          "identity": null,
+          "label": "ROAD",
+          "start": 294,
+          "text": "Panay Avenue"
+        },
+        {
+          "comparison_key": "mother ignacia avenue",
+          "end": 1161,
+          "id": "e1140",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1140,
+          "text": "Mother Ignacia Avenue"
+        },
+        {
+          "comparison_key": "edsa-north avenue",
+          "end": 1302,
+          "id": "e1285",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1285,
+          "text": "EDSA-North Avenue"
+        },
+        {
+          "comparison_key": "edsa-balintawak",
+          "end": 1327,
+          "id": "e1312",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1312,
+          "text": "EDSA-Balintawak"
+        },
+        {
+          "comparison_key": "aranta avenue",
+          "end": 1497,
+          "id": "e1484",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1484,
+          "text": "Aranta Avenue"
+        },
+        {
+          "comparison_key": "p. florentino st.",
+          "end": 1522,
+          "id": "e1505",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1505,
+          "text": "P. Florentino St."
+        },
+        {
+          "comparison_key": "araneta avenue",
+          "end": 1628,
+          "id": "e1614",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1614,
+          "text": "Araneta Avenue"
+        },
+        {
+          "comparison_key": "e. rodriguez",
+          "end": 1648,
+          "id": "e1636",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1636,
+          "text": "E. Rodriguez"
+        },
+        {
+          "comparison_key": "quirino avenue",
+          "end": 1761,
+          "id": "e1747",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1747,
+          "text": "Quirino Avenue"
+        },
+        {
+          "comparison_key": "roxas boulevard",
+          "end": 1835,
+          "id": "e1820",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1820,
+          "text": "Roxas Boulevard"
+        },
+        {
+          "comparison_key": "libertad avenue",
+          "end": 1860,
+          "id": "e1845",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1845,
+          "text": "Libertad Avenue"
+        },
+        {
+          "comparison_key": "u.n.",
+          "end": 1933,
+          "id": "e1929",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1929,
+          "text": "U.N."
+        },
+        {
+          "comparison_key": "taft avenue",
+          "end": 1948,
+          "id": "e1937",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1937,
+          "text": "Taft Avenue"
+        },
+        {
+          "comparison_key": "edsa-munoz",
+          "end": 1975,
+          "id": "e1965",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1965,
+          "text": "EDSA-Munoz"
+        },
+        {
+          "comparison_key": "edsa monumento",
+          "end": 1999,
+          "id": "e1985",
+          "identity": null,
+          "label": "ROAD",
+          "start": 1985,
+          "text": "EDSA Monumento"
+        }
+      ],
+      "context_target_qualifiers": {
+        "e1312": "EDSA target is limited to the source-mentioned EDSA-Balintawak northbound lane; no separate locality-wide flooding assertion."
+      },
+      "original_record_sha256": "2fe984716cc241c6c6dbbf70170f953d1820a1c618317fe29f9cf93e52c64edf",
+      "passage_sha256": "0a9662548bd99698aada7a462914e66c71ede0c85afc88d7fc74ef88395f0822",
+      "reason": "Use the accepted pilot convention: EDSA ROAD plus Balintawak LOCAL_AREA, with hyphen outside both spans.",
+      "record_id": "revision-7cda6f7a9e2b1f2793d4",
+      "reviewed_at": "2026-10-15T11:28:51+08:00",
+      "reviewer": "Codex AI correction review; same-agent silver, no independent human verification",
+      "revision": "location-review-correction-20261015-v2"
+    }
+  ],
+  "parent_manifest_sha256": "386b13f7e1f7d125f38ad77903ab96bc7ef3440e1ce1dcee8037d16ee7388d92",
+  "partitions_changed": false,
+  "records_changed": 3,
+  "sample_selection_rerun": false,
+  "schema_version": "lanes-annotation-correction-v1"
+}

@@ -8,6 +8,7 @@ import {
   PIN_CIRCLE_PAINT,
   PENDING_REPORT_ROAD_AURA_PAINT,
   PENDING_REPORT_POINT_AURA_PAINT,
+  PENDING_REPORT_POLYGON_AURA_PAINT,
 } from "../mapStyles";
 import { computeCenterCoordinate, flyToCoordinates } from "../mapGeoUtils";
 
@@ -182,15 +183,7 @@ export function usePendingReportsLayer(
             ["!=", ["get", "is_zoomed_out_point"], true],
             ["in", ["geometry-type"], ["literal", ["Polygon", "MultiPolygon"]]],
           ],
-          paint: {
-            "fill-color": ["get", "color"],
-            "fill-opacity": [
-              "step", ["zoom"],
-              0,
-              14,
-              ["case", ["==", ["get", "is_selected"], true], 0.55, 0.35],
-            ],
-          },
+          paint: PENDING_REPORT_POLYGON_AURA_PAINT,
         });
       }
 

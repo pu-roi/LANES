@@ -84,6 +84,7 @@ class ConfigurationRuntime(BaseModel):
     stage_started_at: datetime | None = None
     last_progress_at: datetime | None = None
     last_cycle: "NewsCycleSummary | None" = None
+    recent_cycles: list['NewsCycleSummary'] = Field(default_factory=list, max_length=10)
 
 
 class NewsCycleSummary(BaseModel):
@@ -92,6 +93,11 @@ class NewsCycleSummary(BaseModel):
     outcome: str
     counts: dict[str, dict[str, int]] = Field(default_factory=dict)
     error_code: str | None = None
+    execution_name: str | None = None
+    task_index: int | None = None
+    task_attempt: int | None = None
+    stage_outcomes: dict[str, str] = Field(default_factory=dict)
+    stage_errors: dict[str, list[str]] = Field(default_factory=dict)
 
 
 class ConfigurationResponse(BaseModel):

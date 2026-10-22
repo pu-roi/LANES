@@ -5,7 +5,7 @@ import json
 from datetime import datetime, timezone
 import hashlib
 
-from app import crud, schemas
+from app import crud, schemas, models
 from app.core.database import get_db
 from app.services.cloudinary_service import upload_image
 
@@ -140,7 +140,10 @@ def read_active_avoidance_zones(db: Session = Depends(get_db)):
     """
     try:
         from app.services.news_zone_projection_service import zone_responses_with_news
-        return zone_responses_with_news(db, crud.get_active_avoidance_zones(db=db))
+        from app.crud.zone_queue import queue_zone_details
+        from app.crud.report import get_active_avoidance_zone_query
+        ids = [row.id for row in get_active_avoidance_zone_query(db).with_entities(models.FloodAvoidanceZone.id)]
+        return zone_responses_with_news(db, queue_zone_details(db, ids))
     except Exception as e:
         raise HTTPException(status_code=500, detail="Could not load active flood zones") from e
 

@@ -10,6 +10,7 @@ from app.schemas.news_browsing import (
 from app.schemas.news_candidate import NewsArticleSummary, NewsExtractionRunSummary
 from app.services.news_sources import load_news_sources
 from app.services.news_presentation_service import summarize_news_claim
+from app.services.news_saved_run_service import saved_run_summary
 
 
 def publisher_labels() -> dict[str, str]:
@@ -19,10 +20,15 @@ def publisher_labels() -> dict[str, str]:
 def browse_news_articles(
     db: Session, *, page: int, page_size: int, search: str, publisher: str | None,
     body: BodyStatus | None, processing: ProcessingStatus | None, order: ArticleOrder,
+    processing_context=None,
 ) -> NewsArticlePage:
+    if processing_context is not None:
+        from app.services.news_ner_durable.readers import validate_read_context
+        validate_read_context(db,processing_context)
     rows, total, actual_page, publishers = list_articles(
         db, page=page, page_size=page_size, search=search, publisher=publisher,
         body=body, processing=processing, order=order,
+        **({'mode':'ner_rules_v1','pipeline_version':processing_context.pipeline_version} if processing_context is not None else {}),
     )
     labels = publisher_labels()
     return NewsArticlePage(
@@ -42,7 +48,15 @@ def read_news_article_detail(db: Session, article_id: int) -> NewsArticleDetail 
     if rows is None:
         return None
     article, runs, versions, total = rows
-    run_summaries = [NewsExtractionRunSummary.model_validate(run) for run in runs]
+    run_summaries = [saved_run_summary(run) for run in runs]
+    summaries={run.id: [summarize_news_claim(claim) for claim in run.result.claims]
+               for run in run_summaries if run.mode=='rules_only' and run.status=='completed' and run.result is not None}
+    from app.services.news_ner_durable.readers import inspect_native,group_row,native_item
+    by_version={v.id:v for v in versions}
+    for run in runs:
+        if run.mode=='ner_rules_v1' and run.status=='completed' and (run.result or {}).get('read_projection'):
+            version=by_version[run.article_version_id];result=inspect_native(run,version)
+            summaries[run.id]=[native_item(group_row(run,version,article,result,g.group_id),{}).summary for g in result.read_projection.groups]
     body_status = "error" if article.article_error is not None else "available" if (article.article_text or "").strip() else "missing"
     return NewsArticleDetail(
         article=NewsArticleSummary.model_validate(article),
@@ -51,6 +65,5 @@ def read_news_article_detail(db: Session, article_id: int) -> NewsArticleDetail 
         runs=run_summaries,
         versions=[NewsArticleVersionSummary.model_validate(version) for version in versions],
         history_total=total, history_limit=20,
-        flood_summaries={run.id: [summarize_news_claim(claim) for claim in run.result.claims]
-                        for run in run_summaries if run.status == "completed" and run.result is not None},
+        flood_summaries=summaries,
     )

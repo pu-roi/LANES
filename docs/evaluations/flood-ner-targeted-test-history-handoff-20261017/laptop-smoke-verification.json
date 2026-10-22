@@ -1,0 +1,30 @@
+{
+  "device": "laptop_only",
+  "actual_desktop_run": false,
+  "files_hashed": 46757,
+  "source_documents_decoded": 0,
+  "errors": 0,
+  "excluded_entry_counts": {
+    "environment_dependency_or_model": 147,
+    "explicit_exclusion": 2,
+    "secret": 14,
+    "isolated_test": 10,
+    "model_weight_or_binary_dependency": 88,
+    "link_or_reparse": 2,
+    "output": 1
+  },
+  "baseline_payload_entries": 3863,
+  "baseline_comparison_counts": {
+    "identical": 3385,
+    "changed": 0,
+    "not_in_scope_or_unavailable": 478
+  },
+  "not_in_scope_is_not_a_missing_file_claim": true,
+  "baseline_included_paths_unchanged": true,
+  "runner_mode": "Python -I -S -B; no third-party packages",
+  "collector_sha256": "bc046535909a9894fb0feabb38557ccbea707443dbec98f5c954f7638a2cd824",
+  "inventory_sha256": "3b6c417e1e7aadf7276a241ae1e4a2626ef6e16dccd787093eb85b92d3ac33c2",
+  "manifest_sha256": "3b882d2c2a1594d3383b871b47c24424fc466fbe47c486c7c6da1c3a073b2f57",
+  "external_history_complete": false,
+  "fresh_test_sealed": false
+}

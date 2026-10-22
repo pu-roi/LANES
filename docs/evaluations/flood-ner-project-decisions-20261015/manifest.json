@@ -1,0 +1,14 @@
+{
+  "schema_version": "lanes-delegated-project-decision-completion-manifest-v1",
+  "files": {
+    "README.md": {
+      "sha256": "f1ef3b35d05a4f4f2cc75ee44f4076ae8611171c317e93071cbfa85b0375ffef",
+      "bytes": 4438
+    },
+    "summary.json": {
+      "sha256": "c90b2d5592d29f725c781b72aea8a278fbc61340a2ff66148ef94d933973ab0c",
+      "bytes": 10233
+    }
+  },
+  "self_excluded": true
+}

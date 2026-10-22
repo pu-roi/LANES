@@ -1,0 +1,36 @@
+{
+  "authorized": false,
+  "executed": false,
+  "new_network_requests": 0,
+  "needed_positive_windows": {
+    "taglish": 9,
+    "english": 1
+  },
+  "minimum_qualified_source_quantities_at_three_windows_per_article": {
+    "taglish": 3,
+    "english": 1
+  },
+  "minimum_is_arithmetic_not_proven_capacity": true,
+  "known_exposed_uncaptured_original_publisher_leads": 6,
+  "actual_passage_languages_and_positive_capacity_of_these_leads_unverified": true,
+  "first_prospective_capture_batch_max": 6,
+  "first_batch_article_attempt_reservation": 6,
+  "first_batch_minimum_prospective_new_alias_headroom": 6,
+  "minimum_six_alias_slots_not_asserted_sufficient_until_exposure_bound_verified": true,
+  "verified_conservative_alias_exposure_bound_required_before_dispatch": true,
+  "known_identity_captures_currently_blocked_at_zero_url_headroom": true,
+  "current_url_ceiling_unchanged": 300,
+  "minimum_future_possible_ceiling_if_six_minimum_reservations_authorized": 306,
+  "future_306_ceiling_not_authorized_or_asserted_sufficient_without_bound": true,
+  "new_discovery_allowed": false,
+  "remaining_new_url_slots": 0,
+  "publisher_attempts_available_if_later_authorized": 26,
+  "total_publisher_attempt_ceiling": 100,
+  "first_priority": "Nine original operational Taglish positives, then one English positive; maximum three per source and one joint selection.",
+  "source_scope": "Previously evidenced original publisher news path; no policy extension to other origins or independent embedded contributions.",
+  "pre_capture_gates": "Screen exact source/history/event/exposure components before requesting an existing identity. Known URL alone is not eligibility.",
+  "transport": "A returned Location/alias can itself expose a new identity even when redirects are disabled. Dispatch remains blocked until a verified conservative bound and its full reservation fit prospectively authorized headroom. Retain all unexpected exposure and stop; no refund or retrospective expansion.",
+  "genuinely_new_identity_discovery_requires_separate_prospective_authorization": true,
+  "known_url_does_not_waive_possible_new_alias_reservation": true,
+  "no_guarantee_that_the_six_known_leads_fill_the_remaining_quotas": true
+}

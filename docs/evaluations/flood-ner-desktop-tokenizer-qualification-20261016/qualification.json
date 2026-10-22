@@ -1,0 +1,60 @@
+{
+  "alignment_error_counts": {
+    "candidate": 0,
+    "corpus-v3": 0,
+    "native": 1
+  },
+  "attempts": 1,
+  "candidate": "lanes.tl.calamancy-address-v1",
+  "candidate_constructed_alignment_errors": 0,
+  "candidate_control_failures": 0,
+  "candidate_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+  "constructed_cases": 48,
+  "constructed_controls": 56,
+  "contextual_pairs": 40,
+  "exports": 0,
+  "failure_stage": null,
+  "implementation_sha256": {
+    "corpus_tokenizer_qualification.py": "87fb2f00e0bb5cf2428f694d56e5a1efe3cac0c70713971f4b54039ddadc8c71",
+    "corpus_tokenizer_worker.py": "4f08368a98211ea2b0c893960f7dd621253c180bcbda5833512b7dc05fd717d0"
+  },
+  "input_bindings": {
+    "admission_ledger": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/admission-ledger.json",
+      "sha256": "5563206da2830f1e107e4c883c780b4b186d2d5b86c36acdeeb69ff3c47115ad"
+    },
+    "admission_package": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/hash-manifest.json",
+      "sha256": "0b3bea737fa6004c600cb6c55141718bca54b4283c7a88583222d95b02de4f14"
+    },
+    "cohort": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/cohort-admitted-v1/partition_manifest.json",
+      "sha256": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8"
+    },
+    "context": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/contextual-admitted-v1/manifest.json",
+      "sha256": "4a0fbd7760730ecb4055fd6c837da1d3cf37884a8f0fb8a09ef54a80d7ad2c78"
+    },
+    "model_manifest": {
+      "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/model-manifest.json",
+      "sha256": "362c266324a8f11f5c5b0f804d5eba2ea9ebf27f32368211e4c5cf248734efe6"
+    },
+    "tokenizer_manifest": {
+      "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/tokenizer-manifest.json",
+      "sha256": "9575ef0e7f5f1e32bbfa26b71d9d6d1e9b47cd916e559ceeae26815f585e3823"
+    }
+  },
+  "location_spans": 1465,
+  "model_predictions_performed": false,
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "negative_passages": 48,
+  "records": 400,
+  "research_interpreter_sha256": "2578d64bbac781a0bbbe908623dfadaf3f545886b6a20311914c9efe6e29cd2b",
+  "research_python_required": "3.11",
+  "retry_policy": "One unchanged-environment attempt after the recorded planning error; no automatic retries",
+  "schema_version": "lanes-corpus-tokenizer-qualification-v1",
+  "serialization_reload_verified": true,
+  "spacy_version_required": "3.7.5",
+  "state": "passed",
+  "training_performed": false
+}

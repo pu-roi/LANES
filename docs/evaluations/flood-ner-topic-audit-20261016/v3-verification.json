@@ -1,0 +1,20 @@
+{
+  "archive_verified": true,
+  "conflicts": 0,
+  "development_file_hashes_verified": 565,
+  "development_manifest_matches_public_binding": true,
+  "dotenv_unchanged": true,
+  "drive_modified": false,
+  "fresh_heldout_private_content_inspected": false,
+  "git_publication_performed": false,
+  "identical_existing_files_skipped": 1642,
+  "links_checked": 12,
+  "model_execution": false,
+  "old_input_files_unchanged": 460,
+  "parts_verified": 11,
+  "records_replaced_or_admitted": 0,
+  "restored_missing_files": 2221,
+  "selected_model_file_hashes_verified": 66,
+  "selected_models_hash_verified": 6,
+  "software_tests_rerun": false
+}

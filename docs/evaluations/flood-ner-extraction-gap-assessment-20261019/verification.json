@@ -1,0 +1,43 @@
+{
+  "assessment_complete": true,
+  "hash_bound_files_unchanged": 208,
+  "historical_metadata_entries_unchanged": 1539,
+  "holds_accounted": 3,
+  "holds_retained": 3,
+  "learned_depth_time_unfinished": true,
+  "links_accounted": 7,
+  "membership": {
+    "research_holdout": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "missed_link_kinds": {
+    "access": 2,
+    "depth": 3,
+    "status": 2
+  },
+  "new_accuracy_measurement": false,
+  "new_model_or_extractor_calls": 0,
+  "new_software_test_suite": false,
+  "preservation_limit": "Explicit training evidence is byte-hashed; broad historical mixed-split packages and excluded partitions receive size/mtime checks only. No claim of fresh byte verification of all historical files.",
+  "private_assessment_not_transferred_by_git": true,
+  "private_manifest_sha256": "aad2f7e1c475569e6caa7822dd5d1a61e36255befb272d1d8f903e1745620d4d",
+  "pure_tagalog_real_performance": "unmeasured",
+  "real_reference_languages": {
+    "english": 11,
+    "pure_tagalog": 0,
+    "taglish": 12
+  },
+  "recognition_causes": {
+    "boundary_error": 0,
+    "incorrect_type_exact_boundary": 2,
+    "missing_mention": 1
+  },
+  "references_changed": false,
+  "status": "verified_saved_evidence_assessment",
+  "system_connection_cleared": false,
+  "targets_accounted": 3,
+  "validation_holdout_contents_opened": false,
+  "validation_holdout_metadata_entries_unchanged": 82,
+  "verified_at_utc": "2026-10-19T13:40:50.416784+00:00"
+}

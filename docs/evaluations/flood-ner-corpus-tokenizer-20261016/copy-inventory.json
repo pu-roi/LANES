@@ -1,0 +1,27 @@
+{
+  "body_hash_counts": {
+    "0a9662548bd99698aada7a462914e66c71ede0c85afc88d7fc74ef88395f0822": 1,
+    "4843c298716a5988ce1f97b07782d762eed049d2f7eb13c825f20d2c59af0cad": 1,
+    "5678f306ea10760c193701bffe7488aa1857133714489c0ab42b0cc5e9a2f7d9": 1,
+    "5db92742b9b2ae5af6d6482fdaa9fc8552bb2379b59b6cf8d2bc2ab884e2bee7": 1,
+    "6baf7a54cd55752753023fe7123bff13f8bb71e80eb142b43e7160a1cbd17bd3": 1,
+    "8764e5ceccb8b8c8767f9ea15894882b0edc41e9c100e8586a4123658b74dd95": 1,
+    "b9775aa5762bfdca53dd044ce75cb2af76bc1997b7f86863078a0d295df699a6": 2,
+    "d11977fec62f7a16ce9ca2cfd79100f393ce9b70e5040ad21a012dc439995237": 1,
+    "f248cdc1677da794d6d18597066f13de157c42a6377dcddaecef1a5ccc9b1bd7": 1,
+    "fd418c63fdba6ddffa6e2a46b236eba32ec95429ef192744234015a29dbacfa3": 2
+  },
+  "complete_body_string_fields": 12,
+  "distinct_body_hashes": 10,
+  "interpretation": "Some unchanged selected passages equal entire captured bodies. These are retained request representations, not new articles or a legal reproduction count.",
+  "new_articles_collected": 0,
+  "new_complete_capture_files": 0,
+  "request_passage_representations": {
+    "constructed": 48,
+    "context": 40,
+    "location": 400
+  },
+  "samples_remain": 400,
+  "schema_version": "lanes-corpus-tokenizer-copy-inventory-v1",
+  "scope": "Exact complete-body strings in actual-v1 JSON outputs/request; no token output exists. Earlier/off-device/archive copies excluded."
+}

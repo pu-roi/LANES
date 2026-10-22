@@ -1,0 +1,51 @@
+{
+  "status": "independently_verified",
+  "raw_records": 788,
+  "candidate_context_graphs": 1628,
+  "proposal_records": 58,
+  "training_counts_recomputed": true,
+  "source_offsets_provenance_verified": true,
+  "article_occurrences_per_method": 34,
+  "article_rows_per_method": 19,
+  "article_facts_per_method": 93,
+  "historical_misses_per_method": 7,
+  "preservation": {
+    "excluded_metadata_unchanged": 82,
+    "historical_metadata_unchanged": 1538,
+    "preexisting_declared_config_change": [
+      "backend/app/core/config.py"
+    ],
+    "protected_evidence_hashes": 208,
+    "v40_v42_and_promoted_application_unchanged": true,
+    "v41_source_test_hashes": 55,
+    "validation_holdout_content_opened": false
+  },
+  "isolation_verified": true,
+  "worker_stopped": true,
+  "three_holds_retained": true,
+  "freeze_sha256": "4a5e38d5e9c6de4adf9d8d231d6a0de6a53f194fe48bd282c6c1d9b0747cdafd",
+  "extraction_or_inference_rerun": false,
+  "backend_promoted": false,
+  "acceptance": "blocked",
+  "frozen_scorer_serialization_defect": true,
+  "normalized_saved_expectations_match": {
+    "missing_junction": {
+      "passed": 36,
+      "total": 36
+    },
+    "boundary_replacement": {
+      "passed": 36,
+      "total": 36
+    },
+    "junction_type": {
+      "passed": 36,
+      "total": 36
+    },
+    "combined": {
+      "passed": 36,
+      "total": 36
+    }
+  },
+  "frozen_scores_replaced": false,
+  "preserved_v42_fixture_conflicts_combined": 3
+}

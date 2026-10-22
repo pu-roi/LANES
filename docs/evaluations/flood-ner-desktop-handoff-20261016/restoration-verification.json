@@ -1,0 +1,15 @@
+{
+  "actual_desktop_restored": false,
+  "all_input_cases_identical": true,
+  "contexts": 40,
+  "existing_project_files_modified": false,
+  "files_restored": 1757,
+  "identical_files_skipped_on_second_restore": 1757,
+  "locations": 400,
+  "original_capture_validation_errors": 0,
+  "qualification_inputs_revalidated": true,
+  "restored_capture_validation_errors": 0,
+  "selected_articles_validated": 138,
+  "selected_capture_evidence_files": 407,
+  "temporary_restore_removed": true
+}

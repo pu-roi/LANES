@@ -14,6 +14,7 @@ import {
 } from "../mapStyles";
 import { computeCenterCoordinate, flyToCoordinates } from "../mapGeoUtils";
 import { floodPopupAnchor } from "../mapPopupUtils";
+import { syncGeoJSONSource } from "../syncGeoJSONSource";
 
 export interface FloodZoneLayerOptions {
   namespace?: string;
@@ -58,24 +59,15 @@ export function useFloodZonesLayer(
   }, [map, isLoaded, namespace, sourceId, fillLayer, roadLayer, pinLayer]);
 
   useEffect(() => {
-    console.log("[useFloodZonesLayer] hook execution started", { mapExists: !!map, isLoaded, activeZonesLength: activeZonesData?.length });
     if (!map || !isLoaded) return;
 
     const setupLayers = () => {
-      console.log("[useFloodZonesLayer] setupLayers triggered", { activeZonesDataLength: activeZonesData?.length, activeTab });
       if (!map.getStyle()) return;
 
-      const existingSource = map.getSource(sourceId) as maplibregl.GeoJSONSource;
-
       if (!activeZonesData || activeZonesData.length === 0 || activeTab !== "zones") {
-        console.log("[useFloodZonesLayer] Cleared active zones because activeZonesData is empty or activeTab is not 'zones'");
-        if (existingSource) {
-          existingSource.setData({ type: "FeatureCollection", features: [] });
-        }
+        if (map.getSource(sourceId)) syncGeoJSONSource(map, sourceId, { type: "FeatureCollection", features: [] });
         return;
       }
-      
-      console.log("[useFloodZonesLayer] Proceeding to add map layers for active zones");
 
       const features: any[] = [];
       activeZonesData.forEach((zone: any) => {
@@ -219,18 +211,9 @@ export function useFloodZonesLayer(
 
       const featureCollection: GeoJSON.FeatureCollection = {
         type: "FeatureCollection",
-        features: features,
+        features: features.map(feature => ({ ...feature, id: `${feature.properties.id}:${feature.properties.is_zoomed_out_point ? "point" : feature.properties.is_road_line ? "road" : "polygon"}` })),
       };
-
-      if (existingSource) {
-        existingSource.setData(featureCollection);
-      } else {
-        if (!map.getStyle()) return; // Failsafe
-        map.addSource(sourceId, {
-          type: "geojson",
-          data: featureCollection,
-        });
-      }
+      syncGeoJSONSource(map, sourceId, featureCollection);
 
       // Layer 1: Avoidance Buffer Polygon Aura (Street Level: Zoom > 14 - pure transparent buffer, no border)
       if (!map.getLayer(fillLayer)) {

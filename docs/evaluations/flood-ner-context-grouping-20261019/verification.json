@@ -1,0 +1,121 @@
+{
+  "ai_assisted_silver": true,
+  "application_connected": false,
+  "fresh_regression_tests": 860,
+  "hashes": {
+    "all_39_error_outcomes": "aff21e057b49bd69243e1db383f6b48649ceb18d95dc53a59433fd6dd42bc2ad",
+    "execution_manifest": "333a3b70ce8137061ec6deeb7c133886d42745faece095be2e2fd470eeebb863",
+    "freeze": "6b0e59fb772fb7e9c10c8cee5cf28bb4ce8b64009b6656e7a34e6fecbed66ecc",
+    "frozen_analysis_script": "284960e022743f8e250b55c404438427ab8a14f44299a1c861d6cfbc9d7be722",
+    "grant": "f35f57c13544a44b0e99ea1b97a784ffc8060f2cfe28b7543e1f359b00ecc04e",
+    "metrics": "644e8c659e5e172d060df896e1d99e105126f0737eb3ad4e3036ea3058c68af8",
+    "old_error_inventory": "1953dd46daec9b6914451db364d85b1a9a0db2d5d8369327f028bc06283c59ad",
+    "private_package_manifest": "a98123ccf7ec5a68804f662e5046aa427b29bd198f65029c7058a01d6b3bf4da",
+    "reference_freeze": "c9aef1483ad6ea2fc598fc10ef2aeecf058417cdba66cf444f5779688271d5e5",
+    "reference_manifest": "3fa380b70e0948ce6dcb6ec049cb459dd23225b0fbbfc99742ceb4708dedecc7",
+    "reference_supplement": "3842cbeeff7a36296986b2b8065b72acf903914e957fce17b78a476aca1abaaf",
+    "remaining_source_bound_diagnostics": "b290f0b5565591253461414eccf996ed6dfc133c9c5f7f126ffb97c2d03e62b1",
+    "results": "3f01880b43bf0090cad0082ff2f4a92a62022f5eb17bd481a42f8949c10f3305",
+    "test_receipt": "b38545f61f68d829db4e911bd90036e0d2ee2fc77f5ec1b3d284d9289201f798"
+  },
+  "incomplete_history_limitations_preserved": true,
+  "neural_inference": false,
+  "new_v37_regression_tests": 299,
+  "old_error_outcomes": {
+    "old_incorrect_key_removed": 3,
+    "old_missed_key_recovered": 11,
+    "old_missed_key_still_absent": 13,
+    "reference_representation_change_not_method_gain": 11,
+    "still_predicted_old_incorrect_key": 1
+  },
+  "old_errors": {
+    "categories": {
+      "code_defect": 21,
+      "missing_neural_location": 7,
+      "reference_concern": 11
+    },
+    "dispositions": 39,
+    "incorrect": 8,
+    "missed": 31
+  },
+  "post_result_tuning": false,
+  "preservation": {
+    "holdout_contents_opened": false,
+    "holdout_metadata_only_unchanged": 55,
+    "protected_baseline_files_hash_verified": 1383,
+    "status": "preserved",
+    "v36_predecessor_files_hash_verified": 131,
+    "validation_contents_opened": false,
+    "validation_metadata_only_unchanged": 27
+  },
+  "pure_tagalog_real_performance": "unmeasured",
+  "reference_review": {
+    "actual_predictions_outputs_or_scores_exposed": false,
+    "all_168_entities_preserved": true,
+    "all_counterparts": 26,
+    "carried_holds_unchanged": 3,
+    "corrected": 9,
+    "eligible_reviewed": 23,
+    "full_saved_sources": 19,
+    "incidental_filename_inventory": true,
+    "incidental_generic_contract_code_read": true,
+    "old_relations_mapped": 103,
+    "perfect_isolation_claim": false,
+    "relation_dispositions": {
+      "corrected": 33,
+      "retained": 68,
+      "unresolved": 2
+    },
+    "retained": 14,
+    "retained_or_split_qualifiers_and_roles_preserved": true,
+    "revised_relations": 107
+  },
+  "remaining_errors": {
+    "incorrect": 4,
+    "missed": 15,
+    "missing_required_neural_target_links": 7,
+    "other_contextual_misses": 8
+  },
+  "retention": {
+    "lost_rules_correct_due_missing_neural_target": 0,
+    "mapped_previous_correct": 70,
+    "mapped_previous_correct_retained": 70,
+    "mapped_reference_corrected": 13,
+    "mapped_reference_retained": 57,
+    "revised_reference_original_rules_correct_lost": 1,
+    "revised_reference_v36_correct_retained": 61
+  },
+  "schema": "lanes-context-v37-public-verification",
+  "single_worker": {
+    "attempts": 1,
+    "cold_seconds": 2.2179999999971187,
+    "cpus": 2,
+    "exit_code": 0,
+    "fictional_inputs": 208,
+    "fictional_passed": 208,
+    "max_input_seconds": 0.005458696999994572,
+    "memory_bytes": 4294967296,
+    "network": "none",
+    "network_database_guarded": true,
+    "neural_libraries_loaded": false,
+    "oom_killed": false,
+    "processed": 232,
+    "raw_real_inputs": 24,
+    "read_only_code_and_inputs": true,
+    "stopped_pid": 0,
+    "wall_seconds": 5.125
+  },
+  "status": "bounded_task_complete_acceptance_blocked",
+  "time_span_nonregression": {
+    "candidate_fn": 2,
+    "candidate_fp": 0,
+    "candidate_tp": 22,
+    "new_fn": 0,
+    "new_fp": 0,
+    "previous_fn": 3,
+    "previous_fp": 5,
+    "previous_tp": 21
+  },
+  "training_started": false,
+  "upstream_warnings": 1
+}

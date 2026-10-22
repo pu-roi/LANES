@@ -1,0 +1,9 @@
+{
+  "state": "failed",
+  "seed": 2,
+  "started_at": "2026-10-16T18:02:34.598483+08:00",
+  "training_completed": false,
+  "test_predictions_performed": false,
+  "error_type": "UnicodeEncodeError",
+  "ended_at": "2026-10-16T18:02:43.365481+08:00"
+}

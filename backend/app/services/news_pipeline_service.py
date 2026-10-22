@@ -25,17 +25,29 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
                             sources: tuple[NewsSource, ...] | None = None,
                             publication_admission_at: datetime | None = None,
                             clock: Callable[[], datetime] = utc_now,
-                            on_stage: Callable[[str, dict | None], None] | None = None) -> dict:
+                            on_stage: Callable[[str, dict | None], None] | None = None,
+                            native_context=None, native_client=None, runtime_factory=None) -> dict:
     """Only call after operator configuration; auditing may incur provider fees.
 
     No discovery is performed here. A collector can keep capturing articles
     independently. Each extraction/evaluation/publication stage commits its own
     durable work; one provider failure never rolls back captured extraction.
     """
+    if native_context is not None:
+        from app.services.news_ner_durable.pipeline import run_native_news_pipeline
+        if sources is None:
+            from app.services.news_sources import load_news_sources
+            sources=load_news_sources()
+        return await run_native_news_pipeline(session_factory,load_assets=lambda:native_context.trusted,
+            environment=native_context.environment,database_url=native_context.database_url,sources=sources,
+            client=native_client,limit=limit,clock=clock,on_stage=on_stage,runtime_factory=runtime_factory)
     from app.services.news_publication_service import process_news_publications
     if not 1 <= limit <= 200 or seed_cursor < 0 or footprint_cursor < 0:
         raise ValueError("Invalid pipeline batch")
+    from app.services.news_claim_auditor import AuditorConfigurationError
     auditor = auditor or NewsClaimAuditor()
+    if getattr(auditor, 'config', None) and auditor.config.error_code():
+        raise AuditorConfigurationError(auditor.config.error_code())
     maintenance_sources = sources
     config, sources = runtime_configuration(session_factory, sources)
     policy = evaluation_policy(auditor, config, publication_admission_at=publication_admission_at)

@@ -1,0 +1,1402 @@
+[
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "ABS-BROWSER-abs-2022"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "ABS-BROWSER-abs-2023"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 6,
+    "source_id": "ABS-BROWSER-abs-2024"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 4,
+    "source_id": "ABS-BROWSER-abs-2025"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "GMA-20220730-839934"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "GMA-20230831-880633"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "GMA-20240902-918977"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "GMA-20250722-953360"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "GMA-20250722-953419"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "GMA-20260710-994434"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "GMA-20260808-997803"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "GMA-20260817-998778"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "GMA-997943"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-017e86f44194f17e"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-026d02c37bac6f5c"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-0628cdb524fef7d1"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-0685a665af348e59"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 6,
+    "source_id": "news-0a7057762450f139"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-0b427220c91c3b1e"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-0ce6fa8811d40df2",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 6,
+    "source_id": "news-0ce6fa8811d40df2"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-1367e412bf0b8a9f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-14969870bff445fe"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-1626080d04706384"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/held-scope-review-20261016-v1/authored-scoped-decisions.json",
+      "sha256": "b3a40a56ad49b958bc678d8daf18f87298d6d30d42d23bd41eae62424acdd755"
+    },
+    "samples": 5,
+    "source_id": "news-1856c6263451d088"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-1885abddb1dc6962"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-1de5b547ff102993"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-20746ac22823c8db",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 6,
+    "source_id": "news-20746ac22823c8db"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-20f70679bcbbf1b1"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-24c601183ae1726d"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-2a0c1e1321fa4a42"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-2a1a4e2381f63ab0",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 4,
+    "source_id": "news-2a1a4e2381f63ab0"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 4,
+    "source_id": "news-2a8473b3d610bb96"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-31e4dd5f1f7ca430"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-333a405b517ced17"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-33a273b337d533e8",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 1,
+    "source_id": "news-33a273b337d533e8"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-35871c2798fc135f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-36e7cdb0e61c5b61",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 5,
+    "source_id": "news-36e7cdb0e61c5b61"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-3a5b4ac4795658f8",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 1,
+    "source_id": "news-3a5b4ac4795658f8"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-3bc1ec8437f23801"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-3f17e39b80d92846"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-3fe9a00d085db8d9"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-404b64185f60c55c"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-463c035c37dcd824"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-4649d2f1a4604953",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 2,
+    "source_id": "news-4649d2f1a4604953"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 4,
+    "source_id": "news-492bc6234d82aecb"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-496862ad9cd359b9"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-4a13b0eb4b607e5f",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 5,
+    "source_id": "news-4a13b0eb4b607e5f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 4,
+    "source_id": "news-4fe54a5e3ccb09ca"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-5100fc1563858052"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-5a83707ac0c552fe"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-5c8cbed15a462665"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-5e1e9bda96c4109d"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-5ec4d4b9bb6c8593"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-5ede135165754c54"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-6061d9bc1dc4efa4"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 6,
+    "source_id": "news-61bde888c0935e15"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-631bd1e58d8b1964"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "news-63bce4e354aec337"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/held-scope-review-20261016-v1/authored-scoped-decisions.json",
+      "sha256": "b3a40a56ad49b958bc678d8daf18f87298d6d30d42d23bd41eae62424acdd755"
+    },
+    "samples": 5,
+    "source_id": "news-641a924608dd03ab"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-645827b407f23d1d"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_local_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-651c21937c60bd33"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-69f0476aa248cef6"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-6b591d0fbc9779c5"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-6caf0c129b6d7069"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-6ced90b6ba8eac5a"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-70c9bfdac67f0c7d"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-72ae1d755bd1d810"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-77b4d775acdbd915"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-7885d5aaecfdc9ff"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-79addb1dcc55db8b"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/held-scope-review-20261016-v1/authored-scoped-decisions.json",
+      "sha256": "b3a40a56ad49b958bc678d8daf18f87298d6d30d42d23bd41eae62424acdd755"
+    },
+    "samples": 6,
+    "source_id": "news-7a824863d687424a"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 6,
+    "source_id": "news-7abee919f934ec27"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-7e3cff6275b06366"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-864b3cd12a4d0cf5"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-87aca03905e85f15"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-8cec5ab4050f478f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-8d7467f1c4782199"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-8e266121254eaa21"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-8e93fc9efc698e68"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-905a1e1ec31455e0"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-91ded5b32f42f85c"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-91ec78444194763f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "news-92a232adacae5fdd"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-9449e3528861ff03",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 3,
+    "source_id": "news-9449e3528861ff03"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-945f46c723917dec"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-959dc7f3e42305a4"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-95b46b8ad154130c",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 5,
+    "source_id": "news-95b46b8ad154130c"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-96c272681ad9b4a8"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-9b619fe2bf31c2b3"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-9c7551478f37e243"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 4,
+    "source_id": "news-9d3da490cc412ad3"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-9f85f3f1fa38fa8c"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-a07b77e950bca4fa"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-a38a1551c552a86b"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-a3945a9d77fef99a"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-a4d477ae7b54b451"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "news-a75484806c378f88"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-a78225d936fe4756",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 5,
+    "source_id": "news-a78225d936fe4756"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-aa6269dd60812ee5",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 3,
+    "source_id": "news-aa6269dd60812ee5"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-ade9c52e455ef8a3"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-b11e4314df572cad"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-b334a6595b2116f3"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "news-b60f94bc963eaeec"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-bd360a67694282cd",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 5,
+    "source_id": "news-bd360a67694282cd"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-c04d4f7154f4f54f",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 2,
+    "source_id": "news-c04d4f7154f4f54f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-c15427a62b79ba2c"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-c296dd5349f4e7ee",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 8,
+    "source_id": "news-c296dd5349f4e7ee"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-c29be324c3b71fb6"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-c6b8dee4d10093fa",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 5,
+    "source_id": "news-c6b8dee4d10093fa"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/held-scope-review-20261016-v1/authored-scoped-decisions.json",
+      "sha256": "b3a40a56ad49b958bc678d8daf18f87298d6d30d42d23bd41eae62424acdd755"
+    },
+    "samples": 1,
+    "source_id": "news-c7216b3994ab5614"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-c814e44a54372ad1"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-ca7319840b01cb70",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 4,
+    "source_id": "news-ca7319840b01cb70"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-cbbe7131c73d0250"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "news-cc126ad08a03808b"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-cc7893469af71cb1"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-cd0aa748f2207982"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 7,
+    "source_id": "news-d0a136d3df01f457"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-d40ef2f36bb454d6"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-d4ad93228fbfb786"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "news-d51c97021d07d991"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-d706fe79a0ec5353",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 4,
+    "source_id": "news-d706fe79a0ec5353"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-dc0d8bcd7617f20f",
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+      "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+    },
+    "samples": 7,
+    "source_id": "news-dc0d8bcd7617f20f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "news-e0cf751ea8d71e21"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-e45b849dae35a056"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-e4b8c16d6fa18b8d"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "entry_source_id": "news-e984b661dcaf2637",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/source-use-dispositions.json",
+      "sha256": "26a6c3cdba6fe6307d0bea129099b65bb8494a096414022b28e04483a9b4a8f7"
+    },
+    "samples": 6,
+    "source_id": "news-e984b661dcaf2637"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-e9b53c4f27a5348a"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 8,
+    "source_id": "news-ea3429aa801a60cb"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-eb21b538ee224afc"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-eb2c5a8e951bbbb2"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 1,
+    "source_id": "news-ef286f8fdb9df6bd"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-f27dfa33a87f1e62"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-f526421386d23fe2"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-f716f246440bddfd"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-f788f7c467927dac"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 5,
+    "source_id": "news-f828b8452eed31ae"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "prior_desktop_reported_adoption",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 2,
+    "source_id": "news-faef8fb27a4a3a0f"
+  },
+  {
+    "current_scope_unchanged": true,
+    "decision_for_proposed_scope": "adopt_private_academic_basis",
+    "evidence_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v2/assembled/current-coverage-index.json",
+      "sha256": "3480773a3f105bfc1054751ff5c296f6108421ee77d2852064cec25898c92c0f"
+    },
+    "samples": 3,
+    "source_id": "news-fcff07b9d070ca91"
+  }
+]

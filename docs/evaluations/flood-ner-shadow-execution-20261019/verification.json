@@ -1,0 +1,130 @@
+{
+  "accuracy_measured": false,
+  "additional_retries": 0,
+  "application_connected": false,
+  "by_workload_kind": {
+    "fictional": {
+      "articles": 0,
+      "boundary_links": 0,
+      "exact_pairs": 3,
+      "fictional_cases": 8,
+      "neural_mentions": 9,
+      "overlapping_rules_candidates": 0,
+      "rules_mentions": 5,
+      "same_span_type_pairs": 2,
+      "unknown_rules_types": 0,
+      "unmatched_neural": 4,
+      "unmatched_rules": 0
+    },
+    "training_article": {
+      "articles": 6,
+      "boundary_links": 73,
+      "exact_pairs": 116,
+      "fictional_cases": 0,
+      "neural_mentions": 261,
+      "overlapping_rules_candidates": 0,
+      "rules_mentions": 215,
+      "same_span_type_pairs": 9,
+      "unknown_rules_types": 0,
+      "unmatched_neural": 136,
+      "unmatched_rules": 90
+    }
+  },
+  "cold_host_seconds": 5.688000000000102,
+  "container_stopped": true,
+  "container_wall_seconds": 9.205649,
+  "counts": {
+    "articles": 6,
+    "boundary_links": 73,
+    "exact_pairs": 119,
+    "fictional_cases": 8,
+    "neural_mentions": 270,
+    "overlapping_rules_candidates": 0,
+    "rules_mentions": 220,
+    "same_span_type_pairs": 11,
+    "unknown_rules_types": 0,
+    "unmatched_neural": 140,
+    "unmatched_rules": 90
+  },
+  "dataset_counts": {
+    "research_holdout": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "hashes": {
+    "comparisons": "9e15031a71aad82d19ad0f99c61c9d00acde2fa338f621383a0704290be2b0b4",
+    "container_state": "4abde9fdbd377db95d2b3f0fc6e3006a8a470b79e912e3c03607cf0e35c5e051",
+    "grant": "01cb7f07b03ca17455e6af3a6d174c12f3dc586f451c86d401ed0923eb78a35e",
+    "lease_reconciliation": "360b39c3c4deb02cb877801800c9f409f1d255c1a31eed0855284ab8d672df9d",
+    "measurements": "3f40bacfa6c9e41117aa0b6a1c545925304063cfd0da3f0160a32af6848c9a63",
+    "raw_inputs": "dff426282da8dead38d12c2ca4aa4ec258e0b0adafef093512646cb7d3b9e94a",
+    "readiness": "ec0cc13d51455fd3aefb06f98aff0ac8af45f6c5b9928ab021c03a52b2a2037a",
+    "worker_implementation": "66282ebf87b236c20021162bc18424bab2abe51c801574a5bea3416f4ac3dc15"
+  },
+  "holdout_accessed": false,
+  "holdout_stat_only": 55,
+  "image_id": "sha256:a51ce2a6b0f19f382ce96bf63c265e060b37112098176c97c66c23e887794680",
+  "inputs_verified": 14,
+  "isolation_verified": true,
+  "limits_passed": true,
+  "max_input_seconds": 0.6663679020002746,
+  "mention_label_counts": {
+    "fictional": {
+      "neural": {
+        "BARANGAY": 1,
+        "CITY": 2,
+        "LANDMARK": 2,
+        "LOCAL_AREA": 1,
+        "PROVINCE": 0,
+        "ROAD": 3,
+        "UNMAPPED": 0
+      },
+      "rules": {
+        "BARANGAY": 0,
+        "CITY": 0,
+        "LANDMARK": 1,
+        "LOCAL_AREA": 0,
+        "PROVINCE": 0,
+        "ROAD": 4,
+        "UNMAPPED": 0
+      }
+    },
+    "training_article": {
+      "neural": {
+        "BARANGAY": 49,
+        "CITY": 55,
+        "LANDMARK": 7,
+        "LOCAL_AREA": 5,
+        "PROVINCE": 20,
+        "ROAD": 125,
+        "UNMAPPED": 0
+      },
+      "rules": {
+        "BARANGAY": 44,
+        "CITY": 25,
+        "LANDMARK": 14,
+        "LOCAL_AREA": 0,
+        "PROVINCE": 24,
+        "ROAD": 108,
+        "UNMAPPED": 0
+      }
+    }
+  },
+  "new_attempts_this_task": 1,
+  "new_lease_cleared_after_success": true,
+  "old_lease_archived": true,
+  "peak_worker_rss_bytes": 472690688,
+  "preparation_tests": {
+    "new_adapter_checks": 62,
+    "passing": 604,
+    "rerun_this_task": false
+  },
+  "private_references_supplied": false,
+  "protected_file_hashes": 1245,
+  "schema": "lanes-shadow-execution-aggregate-v31",
+  "status": "verified_offline_comparison",
+  "tokenizer_verified": true,
+  "training_started": false,
+  "validation_evaluated": false,
+  "validation_stat_only": 27
+}

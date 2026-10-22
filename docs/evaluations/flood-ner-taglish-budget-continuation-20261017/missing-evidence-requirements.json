@@ -1,0 +1,23 @@
+{
+  "network_gate_passed": false,
+  "original_request_response_receipts_verified": 0,
+  "local_wrappers_replayed": 11,
+  "recorded_registry_union_replayed": 649,
+  "local_journal_hash_chain_verified": true,
+  "local_accounting_discrepancies": 0,
+  "additional_exposure_extent": "unquantified; no finite verified upper bound",
+  "requirements": [
+    "Recover byte-original complete request arguments and unfiltered complete tool result receipts for all 11 v5 search calls, with tool-call IDs/timestamps and request/result bindings. Hand-written query/content summaries or reconstructed URLs are insufficient.",
+    "Reconcile every original tool response identity, alias, ambiguous token and any truncation against the append-only reservations and 649-entry recorded union; retain original unverified reservation releases and all exposure uncertainty until reconciled.",
+    "Recover independent outbound publisher/transport receipts for the inherited 84-attempt history, including failures, redirects, interruptions and retry settings; ledger inheritance alone cannot exclude hidden or unrecorded attempts.",
+    "Resolve unknown extent of possible omitted v5 response identities. It is additional to the four inherited uncertain slots and has no defensible numerical count or finite exposure upper bound from supplied evidence.",
+    "Resolve source-specific history, reuse and reference-completeness holds before any later admission; unknown references remain held and unscored.",
+    "Obtain 11 eligible independent Taglish positive passages after the supported exposure quarantine; original baseline artifacts remain preserved."
+  ],
+  "recovery_rules": [
+    "Obtain original request/result evidence from the previous agent session or its authentic saved logs.",
+    "Have an isolated curator read source-bearing receipts. Return only aggregate verification and hashes to the coordinator.",
+    "Do not rerun queries, invent raw responses, reset budgets, refund uncertainty or modify predecessor packages to simulate missing evidence.",
+    "Preserve supported quarantine; the historical53 artifact does not grant admission of its four newly exposed members."
+  ]
+}

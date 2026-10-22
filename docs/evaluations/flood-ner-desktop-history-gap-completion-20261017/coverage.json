@@ -1,0 +1,140 @@
+{
+  "train": {
+    "records": 345,
+    "languages": {
+      "english": {
+        "records": 170,
+        "positive": 132,
+        "empty_location": 38,
+        "label_spans": {
+          "ROAD": 155,
+          "LANDMARK": 38,
+          "LOCAL_AREA": 6,
+          "BARANGAY": 34,
+          "CITY": 186,
+          "PROVINCE": 106
+        },
+        "roles": {
+          "observed_flooding": 94,
+          "recovery": 37,
+          "warning_forecast": 27,
+          "prevention_project": 12
+        },
+        "themes": {
+          "historical_unspecified": 108,
+          "geographic-type-ambiguity": 13,
+          "misleading-names-time-common-words": 10,
+          "facilities-institutions": 10,
+          "compound-crossing-roads": 11,
+          "shared-identifiers": 2,
+          "project-asset-names": 8,
+          "short-codes": 5,
+          "locality-designators": 3
+        },
+        "guard_groups": 24,
+        "articles": 55
+      },
+      "taglish": {
+        "records": 175,
+        "positive": 110,
+        "empty_location": 65,
+        "label_spans": {
+          "ROAD": 46,
+          "LANDMARK": 20,
+          "LOCAL_AREA": 13,
+          "BARANGAY": 51,
+          "CITY": 122,
+          "PROVINCE": 63
+        },
+        "roles": {
+          "observed_flooding": 67,
+          "recovery": 44,
+          "prevention_project": 43,
+          "warning_forecast": 21
+        },
+        "themes": {
+          "historical_unspecified": 106,
+          "facilities-institutions": 12,
+          "misleading-names-time-common-words": 17,
+          "geographic-type-ambiguity": 13,
+          "locality-designators": 8,
+          "compound-crossing-roads": 2,
+          "short-codes": 4,
+          "project-asset-names": 10,
+          "shared-identifiers": 3
+        },
+        "guard_groups": 28,
+        "articles": 80
+      }
+    },
+    "guard_groups": 38,
+    "articles": 126
+  },
+  "dev": {
+    "records": 60,
+    "languages": {
+      "english": {
+        "records": 38,
+        "positive": 21,
+        "empty_location": 17,
+        "label_spans": {
+          "ROAD": 14,
+          "LANDMARK": 6,
+          "LOCAL_AREA": 9,
+          "BARANGAY": 10,
+          "CITY": 9,
+          "PROVINCE": 2
+        },
+        "roles": {
+          "observed_flooding": 22,
+          "recovery": 12,
+          "warning_forecast": 2,
+          "prevention_project": 2
+        },
+        "themes": {
+          "geographic-type-ambiguity": 7,
+          "facilities-institutions": 8,
+          "misleading-names-time-common-words": 7,
+          "compound-crossing-roads": 7,
+          "project-asset-names": 2,
+          "locality-designators": 5,
+          "shared-identifiers": 2
+        },
+        "guard_groups": 14,
+        "articles": 15
+      },
+      "taglish": {
+        "records": 22,
+        "positive": 12,
+        "empty_location": 10,
+        "label_spans": {
+          "ROAD": 0,
+          "LANDMARK": 1,
+          "LOCAL_AREA": 3,
+          "BARANGAY": 9,
+          "CITY": 14,
+          "PROVINCE": 8
+        },
+        "roles": {
+          "observed_flooding": 7,
+          "prevention_project": 9,
+          "recovery": 4,
+          "warning_forecast": 2
+        },
+        "themes": {
+          "project-asset-names": 4,
+          "misleading-names-time-common-words": 4,
+          "geographic-type-ambiguity": 3,
+          "facilities-institutions": 4,
+          "compound-crossing-roads": 2,
+          "shared-identifiers": 1,
+          "locality-designators": 4
+        },
+        "guard_groups": 10,
+        "articles": 10
+      }
+    },
+    "guard_groups": 20,
+    "articles": 23
+  }
+}

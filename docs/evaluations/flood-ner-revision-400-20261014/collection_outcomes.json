@@ -1,0 +1,3002 @@
+[
+  {
+    "article_key": "gma:1000373",
+    "capture_version": "e63e79eef81d5e901da931ed706d160532c419cbbf838cfb803aba62476b7074",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-29",
+    "publisher": "GMA News",
+    "source_id": "news-945f46c723917dec",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/1000373/habagat-bucket-used-to-safely-rescue-baby-in-cavite-sinkhole-appears-in-tarlac/story/"
+  },
+  {
+    "article_key": "gma:1000755",
+    "capture_version": "2007eb8a5f95a028c88ba84540da2bdf079e899c787d2ac6e7f9a5222b35151f",
+    "exclusion_reason": null,
+    "publication_date": "2026-09-01",
+    "publisher": "GMA News",
+    "source_id": "news-87aca03905e85f15",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/1000755/ilang-lugar-sa-hagonoy-bulacan-nananatiling-lubog-sa-baha-kahit-umaraw-na/story"
+  },
+  {
+    "article_key": "gma:1000867",
+    "capture_version": "4cb14268a5c9f0655153265955d110dd53b8912659d528cc96695779c57b4673",
+    "exclusion_reason": null,
+    "publication_date": "2026-09-02",
+    "publisher": "GMA News",
+    "source_id": "news-6ced90b6ba8eac5a",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/1000867/11-anyos-na-lalaki-tinangay-ng-malakas-na-agos-ng-baha-at-nalunod-sa-creek-sa-valenzuela/story/"
+  },
+  {
+    "article_key": "gma:1001213",
+    "capture_version": "d4c6f68d684509139e1dcc542992ad7d4315d5f563b3a0f9352c4bbfeea5ccc6",
+    "exclusion_reason": null,
+    "publication_date": "2026-09-04",
+    "publisher": "GMA News",
+    "source_id": "news-e4b8c16d6fa18b8d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/trending/1001213/baha-bakit-nga-ba-patuloy-na-nararanasan-sa-metro-manila-at-iba-pang-lugar/story/"
+  },
+  {
+    "article_key": "gma:273622",
+    "capture_version": "4621ba38f048edc8d9a1b5ba5078ef503fa70ac1caac88080c6f03bcc87a2e9e",
+    "exclusion_reason": "publication_date_out_of_range",
+    "publication_date": "2012-09-12",
+    "publisher": "GMA News",
+    "source_id": "news-33df314fce808510",
+    "status": "excluded",
+    "url": "https://www.gmanetwork.com/news/newstv/motorcyclediaries/273622/baha-mga-kuwento-at-solusyon/story/"
+  },
+  {
+    "article_key": "gma:625471",
+    "capture_version": "4e7cb94d195375a15f3cdbcf8ecc1ccd93872597c8dfe8a1e821eb261e5305dd",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-12",
+    "publisher": "GMA News",
+    "source_id": "news-0d27f5ba3eb442eb",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/625471/passengers-climb-to-roof-of-stranded-bus-on-flooded-quezon-road/story/"
+  },
+  {
+    "article_key": "gma:625474",
+    "capture_version": "33b1db91135a68c20631580c3b77586092f5156d019474d44a04ec031588bf01",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-12",
+    "publisher": "GMA News",
+    "source_id": "news-32a4a23a3de4e4da",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/625474/flooded-roads-in-metro-manila-due-to-maring/story/"
+  },
+  {
+    "article_key": "gma:625603",
+    "capture_version": "5acd9701699d671e551a1d6ce5133c6e115fa3aa2cb7603a3a9db8078050fdd1",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-13",
+    "publisher": "GMA News",
+    "source_id": "news-70c9bfdac67f0c7d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/625603/td-maring-floods-metro-manila-areas-strands-commuters/story/"
+  },
+  {
+    "article_key": "gma:627775",
+    "capture_version": "2c8efe0c167132b2d217c84886c45e77320dd83a3907e658ad3cfc46c95576d8",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-30",
+    "publisher": "GMA News",
+    "source_id": "news-3a5b4ac4795658f8",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/627775/bayan-ng-baao-sa-camarines-sur-lubog-sa-baha/story/"
+  },
+  {
+    "article_key": "gma:631567",
+    "capture_version": "0565a2638eda312ec75a59de2fb73972fc9557a8f37fbce2686ae6b15cfd6c2f",
+    "exclusion_reason": null,
+    "publication_date": "2017-11-01",
+    "publisher": "GMA News",
+    "source_id": "news-b8909be7682e6c1e",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/631567/nonstop-rains-bring-floods-landslide-to-quezon-camarines-sur/story/"
+  },
+  {
+    "article_key": "gma:634260",
+    "capture_version": "f9a3f64febd45e52e8afea1d6d7db156614b9133c586ba4d095300515fefaf63",
+    "exclusion_reason": null,
+    "publication_date": "2017-11-24",
+    "publisher": "GMA News",
+    "source_id": "news-c1dabddb976c02c8",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/pinoyabroad/634260/ofw-hinangaan-dahil-sa-pagsagip-sa-arabo-na-na-stranded-sa-baha-sa-ksa/story/"
+  },
+  {
+    "article_key": "gma:638438",
+    "capture_version": "48c5992e60886b280fd959043ec6c8c7775667c411a2f91e03300a0d5ca25cfa",
+    "exclusion_reason": null,
+    "publication_date": "2018-01-03",
+    "publisher": "GMA News",
+    "source_id": "news-cd94b2ef0cee03ed",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/638438/ilang-lugar-sa-isabela-city-basilan-lubog-sa-baha-ng-bagyong-agaton/story/"
+  },
+  {
+    "article_key": "gma:656071",
+    "capture_version": "0cd692fc2ac0a40d81fb1e64a591e3615cccf9b300ba45e8b07a8d91611e79fb",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-07",
+    "publisher": "GMA News",
+    "source_id": "news-5ec4d4b9bb6c8593",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/umg/656071/motoristang-sumunod-sa-waze-lumubog-ang-suv-sa-baha/story/"
+  },
+  {
+    "article_key": "gma:656553",
+    "capture_version": "dcc205cd1384619bd279ab561e1700dd72618307e3b4689f3190c29abc160c20",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-12",
+    "publisher": "GMA News",
+    "source_id": "news-864b3cd12a4d0cf5",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/656553/overnight-rains-flood-parts-of-manila-and-bulacan/story/"
+  },
+  {
+    "article_key": "gma:660572",
+    "capture_version": "8d6da681ee3d3e9b826f70fa803d019722042909c154c00c066f18f38187a212",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-16",
+    "publisher": "GMA News",
+    "source_id": "news-631bd1e58d8b1964",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/660572/ilang-lugar-sa-malabon-binaha-dahil-sa-pag-apaw-ng-tubig-mula-sa-dike/story/"
+  },
+  {
+    "article_key": "gma:660712",
+    "capture_version": "0ff8de43591e70ec31af27af0147a99197fcf89afbf56ff7194d635257ebacff",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-17",
+    "publisher": "GMA News",
+    "source_id": "news-e50b034cfdbeeef5",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/660712/flooded-areas-on-tuesday-july-17-2018/story/"
+  },
+  {
+    "article_key": "gma:663771",
+    "capture_version": "175788bd34760037fcd4e7b2d4a201ee9d56262f0605898961be110961f81863",
+    "exclusion_reason": null,
+    "publication_date": "2018-08-11",
+    "publisher": "GMA News",
+    "source_id": "news-56127bee37764c32",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/663771/flooded-areas-in-metro-manila-on-august-11-2018/story/"
+  },
+  {
+    "article_key": "gma:664361",
+    "capture_version": "621fd455cf6e0cc05d4e0ac53b299aa9c7809f120b8fd15983cacdf785529d42",
+    "exclusion_reason": null,
+    "publication_date": "2018-08-16",
+    "publisher": "GMA News",
+    "source_id": "news-c29be324c3b71fb6",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/664361/ilang-barangay-sa-pangasinan-lubog-pa-rin-sa-lampas-taong-baha/story/"
+  },
+  {
+    "article_key": "gma:667850",
+    "capture_version": "1f356eab6ef44138e7be3ebe730d442cdd5bf16877fd184bf8a349d6b901e669",
+    "exclusion_reason": null,
+    "publication_date": "2018-09-15",
+    "publisher": "GMA News",
+    "source_id": "news-79ec02d46053ae26",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/667850/roxas-boulevard-gets-flooded-due-to-ompong/story/"
+  },
+  {
+    "article_key": "gma:672688",
+    "capture_version": "a37f12f5cb3747c10f5ead52854801554cd4db99c67d51ac0557c8949b488915",
+    "exclusion_reason": null,
+    "publication_date": "2018-10-28",
+    "publisher": "GMA News",
+    "source_id": "news-5ede135165754c54",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/content/672688/mga-puntod-na-nalinis-na-nalubog-sa-baha-nang-umulan-sa-koronadal-city/story"
+  },
+  {
+    "article_key": "gma:680252",
+    "capture_version": "d772cfca2eb5db38e267ee0d845e315e38e01c9b30d597b4d38d17206a936243",
+    "exclusion_reason": null,
+    "publication_date": "2019-01-03",
+    "publisher": "GMA News",
+    "source_id": "news-ff21750f55956e88",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/680252/feng-shui-expert-malalakas-na-bagyo-baha-at-paglaganap-ng-aids-asahan-sa-2019/story"
+  },
+  {
+    "article_key": "gma:693782",
+    "capture_version": "5169777e25a4d3198d386987f33ed85798fba503cfb3d98460acece940616e7b",
+    "exclusion_reason": null,
+    "publication_date": "2019-05-08",
+    "publisher": "GMA News",
+    "source_id": "news-6ab7ced46c64417b",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/693782/rush-hour-rain-showers-cause-knee-deep-floods-leaves-commuters-stranded-in-metro-manila/story/"
+  },
+  {
+    "article_key": "gma:703542",
+    "capture_version": "87f9ed92fe72df35343d9ef4ab05b5584812dbfb4bb3ffa83f61f84150f261e4",
+    "exclusion_reason": null,
+    "publication_date": "2019-08-05",
+    "publisher": "GMA News",
+    "source_id": "news-dda978df42e369d4",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/703542/metro-manila-streets-get-flooded-with-habagat-rains-on-monday-night/story/"
+  },
+  {
+    "article_key": "gma:708197",
+    "capture_version": "78c61d43c564207b708ee01c7085b4b6ba66f7b58744c19fac4450255642bf06",
+    "exclusion_reason": null,
+    "publication_date": "2019-09-16",
+    "publisher": "GMA News",
+    "source_id": "news-ecce89c49968d800",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/708197/flooded-areas-in-metro-manila-on-monday-sept-16-2019/story/"
+  },
+  {
+    "article_key": "gma:742673",
+    "capture_version": "eab689353792cbce9f32016d4cde660bbace0aad4f919586b8e3ff70969aa6b4",
+    "exclusion_reason": null,
+    "publication_date": "2020-06-15",
+    "publisher": "GMA News",
+    "source_id": "news-1667a976bd49b3c1",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/742673/heavy-rains-cause-zero-visibility-floods-traffic-jams-in-some-ncr-areas/story/"
+  },
+  {
+    "article_key": "gma:749117",
+    "capture_version": "a4f3d8c84bc963ab009b01fafc045cf0981977db49a6566e6998d227a754dc23",
+    "exclusion_reason": null,
+    "publication_date": "2020-07-30",
+    "publisher": "GMA News",
+    "source_id": "news-146262ec60474220",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/749117/17-anyos-na-binatilyo-sa-bohol-patay-matapos-anurin-ng-baha/story/"
+  },
+  {
+    "article_key": "gma:751728",
+    "capture_version": "6c82e0f158a61e1eb54547316a8364da3e7fedad702fb1046453537e24ff377d",
+    "exclusion_reason": null,
+    "publication_date": "2020-08-17",
+    "publisher": "GMA News",
+    "source_id": "news-8e60bb121d42733e",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/751728/heavy-rains-cause-floods-road-blockages-in-provinces/story/"
+  },
+  {
+    "article_key": "gma:759494",
+    "capture_version": "7c7aff6ce07f238bd1c5b44b43ba1e3e26700e1e5a109ebb5be5fd128154c1c8",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-12",
+    "publisher": "GMA News",
+    "source_id": "news-00b07305fddc6ac5",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/759494/heavy-rain-causes-flood-zero-visibility-in-quezon-city/story/"
+  },
+  {
+    "article_key": "gma:760146",
+    "capture_version": "322d6061752f4854b18df013c44e0abc589e6f88f57741c443994decd62f6c68",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-16",
+    "publisher": "GMA News",
+    "source_id": "news-a07b77e950bca4fa",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760146/bahagi-ng-maharlika-highway-sa-lopez-quezon-lubog-sa-baha/story"
+  },
+  {
+    "article_key": "gma:760587",
+    "capture_version": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-20",
+    "publisher": "GMA News",
+    "source_id": "news-8eae95242fe6a4a7",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/760587/pepito-causes-flooding-in-quezon-other-areas/story/"
+  },
+  {
+    "article_key": "gma:761507",
+    "capture_version": "9c207ecc83658038ca3de8a8af30e1d0f92b81b673b8f99f82800453acdb3998",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-26",
+    "publisher": "GMA News",
+    "source_id": "news-823b37857eadba25",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/761507/malaking-sawa-bumulaga-sa-baha/story/"
+  },
+  {
+    "article_key": "gma:761882",
+    "capture_version": "064401e0fec2ee9769d9601e1573275640c7e00629a37c740e7988a8b3058b17",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-29",
+    "publisher": "GMA News",
+    "source_id": "news-416444b21c232b85",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/publicaffairs/alisto/761882/maging-alisto-sa-banta-ng-baha-kapag-may-bagyo/story/"
+  },
+  {
+    "article_key": "gma:763976",
+    "capture_version": "7a86f8020de059a045b045e2227ededc3bfaad8bd2fe1057c3fbf8a24f349018",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-13",
+    "publisher": "GMA News",
+    "source_id": "news-591df2129bfcfa0b",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/763976/subdivision-sa-rodriguez-rizal-nagmistulang-ghost-town-matapos-ang-matinding-baha/story/"
+  },
+  {
+    "article_key": "gma:764620",
+    "capture_version": "2e862a3685140857008cc84779413af387e05aa79c992f7a114fbfd1ef4a7a72",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-18",
+    "publisher": "GMA News",
+    "source_id": "news-24c601183ae1726d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764620/ilang-bayan-sa-pampanga-lubog-pa-rin-sa-baha-kahit-wala-nang-ulan/story/"
+  },
+  {
+    "article_key": "gma:764629",
+    "capture_version": "97075e8485c934c99f0d8611bc5b566e2786d5d23041668e3b1b2b74f7a2003e",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-18",
+    "publisher": "GMA News",
+    "source_id": "news-56990b809469c3fc",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764629/pagkasira-ng-dike-itinuturong-sanhi-ng-baha-sa-rodriguez-rizal/story/"
+  },
+  {
+    "article_key": "gma:764749",
+    "capture_version": "1d93fcf08313003e838c4570776632d1b12362f90ba0e356a1a20a889a4365f6",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-19",
+    "publisher": "GMA News",
+    "source_id": "news-e9b53c4f27a5348a",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764749/baha-di-humuhupa-ilang-residente-sa-hagonoy-bulacan-nagkaalipunga/story/"
+  },
+  {
+    "article_key": "gma:764856",
+    "capture_version": "76cff17ab27408da3f8fecc0bfd62003101ccbf852607171048a674ff34defb5",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-19",
+    "publisher": "GMA News",
+    "source_id": "news-55a9d2fe707d5210",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/764856/kotse-napalutang-sa-baha-gamit-lang-ang-lona/story/"
+  },
+  {
+    "article_key": "gma:768014",
+    "capture_version": "d4b0377dfa09dada9ebc26bd2d0772a67259b8b23bfd0bdf47e10a692fbbc318",
+    "exclusion_reason": null,
+    "publication_date": "2020-12-15",
+    "publisher": "GMA News",
+    "source_id": "news-1626080d04706384",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/768014/39-magsasaka-naipit-sa-baha-sa-santa-ana-cagayan/story/"
+  },
+  {
+    "article_key": "gma:769614",
+    "capture_version": "90b473b8cedd527a9985888675781e462f30a2e51ffb7a09ef68857e19f87edd",
+    "exclusion_reason": null,
+    "publication_date": "2020-12-28",
+    "publisher": "GMA News",
+    "source_id": "news-766a25dac0b23b20",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/769614/50-tao-nasagip-sa-flash-flood-sa-atimonan-quezon/story/"
+  },
+  {
+    "article_key": "gma:876996",
+    "capture_version": "6cca2f45179997879a7070182e17bc7d64753f290c8dfe9603eec59d03a82026",
+    "exclusion_reason": null,
+    "publication_date": "2023-07-26",
+    "publisher": "GMA News",
+    "source_id": "news-7885d5aaecfdc9ff",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/876996/4-anyos-na-babae-patay-nang-mabagsakan-ng-puno-sa-gitna-ng-hagupit-ni-egay-sa-palawan/story/"
+  },
+  {
+    "article_key": "gma:953781",
+    "capture_version": "9cb3900d6e33799e803487d9a9f1a2e25bb1507e34f7ff41d65d20d463f3846a",
+    "exclusion_reason": null,
+    "publication_date": "2025-07-25",
+    "publisher": "GMA News",
+    "source_id": "news-eb21b538ee224afc",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/953781/strawberry-farm-na-dinarayo-sa-la-trinidad-nagmistulang-lawa-dahil-sa-baha/story/"
+  },
+  {
+    "article_key": "gma:954882",
+    "capture_version": "2b0abc914597e81924895b27dbc8aa6f64f0689d8fa45aa0001146c7ee8deb89",
+    "exclusion_reason": null,
+    "publication_date": "2025-08-05",
+    "publisher": "GMA News",
+    "source_id": "news-e45b849dae35a056",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/954882/malaking-bahagi-ng-bundok-sa-angono-rizal-nakalbo-dahil-sa-quarrying/story/"
+  },
+  {
+    "article_key": "gma:965167",
+    "capture_version": "0c2fb2358af63ec57dcce8564ada2365519ade9e69ffc8d8c9bf8c5cedb8a527",
+    "exclusion_reason": null,
+    "publication_date": "2025-11-06",
+    "publisher": "GMA News",
+    "source_id": "news-c645d9728e2ab9ad",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/umg/965167/dambuhalang-sawa-umeksena-sa-baha-mga-manok-isinabit-sa-kisame-para-di-mabaha/story/"
+  },
+  {
+    "article_key": "gma:966980",
+    "capture_version": "2e6e89e406c84445ec3fb9879175dd5c7aa8b4c6e3ae3f1b683c15d0b50b85c1",
+    "exclusion_reason": null,
+    "publication_date": "2025-11-21",
+    "publisher": "GMA News",
+    "source_id": "news-f36322287346c33f",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/966980/isang-lugar-sa-calumpit-na-dating-sakahan-at-may-naglalakihang-bahay-nalubog-na-sa-baha/story/"
+  },
+  {
+    "article_key": "gma:975785",
+    "capture_version": "6111f5bfee361d7e88b8c417a69e53cd5b8d96cfd34a10935462a8c8558fcd64",
+    "exclusion_reason": null,
+    "publication_date": "2026-02-08",
+    "publisher": "GMA News",
+    "source_id": "news-d40ef2f36bb454d6",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/975785/ilang-lugar-sa-quezon-at-camarines-norte-binaha-dahil-sa-ulang-dulot-ng-shear-line/story/"
+  },
+  {
+    "article_key": "gma:977347",
+    "capture_version": "f77807970704f1d99304d597dd5cf99000e53a93f4b3845b32431e566a405395",
+    "exclusion_reason": null,
+    "publication_date": "2026-02-21",
+    "publisher": "GMA News",
+    "source_id": "news-0cfa39cba26ee5a9",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/977347/7-killed-in-separate-landslides-in-mati-and-monkayo/story/"
+  },
+  {
+    "article_key": "gma:989301",
+    "capture_version": "c06fcc8b439a5e24377693791e2f1ba741da25798051439845380747c32fec5c",
+    "exclusion_reason": null,
+    "publication_date": "2026-05-28",
+    "publisher": "GMA News",
+    "source_id": "news-496862ad9cd359b9",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/989301/baha-metro-manila-malakas-ulan/story/"
+  },
+  {
+    "article_key": "gma:998860",
+    "capture_version": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-17",
+    "publisher": "GMA News",
+    "source_id": "news-b60f94bc963eaeec",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/998860/dating-magandang-subdivision-sa-hagonoy-bulacan-iniwan-ng-ilang-dating-nakatira-dahil-nalubog-na/story"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/01/10/17/look-auring-soaks-school-materials-in-toledo-city",
+    "capture_version": "c5b1853a06eaf07862c5a4169bc6492ac934d327aa64498cf09dba2726f995d8",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2017-01-10",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-a4d477ae7b54b451",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/01/10/17/look-auring-soaks-school-materials-in-toledo-city"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/01/10/19/bam-ping-to-diokno-funds-for-state-workers-pay-hike-available-in-reenacted-budget",
+    "capture_version": "ad55223b733c3c966accbbed41ae7e64d17c0617a0b93782f4dd20958c414eb5",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-01-10",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-9b6cd37b57da50b9",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/01/10/19/bam-ping-to-diokno-funds-for-state-workers-pay-hike-available-in-reenacted-budget"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao",
+    "capture_version": "7b92d19d05c5f8de33e51ff5ad2304b214edde776bd2b7f5e2d975bf071ce716",
+    "exclusion_reason": null,
+    "publication_date": "2021-01-16",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-72ae1d755bd1d810",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/01/16/21/daan-daang-residente-binaha-matapos-umapaw-ang-ilog-sa-davao"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/01/18/17/cdo-mayor-blames-clogged-drainage-system-for-massive-flood",
+    "capture_version": "9b5999462a61dd0e2512e5093e8e5184f7540e6b16c10fd21a84590afec3eab1",
+    "exclusion_reason": null,
+    "publication_date": "2017-01-18",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-2a1a4e2381f63ab0",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/01/18/17/cdo-mayor-blames-clogged-drainage-system-for-massive-flood"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/01/21/17/datu-montawal-in-maguindanao-now-under-state-of-calamity",
+    "capture_version": "851c86d7b55bebff7898221de23be34ebdc3cb4daf5aa60f567fe59bef111185",
+    "exclusion_reason": null,
+    "publication_date": "2017-01-21",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-91ec78444194763f",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/01/21/17/datu-montawal-in-maguindanao-now-under-state-of-calamity"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/02/11/21/klase-at-pasok-sa-opisina-ng-gobyerno-sa-palo-leyte-suspendido-dahil-sa-ulan-at-baha",
+    "capture_version": "6f930aef6e911f20ae6641b4375944f9c87afc0d8d70a3bc06c0382ccfb50b7f",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-02-11",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-e37dd2f692d37166",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/02/11/21/klase-at-pasok-sa-opisina-ng-gobyerno-sa-palo-leyte-suspendido-dahil-sa-ulan-at-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/02/12/22/ilang-bayan-sa-eastern-samar-binaha-dahil-sa-pag-ulan",
+    "capture_version": "308cd9893544d0bb0eb9ad27264032c78d5476f7c024b9155c5bc3f279a17945",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2022-02-12",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-b8b6768021d2c1a4",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/02/12/22/ilang-bayan-sa-eastern-samar-binaha-dahil-sa-pag-ulan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/03/07/20/sanggol-na-natangay-ng-baha-natagpuang-patay",
+    "capture_version": "40ae87f9684c5475991872395f5a88eabfba568fcd5e0806ed07283c32f6be29",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-03-07",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-2601217cd69b8beb",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/03/07/20/sanggol-na-natangay-ng-baha-natagpuang-patay"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha",
+    "capture_version": "117d03af11480ac3464b79282260ef8980010b2fc108ec5a905ca7136d710cdd",
+    "exclusion_reason": null,
+    "publication_date": "2022-04-06",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-4fe54a5e3ccb09ca",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/04/06/22/ilang-lugar-sa-visayas-mindanao-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/04/06/22/palace-says-ips-consulted-in-kaliwa-dam-project",
+    "capture_version": "9dae72d13aca6efc2691ab67a479a92b6f84df9d0cb53a3393d4ac2832951ed5",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2022-04-06",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-d706fe79a0ec5353",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/04/06/22/palace-says-ips-consulted-in-kaliwa-dam-project"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/05/08/19/tingnan-baha-dulot-ng-matinding-pag-ulan-sa-metro-manila",
+    "capture_version": "fc765dd7295f43bef4e4327478f5243950fb5142672ea0250b3db49aced9d385",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-05-08",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-f6ed541008960998",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/05/08/19/tingnan-baha-dulot-ng-matinding-pag-ulan-sa-metro-manila"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/05/30/17/thunderstorms-flood-parts-of-quezon-city-manila",
+    "capture_version": "70046379306a66ab0495d01ea0d2e8dd22350c9bf2a8e2f3b9cff85376cc6ea1",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2017-05-30",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-5c8cbed15a462665",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/05/30/17/thunderstorms-flood-parts-of-quezon-city-manila"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/05/31/17/proyekto-para-maibsan-ang-baha-taon-pa-ang-bibilangin",
+    "capture_version": "be0f91a0eb6c9cefc88d60548848795a272f17c98be50cafeb8c89a1a9512eba",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2017-05-31",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-4e8c98b99be27704",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/05/31/17/proyekto-para-maibsan-ang-baha-taon-pa-ang-bibilangin"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/06/25/19/matinding-baha-naranasan-sa-ilang-parte-ng-metro-manila",
+    "capture_version": "1d25f3f5dd5501e35aaf6a93e3dbe4f98a3ebeca41758ba59dcb5b26388a07bb",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-06-25",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-0a7057762450f139",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/06/25/19/matinding-baha-naranasan-sa-ilang-parte-ng-metro-manila"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/24/17/home-sweet-home-filipinos-stay-put-even-when-the-sea-invades",
+    "capture_version": "31806c779e45675841cf24e5673d029114f16bf98810c8573dfc769fe0c9f912",
+    "exclusion_reason": null,
+    "publication_date": "2017-07-25",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-33a273b337d533e8",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/07/24/17/home-sweet-home-filipinos-stay-put-even-when-the-sea-invades"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/28/18/23-barangay-sa-dagupan-lubog-sa-baha",
+    "capture_version": "c3d231b561c0afa4930bb75ab9541928807b822a712f3b87f2253555805ef6a6",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-07-28",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-3819f5784064d2aa",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/07/28/18/23-barangay-sa-dagupan-lubog-sa-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/28/18/flash-flood-inundates-20-homes-in-zambo-del-sur",
+    "capture_version": "80e75d7568e125f9133b9cf70b835af5d77cb0cd0944c839210645d0b0791e9f",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-28",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-c814e44a54372ad1",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/07/28/18/flash-flood-inundates-20-homes-in-zambo-del-sur"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/08/04/18/tingnan-baha-sa-metro-manila-dulot-ng-biglang-pagbuhos-ng-malakas-na-ulan",
+    "capture_version": "c6afd274ed5c609529b22e8659d558300e474c8f952ece990f2ca526ca473f39",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-08-04",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-404b64185f60c55c",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/08/04/18/tingnan-baha-sa-metro-manila-dulot-ng-biglang-pagbuhos-ng-malakas-na-ulan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/08/09/21/state-of-calamity-idineklara-sa-san-simon-dahil-sa-baha",
+    "capture_version": "b2ab770d48135419021ad173e509cb9e4c77e9cfa30f0c56bb0e22411d0e4cbb",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-08-09",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-13ba62722e6733bf",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/08/09/21/state-of-calamity-idineklara-sa-san-simon-dahil-sa-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/08/11/18/baha-zero-visibility-dala-ng-walang-humpay-na-pag-ulan-sa-kamaynilaan",
+    "capture_version": "319c491a04691cfeeeaa76251254016f5124f263e85ac576b0da8afed84926c7",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-08-11",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-f828b8452eed31ae",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/08/11/18/baha-zero-visibility-dala-ng-walang-humpay-na-pag-ulan-sa-kamaynilaan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/08/12/18/watch-floods-hit-parts-of-quezon-city-rizal",
+    "capture_version": "4faf18f08876a35e96d72ea9980e70a9b7039e6afac5112f1e97f77b472daa76",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-08-12",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-8e93fc9efc698e68",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/08/12/18/watch-floods-hit-parts-of-quezon-city-rizal"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/09/08/21/baha-sa-ilang-bayan-sa-bulacan-humupa-na",
+    "capture_version": "871ea0904e360dd0af77a003859444983b73d62eaeacc7e2572513d5c8f13414",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-09-08",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-7abee919f934ec27",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/09/08/21/baha-sa-ilang-bayan-sa-bulacan-humupa-na"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/09/12/17/maring-lalong-lumakas-baha-at-pagguho-ng-lupa-nananatiling-banta",
+    "capture_version": "deb2e69461240630b464f78d797ed2427b1a62c684009b1c1ab7538463a4d181",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2017-09-13",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-2f26e5d892f8bf31",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/09/12/17/maring-lalong-lumakas-baha-at-pagguho-ng-lupa-nananatiling-banta"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/10/12/20/nika-forecast-to-leave-par-brewing-storm-likely-to-strengthen-in-48-hours",
+    "capture_version": "7d7f49a027401169eb8b94113df74bd8f6983a07e979f074058bdeda62095f75",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-10-12",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-6061d9bc1dc4efa4",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/10/12/20/nika-forecast-to-leave-par-brewing-storm-likely-to-strengthen-in-48-hours"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/02/22/mga-dadalaw-sa-sementeryo-sa-biliran-hirap-makatawid-sa-baha",
+    "capture_version": "a64f9761692abdd8921f5a16d264d2ecf3a931b6c458e797360ae66d213292b8",
+    "exclusion_reason": null,
+    "publication_date": "2022-11-02",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-b334a6595b2116f3",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/11/02/22/mga-dadalaw-sa-sementeryo-sa-biliran-hirap-makatawid-sa-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/12/20/bahagi-ng-quirino-province-inabot-ng-bahang-dala-ng-ulysses",
+    "capture_version": "886e69e67e145e63844e71beb1ff9617a3aa47bf78b6e7792884d68e0cc21607",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-12",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-64b009d20e2ab5af",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/12/20/bahagi-ng-quirino-province-inabot-ng-bahang-dala-ng-ulysses"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/13/20/baha-sa-ilang-barangay-ng-cainta-humupa-na",
+    "capture_version": "a2b018273b9ae62518cc67457f8559b13f4884b310b6ad2f9663f0f05508e8f7",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-13",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-4e393febaeca0195",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/13/20/baha-sa-ilang-barangay-ng-cainta-humupa-na"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/14/20/mula-sa-mga-bubong-hiling-na-tulong-umalingawngaw-dahil-sa-pagbaha-sa-cagayan-isabela",
+    "capture_version": "618eb8d8e64a5c7b31e42aae07c43b50154a350c11f36796aa861d27af7cd066",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-14",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-e2114984848bc60e",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/14/20/mula-sa-mga-bubong-hiling-na-tulong-umalingawngaw-dahil-sa-pagbaha-sa-cagayan-isabela"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/15/19/isabela-cagayan-on-landslide-flood-watch-as-ramon-nears",
+    "capture_version": "21c81a34dc486fb3249c8dea38d63764b2539bed5d3526993b98e3be2e3f2fd3",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-11-15",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-4a13b0eb4b607e5f",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/15/19/isabela-cagayan-on-landslide-flood-watch-as-ramon-nears"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/15/20/baha-sa-pampanga-inaasahang-huhupa-na",
+    "capture_version": "fabedf3287fe38d183485a01d39f3e738ce091c459ceccc49abd14e4f14177e2",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-15",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-1906f139e7478f24",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/15/20/baha-sa-pampanga-inaasahang-huhupa-na"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/18/23/shear-line-nagdulot-ng-pagbaha-sa-sta-margarita-samar",
+    "capture_version": "170f0bbde568260628366d27967e38276a69334b25ec4e4a642be8a92f21159b",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2023-11-18",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-b35930dad9e516d1",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/18/23/shear-line-nagdulot-ng-pagbaha-sa-sta-margarita-samar"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/12/08/21/baha-landslide-naranasan-sa-eastern-samar",
+    "capture_version": "85085261ebafcb280ef3ccde987c43381f002761670e8690dc1caf33167cf0ae",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-12-08",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-e3805931a4e10841",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/12/08/21/baha-landslide-naranasan-sa-eastern-samar"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/12/27/21/ilang-bayan-sa-northern-samar-binaha",
+    "capture_version": "3780de19605922398e81d002f5fd90f4b692e133d82835accd781d9f1b85045d",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-12-27",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-1749f08ba8d1e884",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/12/27/21/ilang-bayan-sa-northern-samar-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/2024/9/15/ilang-kalsada-sa-makati-binaha-750",
+    "capture_version": "3e137e080409a4eae358d1d737700b14ce12fb48f52bbddf54b7f24d2a7f89be",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2024-09-16",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-333a405b517ced17",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/2024/9/15/ilang-kalsada-sa-makati-binaha-750"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/2024/9/3/panoorin-baha-sa-ilang-kalsada-sa-malabon-valenzuela-723",
+    "capture_version": "412666b5b1c1af8765fed2124f9e9c41f25252214156d97d6f2857c0caa2a250",
+    "exclusion_reason": null,
+    "publication_date": "2024-09-04",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-5a83707ac0c552fe",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/2024/9/3/panoorin-baha-sa-ilang-kalsada-sa-malabon-valenzuela-723"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106",
+    "capture_version": "dcb77c8842b3d82f7a79760ce479c857191b73809f43f9019fcf0ecc5ad4ba77",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-30",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-8d7467f1c4782199",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/regions/2025/11/11/dpwh-to-implement-shelved-2017-flood-control-masterplan-in-storm-ravaged-cebu-1823",
+    "capture_version": "e06e874a4ba71d423bb43aff7e297923013a501826579ef797dd22ddaa698e5a",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2025-11-11",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-36e7cdb0e61c5b61",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/regions/2025/11/11/dpwh-to-implement-shelved-2017-flood-control-masterplan-in-storm-ravaged-cebu-1823"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028",
+    "capture_version": "4cc5147e052fbd588be42f954c9afaa7bb9d77e666101c82c8555413e81a9439",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-28",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-e984b661dcaf2637",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/1001397/dinalupihan-hermosa-bataan-flooding",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/1001397/dinalupihan-hermosa-bataan-flooding'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-99af8f4da9c606ba",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/1001397/dinalupihan-hermosa-bataan-flooding"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/1067602/floods-displace-282-families-in-12-villages-in-catarman-northern-samar",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/1067602/floods-displace-282-families-in-12-villages-in-catarman-northern-samar'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-a38fceb97b873728",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/1067602/floods-displace-282-families-in-12-villages-in-catarman-northern-samar"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/1194726/mundong-mangyan-how-mindoros-alangan-mangyan-face-land-disputes-lack-of-teachers-childhood-marriages",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/1194726/mundong-mangyan-how-mindoros-alangan-mangyan-face-land-disputes-lack-of-teachers-childhood-marriages'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-12c0433b834ef35f",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/1194726/mundong-mangyan-how-mindoros-alangan-mangyan-face-land-disputes-lack-of-teachers-childhood-marriages"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/1617559/trees-spared-in-biliran-town-road-widening-project",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/1617559/trees-spared-in-biliran-town-road-widening-project'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-780fef8140a1fb22",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/1617559/trees-spared-in-biliran-town-road-widening-project"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/1680380/green-group-welcomes-dam-project-suspension",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/1680380/green-group-welcomes-dam-project-suspension'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-b92aaee1fe1bcdd0",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/1680380/green-group-welcomes-dam-project-suspension"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/2018018/valenzuela-city-designates-firecracker-and-non-firecracker-zones",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/2018018/valenzuela-city-designates-firecracker-and-non-firecracker-zones/amp'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-785abf9d1618dbea",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/2018018/valenzuela-city-designates-firecracker-and-non-firecracker-zones/amp"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/2099894/contractor-behind-useless-benguet-project-is-marcos-political-ally",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/2099894/contractor-behind-useless-benguet-project-is-marcos-political-ally/amp'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-4b43a3f2c52453b0",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/2099894/contractor-behind-useless-benguet-project-is-marcos-political-ally/amp"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/2099974/lack-of-coordination-of-natl-agencies-with-lgus-on-projects-dismays-mayors",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/2099974/lack-of-coordination-of-natl-agencies-with-lgus-on-projects-dismays-mayors'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-9be57bb8c2e6a5ee",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/2099974/lack-of-coordination-of-natl-agencies-with-lgus-on-projects-dismays-mayors"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/930298/maharlika-highway-in-quezon-now-clear-passable-dpwh",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/930298/maharlika-highway-in-quezon-now-clear-passable-dpwh'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-342a704f0d4f6616",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/930298/maharlika-highway-in-quezon-now-clear-passable-dpwh"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/953461/urduja-boracay-flooding-evacuation-water-supply-storm",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/953461/urduja-boracay-flooding-evacuation-water-supply-storm'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-8afa52aec3e2b42f",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/953461/urduja-boracay-flooding-evacuation-water-supply-storm"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/954782/10-maguindanao-villages-submerged-in-floodwaters-since-saturday-dawn",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/954782/10-maguindanao-villages-submerged-in-floodwaters-since-saturday-dawn'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-fc3fc234735993e3",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/954782/10-maguindanao-villages-submerged-in-floodwaters-since-saturday-dawn"
+  },
+  {
+    "article_key": "https://newsinfo.inquirer.net/959647/incessant-rains-flood-70-percent-of-naga-city",
+    "capture_version": null,
+    "exclusion_reason": "Client error '403 Forbidden' for url 'https://newsinfo.inquirer.net/959647/incessant-rains-flood-70-percent-of-naga-city'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+    "publication_date": null,
+    "publisher": "Inquirer",
+    "source_id": "news-4b8e07d4a33ed0bf",
+    "status": "capture_failed",
+    "url": "https://newsinfo.inquirer.net/959647/incessant-rains-flood-70-percent-of-naga-city"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/metro/2025/07/22/2459860/video-bahang-baha-sa-taft-avenue-dahil-sa-habagat",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 77057: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-3fe9a00d085db8d9",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/metro/2025/07/22/2459860/video-bahang-baha-sa-taft-avenue-dahil-sa-habagat"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/metro/2026/07/31/2545995/dpwh-ikakasa-dagdag-proyekto-vs-baha-sa-maynila",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 76567: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-a3945a9d77fef99a",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/metro/2026/07/31/2545995/dpwh-ikakasa-dagdag-proyekto-vs-baha-sa-maynila"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2013/05/30/947876/editoryal-basura-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 74784: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-9f1f52541ea55106",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2013/05/30/947876/editoryal-basura-baha"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2014/07/02/1341352/editoryal-wala-pa-ring-solusyon-sa-problemang-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 74944: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-9a976de8a5055f10",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2014/07/02/1341352/editoryal-wala-pa-ring-solusyon-sa-problemang-baha"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2022/08/13/2202378/editoryal-hindi-masolusyunan-ang-problemang-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 73432: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-f27dfa33a87f1e62",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2022/08/13/2202378/editoryal-hindi-masolusyunan-ang-problemang-baha"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2022/11/03/2221150/editoryal-mga-sakit-pagkatapos-ng-bagyot-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 62188: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-ade9c52e455ef8a3",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2022/11/03/2221150/editoryal-mga-sakit-pagkatapos-ng-bagyot-baha"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 74808: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-641a924608dd03ab",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 62575: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-1856c6263451d088",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 74199: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-7a824863d687424a",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2026/06/03/2532481/editoryal-ipatupad-pagbabawal-na-mag-swimming-sa-baha",
+    "capture_version": "2700e1ca2a67c00e4fe60d733edda9b19e560a5bfd5e11974fe247af3208fbe1",
+    "exclusion_reason": null,
+    "publication_date": "2026-06-03",
+    "publisher": "Philstar",
+    "source_id": "news-92a232adacae5fdd",
+    "status": "accepted",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/03/2532481/editoryal-ipatupad-pagbabawal-na-mag-swimming-sa-baha/amp/"
+  },
+  {
+    "article_key": "https://philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 73099: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-c7216b3994ab5614",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+  },
+  {
+    "article_key": "https://qa.philstar.com/pilipino-star-ngayon/opinyon/2023/09/02/2293208/editoryal-basura-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 73667: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-f716f246440bddfd",
+    "status": "capture_failed",
+    "url": "https://qa.philstar.com/pilipino-star-ngayon/opinyon/2023/09/02/2293208/editoryal-basura-baha"
+  },
+  {
+    "article_key": "https://rmn.ph/1730-indibidwal-inilikas-sa-valenzuela",
+    "capture_version": "eac8712b3d1cb4e09bbf7da6781eda6421375e26815454b55352ddac2114dd7c",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-3deaca5f3f171b3a",
+    "status": "accepted",
+    "url": "https://rmn.ph/1730-indibidwal-inilikas-sa-valenzuela/"
+  },
+  {
+    "article_key": "https://rmn.ph/1pag-iwas-sa-paggamit-ng-single-use-plastic-patuloy-na-isinusulong-ni-three-term-senator-at-antique-lone-district-representative-loren-legarda",
+    "capture_version": "c95c2f8669deb465f247b24797c7fd316d3f8f64e7efbd8fe891b5fb78216041",
+    "exclusion_reason": null,
+    "publication_date": "2021-02-15",
+    "publisher": "RMN Networks",
+    "source_id": "news-c9163976a410bc77",
+    "status": "review_pending",
+    "url": "https://rmn.ph/1pag-iwas-sa-paggamit-ng-single-use-plastic-patuloy-na-isinusulong-ni-three-term-senator-at-antique-lone-district-representative-loren-legarda/"
+  },
+  {
+    "article_key": "https://rmn.ph/53-ka-mga-balay-naanod-sang-tubig-baha-sa-brgy-daguma-bagumbayan-sultan-kudarat-815-ka-mga-pamilya-apektado",
+    "capture_version": "35ea598f66b56354657f1cbf2751163e203c619fd4734ce457411ea77e5de42d",
+    "exclusion_reason": null,
+    "publication_date": "2021-06-28",
+    "publisher": "RMN Networks",
+    "source_id": "news-d85a4daf9fae0e90",
+    "status": "review_pending",
+    "url": "https://rmn.ph/53-ka-mga-balay-naanod-sang-tubig-baha-sa-brgy-daguma-bagumbayan-sultan-kudarat-815-ka-mga-pamilya-apektado/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-16-na-barangay-sa-dagupan-nalubog-sa-baha",
+    "capture_version": "c6026933c52b38917ceaae0242900fcdf72e67bb3accfee0ecaa70954654a440",
+    "exclusion_reason": null,
+    "publication_date": "2018-08-13",
+    "publisher": "RMN Networks",
+    "source_id": "news-5a7672b06a5203aa",
+    "status": "accepted",
+    "url": "https://rmn.ph/baha-16-na-barangay-sa-dagupan-nalubog-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-41-ka-mga-kabarangayan-sa-capiz-lubog-sa-tubig-baha-bangud-sang-malawig-nga-pag-ulan-nga-dala-sang-bagyong-usman",
+    "capture_version": "10460ba1e457370e65ef9203831fea003307b2312061fd02a1c3ae761a542638",
+    "exclusion_reason": null,
+    "publication_date": "2018-12-29",
+    "publisher": "RMN Networks",
+    "source_id": "news-058b0c71e0f5e26e",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-41-ka-mga-kabarangayan-sa-capiz-lubog-sa-tubig-baha-bangud-sang-malawig-nga-pag-ulan-nga-dala-sang-bagyong-usman/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-bumulaga-sa-mga-taga-sultan-mastura-maguindanao",
+    "capture_version": "33f02bb020b6c0630636846851df958e0435aeab93c145856fd1e44c317abffa",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-04",
+    "publisher": "RMN Networks",
+    "source_id": "news-a06077929e25bba2",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-bumulaga-sa-mga-taga-sultan-mastura-maguindanao/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-nilampornas-sa-syudad-sa-davao",
+    "capture_version": "9a9d8afc613f1105d4c8ed874d636274f52ec5edacd9ffe59a1e1bdc1db8ac96",
+    "exclusion_reason": null,
+    "publication_date": "2017-12-06",
+    "publisher": "RMN Networks",
+    "source_id": "news-2c6d8e26cc9161ad",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-nilampornas-sa-syudad-sa-davao/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-sa-metro-manila-matagal-humupa-nitong-2018",
+    "capture_version": "4e845eec565e7bfcf49c185193bb0c058562d45f8aa0852bf0c9e28108b4f265",
+    "exclusion_reason": null,
+    "publication_date": "2019-08-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-f275a780988e9786",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-sa-metro-manila-matagal-humupa-nitong-2018/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-state-of-calamity-idineklara-na-sa-ibat-ibang-lalawigan",
+    "capture_version": "8550360841dad1cdea7a0495ed816fcb6d88efb37683caa22a12425987c6d95c",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-23",
+    "publisher": "RMN Networks",
+    "source_id": "news-7b01f0011a65d150",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-state-of-calamity-idineklara-na-sa-ibat-ibang-lalawigan/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-walo-ka-balay-sa-brgy-opao-nadamage",
+    "capture_version": "8cfd9369a886841c487d33f88e90eede330a5d13842af0db90d56417e28e808c",
+    "exclusion_reason": null,
+    "publication_date": "2018-02-27",
+    "publisher": "RMN Networks",
+    "source_id": "news-a37469f30c3ba45c",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-walo-ka-balay-sa-brgy-opao-nadamage/"
+  },
+  {
+    "article_key": "https://rmn.ph/dul-an-700-dabawenyos-nibakwit",
+    "capture_version": "3e0bb61ea2f571f3abc40111911a05a13215429a5195bf81d4e0390b427a86ff",
+    "exclusion_reason": null,
+    "publication_date": "2018-05-30",
+    "publisher": "RMN Networks",
+    "source_id": "news-12c688e4cde39c06",
+    "status": "review_pending",
+    "url": "https://rmn.ph/dul-an-700-dabawenyos-nibakwit/"
+  },
+  {
+    "article_key": "https://rmn.ph/flood-spotters-nakaposisyon-na-sa-mga-lugar-na-posibleng-bahain-sa-makati",
+    "capture_version": "bb46244d027ee1a8534091cb4307af46178b106d159e9e3dbfb72369e3f8e188",
+    "exclusion_reason": null,
+    "publication_date": "2019-12-03",
+    "publisher": "RMN Networks",
+    "source_id": "news-bb59e433121f7b12",
+    "status": "review_pending",
+    "url": "https://rmn.ph/flood-spotters-nakaposisyon-na-sa-mga-lugar-na-posibleng-bahain-sa-makati/"
+  },
+  {
+    "article_key": "https://rmn.ph/hydro-meteorological-division-ng-pagasa-naglabas-ng-general-flood-advisory-sa-mga-lugar-na-apektado-ng-pag-ulan",
+    "capture_version": "b12138b86b845473bbeedd11f593e813741b591a8c7e6e2fef28caa75b17f9ce",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-20",
+    "publisher": "RMN Networks",
+    "source_id": "news-48a8f970cc6a2899",
+    "status": "review_pending",
+    "url": "https://rmn.ph/hydro-meteorological-division-ng-pagasa-naglabas-ng-general-flood-advisory-sa-mga-lugar-na-apektado-ng-pag-ulan/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-barangay-sa-tuguegarao-city-muling-nalubog-sa-baha-dahil-sa-tuloy-tuloy-na-pag-ulan",
+    "capture_version": "80dbabf0ffff81907af620fedeec7232e6cd10a365033e8d812ebe5ee17d4354",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-28",
+    "publisher": "RMN Networks",
+    "source_id": "news-d6cabed1206344c8",
+    "status": "accepted",
+    "url": "https://rmn.ph/ilang-barangay-sa-tuguegarao-city-muling-nalubog-sa-baha-dahil-sa-tuloy-tuloy-na-pag-ulan/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-kalsada-na-binaha-sa-metro-manila-madadaanan-na",
+    "capture_version": "66c9a820afd89342749d061456e2bd1fc5d79afa201b3cc627398f4473a5625d",
+    "exclusion_reason": null,
+    "publication_date": "2017-07-27",
+    "publisher": "RMN Networks",
+    "source_id": "news-e0f6564cdb14df46",
+    "status": "accepted",
+    "url": "https://rmn.ph/ilang-kalsada-na-binaha-sa-metro-manila-madadaanan-na/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-kalsada-sa-tuguegarao-city-sarado-pa-rin-sa-mga-motorista",
+    "capture_version": "c45e3d31ba27ae8ba0e0ce6ae532f94e0201cdcef6eb2d9817ec9c94412b6326",
+    "exclusion_reason": null,
+    "publication_date": "2020-12-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-3a3d0ee52aec995a",
+    "status": "accepted",
+    "url": "https://rmn.ph/ilang-kalsada-sa-tuguegarao-city-sarado-pa-rin-sa-mga-motorista/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-kalsada-sa-valenzuela-hindi-pa-rin-madadaanan-ng-mga-light-vehicles",
+    "capture_version": "81936d45f86c9b4e763ddef21af123ac98046ada38f7bac164d0a6c39fe20a60",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-240bf24457f25667",
+    "status": "accepted",
+    "url": "https://rmn.ph/ilang-kalsada-sa-valenzuela-hindi-pa-rin-madadaanan-ng-mga-light-vehicles/"
+  },
+  {
+    "article_key": "https://rmn.ph/infra-projects-bubuhos-sa-armm-ngayong-2018",
+    "capture_version": "64cd6041213f95ff30b5d1c4168344ac2365dc7cd296f3e1b6be6f75fc4467a0",
+    "exclusion_reason": null,
+    "publication_date": "2018-01-15",
+    "publisher": "RMN Networks",
+    "source_id": "news-f55140347faa36e5",
+    "status": "review_pending",
+    "url": "https://rmn.ph/infra-projects-bubuhos-sa-armm-ngayong-2018/"
+  },
+  {
+    "article_key": "https://rmn.ph/isang-subdivision-sa-antipolo-rizal-binaha-matapos-masira-ang-pader-ng-isang-private-property",
+    "capture_version": "70729b3749ee6a33ddcbfca6293eb39e1640e6d6f25794739444c04850782dd1",
+    "exclusion_reason": null,
+    "publication_date": "2025-07-24",
+    "publisher": "RMN Networks",
+    "source_id": "news-667dcaa8dceb0e41",
+    "status": "accepted",
+    "url": "https://rmn.ph/isang-subdivision-sa-antipolo-rizal-binaha-matapos-masira-ang-pader-ng-isang-private-property/"
+  },
+  {
+    "article_key": "https://rmn.ph/kalsada-at-mga-tulay-sa-cagayan-lubog-pa-rin-sa-tubig-baha",
+    "capture_version": "3454a2cae97ed108aea0fcf0be8eee005873d2eefc99e0b2e4c8e31b80da547c",
+    "exclusion_reason": null,
+    "publication_date": "2020-12-22",
+    "publisher": "RMN Networks",
+    "source_id": "news-74a59a99f7a4f458",
+    "status": "review_pending",
+    "url": "https://rmn.ph/kalsada-at-mga-tulay-sa-cagayan-lubog-pa-rin-sa-tubig-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/kinatawan-ng-un-nakipagpulong-kay-cagayan-gov-mamba",
+    "capture_version": "12e1473bf99e31b6890b40205befccbfc5f943bfe64c9bbe5a8f4773b920cfa7",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-24",
+    "publisher": "RMN Networks",
+    "source_id": "news-e2567db6737e7110",
+    "status": "review_pending",
+    "url": "https://rmn.ph/kinatawan-ng-un-nakipagpulong-kay-cagayan-gov-mamba/"
+  },
+  {
+    "article_key": "https://rmn.ph/kompanyang-nagsasagawa-ng-reclamation-project-sa-marikina-river-sasampahan-ng-administrative-complaint-ng-marikina-lgu",
+    "capture_version": "1a25c7997f452a159cc27b860ec11f7c171791e5c144d8f941ec78d503c6e1a7",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-20",
+    "publisher": "RMN Networks",
+    "source_id": "news-23af408fe1507d9a",
+    "status": "review_pending",
+    "url": "https://rmn.ph/kompanyang-nagsasagawa-ng-reclamation-project-sa-marikina-river-sasampahan-ng-administrative-complaint-ng-marikina-lgu/"
+  },
+  {
+    "article_key": "https://rmn.ph/lalaking-gumamit-ng-dalawang-silya-upang-makatawid-sa-baha-viral",
+    "capture_version": "c49f221db662df94dc01264d2ce19e14b138f044af74f7e29ec78af057178b71",
+    "exclusion_reason": null,
+    "publication_date": "2019-07-18",
+    "publisher": "RMN Networks",
+    "source_id": "news-9e97e5b9557e0bfc",
+    "status": "review_pending",
+    "url": "https://rmn.ph/lalaking-gumamit-ng-dalawang-silya-upang-makatawid-sa-baha-viral/"
+  },
+  {
+    "article_key": "https://rmn.ph/level-it-tubi-baha-sa-aklan-river-gulping-tumaas",
+    "capture_version": "573c02c3cabe6e038c723d2ec9f17a08992486a60a7b776ecf93ba4cee792b75",
+    "exclusion_reason": null,
+    "publication_date": "2018-11-07",
+    "publisher": "RMN Networks",
+    "source_id": "news-ac2bf0e627cc826f",
+    "status": "review_pending",
+    "url": "https://rmn.ph/level-it-tubi-baha-sa-aklan-river-gulping-tumaas/"
+  },
+  {
+    "article_key": "https://rmn.ph/ma-traffic-nga-lacson-st-magutok-nga-lacson-st-ginalauman-bangod-sa-drainage-project",
+    "capture_version": "43cc33f1c10b3373af380134506a16c94d2a473ea3315757d03f713337cf48f4",
+    "exclusion_reason": null,
+    "publication_date": "2018-03-01",
+    "publisher": "RMN Networks",
+    "source_id": "news-926c2398c79f0dcf",
+    "status": "review_pending",
+    "url": "https://rmn.ph/ma-traffic-nga-lacson-st-magutok-nga-lacson-st-ginalauman-bangod-sa-drainage-project/"
+  },
+  {
+    "article_key": "https://rmn.ph/matina-gibaha",
+    "capture_version": "601d76a086e71b7c78ed594dffe01aeba80b733eee7c8bf55f804a4cbf7ce9e2",
+    "exclusion_reason": null,
+    "publication_date": "2020-06-08",
+    "publisher": "RMN Networks",
+    "source_id": "news-31c4d34732198d2a",
+    "status": "review_pending",
+    "url": "https://rmn.ph/matina-gibaha/"
+  },
+  {
+    "article_key": "https://rmn.ph/matinding-paglago-ng-water-hyacinths-sa-pasig-river-ina-agapan-ng-mmda",
+    "capture_version": "399185696d6eaea68a7e59912ca7974f5ddd565e46f836e8d7b9f826875032a5",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-e8602ad8c9216897",
+    "status": "review_pending",
+    "url": "https://rmn.ph/matinding-paglago-ng-water-hyacinths-sa-pasig-river-ina-agapan-ng-mmda/"
+  },
+  {
+    "article_key": "https://rmn.ph/mga-30-ka-indibiduwal-sa-tubod-lanao-del-norte-gipabakwit-tungod-sa-flash-flood",
+    "capture_version": "f969d7e1cc692176cc696ac1484494ed0d1325e74ae8fc8b32d41319f751400d",
+    "exclusion_reason": null,
+    "publication_date": "2021-01-11",
+    "publisher": "RMN Networks",
+    "source_id": "news-1adceb62a58703d0",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mga-30-ka-indibiduwal-sa-tubod-lanao-del-norte-gipabakwit-tungod-sa-flash-flood/"
+  },
+  {
+    "article_key": "https://rmn.ph/mga-pamilyang-inilikas-sa-muntinlupa-city-dulot-ng-bagyong-quinta-umabot-ng-362",
+    "capture_version": "f551a9580b9daae467ccaa1dd5ac856d3aaedd6458c18135b45fd54ee841bc08",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-27",
+    "publisher": "RMN Networks",
+    "source_id": "news-0e942ebaf694d7fb",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mga-pamilyang-inilikas-sa-muntinlupa-city-dulot-ng-bagyong-quinta-umabot-ng-362/"
+  },
+  {
+    "article_key": "https://rmn.ph/mga-proyekto-sa-ilalim-ng-build-build-build-program-ng-duterte-administration-matatapos-pa-rin-on-time-sa-kabila-ng-banta-ng-covid-19",
+    "capture_version": "88e84ec83f2f667f53536bcff42e8d8b56c84afe0d14ba7d552b3342e775a964",
+    "exclusion_reason": null,
+    "publication_date": "2020-04-03",
+    "publisher": "RMN Networks",
+    "source_id": "news-47db685be2649343",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mga-proyekto-sa-ilalim-ng-build-build-build-program-ng-duterte-administration-matatapos-pa-rin-on-time-sa-kabila-ng-banta-ng-covid-19/"
+  },
+  {
+    "article_key": "https://rmn.ph/mmda-aminadong-nagkaka-problema-ang-mga-pumping-stations-dahil-sa-basura",
+    "capture_version": "f233cdba59e128f80006a71d11537ccdf83d8053fe7a6a59624c8eb5c6e7f259",
+    "exclusion_reason": null,
+    "publication_date": "2019-06-30",
+    "publisher": "RMN Networks",
+    "source_id": "news-f7a0c9732be72c4c",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mmda-aminadong-nagkaka-problema-ang-mga-pumping-stations-dahil-sa-basura/"
+  },
+  {
+    "article_key": "https://rmn.ph/mmda-nag-deploy-ng-17-man-team-sa-mga-nasalanta-ng-bagyong-rolly-sa-camsur",
+    "capture_version": "34d0de66cbd3e7a13f7fcf2833a84a87412342502183eea294fff8e5c887f6f2",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-06",
+    "publisher": "RMN Networks",
+    "source_id": "news-f93ef383129634ea",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mmda-nag-deploy-ng-17-man-team-sa-mga-nasalanta-ng-bagyong-rolly-sa-camsur/"
+  },
+  {
+    "article_key": "https://rmn.ph/operation-sitio-planong-isagawa-sa-zamora-extension-mga-pathway-at-eskinita-itataas-laban-sa-baha",
+    "capture_version": "a00ccbe0fd1e2a3c2023827fb4e55c631314a7dd7d98499c60804abb959ddfc1",
+    "exclusion_reason": null,
+    "publication_date": "2026-09-15",
+    "publisher": "RMN Networks",
+    "source_id": "news-2a38dc981b444fe3",
+    "status": "accepted",
+    "url": "https://rmn.ph/operation-sitio-planong-isagawa-sa-zamora-extension-mga-pathway-at-eskinita-itataas-laban-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/panoorin-abot-windshield-na-baha-sa-cagayan-sinuong-ng-suv",
+    "capture_version": "6f140e6caa42a76f2154b921a432fcf66571ebd6f934259d4477298428e9d70f",
+    "exclusion_reason": null,
+    "publication_date": "2019-11-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-d7af88e8c5410edd",
+    "status": "review_pending",
+    "url": "https://rmn.ph/panoorin-abot-windshield-na-baha-sa-cagayan-sinuong-ng-suv/"
+  },
+  {
+    "article_key": "https://rmn.ph/pumutok-na-tubo-ng-tubig-sa-edsa-quezon-city-nagdulot-ng-pagbigat-ng-daloy-ng-trapiko",
+    "capture_version": "81d16bc9ff227a41036800510aec3100cb94f1c6e8b10f67bc389de26683b9ae",
+    "exclusion_reason": null,
+    "publication_date": "2017-10-09",
+    "publisher": "RMN Networks",
+    "source_id": "news-0a3e1675ccf40a7b",
+    "status": "review_pending",
+    "url": "https://rmn.ph/pumutok-na-tubo-ng-tubig-sa-edsa-quezon-city-nagdulot-ng-pagbigat-ng-daloy-ng-trapiko/"
+  },
+  {
+    "article_key": "https://rmn.ph/quezon-avenue-flood-control-project-natapos-na-pagbaha-sa-quezon-city-malaki-ang-mababawas",
+    "capture_version": "fe0c4e65075064d635ed2034f45453305e490b51f96a8f417d1c27d77cf84cec",
+    "exclusion_reason": null,
+    "publication_date": "2017-03-31",
+    "publisher": "RMN Networks",
+    "source_id": "news-c57014d7a6b35451",
+    "status": "accepted",
+    "url": "https://rmn.ph/quezon-avenue-flood-control-project-natapos-na-pagbaha-sa-quezon-city-malaki-ang-mababawas/"
+  },
+  {
+    "article_key": "https://rmn.ph/quezon-city-zero-casualty-sa-pananalasa-ng-bagyong-ulysses",
+    "capture_version": "6f98373eef7816915ca69701a13b8c24b7a253467f5be7d804c5f7a0165a5e25",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-9e2522e63b4abe16",
+    "status": "review_pending",
+    "url": "https://rmn.ph/quezon-city-zero-casualty-sa-pananalasa-ng-bagyong-ulysses/"
+  },
+  {
+    "article_key": "https://rmn.ph/rizal-provincial-govt-magpatupad-ng-rerouting-sa-huwebes-at-biyernes-santo",
+    "capture_version": "1b737667fc8758920abccd1a9baf692fcffa48ea85793fd11c74d33455b04a77",
+    "exclusion_reason": null,
+    "publication_date": "2017-04-11",
+    "publisher": "RMN Networks",
+    "source_id": "news-2267586f9359b919",
+    "status": "review_pending",
+    "url": "https://rmn.ph/rizal-provincial-govt-magpatupad-ng-rerouting-sa-huwebes-at-biyernes-santo/"
+  },
+  {
+    "article_key": "https://rmn.ph/solusyon-sa-baha-panay-river-basin-project-iga-rekomendar-sang-office-of-the-civil-defense-region-6-sa-national-government",
+    "capture_version": "e0dfc80779c0ca32cad54fb493802c03686835c2ee76fb090a5ef0c3f06d6999",
+    "exclusion_reason": null,
+    "publication_date": "2018-01-05",
+    "publisher": "RMN Networks",
+    "source_id": "news-4033b5d12d84b647",
+    "status": "review_pending",
+    "url": "https://rmn.ph/solusyon-sa-baha-panay-river-basin-project-iga-rekomendar-sang-office-of-the-civil-defense-region-6-sa-national-government/"
+  },
+  {
+    "article_key": "https://rmn.ph/state-of-the-city-address-soca-ni-mayor-darel-dexter-t-uy-gipahigayon",
+    "capture_version": "060054609c60066f878e1395f9316174defcfb5863a0f212b36e55d7e71330c2",
+    "exclusion_reason": null,
+    "publication_date": "2018-03-22",
+    "publisher": "RMN Networks",
+    "source_id": "news-d17cac8b4184a4f2",
+    "status": "review_pending",
+    "url": "https://rmn.ph/state-of-the-city-address-soca-ni-mayor-darel-dexter-t-uy-gipahigayon/"
+  },
+  {
+    "article_key": "https://rmn.ph/street-flooding-update-1-gikan-sa-cdrrmd",
+    "capture_version": "1741ce7e08c4d9abee879b66c867cea3fb9962245981a677784a4e6cfb4c6494",
+    "exclusion_reason": null,
+    "publication_date": "2018-09-13",
+    "publisher": "RMN Networks",
+    "source_id": "news-2fedf2e176d7d30d",
+    "status": "review_pending",
+    "url": "https://rmn.ph/street-flooding-update-1-gikan-sa-cdrrmd/"
+  },
+  {
+    "article_key": "https://rmn.ph/suma-total-sa-straight-to-the-point-baha-sa-davao",
+    "capture_version": "30dac743089fb8eb625ab135a57220c1ecec3212aaa004d28045d233fbdc40ca",
+    "exclusion_reason": null,
+    "publication_date": "2017-12-23",
+    "publisher": "RMN Networks",
+    "source_id": "news-651865971caf40b0",
+    "status": "review_pending",
+    "url": "https://rmn.ph/suma-total-sa-straight-to-the-point-baha-sa-davao/"
+  },
+  {
+    "article_key": "https://rmn.ph/umaasa-pagbaha-sa-metro-manila-mababawasan-na-ayon-sa-dpwh",
+    "capture_version": "083f922308051e5c1e64ea48e14ae7db53bbef0db640a1d89340eddb4a1907e4",
+    "exclusion_reason": null,
+    "publication_date": "2018-05-07",
+    "publisher": "RMN Networks",
+    "source_id": "news-b1464125b15df4a0",
+    "status": "review_pending",
+    "url": "https://rmn.ph/umaasa-pagbaha-sa-metro-manila-mababawasan-na-ayon-sa-dpwh/"
+  },
+  {
+    "article_key": "https://rmn.ph/witty-reply-tweets-ni-paulo-avelino-sa-kaniyang-fans-viral",
+    "capture_version": "2ebfd1f61b0d71507cb75ea09a75682aa7b6e9d8886b5366f778fffb40987218",
+    "exclusion_reason": null,
+    "publication_date": "2019-07-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-b31d81163e919189",
+    "status": "review_pending",
+    "url": "https://rmn.ph/witty-reply-tweets-ni-paulo-avelino-sa-kaniyang-fans-viral/"
+  },
+  {
+    "article_key": "gma:595977",
+    "capture_version": "03827a09e46b822b0269d58905eebb41dcf6d8c50ea93eef6c40cbd167fda077",
+    "exclusion_reason": null,
+    "publication_date": "2017-01-17",
+    "publisher": "GMA News",
+    "source_id": "news-c8defa367cfaf991",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/595977/flooding-power-outage-in-lanao-del-sur/story/"
+  },
+  {
+    "article_key": "gma:622564",
+    "capture_version": "667e977eddc958f026cddd769b9346de5daa4d64ed493c3b32813ad06566ca87",
+    "exclusion_reason": null,
+    "publication_date": "2017-08-20",
+    "publisher": "GMA News",
+    "source_id": "news-854c319c251d7847",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/622564/some-100-houses-in-qc-s-barangay-payatas-flooded-due-to-heavy-rains/story/"
+  },
+  {
+    "article_key": "gma:625491",
+    "capture_version": "04d8545ebf9caa7802c66834a588eb0f0a12651859dbe345d29ecb4c31f92f0e",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-12",
+    "publisher": "GMA News",
+    "source_id": "news-05d5ce3a00a94e8e",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/625491/flooded-areas-in-metro-manila/story/"
+  },
+  {
+    "article_key": "gma:626891",
+    "capture_version": "28db946e4c2f7c7156a67240707efd011ba6cf84eeec78124548060d0aa463f4",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-23",
+    "publisher": "GMA News",
+    "source_id": "news-741bf88f4bfd4b03",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/626891/floodwaters-hit-several-barangays-in-bacolod-city-after-heavy-downpour/story/"
+  },
+  {
+    "article_key": "gma:636781",
+    "capture_version": "27655730e6bb045e4ad2f3457276668fc3d1d271ede03ec45be109bacefc0fc8",
+    "exclusion_reason": null,
+    "publication_date": "2017-12-16",
+    "publisher": "GMA News",
+    "source_id": "news-9b619fe2bf31c2b3",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/636781/urduja-affects-nearly-160-000-people-in-eastern-visayas-caraga/story/"
+  },
+  {
+    "article_key": "gma:655481",
+    "capture_version": "5ba30b644912068669ed7cc04a6739d10db490a526a3ad9e35dabb32ccb36908",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-02",
+    "publisher": "GMA News",
+    "source_id": "news-d8c420faa31b03cf",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/655481/armm-heart-launches-rescue-ops-in-flooded-maguindanao-barangays/story/"
+  },
+  {
+    "article_key": "gma:661338",
+    "capture_version": "0400a3868d686b3742baf8e71d9bc206f5a43cc687a26725ba634a389a71d962",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-22",
+    "publisher": "GMA News",
+    "source_id": "news-20f70679bcbbf1b1",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/661338/floods-hit-low-lying-areas-in-bataan-tarlac-nueva-ecija/story/"
+  },
+  {
+    "article_key": "gma:663926",
+    "capture_version": "362d3d0d40969b125eaa2b2225926ff12b197baf3bf13a2dd79f7d6d2fab36bc",
+    "exclusion_reason": null,
+    "publication_date": "2018-08-13",
+    "publisher": "GMA News",
+    "source_id": "news-6566aa6401bfd7ca",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/663926/parts-of-malabon-still-flooded-due-to-heavy-rains-high-tide/story/"
+  },
+  {
+    "article_key": "gma:668289",
+    "capture_version": "958195a38b94b6182cb70157e118ae6880b2175d8eeedf859bfcc003fba61e41",
+    "exclusion_reason": null,
+    "publication_date": "2018-09-19",
+    "publisher": "GMA News",
+    "source_id": "news-6787efbf47674a87",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/668289/17-barangays-in-calumpit-bulacan-still-flooded-even-after-ompong-left/story/"
+  },
+  {
+    "article_key": "gma:680120",
+    "capture_version": "6fe3fdd6aa88a63a9e868f0905361efe7c2079cc6c632a42d0dca8297871529e",
+    "exclusion_reason": null,
+    "publication_date": "2019-01-02",
+    "publisher": "GMA News",
+    "source_id": "news-5ee5aaf5d31b7084",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/680120/robredo-urges-building-of-disaster-resilient-infrastructure/story/"
+  },
+  {
+    "article_key": "gma:696896",
+    "capture_version": "8d94bb42d68a0a0144f457d7cec7c5ab47b042dbc56b6180ad903cebf798f1fb",
+    "exclusion_reason": null,
+    "publication_date": "2019-06-06",
+    "publisher": "GMA News",
+    "source_id": "news-645827b407f23d1d",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/696896/students-in-opol-misamis-oriental-at-risk-as-they-pass-through-dilapidated-bridge-everyday/story/"
+  },
+  {
+    "article_key": "gma:702441",
+    "capture_version": "8aebc5a0c62030b1dc6c14667ff1abb83450e1e87253fc6b7db733899c660580",
+    "exclusion_reason": null,
+    "publication_date": "2019-07-26",
+    "publisher": "GMA News",
+    "source_id": "news-e54ae977578566dd",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/702441/downpour-leaves-five-barangays-of-town-in-bulacan-flooded/story/"
+  },
+  {
+    "article_key": "gma:714821",
+    "capture_version": "e34527a5e361cdc09f645f2b3d238b7826e1bec4587208566d13cc76c7215407",
+    "exclusion_reason": null,
+    "publication_date": "2019-11-09",
+    "publisher": "GMA News",
+    "source_id": "news-c6b8dee4d10093fa",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/714821/cagayan-under-state-of-calamity-as-11-towns-remain-flooded-4-dead-1-missing/story/"
+  },
+  {
+    "article_key": "gma:715655",
+    "capture_version": "24793ffcb7fac95cc4d55009dc3ab81a9637c8561acb11f235f52f7dabb97476",
+    "exclusion_reason": null,
+    "publication_date": "2019-11-16",
+    "publisher": "GMA News",
+    "source_id": "news-40a065dc5d43d78b",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/715655/romblon-barangays-still-flooded-amid-preparations-for-ramon/story/"
+  },
+  {
+    "article_key": "gma:761046",
+    "capture_version": "7eedf52135e6b97e71fdabef7d00494896895b0a88ce8dc70685bdd2fbeb1d1e",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-22",
+    "publisher": "GMA News",
+    "source_id": "news-3f17e39b80d92846",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/761046/5-villages-in-pampanga-flooded-after-pepito/story/"
+  },
+  {
+    "article_key": "gma:764857",
+    "capture_version": "66cc42ff28ee14e5270558312c8761d92f7fa4b79ac12a8c75e368796b81617f",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-19",
+    "publisher": "GMA News",
+    "source_id": "news-f4fcf1d487fd0edf",
+    "status": "accepted",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/764857/hot-spring-resorts-in-pansol-other-areas-in-laguna-still-submerged-in-flood/story/"
+  },
+  {
+    "article_key": "gma:768751",
+    "capture_version": "842e60e47b075d3910de567693d6a39d5989def6035ec3fb508b12ea738873ae",
+    "exclusion_reason": null,
+    "publication_date": "2020-12-20",
+    "publisher": "GMA News",
+    "source_id": "news-352dd10db19fcad3",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/768751/barangays-isolated-roads-flooded-in-isabela-amid-continuous-rain-pio/story/"
+  },
+  {
+    "article_key": "gma:776679",
+    "capture_version": "c7aad838b55e0a7627b5aa9b04df52f6df15234a3b52c3c1436c3411eac2d7e2",
+    "exclusion_reason": null,
+    "publication_date": "2021-02-19",
+    "publisher": "GMA News",
+    "source_id": "news-706685efec27a2a3",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/776679/barmm-lines-up-over-p15-b-in-infra-projects-for-2021/story/"
+  },
+  {
+    "article_key": "gma:811364",
+    "capture_version": "c0057f64e52601faf46ea1f9063bec978c1efe820b2ab07a9a268d3eab9b1cdc",
+    "exclusion_reason": null,
+    "publication_date": "2021-11-18",
+    "publisher": "GMA News",
+    "source_id": "news-4bcbc530544287ef",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/811364/1-taong-gulang-na-bata-nalunod-sa-baha-sa-pikit-cotabato/story/"
+  },
+  {
+    "article_key": "gma:848206",
+    "capture_version": "bf4d6ba3648929ead70ee20c1b124ae711ea654fc406ef543e181bad682b5c92",
+    "exclusion_reason": null,
+    "publication_date": "2022-10-16",
+    "publisher": "GMA News",
+    "source_id": "news-45013bd5aa04ea0e",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/848206/neneng-causes-flooding-power-outage-in-cagayan/story/"
+  },
+  {
+    "article_key": "gma:856184",
+    "capture_version": "ff7f732625a392ba4164ef7eaa51c5f93a14bc3af2ddc4d874af25a859830a63",
+    "exclusion_reason": null,
+    "publication_date": "2023-01-03",
+    "publisher": "GMA News",
+    "source_id": "news-66b19b49d38e9cec",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/pinoyabroad/856184/saudi-arabia-inulan-at-binaha-ilang-pinoy-apektado/story/"
+  },
+  {
+    "article_key": "gma:874323",
+    "capture_version": "0f1e992430110cf15e99b21878cdfd25883ab296d8e6a068d0c1e057d2f4dfb4",
+    "exclusion_reason": null,
+    "publication_date": "2023-06-29",
+    "publisher": "GMA News",
+    "source_id": "news-43a4308f992d2630",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/874323/integrated-drainage-system-sa-ncr-planong-gawin-para-mabawasan-ang-pagbaha/story/"
+  },
+  {
+    "article_key": "gma:903946",
+    "capture_version": "dbcd5d73b37f6652ef85b007820655b1b59d86f799ec7e2d8bd10bb4a045dc7d",
+    "exclusion_reason": null,
+    "publication_date": "2024-04-17",
+    "publisher": "GMA News",
+    "source_id": "news-eb25644e73138ada",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/pinoyabroad/903946/mga-kalsada-airport-sa-dubai-nalubog-sa-baha-18-nasawi-naman-sa-oman/story/"
+  },
+  {
+    "article_key": "gma:912829",
+    "capture_version": "cac06b44bd52e5a6d83ddcd31567825c46d79fb8188bb36b00a8f2926a1fcf36",
+    "exclusion_reason": null,
+    "publication_date": "2024-07-09",
+    "publisher": "GMA News",
+    "source_id": "news-aa2a3e6a00012c8f",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/912829/3-nasawi-at-4-nawawala-nang-maanod-sa-ilog-ang-isang-pickup-truck-sa-cebu/story/"
+  },
+  {
+    "article_key": "gma:914640",
+    "capture_version": "5045c0361eada073c9a2c41d18870d33acbb664991b907bafedb0f54dcb38178",
+    "exclusion_reason": null,
+    "publication_date": "2024-07-25",
+    "publisher": "GMA News",
+    "source_id": "news-ef286f8fdb9df6bd",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/914640/pasok-sa-gobyerno-at-klase-sa-ncr-regions-3-at-4a-sinuspinde-ng-palasyo-sa-july-25-2024/story/"
+  },
+  {
+    "article_key": "gma:914743",
+    "capture_version": "5abbfbe6f7779c036c45c2b7159db88e28f75dc80b55ffe78ef001eb04743d7e",
+    "exclusion_reason": null,
+    "publication_date": "2024-07-25",
+    "publisher": "GMA News",
+    "source_id": "news-d798127cece50f0d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/trending/914743/michael-de-mesa-na-rescue-na-matapos-ma-stranded-sa-sasakyan-ng-22-oras-dahil-sa-baha/story/"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/02/08/18/higit-20-bahay-sa-gensan-binaha",
+    "capture_version": "58f48dae428ef9fa67012ad041923978f9d3ad71b14098e71ba27e33ffad2ea8",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-02-08",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-db8930888d11523d",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/02/08/18/higit-20-bahay-sa-gensan-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/06/07/18/panoorin-ilang-lugar-sa-kamaynilaan-binaha-dahil-sa-malakas-na-ulan",
+    "capture_version": "cb0215bae48bd55ba520384d983c60ba3105f23f5613fdf52f7b29f983d04193",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-06-07",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-a844a6e0f7c5c1ec",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/06/07/18/panoorin-ilang-lugar-sa-kamaynilaan-binaha-dahil-sa-malakas-na-ulan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat",
+    "capture_version": "134c7d01fe7d0796d0a3ca2493d41e16d71c1c6290cdf8a6a9cfbcd82406ed95",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2018-07-17",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-ea3429aa801a60cb",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/07/17/18/metro-manila-ilang-karatig-lalawigan-binaha-dahil-sa-habagat"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/26/19/ilang-barangay-sa-santa-maria-bulacan-binaha",
+    "capture_version": "26accf94e0fabe508c5fecca7321ec329c4aa3ae8fcc26059d2208aaa504cfbe",
+    "exclusion_reason": null,
+    "publication_date": "2019-07-26",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-1367e412bf0b8a9f",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/07/26/19/ilang-barangay-sa-santa-maria-bulacan-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/30/20/isang-barangay-sa-agusan-del-sur-binaha",
+    "capture_version": "b7095ed741f790b4031558423277e3e1597c81bf8d13f5a4ad09901c158e5885",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-07-30",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-056ed05340c281fa",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/07/30/20/isang-barangay-sa-agusan-del-sur-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/31/20/ilang-bayan-sa-pampanga-binaha-dahil-sa-malakas-na-pag-ulan",
+    "capture_version": "5ee3c4cdb1392fda7be7084895d3357f5eaead379d1d277e4dcaaa2f285a5ceb",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-07-31",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-8cec5ab4050f478f",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/07/31/20/ilang-bayan-sa-pampanga-binaha-dahil-sa-malakas-na-pag-ulan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/08/01/20/mga-bahay-binaha-sa-sta-mesa-dahil-sa-sirang-tubo",
+    "capture_version": "6c84e7e34a503cfcd60a88433e23b421e47884c7c71f0a7c7fc14e5916d7aa4a",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-08-01",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-9f85f3f1fa38fa8c",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/08/01/20/mga-bahay-binaha-sa-sta-mesa-dahil-sa-sirang-tubo"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/09/03/17/6-barangay-ng-bayan-sa-bukidnon-binaha",
+    "capture_version": "1fe578b81f47c85e4175bedc973edd47211a7d84cd36a9922259206c0fb2746a",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-03",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-c04d4f7154f4f54f",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/09/03/17/6-barangay-ng-bayan-sa-bukidnon-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/09/25/17/ilang-barangay-sa-lapu-lapu-city-binaha",
+    "capture_version": "e1ce84b57196252df5dd34d0cfe0ed794c904cf39b23a57d4f2c2d5d084d1e5d",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2017-09-25",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-a38a1551c552a86b",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/09/25/17/ilang-barangay-sa-lapu-lapu-city-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/10/10/23/senators-ask-dpwh-why-fix-roads-that-still-look-good",
+    "capture_version": "6385e8e945c478b38cb678fa89c9ad43c62e45f0d2ba5dfa631215074fc08dee",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2023-10-10",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-b38de27def66b200",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/10/10/23/senators-ask-dpwh-why-fix-roads-that-still-look-good"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/10/20/23/mmda-announces-traffic-schemes-for-undas-christmas-season",
+    "capture_version": "18253cfb79875907e66d6eb8d51502b6f568dcf5066ae6964a72f0ad3ffb8e3c",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2023-10-20",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-1f5f90c1e3b7f312",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/10/20/23/mmda-announces-traffic-schemes-for-undas-christmas-season"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan",
+    "capture_version": "bbbb2642c1f3e5514c789f47db872e2b4908644a473044fb3c8676211779dd7b",
+    "exclusion_reason": null,
+    "publication_date": "2018-12-20",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-1de5b547ff102993",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/12/20/18/ilang-bahagi-ng-cebu-binaha-dahil-sa-walang-tigil-na-pag-ulan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/12/22/22/ph-south-korea-sign-3b-development-aid-loan-package",
+    "capture_version": "a0c3bbdd2104809d406c7530a08d8f143ef6ba0a9708cd90c65b583474394d03",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2022-12-22",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-91ded5b32f42f85c",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/12/22/22/ph-south-korea-sign-3b-development-aid-loan-package"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/multimedia/photo/04/10/22/heavy-rains-in-southern-portion-of-samar-island",
+    "capture_version": null,
+    "exclusion_reason": "no article/main content found; refused whole-page fallback",
+    "publication_date": null,
+    "publisher": "ABS-CBN News",
+    "source_id": "news-d60ed4ec1393aaa9",
+    "status": "capture_failed",
+    "url": "https://www.abs-cbn.com/news/multimedia/photo/04/10/22/heavy-rains-in-southern-portion-of-samar-island"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/multimedia/photo/10/29/22/paengph-floods-hamper-motorists",
+    "capture_version": null,
+    "exclusion_reason": "no article/main content found; refused whole-page fallback",
+    "publication_date": null,
+    "publisher": "ABS-CBN News",
+    "source_id": "news-0b7e362cebf70e41",
+    "status": "capture_failed",
+    "url": "https://www.abs-cbn.com/news/multimedia/photo/10/29/22/paengph-floods-hamper-motorists"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/regions/2024/12/25/pasko-sa-camsur-problema-sa-andaya-highway-road-slips-landslides-baha-sumalubong-1104",
+    "capture_version": "fa06e13c3f1d0f1ebf8c207bf17f50dd177fc69366fd9ecd0e1743261d11cbc9",
+    "exclusion_reason": null,
+    "publication_date": "2024-12-25",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-0628cdb524fef7d1",
+    "status": "accepted",
+    "url": "https://www.abs-cbn.com/news/regions/2024/12/25/pasko-sa-camsur-problema-sa-andaya-highway-road-slips-landslides-baha-sumalubong-1104"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/regions/2025/6/26/tv-patrol-ilang-pangunahing-kalsada-sa-cebu-city-nalubog-sa-baha-2024",
+    "capture_version": null,
+    "exclusion_reason": "no article/main content found; refused whole-page fallback",
+    "publication_date": null,
+    "publisher": "ABS-CBN News",
+    "source_id": "news-3b28cdf48295d5c8",
+    "status": "capture_failed",
+    "url": "https://www.abs-cbn.com/news/regions/2025/6/26/tv-patrol-ilang-pangunahing-kalsada-sa-cebu-city-nalubog-sa-baha-2024"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/regions/2025/7/12/halos-4-oras-na-ulan-nagdulot-ng-baha-sa-bacolod-city-0927",
+    "capture_version": "dfc2be5164eae2b8958b2fb0d46950bfb66dcf4adc0b44acd8fcfcb389463fb4",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2025-07-12",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-959dc7f3e42305a4",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/regions/2025/7/12/halos-4-oras-na-ulan-nagdulot-ng-baha-sa-bacolod-city-0927"
+  },
+  {
+    "article_key": "https://rmn.ph/3-anyos-naanod-patay-sa-baha",
+    "capture_version": "a5b6b55b1fde6e2012539a6a0021cc2f4d1701126c5a409e90a1af4730d68889",
+    "exclusion_reason": null,
+    "publication_date": "2019-06-14",
+    "publisher": "RMN Networks",
+    "source_id": "news-0f2ea19e71d38606",
+    "status": "review_pending",
+    "url": "https://rmn.ph/3-anyos-naanod-patay-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/4-nga-barangay-sa-banwat-altavas-aklan-binaha-bangud-sa-uean-daea-it-bagyong-usman",
+    "capture_version": "3727852ed21efb1aa6dc2516ede057b21abded24335d4a8df6081e8fd224d9d6",
+    "exclusion_reason": null,
+    "publication_date": "2018-12-30",
+    "publisher": "RMN Networks",
+    "source_id": "news-3fa879c976253665",
+    "status": "review_pending",
+    "url": "https://rmn.ph/4-nga-barangay-sa-banwat-altavas-aklan-binaha-bangud-sa-uean-daea-it-bagyong-usman/"
+  },
+  {
+    "article_key": "https://rmn.ph/8-bayan-at-2-siyudad-sa-pangasinan-binaha-dahil-sa-habagat",
+    "capture_version": "004912143ff9c6f7466da2a00c2a09316782b4895f60b9d1af571808c7fc825b",
+    "exclusion_reason": null,
+    "publication_date": "2019-09-10",
+    "publisher": "RMN Networks",
+    "source_id": "news-06486e62e11d4c68",
+    "status": "review_pending",
+    "url": "https://rmn.ph/8-bayan-at-2-siyudad-sa-pangasinan-binaha-dahil-sa-habagat/"
+  },
+  {
+    "article_key": "https://rmn.ph/apat-na-pangunahing-kalsada-sa-dagupan-city-hindi-madaanan-ng-maliliit-na-sasakyan-dahil-sa-baha",
+    "capture_version": "c733e98bd5439b8c990c087d747945e3e498a0c1e1cb810dd16a71faa59d656e",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-f9a5bac8ce5bb912",
+    "status": "accepted",
+    "url": "https://rmn.ph/apat-na-pangunahing-kalsada-sa-dagupan-city-hindi-madaanan-ng-maliliit-na-sasakyan-dahil-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-hindi-naging-hadlang-sa-paghahanapbuhay-ng-ilang-tricycle-driver",
+    "capture_version": "177bdfcc0a3b39d6d4db16eabcca49fa5bc82f48f9fef05c073c77e2a9933353",
+    "exclusion_reason": null,
+    "publication_date": "2026-09-04",
+    "publisher": "RMN Networks",
+    "source_id": "news-a184378e844a7486",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-hindi-naging-hadlang-sa-paghahanapbuhay-ng-ilang-tricycle-driver/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-ug-landslide-nasinati",
+    "capture_version": "ce6910487b6df0167448a9e25bacca91a4e08f5cb741ed38a293efd31b3f7799",
+    "exclusion_reason": null,
+    "publication_date": "2019-09-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-d5d52cd68b592422",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-ug-landslide-nasinati/"
+  },
+  {
+    "article_key": "https://rmn.ph/bureau-of-fire-protection-nananatiling-abala-sa-clearing-operations-sa-marikina",
+    "capture_version": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-13",
+    "publisher": "RMN Networks",
+    "source_id": "news-d061928408511305",
+    "status": "review_pending",
+    "url": "https://rmn.ph/bureau-of-fire-protection-nananatiling-abala-sa-clearing-operations-sa-marikina/"
+  },
+  {
+    "article_key": "https://rmn.ph/bus-na-may-sakay-na-dalawamput-limang-pasahero-na-na-trap-sa-baha-sa-quezon-province-nailigatas-na",
+    "capture_version": "c22e80b7c3d0c5184ee76d23dd327edc54c8262fec7ea76b8956e59617fd2684",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-6ad39d2e84523168",
+    "status": "review_pending",
+    "url": "https://rmn.ph/bus-na-may-sakay-na-dalawamput-limang-pasahero-na-na-trap-sa-baha-sa-quezon-province-nailigatas-na/"
+  },
+  {
+    "article_key": "https://rmn.ph/category/luzon/dagupan-city/ifm-1047-dagupan/page/86",
+    "capture_version": null,
+    "exclusion_reason": "no article/main content found; refused whole-page fallback",
+    "publication_date": null,
+    "publisher": "RMN Networks",
+    "source_id": "news-1b9caa450a79eeb6",
+    "status": "capture_failed",
+    "url": "https://rmn.ph/category/luzon/dagupan-city/ifm-1047-dagupan/page/86/"
+  },
+  {
+    "article_key": "https://rmn.ph/dahil-sa-masamang-panahon-ilang-kalsada-sa-luzon-isinara-ng-dpwh",
+    "capture_version": "5e26d69a17f00cb8a72cab7385668bcf92290c2dadaada021531466e0b39b086",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-25",
+    "publisher": "RMN Networks",
+    "source_id": "news-31da350b50f9f6c4",
+    "status": "accepted",
+    "url": "https://rmn.ph/dahil-sa-masamang-panahon-ilang-kalsada-sa-luzon-isinara-ng-dpwh/"
+  },
+  {
+    "article_key": "https://rmn.ph/dahil-sa-pag-ulan-70-barangay-sa-capiz-lubog-pa-din-sa-baha",
+    "capture_version": "410bcf152fd01d6287b518f0cce5714c449c25ca12049145cd23dfeebfce59a1",
+    "exclusion_reason": null,
+    "publication_date": "2018-01-18",
+    "publisher": "RMN Networks",
+    "source_id": "news-8d5a94b2c1c53de7",
+    "status": "review_pending",
+    "url": "https://rmn.ph/dahil-sa-pag-ulan-70-barangay-sa-capiz-lubog-pa-din-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/dpwh-dodoblehin-ang-kapasidad-ng-tumana-pumping-station-cleaning-at-flushing-operations-sa-marikina-patuloy",
+    "capture_version": "812be80b4d15127898d6e9cf51e55d40e0a442049b370d6e17d0ed177198203a",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-31",
+    "publisher": "RMN Networks",
+    "source_id": "news-05f0734660992307",
+    "status": "review_pending",
+    "url": "https://rmn.ph/dpwh-dodoblehin-ang-kapasidad-ng-tumana-pumping-station-cleaning-at-flushing-operations-sa-marikina-patuloy/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-bayan-sa-isabela-lubog-na-sa-baha-mga-tulay-halos-di-na-madaanan",
+    "capture_version": "6bc4ca430f9bf13455fae4c579c7129072f47b4c4035bbdc1884131e5ee8f94e",
+    "exclusion_reason": null,
+    "publication_date": "2019-12-05",
+    "publisher": "RMN Networks",
+    "source_id": "news-32df8b1c6e4c96ae",
+    "status": "accepted",
+    "url": "https://rmn.ph/ilang-bayan-sa-isabela-lubog-na-sa-baha-mga-tulay-halos-di-na-madaanan/"
+  },
+  {
+    "article_key": "https://rmn.ph/isa-patay-sa-pananalasa-ng-bagyong-rolly-sa-quezon",
+    "capture_version": "5ab64a88d6ffeae480bb633b79bfce97ee8610f4087e39a074a224c2e5afd3cf",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-01",
+    "publisher": "RMN Networks",
+    "source_id": "news-07dd3c03f8941dc6",
+    "status": "review_pending",
+    "url": "https://rmn.ph/isa-patay-sa-pananalasa-ng-bagyong-rolly-sa-quezon/"
+  },
+  {
+    "article_key": "https://rmn.ph/magtiayon-nag-motor-naanod-sa-baha-1-patay",
+    "capture_version": "f6715876ce8c2a8f6bc85e4cb074814fe6e2751affaf6b2f0fdfbaa18140d214",
+    "exclusion_reason": null,
+    "publication_date": "2021-10-04",
+    "publisher": "RMN Networks",
+    "source_id": "news-f71b8fc05c68b55c",
+    "status": "review_pending",
+    "url": "https://rmn.ph/magtiayon-nag-motor-naanod-sa-baha-1-patay/"
+  },
+  {
+    "article_key": "https://rmn.ph/market-vendors-sa-dagupan-city-nakabalik-na-sa-dating-pwesto-matapos-ang-pagbaha",
+    "capture_version": "7b084f40034949ca7439257066f956accf9c60de00cd4a5d886f80259ce3b649",
+    "exclusion_reason": null,
+    "publication_date": "2025-09-29",
+    "publisher": "RMN Networks",
+    "source_id": "news-00472326993fdf40",
+    "status": "accepted",
+    "url": "https://rmn.ph/market-vendors-sa-dagupan-city-nakabalik-na-sa-dating-pwesto-matapos-ang-pagbaha/"
+  },
+  {
+    "article_key": "https://rmn.ph/matinding-pag-ulan-olongapo-occidental-mindoro-at-pangasinan-isinailalim-sa-state-of-calamity",
+    "capture_version": "7356297ff5bd633d2427b14b63ef1afaec0860109582d6670e640dc798e63ec6",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-24",
+    "publisher": "RMN Networks",
+    "source_id": "news-66ba1b0c067b4703",
+    "status": "review_pending",
+    "url": "https://rmn.ph/matinding-pag-ulan-olongapo-occidental-mindoro-at-pangasinan-isinailalim-sa-state-of-calamity/"
+  },
+  {
+    "article_key": "https://rmn.ph/mga-lugar-na-binaha-sa-cagayan-unti-unti-nang-humuhupa-ayon-kay-vp-robredo",
+    "capture_version": "625b7809f9b121a28057ca9516dc3809e2e7315b19b5b7c9063baaa11d86688c",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-16",
+    "publisher": "RMN Networks",
+    "source_id": "news-c7cb5f597b84c9d1",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mga-lugar-na-binaha-sa-cagayan-unti-unti-nang-humuhupa-ayon-kay-vp-robredo/"
+  },
+  {
+    "article_key": "https://rmn.ph/mga-pasahero-ligtas-bus-sa-quezon-province-nalubog-sa-baha-hindi-nahulog",
+    "capture_version": "48d60161987757677c17485a0b82b56b98f0e86021713c2d13245b177577282c",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-dd932b85e3a8bb1d",
+    "status": "review_pending",
+    "url": "https://rmn.ph/mga-pasahero-ligtas-bus-sa-quezon-province-nalubog-sa-baha-hindi-nahulog/"
+  },
+  {
+    "article_key": "https://rmn.ph/mga-tindera-sa-dagupan-naghanap-ng-alternatibong-pwesto-para-maipagpatuloy-ang-hanapbuhay-sa-gitna-ng-baha",
+    "capture_version": "50096961112f99defe4702e01e8f5a57f3348c65fe0ad466c03d9e39060aca9f",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-5639257ca4705d18",
+    "status": "accepted",
+    "url": "https://rmn.ph/mga-tindera-sa-dagupan-naghanap-ng-alternatibong-pwesto-para-maipagpatuloy-ang-hanapbuhay-sa-gitna-ng-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/ndrrmc-nakapagtala-ng-10-storm-related-incidents",
+    "capture_version": "a134c3dfd70f03f1fdbda2db1029c9156abcff713247356559c9ba57a919a24c",
+    "exclusion_reason": null,
+    "publication_date": "2019-07-19",
+    "publisher": "RMN Networks",
+    "source_id": "news-224c796419bb0d32",
+    "status": "review_pending",
+    "url": "https://rmn.ph/ndrrmc-nakapagtala-ng-10-storm-related-incidents/"
+  },
+  {
+    "article_key": "https://rmn.ph/patay-dahil-sa-bagyong-maring-umabot-sa-lima-ndrrmc",
+    "capture_version": "6e47908e58b552818ff40ded5a75c1356ac5511265a704567736e92591f5e2bb",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-13",
+    "publisher": "RMN Networks",
+    "source_id": "news-3bef65cb0daa650f",
+    "status": "review_pending",
+    "url": "https://rmn.ph/patay-dahil-sa-bagyong-maring-umabot-sa-lima-ndrrmc/"
+  },
+  {
+    "article_key": "https://rmn.ph/pro2-nakaalerto-sa-mga-binahang-lugar-sa-isabela-at-cagayan",
+    "capture_version": "c7894a98b46497a88986895d73739d579fdec9fc79fabdf8de080f3fbfd3c725",
+    "exclusion_reason": null,
+    "publication_date": "2020-12-20",
+    "publisher": "RMN Networks",
+    "source_id": "news-aeeb98cbb899f1be",
+    "status": "review_pending",
+    "url": "https://rmn.ph/pro2-nakaalerto-sa-mga-binahang-lugar-sa-isabela-at-cagayan/"
+  },
+  {
+    "article_key": "https://rmn.ph/problema-sa-tubig-baha-ng-rizal-street-sinuri-pumping-station-isasaayos",
+    "capture_version": "45db7a190d94fd3dcfc44910215eeefcca4ee22299cce59cc1df7be2f7007ad1",
+    "exclusion_reason": null,
+    "publication_date": "2026-08-29",
+    "publisher": "RMN Networks",
+    "source_id": "news-9e2f8f4b14d975a4",
+    "status": "accepted",
+    "url": "https://rmn.ph/problema-sa-tubig-baha-ng-rizal-street-sinuri-pumping-station-isasaayos/"
+  },
+  {
+    "article_key": "https://rmn.ph/taguig-lgu-namahagi-ng-relief-goods-sa-mga-residenteng-binaha",
+    "capture_version": "4acd5c11b599b9c7b424ce8bc719e96f0b3ecf9a77a39dd900b33dd7438a30c2",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-15",
+    "publisher": "RMN Networks",
+    "source_id": "news-3fe30c58ea98c8ea",
+    "status": "review_pending",
+    "url": "https://rmn.ph/taguig-lgu-namahagi-ng-relief-goods-sa-mga-residenteng-binaha/"
+  },
+  {
+    "article_key": "https://rmn.ph/tingnan-ilang-lugar-sa-metro-manila-binaha",
+    "capture_version": "a3048734b46390f124464a266aee3f4bc2b6cfd8c2e6f1911292675daacbc1fc",
+    "exclusion_reason": null,
+    "publication_date": "2019-08-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-a7a96a3c2f4410d2",
+    "status": "review_pending",
+    "url": "https://rmn.ph/tingnan-ilang-lugar-sa-metro-manila-binaha/"
+  },
+  {
+    "article_key": "https://rmn.ph/tubig-mula-sa-kanal-bumulwak-sa-rizal-st-dahil-sa-mataas-na-lebel-ng-baha",
+    "capture_version": "97b4891b12f963ee12cd3995d20d0759a6f7306b0eee743052ad74721384c3d9",
+    "exclusion_reason": null,
+    "publication_date": "2026-09-02",
+    "publisher": "RMN Networks",
+    "source_id": "news-fa79dba15cffdebe",
+    "status": "review_pending",
+    "url": "https://rmn.ph/tubig-mula-sa-kanal-bumulwak-sa-rizal-st-dahil-sa-mataas-na-lebel-ng-baha/"
+  },
+  {
+    "article_key": "gma:655990",
+    "capture_version": "166b3f84a09465fdfbd270abd1a24823c55522ecec129ead22358f691bf9575a",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-07",
+    "publisher": "GMA News",
+    "source_id": "news-4aeea22acc60d52d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/655990/ilang-lugar-sa-qc-nalubog-sa-baha-dahil-sa-magdamag-na-pag-ulan/story/"
+  },
+  {
+    "article_key": "gma:663843",
+    "capture_version": "71da5b57a2fad0e4a96c21223a7b5d2cc556c1226e0dddc2e8c336b340853cfd",
+    "exclusion_reason": null,
+    "publication_date": "2018-08-12",
+    "publisher": "GMA News",
+    "source_id": "news-513999a656fec67d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/umg/663843/isang-barangay-sa-gumaca-quezon-binaha-ng-alak/story/"
+  },
+  {
+    "article_key": "gma:679136",
+    "capture_version": "2e0db58d02df20fb058ea6ebba70dc267b465d77dc5c2772b8f05bf09cd1f704",
+    "exclusion_reason": null,
+    "publication_date": "2018-12-22",
+    "publisher": "GMA News",
+    "source_id": "news-c15427a62b79ba2c",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/679136/tagbilaran-bohol-nakaranas-ng-pagbaha-dulot-ng-lpa/story/"
+  },
+  {
+    "article_key": "gma:751613",
+    "capture_version": "e8a13293e7e5db722d32f9e4eff229a584c6165787393f5f00e1b24a4329576c",
+    "exclusion_reason": null,
+    "publication_date": "2020-08-17",
+    "publisher": "GMA News",
+    "source_id": "news-9c7551478f37e243",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/751613/mga-palayan-sa-cotabato-at-mga-bahay-sa-ilocos-norte-binaha/story/"
+  },
+  {
+    "article_key": "gma:759628",
+    "capture_version": "bec3d1db9b1695adc5e3406c2ca6d5e2a60e0477d7159b53568214af78ae60f3",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-13",
+    "publisher": "GMA News",
+    "source_id": "news-5e1e9bda96c4109d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/759628/mall-sa-quezon-city-pinasok-ng-baha/story/"
+  },
+  {
+    "article_key": "gma:760273",
+    "capture_version": "7293bfc45fe02f669db570cfc65eb9de1ec337b7e44f372dfeddebae20491b01",
+    "exclusion_reason": null,
+    "publication_date": "2020-10-17",
+    "publisher": "GMA News",
+    "source_id": "news-96c272681ad9b4a8",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/760273/bata-sa-bangka-na-nag-aaral-dahil-sa-baha-sa-quezon/story/"
+  },
+  {
+    "article_key": "gma:763248",
+    "capture_version": "0cac3fc63042d5efe4830d08b2c541d1f55e7e186935bde21b20ac05c2c2db04",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-08",
+    "publisher": "GMA News",
+    "source_id": "news-8f447ee5360be459",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/763248/bayan-ng-lopez-sa-quezon-binaha-dahil-kay-tonyo/story/"
+  },
+  {
+    "article_key": "gma:763793",
+    "capture_version": "7d74ba40781ea31d984394a708a1fdd2f9344a71cd58a7477fedb03e2a713ef6",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-12",
+    "publisher": "GMA News",
+    "source_id": "news-492bc6234d82aecb",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/763793/quezon-province-binaha-at-nagka-landslide-dahil-kay-ulysses/story/"
+  },
+  {
+    "article_key": "gma:764061",
+    "capture_version": "3496e54f0509043989cb9ca4036269e29a61d7c523bc1c34e20330c5fe75249b",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-14",
+    "publisher": "GMA News",
+    "source_id": "news-0685a665af348e59",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/764061/lalawigan-ng-cagayan-hinagupit-din-ni-ulysses-4-na-ang-patay/story/"
+  },
+  {
+    "article_key": "gma:764273",
+    "capture_version": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-16",
+    "publisher": "GMA News",
+    "source_id": "news-2a0c1e1321fa4a42",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/764273/residente-sa-marikina-nasunugan-na-nasalanta-pa-ng-baha/story/"
+  },
+  {
+    "article_key": "gma:876104",
+    "capture_version": "70c4e0642095c4720436909545a642ec22db245bec1a7111b01c462b3639ed59",
+    "exclusion_reason": null,
+    "publication_date": "2023-07-18",
+    "publisher": "GMA News",
+    "source_id": "news-a8e716eddb13678e",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/876104/heavy-rains-flood-parts-of-pampanga-pangasinan/story/"
+  },
+  {
+    "article_key": "gma:896569",
+    "capture_version": "c4941a3dc8d294bb11846900e7cce4a1b4430484769dee6709e2f73b60289ecd",
+    "exclusion_reason": null,
+    "publication_date": "2024-02-06",
+    "publisher": "GMA News",
+    "source_id": "news-1cf578761ab90a75",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/896569/parts-of-mindanao-still-flooded/story/"
+  },
+  {
+    "article_key": "gma:919233",
+    "capture_version": "6f76ca46c5723ab5a3d016728afabfd4f61279e3aa578368c4b22233b56cca77",
+    "exclusion_reason": null,
+    "publication_date": "2024-09-04",
+    "publisher": "GMA News",
+    "source_id": "news-f788f7c467927dac",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/919233/some-provinces-reeling-from-enteng/story/"
+  },
+  {
+    "article_key": "gma:924549",
+    "capture_version": "fba9ece673ba2cdb4374b31ffd8fbc60dc1df76b227fec0b3c5b947da60c5337",
+    "exclusion_reason": null,
+    "publication_date": "2024-10-22",
+    "publisher": "GMA News",
+    "source_id": "news-304dbe1a96ec781b",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/924549/tropical-storm-kristine-brings-floods-in-visayas-mindanao/story/"
+  },
+  {
+    "article_key": "gma:924698",
+    "capture_version": "3681b9e028689ca10a582de579747c78f9bd67d90f3d20bb9752130ee5e27958",
+    "exclusion_reason": null,
+    "publication_date": "2024-10-23",
+    "publisher": "GMA News",
+    "source_id": "news-6e31e9601973cafc",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/924698/traumatized-residents-recall-previous-floods-as-pililla-river-water-level-rises/story/"
+  },
+  {
+    "article_key": "gma:924965",
+    "capture_version": "709ee0d4089aeb2dbf99ab2739355159bf4b322c240b5b7a005d669d88da8e43",
+    "exclusion_reason": null,
+    "publication_date": "2024-10-25",
+    "publisher": "GMA News",
+    "source_id": "news-075c4f6dcbe2cfb0",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/924965/8-houses-in-sariaya-quezon-swept-away-by-flood-due-to-kristine/story/"
+  },
+  {
+    "article_key": "gma:926849",
+    "capture_version": "39e03940300acf17974beb07253d64620cb2df433a1d9badbbf5c1ed2c065705",
+    "exclusion_reason": null,
+    "publication_date": "2024-11-12",
+    "publisher": "GMA News",
+    "source_id": "news-89b7a26a05dcc68b",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/926849/nika-submerges-parts-of-storm-weary-cagayan-in-deep-floods/story/"
+  },
+  {
+    "article_key": "gma:950152",
+    "capture_version": "1163078af0ccf1927b78f32a539fd505b07db62daa1aa5077f2d2de9de8f52fd",
+    "exclusion_reason": null,
+    "publication_date": "2025-06-22",
+    "publisher": "GMA News",
+    "source_id": "news-b03f4377b68a7855",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/950152/teachers-in-sarangani-brave-flooded-river-to-get-home/story/"
+  },
+  {
+    "article_key": "gma:956608",
+    "capture_version": "2c9f17a4cf1b49c45d62debb75122f8d23e92ee857ecaf2fd474b3af65ccf33e",
+    "exclusion_reason": null,
+    "publication_date": "2025-08-21",
+    "publisher": "GMA News",
+    "source_id": "news-77b4d775acdbd915",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/956608/over-p1b-dike-other-flood-control-projects-in-oriental-mindoro-missing-lacson/story/"
+  },
+  {
+    "article_key": "gma:960440",
+    "capture_version": "fd36dbc05b678d85b783120fb03f58d64e40be65c7095aec0f3bdcb331717927",
+    "exclusion_reason": null,
+    "publication_date": "2025-09-26",
+    "publisher": "GMA News",
+    "source_id": "news-8b42952afda21b01",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/960440/coa-submits-fraud-audit-report-on-p360-million-flood-control-projects-in-bulacan/story/"
+  },
+  {
+    "article_key": "gma:965175",
+    "capture_version": "344bf359dc0f6784d5e4baa7c769e9d8cb040cf787244f81a7790818ea8d11c0",
+    "exclusion_reason": null,
+    "publication_date": "2025-11-06",
+    "publisher": "GMA News",
+    "source_id": "news-69f0476aa248cef6",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/lifestyle/content/965175/1-000-families-affected-by-tino-in-talisay-cebu-receive-aid-from-gma-kapuso-foundation/story/"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/05/09/19/pagasa-sees-sign-of-dry-seasons-looming-end",
+    "capture_version": "96b1f8c88931d588086e660a03c1af51c0b5b81d0b1fb09f52d2e85599fbae68",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-05-09",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-fcff07b9d070ca91",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/05/09/19/pagasa-sees-sign-of-dry-seasons-looming-end"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/08/24/19/ilang-parte-ng-metro-manila-binaha-sa-pagsalubong-sa-long-weekend",
+    "capture_version": "f3dfbecc633f0d229a6916a7825792956e695e624a0f508a595a8303a3e1f255",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-08-24",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-9d3da490cc412ad3",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/08/24/19/ilang-parte-ng-metro-manila-binaha-sa-pagsalubong-sa-long-weekend"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/12/20/ilang-mga-residente-ng-rodriguez-at-san-mateo-sa-rizal-na-stranded-sa-baha-nagpapasaklolo",
+    "capture_version": "515bbd386a2d0feed80bb82dff1bba877fffbd53804da16bcd5e2ef27ca957b8",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-12",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-a78225d936fe4756",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/12/20/ilang-mga-residente-ng-rodriguez-at-san-mateo-sa-rizal-na-stranded-sa-baha-nagpapasaklolo"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/12/04/19/oriental-mindoro-to-be-placed-under-state-of-calamity-disaster-official",
+    "capture_version": "d7bca2d931a6166496b5fcd0bc9bb31bc4a0b363120b6475d8bcb70003ea1c6f",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2019-12-04",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-bd360a67694282cd",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/12/04/19/oriental-mindoro-to-be-placed-under-state-of-calamity-disaster-official"
+  },
+  {
+    "article_key": "https://rmn.ph/%f0%9d%97%95%f0%9d%97%94%f0%9d%97%9b%f0%9d%97%94-%f0%9d%97%a6%f0%9d%97%94-%f0%9d%97%9c%f0%9d%97%a6%f0%9d%97%94%f0%9d%97%a1%f0%9d%97%9a-%f0%9d%97%95%f0%9d%97%94%f0%9d%97%a5%f0%9d%97%94%f0%9d%97%a1",
+    "capture_version": "799c724465d357e82e2a7f6209a23421109bdedcca1442c515706f3b9f1e8953",
+    "exclusion_reason": null,
+    "publication_date": "2024-09-09",
+    "publisher": "RMN Networks",
+    "source_id": "news-7249bc972e287b36",
+    "status": "review_pending",
+    "url": "https://rmn.ph/%F0%9D%97%95%F0%9D%97%94%F0%9D%97%9B%F0%9D%97%94-%F0%9D%97%A6%F0%9D%97%94-%F0%9D%97%9C%F0%9D%97%A6%F0%9D%97%94%F0%9D%97%A1%F0%9D%97%9A-%F0%9D%97%95%F0%9D%97%94%F0%9D%97%A5%F0%9D%97%94%F0%9D%97%A1/"
+  },
+  {
+    "article_key": "https://rmn.ph/apela-ng-mga-senior-citizen-sa-marikina-city-na-bigyan-sila-ng-doxycyline-para-sa-leptospirosis-agad-na-tinugunan-ni-mayor-marcy-teodoro",
+    "capture_version": "32e6a08c856ca76816daec5ccef7cae01328d654802e794145005019c901314a",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-17",
+    "publisher": "RMN Networks",
+    "source_id": "news-b5cd4988a6b459d1",
+    "status": "review_pending",
+    "url": "https://rmn.ph/apela-ng-mga-senior-citizen-sa-marikina-city-na-bigyan-sila-ng-doxycyline-para-sa-leptospirosis-agad-na-tinugunan-ni-mayor-marcy-teodoro/"
+  },
+  {
+    "article_key": "https://rmn.ph/baha-sa-bacolod-naglab-ot-sa-abaga-ginatos-ka-pamilya-apektado",
+    "capture_version": "356943bc3f216465102474ec4c7b4094d98aaa0e1d371fee18448b5524971bc6",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-23",
+    "publisher": "RMN Networks",
+    "source_id": "news-bb69e2def1f79602",
+    "status": "review_pending",
+    "url": "https://rmn.ph/baha-sa-bacolod-naglab-ot-sa-abaga-ginatos-ka-pamilya-apektado/"
+  },
+  {
+    "article_key": "https://rmn.ph/brgy-punta-dipolog-city-gisanapan-sa-tubig-baha",
+    "capture_version": "3a8768313feb7187c78b9a94263f5bc47dab54b4a5b40470b064a3b8c6eaad8e",
+    "exclusion_reason": null,
+    "publication_date": "2017-12-27",
+    "publisher": "RMN Networks",
+    "source_id": "news-52ca457a0b178816",
+    "status": "review_pending",
+    "url": "https://rmn.ph/brgy-punta-dipolog-city-gisanapan-sa-tubig-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-lugar-sa-davao-region-baha-pa-rin-malaking-tulay-sa-new-bataan-davao-de-oro-naputol",
+    "capture_version": "cd530118d663e3989f447af24595cd3667a9e74b8b558eea7b13888c10aa163f",
+    "exclusion_reason": null,
+    "publication_date": "2024-01-19",
+    "publisher": "RMN Networks",
+    "source_id": "news-0294a014f96e84f9",
+    "status": "review_pending",
+    "url": "https://rmn.ph/ilang-lugar-sa-davao-region-baha-pa-rin-malaking-tulay-sa-new-bataan-davao-de-oro-naputol/"
+  },
+  {
+    "article_key": "https://rmn.ph/kinse-ka-pamilya-sa-tugbok-apektado-sa-baha",
+    "capture_version": "89c7d0fa439ba06a190e40212486f0bb198851512817130c83c91821a2c8a41b",
+    "exclusion_reason": null,
+    "publication_date": "2018-05-07",
+    "publisher": "RMN Networks",
+    "source_id": "news-35521214300409f4",
+    "status": "review_pending",
+    "url": "https://rmn.ph/kinse-ka-pamilya-sa-tugbok-apektado-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/matagal-na-suliraning-baha-sa-barangay-wawa-bayambang-nabigyan-na-ng-solusyon",
+    "capture_version": "47a280e99b8961e8c524c5c3c4f6a5b2a60ed4b5ebc7e1945d426ef953c00dd5",
+    "exclusion_reason": null,
+    "publication_date": "2026-04-28",
+    "publisher": "RMN Networks",
+    "source_id": "news-73643826fd90258d",
+    "status": "review_pending",
+    "url": "https://rmn.ph/matagal-na-suliraning-baha-sa-barangay-wawa-bayambang-nabigyan-na-ng-solusyon/"
+  },
+  {
+    "article_key": "https://rmn.ph/paghahanda-sa-undas-sinimulan-na-sa-roman-catholic-cemetery-sa-dagupan-mga-bahaging-lubog-sa-baha-planong-taasan",
+    "capture_version": "082606edb1f091b22391a1a3edd250b22a5ac93984983c45f56701ba77db1939",
+    "exclusion_reason": null,
+    "publication_date": "2026-10-14",
+    "publisher": "RMN Networks",
+    "source_id": "news-e79b7679b015ba59",
+    "status": "review_pending",
+    "url": "https://rmn.ph/paghahanda-sa-undas-sinimulan-na-sa-roman-catholic-cemetery-sa-dagupan-mga-bahaging-lubog-sa-baha-planong-taasan/"
+  },
+  {
+    "article_key": "gma:529570",
+    "capture_version": "73f7a323cc04e66b242dc9245ecfa3bdfff8e2c465920783f8305b0bcdc04130",
+    "exclusion_reason": "publication_date_out_of_range",
+    "publication_date": "2015-07-27",
+    "publisher": "GMA News",
+    "source_id": "news-c92879c7eeda36c4",
+    "status": "excluded",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/529570/full-text-english-translation-pnoy-s-last-state-of-the-nation-address/story/"
+  },
+  {
+    "article_key": "gma:625670",
+    "capture_version": "afe88f265ae926c76d305019e70df234fe3cc73699d2a21ae6aac43a0f75520c",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-13",
+    "publisher": "GMA News",
+    "source_id": "news-faef8fb27a4a3a0f",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/625670/5-patay-6-nawawala-sa-hagupit-ni-maring-ndrrmc/story/"
+  },
+  {
+    "article_key": "gma:657731",
+    "capture_version": "9f88c500d49deaea92edcfe24ae18ce8edf778ccefd3fd69257a18e3caaa30da",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-21",
+    "publisher": "GMA News",
+    "source_id": "news-463c035c37dcd824",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/657731/heavy-rains-cause-floods-traffic-in-ncr/story/"
+  },
+  {
+    "article_key": "gma:657806",
+    "capture_version": "7971e9196e4f1ac85eed07f59e68c75f6958458fb3eebdb4d6f6a7a125a75ced",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-22",
+    "publisher": "GMA News",
+    "source_id": "news-0fb341d79a0f9d66",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/trending/657806/mga-orange-barrier-inanod-ng-baha-dahil-sa-biglang-buhos-ng-ulan-sa-caloocan/story/"
+  },
+  {
+    "article_key": "gma:659180",
+    "capture_version": "209fe72f7d716ca76a01f94bf8760cc023ad3b59ea168308e8c7f41e01a5650f",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-04",
+    "publisher": "GMA News",
+    "source_id": "news-31e4dd5f1f7ca430",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/659180/leptospirosis-makukuha-rin-sa-talsik-ng-kontaminadong-tubig-sa-mata-bibig-ng-tao/story/"
+  },
+  {
+    "article_key": "gma:664153",
+    "capture_version": "41e8b7a005b27b0a6ae3891204b53a48032c9b47904e42021e4e691cc243f3c6",
+    "exclusion_reason": null,
+    "publication_date": "2018-08-14",
+    "publisher": "GMA News",
+    "source_id": "news-4a279a347a3d3bed",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/664153/6-buwang-gulang-na-sanggol-patay-nang-mahulog-at-malunod-sa-baha/story/"
+  },
+  {
+    "article_key": "gma:668965",
+    "capture_version": "ed8996ded9012057e703aae4f6fab59973a88edb2896013906b3ee3628880be0",
+    "exclusion_reason": null,
+    "publication_date": "2018-09-25",
+    "publisher": "GMA News",
+    "source_id": "news-bda8dad172701c50",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/668965/naga-cebu-execs-informed-of-landslide-prone-areas-as-early-as-2008-mgb-documents/story/"
+  },
+  {
+    "article_key": "gma:675876",
+    "capture_version": "5418e2804643c309fc82ec452b20f3cbff8657504ba44017f3d5942ea8387c1b",
+    "exclusion_reason": null,
+    "publication_date": "2018-11-23",
+    "publisher": "GMA News",
+    "source_id": "news-dbe2327d3d9a6713",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/publicaffairs/iwitness/675876/ang-islang-walang-lupa-dokumentaryo-ni-howie-severino-ngayong-sabado-sa-i-witness/story/"
+  },
+  {
+    "article_key": "gma:699336",
+    "capture_version": "75b17a1dca0e13f77da7b0e6c41ac7c1520f44fef783455dec6e7217ba9c3976",
+    "exclusion_reason": null,
+    "publication_date": "2019-06-29",
+    "publisher": "GMA News",
+    "source_id": "news-35871c2798fc135f",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/699336/pagbaha-sa-macarthur-highway-sa-marilao-bulacan-lalo-pang-lumalala/story/"
+  },
+  {
+    "article_key": "gma:703215",
+    "capture_version": "eef06d2e5c628df2913b38752846b299da62ca3d1a71e1a6235a75955e51777c",
+    "exclusion_reason": null,
+    "publication_date": "2019-08-02",
+    "publisher": "GMA News",
+    "source_id": "news-1640cbe94c54627d",
+    "status": "review_pending",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/703215/overnight-rains-cause-flooding-in-some-metro-manila-streets/story/"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/04/27/21/ilang-lugar-sa-davao-city-binaha-dahil-sa-thunderstorms",
+    "capture_version": "91be7a98ea517083a5672bd6dda964dc5e4abfdb046ae47cd5b4ffbed2d64bd9",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-04-27",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-3bc1ec8437f23801",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/04/27/21/ilang-lugar-sa-davao-city-binaha-dahil-sa-thunderstorms"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/05/24/21/ilang-bahagi-ng-davao-de-oro-davao-del-sur-binaha",
+    "capture_version": "18aee36fff25946c619e9049f7e7713536fbe2c14365b08e10baa09e9622306d",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-05-24",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-a534239d30db60f6",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/05/24/21/ilang-bahagi-ng-davao-de-oro-davao-del-sur-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/05/31/21/90-pamilya-inilikas-sa-davao-city-dahil-sa-baha",
+    "capture_version": "140ba2e8c958171beb590f33b309b229ad1fbd73cef9e05480a5f56e2836c96c",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-05-31",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-07a71a0113856aa7",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/05/31/21/90-pamilya-inilikas-sa-davao-city-dahil-sa-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city",
+    "capture_version": "9f48413be7464ab128c20f4caef455b6f3c0c599b913a24333715006e7f4cefa",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-07-10",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-2a8473b3d610bb96",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/07/10/21/baha-at-landslide-naranasan-sa-davao-city"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/10/26/20/marikina-govt-handa-sa-posibilidad-ng-pagbaha-dahil-sa-bagyong-quinta",
+    "capture_version": "a8a200104f9fc9e132b7338bad32b62c6f990d0e90393765ba8649987315c632",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-10-26",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-ca7319840b01cb70",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/10/26/20/marikina-govt-handa-sa-posibilidad-ng-pagbaha-dahil-sa-bagyong-quinta"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/10/26/21/parte-ng-davao-city-binaha-dahil-sa-malakas-na-ulan",
+    "capture_version": "46e81e6d4ebecf3a33e5af9fe1ab671f3bde1d05ab7da3219c505ef3bf5cda3a",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-10-26",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-4649d2f1a4604953",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/10/26/21/parte-ng-davao-city-binaha-dahil-sa-malakas-na-ulan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha",
+    "capture_version": "7fb460ce22c06d3ddbc2e8d27355f417193034b96c6f69a3433380df2e917537",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2021-10-27",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-eb2c5a8e951bbbb2",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/10/27/21/ilang-lugar-sa-davao-city-muling-binaha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/08/17/panoorin-multicab-tinangay-ng-baha-sa-iligan",
+    "capture_version": "3c41b5da16a517dbff6470fad88bc2280dc353f2ee8a9a06617968918ec94934",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2017-11-08",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-a34e6ea57e0918c4",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/08/17/panoorin-multicab-tinangay-ng-baha-sa-iligan"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/13/20/walang-pasabi-marikina-mayor-sinisi-ang-angat-dam-sa-lagpas-ondoy-na-baha",
+    "capture_version": "14beb7c032656b19dcfd3a5a02801dd9e5345adc4d0f87201c8e0c3a6e218f1e",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-13",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-aa6269dd60812ee5",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/13/20/walang-pasabi-marikina-mayor-sinisi-ang-angat-dam-sa-lagpas-ondoy-na-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/14/20/kulang-na-tubig-hamon-para-sa-mga-naglilinis-sa-marikina-matapos-ang-baha",
+    "capture_version": "6c49b20409161bb1dc8a4e856a87e340053086dd01b5b9d66b61dd829f61dc24",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-14",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-0bd77fcdf30cb6e6",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/14/20/kulang-na-tubig-hamon-para-sa-mga-naglilinis-sa-marikina-matapos-ang-baha"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/11/23/20/foundation-na-nag-aalaga-ng-matatanda-nanawagan-ng-tulong-matapos-bahain",
+    "capture_version": "c61a26f61575f807d8f10595b4df1084c6a8dfd156dd6e8e47c124de6382a929",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2020-11-23",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-dc0d8bcd7617f20f",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/11/23/20/foundation-na-nag-aalaga-ng-matatanda-nanawagan-ng-tulong-matapos-bahain"
+  },
+  {
+    "article_key": "https://abs-cbn.com/news/nation/2025/9/18/ici-inspects-flood-control-projects-in-quezon-city-2254",
+    "capture_version": "f31ff8dac55e6fd76371b647c3610bfee8fa4058225087b3b472b6d378591f1b",
+    "exclusion_reason": "article_body_incomplete",
+    "publication_date": "2025-09-18",
+    "publisher": "ABS-CBN News",
+    "source_id": "news-0ce6fa8811d40df2",
+    "status": "excluded",
+    "url": "https://www.abs-cbn.com/news/nation/2025/9/18/ici-inspects-flood-control-projects-in-quezon-city-2254"
+  },
+  {
+    "article_key": "https://interaksyon.philstar.com/breaking-news/2017/11/03/107050/congress-must-have-stringent-oversight-over-malampaya-funds-lawmaker",
+    "capture_version": "6794379911f606c836f0d40811ec4363a8e9d9568551c94ad5d614d291bbe857",
+    "exclusion_reason": null,
+    "publication_date": "2017-11-03",
+    "publisher": "Philstar",
+    "source_id": "news-7ce4207d9b9e7e97",
+    "status": "review_pending",
+    "url": "https://interaksyon.philstar.com/breaking-news/2017/11/03/107050/congress-must-have-stringent-oversight-over-malampaya-funds-lawmaker/amp/"
+  },
+  {
+    "article_key": "https://interaksyon.philstar.com/breaking-news/2017/11/05/107409/look-army-pnp-bfp-baler-rescue-unit-pluck-stranded-folk-from-baler-floods-hotel-guests-evacuated",
+    "capture_version": "f7a6714f8a076c7300d541e62521d6f80a79494c44e104917bad576ec7cb4a85",
+    "exclusion_reason": null,
+    "publication_date": "2017-11-05",
+    "publisher": "Philstar",
+    "source_id": "news-20e0e56953671568",
+    "status": "review_pending",
+    "url": "https://interaksyon.philstar.com/breaking-news/2017/11/05/107409/look-army-pnp-bfp-baler-rescue-unit-pluck-stranded-folk-from-baler-floods-hotel-guests-evacuated/"
+  },
+  {
+    "article_key": "https://philstar.com/headlines/2017/12/16/1769104/3-dead-urduja-pummels-visayas",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 77612: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-e0cf751ea8d71e21",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/headlines/2017/12/16/1769104/3-dead-urduja-pummels-visayas"
+  },
+  {
+    "article_key": "https://philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 75154: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-d51c97021d07d991",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/nation/2017/02/01/1667482/afp-npa-rebels-attack-soldiers-despite-ceasefire-peace-talks"
+  },
+  {
+    "article_key": "https://philstar.com/pang-masa/police-metro/2018/07/18/1834505/metro-manila-mga-karatig-lalawigan-lubog-sa-baha",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 73309: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-ec2d8e47c44af1a4",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/pang-masa/police-metro/2018/07/18/1834505/metro-manila-mga-karatig-lalawigan-lubog-sa-baha"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 61216: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-c296dd5349f4e7ee",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/cebu-news/2017/01/11/1661309/thousands-evacuated",
+    "capture_version": "4966dcb41584c9547de41410cf9cce430d2db4e9c09d6719fc0b4433d897a337",
+    "exclusion_reason": "publication_date_out_of_range",
+    "publication_date": "1970-01-01",
+    "publisher": "Philstar",
+    "source_id": "news-4c362328f3721d7a",
+    "status": "excluded",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/11/1661309/thousands-evacuated/amp/"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 73106: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-905a1e1ec31455e0",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/27/1665966/spillway-not-damaged-demolished"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 74882: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-cc126ad08a03808b",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/09/29/1744153/height-downpour-3-fall-river-die"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 72395: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-20746ac22823c8db",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 71985: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-95b46b8ad154130c",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature"
+  },
+  {
+    "article_key": "https://philstar.com/the-freeman/region/2018/01/04/1774478/agaton-leaves-bohol-flooded",
+    "capture_version": null,
+    "exclusion_reason": "'utf-8' codec can't decode byte 0x80 in position 72472: invalid start byte",
+    "publication_date": null,
+    "publisher": "Philstar",
+    "source_id": "news-d0a136d3df01f457",
+    "status": "capture_failed",
+    "url": "https://www.philstar.com/the-freeman/region/2018/01/04/1774478/agaton-leaves-bohol-flooded"
+  },
+  {
+    "article_key": "https://rmn.ph/ayuda-dswd-may-mahigit-isang-milyong-standby-funds-at-stockpiles-para-sa-mga-lubhang-maapektuhan-ng-bagyong-domeng",
+    "capture_version": "b7c312b263770f2c94c27be7a93bba7ee1328723eb2f26953fd30a0e1d778015",
+    "exclusion_reason": null,
+    "publication_date": "2018-06-09",
+    "publisher": "RMN Networks",
+    "source_id": "news-73ce4649ac5c8133",
+    "status": "review_pending",
+    "url": "https://rmn.ph/ayuda-dswd-may-mahigit-isang-milyong-standby-funds-at-stockpiles-para-sa-mga-lubhang-maapektuhan-ng-bagyong-domeng/"
+  },
+  {
+    "article_key": "https://rmn.ph/daan-daang-residente-na-trap-sa-kanilang-bahay-dahil-sa-baha",
+    "capture_version": "1d6d74081e9f7a85608f3096641227430a25ccaf61c2a9b670e924c2a713ad7b",
+    "exclusion_reason": null,
+    "publication_date": "2020-11-13",
+    "publisher": "RMN Networks",
+    "source_id": "news-013a56db206e78df",
+    "status": "review_pending",
+    "url": "https://rmn.ph/daan-daang-residente-na-trap-sa-kanilang-bahay-dahil-sa-baha/"
+  },
+  {
+    "article_key": "https://rmn.ph/dumami-2-ospital-sa-maynila-tumaas-ang-bilang-ng-suspected-leptospirosis-cases",
+    "capture_version": "bdafe9401769ddf604fd43166faabb5c6bed417b8d96d65051006d7b59df15c4",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-01",
+    "publisher": "RMN Networks",
+    "source_id": "news-747c22b69fdb3e19",
+    "status": "review_pending",
+    "url": "https://rmn.ph/dumami-2-ospital-sa-maynila-tumaas-ang-bilang-ng-suspected-leptospirosis-cases/"
+  },
+  {
+    "article_key": "https://rmn.ph/ilang-lugar-sa-maynila-baha-pa-rin",
+    "capture_version": "ef50330a25e67fb1a22a07cfbb62e5dd66d6233656c7c99663c98355069bb53a",
+    "exclusion_reason": null,
+    "publication_date": "2017-09-12",
+    "publisher": "RMN Networks",
+    "source_id": "news-7def5ec45bfd0587",
+    "status": "review_pending",
+    "url": "https://rmn.ph/ilang-lugar-sa-maynila-baha-pa-rin/"
+  },
+  {
+    "article_key": "https://rmn.ph/kaso-ng-leptospirosis-sa-bansa-umakyat-na-sa-halos-1000",
+    "capture_version": "44d8b0495b6b6f75dde383e935d0d99c07d0fb25dc5ea46c785f2780476d9bf7",
+    "exclusion_reason": null,
+    "publication_date": "2019-08-20",
+    "publisher": "RMN Networks",
+    "source_id": "news-1aae36970119c9de",
+    "status": "review_pending",
+    "url": "https://rmn.ph/kaso-ng-leptospirosis-sa-bansa-umakyat-na-sa-halos-1000/"
+  },
+  {
+    "article_key": "https://rmn.ph/pagbibigay-ng-13th-month-pay-sa-mga-empleyado-pinapatiyak-ng-isang-senador",
+    "capture_version": "df75532639d298688ffb992b8f7fc4d827c48316a61b8e5b60dab3c0afa73b08",
+    "exclusion_reason": null,
+    "publication_date": "2019-11-11",
+    "publisher": "RMN Networks",
+    "source_id": "news-9ad21b8c080a53b7",
+    "status": "review_pending",
+    "url": "https://rmn.ph/pagbibigay-ng-13th-month-pay-sa-mga-empleyado-pinapatiyak-ng-isang-senador/"
+  },
+  {
+    "article_key": "https://rmn.ph/saf-commando-trainee-namatay-habang-nagsasanay-sa-batangas",
+    "capture_version": "f58b40e18ff6132c5c9662e81d87a4dbefdc6a876fdb324c6524a34a926023b5",
+    "exclusion_reason": null,
+    "publication_date": "2020-07-10",
+    "publisher": "RMN Networks",
+    "source_id": "news-e4280c0db6d2629e",
+    "status": "review_pending",
+    "url": "https://rmn.ph/saf-commando-trainee-namatay-habang-nagsasanay-sa-batangas/"
+  },
+  {
+    "article_key": "https://rmn.ph/sinalanta-region-3-at-mimaropa-apektado-ng-husto-ng-bagyong-henry-at-habagat",
+    "capture_version": "d48b522e95d16f5a382b959734856f6d5ca72cd00999be151ed6343874936dfe",
+    "exclusion_reason": null,
+    "publication_date": "2018-07-18",
+    "publisher": "RMN Networks",
+    "source_id": "news-3b2261264109be89",
+    "status": "review_pending",
+    "url": "https://rmn.ph/sinalanta-region-3-at-mimaropa-apektado-ng-husto-ng-bagyong-henry-at-habagat/"
+  }
+]

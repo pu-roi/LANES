@@ -1,0 +1,14 @@
+{
+  "batch_size": 1,
+  "host_logical_processors": 8,
+  "host_physical_memory_bytes": 16948453376,
+  "load_ms": 681.9498999975622,
+  "measured_calls": 240,
+  "measured_passes": 10,
+  "p50_ms": 13.659300006111152,
+  "p95_ms": 15.581100000417791,
+  "peak_working_set_bytes": 424759296,
+  "scope": "Short constructed passages, batch_size1, CPU2threads, one warm-up and ten measured passes; load time excludes module imports.",
+  "threads": 2,
+  "warmup_passes": 1
+}

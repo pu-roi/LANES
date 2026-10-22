@@ -1,0 +1,29 @@
+{
+  "unit_tests_run": 55,
+  "unit_tests_passed": 54,
+  "unit_tests_skipped": 1,
+  "skip_reason": "Windows symlink privilege unavailable.",
+  "test_command": "backend\\venv\\Scripts\\python.exe -B -m unittest backend.tests.test_flood_ner_bounded_discovery backend.tests.test_flood_ner_history_inventory backend.tests.test_flood_ner_repository_bytes",
+  "new_adapter_tests_passed": 40,
+  "curator_fault_guards_passed": 29,
+  "curator_schema_tokenizer_records": 92,
+  "curator_entity_spans": 116,
+  "curator_schema_tokenizer_errors": 0,
+  "curator_predecessor_files_unchanged": 353,
+  "coordinator_preservation": {
+    "files": 6103,
+    "unchanged": 6103,
+    "failures": 0,
+    "original_datasets_models_scores_and_prior_review_packages_unchanged": true
+  },
+  "curator_safe_file_sha256": {
+    "aggregate-status.json": "5e648ca677af88d266e29d213e4b037193881005b3a449d81bc95cc2d54ee9c3",
+    "verification-manifest.json": "4e010bb9dd7425decfb7828d6967b118dc17e4b62f70f989539c9e9ce4ee4f07"
+  },
+  "source_files": {
+    "backend/training/flood_ner/bounded_discovery.py": "e3113eeef320e6c85841974b6ddb1e4769315f3bdbc686357ed290b2f388295c",
+    "backend/tests/test_flood_ner_bounded_discovery.py": "4fb2c3cefd770ba4b45f75a55e8ddc4ec79ab199ec5923f3d7eda14501b67ed2"
+  },
+  "public_api_dependencies_database_schema_unchanged": true,
+  "no_training_inference_export_admission_freeze_seal_upload_push": true
+}

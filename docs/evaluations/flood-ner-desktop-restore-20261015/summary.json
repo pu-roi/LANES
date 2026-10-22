@@ -1,0 +1,124 @@
+{
+  "schema_version": "lanes-desktop-research-restore-v1",
+  "state": "restored_and_validated",
+  "repository_root": "E:\\Files\\Documents\\GitHub\\LANES",
+  "branch": "roi-branch",
+  "archives": {
+    "LANES-400-sample-private-study-corrected-20261015-v1.zip": {
+      "sha256": "39d71d1f660a12887c4007246530253be0895ced32649b0f2e5c75bcbdc7a910",
+      "entries": 607
+    },
+    "academic-use-decision-proposals-v1.zip": {
+      "sha256": "ef57e597a885b5441f2531c54ab7e2fea6e89b32e7a46e2b67ae1cc52ec0fc38",
+      "entries": 32
+    },
+    "evidence-support-v1.zip": {
+      "sha256": "cab3b693eac8949a376bc08b1c713139d4c0ffe057d0f2da0ea9b27c88df7f25",
+      "entries": 40
+    }
+  },
+  "restored_count": 946,
+  "skipped_identical_count": 17,
+  "conflicts": [],
+  "restored_checkpoint_groups": {
+    "backend/training/flood_ner/artifacts/400-sample-study-package-corrected-20261015-v1": 607,
+    "backend/training/flood_ner/artifacts/captures": 262,
+    "backend/training/flood_ner/artifacts/study-use-preparation-20261015": 10,
+    "backend/training/flood_ner/artifacts/readiness-20261014": 5,
+    "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1": 32,
+    "backend/training/flood_ner/artifacts/private-access-20261015-v1": 1,
+    "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1": 15,
+    "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1": 10,
+    "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1": 3,
+    "backend/training/flood_ner/artifacts/desktop-restore-20261015-v1": 1
+  },
+  "validation": {
+    "state": "passed",
+    "location_records": 400,
+    "unique_articles": 139,
+    "location_entity_spans": 1497,
+    "contextual_v3_pairs": 40,
+    "languages": {
+      "english": 200,
+      "taglish": 200
+    },
+    "partitions": {
+      "train": 280,
+      "test": 60,
+      "dev": 60
+    },
+    "context_languages": {
+      "english": 20,
+      "taglish": 20
+    },
+    "schema_span_and_group_validation": "passed",
+    "frozen_tokenizer": "lanes.xx.address-v3",
+    "tokenizer_sha256": "e489899630ba84b61f5823dd44b0e7dc373c5f15465dc06e911d44245c591384",
+    "context_pairing_and_category_validation": "passed",
+    "source_capture_validation": "passed for 139 articles",
+    "current_review_evidence_validation": "passed",
+    "proposal_bindings_verified": 9,
+    "proposal_validation": {
+      "articles": 139,
+      "samples": 400,
+      "contextual_pairs": 40,
+      "recommendations": {
+        "hold_for_clarification": 69,
+        "recommend_private_academic_use": 70
+      },
+      "actual_project_decisions": 0,
+      "training_admitted": 0,
+      "docbin_exported": 0
+    },
+    "restored_file_hashes_verified": 963,
+    "historical_reference_gaps": {
+      "backend/training/flood_ner/artifacts/adviser-guidance-20261015-v1/manifest.json": {
+        "expected": "d9c8cc984afffefdb13fb16b801a5257a4e227e0f8873a925026ea1865219b6f",
+        "actual": "missing",
+        "referenced_by": "backend/training/flood_ner/artifacts/private-access-20261015-v1/adviser-and-access-update.json"
+      },
+      "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review.json": {
+        "expected": "d4f4406295563d0da7acd8ae562dd3ebf136e56082a6c83866ffc6a9ccce603d",
+        "actual": "missing",
+        "referenced_by": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review-v2.json"
+      },
+      "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/manifest.json": {
+        "expected": "5b8e3a752d248a1f14ce3857290272957db6ea75c735c9724ab6b07624985f09",
+        "actual": "missing",
+        "referenced_by": "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1/manifest.json"
+      }
+    },
+    "source_admission_counts": {
+      "research_only": 400
+    },
+    "source_reuse_counts": {
+      "unknown": 400
+    },
+    "actual_project_decisions": 0,
+    "training_started": false,
+    "model_inference_performed": false,
+    "deployment_started": false,
+    "gpu_environment_modified": false,
+    "validation_interpreter": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\gpu-qualification-20261015\\research-env\\Scripts\\python.exe",
+    "spacy_version": "3.7.5",
+    "timezone_data_source": "C:\\Users\\CAMBE\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\Lib\\site-packages\\tzdata\\zoneinfo",
+    "manila_timezone_sha256": "1681a62321489c79277c4d74dcf6e20fae46530b269d85b3179a06cacd3706a6"
+  },
+  "existing_work_files_verified_before_status_updates": 30,
+  "existing_gpu_files_verified_unchanged": 71,
+  "gpu_package_inventory_unchanged": 73,
+  "backend_env_unchanged": true,
+  "private_restore_files_ignored": true,
+  "extra_backend_directory_created": false,
+  "training_started": false,
+  "deployment_started": false,
+  "next_task_from_task_plan": "Finalize the case-specific supported research-use basis and explicit project decision using existing evidence, considering statutory-exception and contractual/origin questions separately. Publisher replies are optional evidence, not a universal prerequisite. Apply supported admission separately, then qualify news-cohort tokenization, export and train using the frozen partitions. Desktop inventory and constructed GPU environment qualification are complete; preserve the isolated environment and measured recipe; no news-model processing while admission is unresolved. Deployed inference/defense demonstration scope must also be assessed separately from the existing private-use review. Keep the 400-sample requirements and release checks; the 157 recommended passages are not a replacement cohort. [@roicambe](https://github.com/roicambe) (Roi Cambe)",
+  "notes": [
+    "Initial sandbox registry view returned C:/Users/CAMBE/Downloads; permitted host read identified actual E:/Files/Downloads.",
+    "Expanded download directory disappeared during inspection; exact inner archives were recovered from the remaining Google Drive wrapper and reverified.",
+    "Three supplied ZIPs plus one exact SHA-bound historical metadata file from the same wrapper were used; no differing file was overwritten.",
+    "Initial source-capture verification lacked Windows IANA timezone data. Reused existing bundled tzdata through process-local zoneinfo search paths; GPU packages were unchanged.",
+    "Current proposal/review validators pass; three historical audit references are not included in the available download.",
+    "Restoration verifies the frozen corpus tokenizer; it performs no pretrained model inference or new model-tokenizer qualification."
+  ]
+}

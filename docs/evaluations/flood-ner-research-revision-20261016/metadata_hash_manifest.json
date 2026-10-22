@@ -1,0 +1,20 @@
+{
+  "contains_article_or_passage_text": false,
+  "files": {
+    "138-article-links.csv": "a078466f77bf47c92609532e70cc8090c6fbfc74a50cf0679aea66a14a194741",
+    "400-sample-links.csv": "ee317437f898d08261bf4658cf7af00438705fa8aaba3c90cada2979bd3c3494",
+    "README.md": "4a0ef367d3d4762ebbb42ce72bf049cd24fc0ddfb7347116f672c5c67222863d",
+    "candidate-review-register.csv": "17af54a35adc1fb5a82cc400d0bf238c228532c71d5baa5b1957829eb2226f4f",
+    "comparison.json": "7621092bbfd7c1bee610100085060ab180bf39e08dc9f5af2840d64045f85072",
+    "context-coverage.json": "21f1d9d00e44194a85fd53df38416556769d3695358ef17c0652fcd29d549780",
+    "coverage.json": "cf48ef6a5edcbd6c6810e63e3e244d34d2a7dacd4eb84e74b2622c36385c9a2e",
+    "paper-method-notes.md": "beec29ca66d095fa95462fb85e959c1d59b26dbabd6f82054182852a60d75400",
+    "selection-attempts.json": "6195b8e7ec14be9c2a628217005812e20a7622bff3b08a4051fc79a735cede89",
+    "selection-change-register.csv": "695c35be399069b34f9046b83d8492c5529508572fa9367a0835b163eea4614d",
+    "source-use-assessments.json": "d87526596eb5731f039617d877d32d59889802b0a450d38298a2e343ef42e98c",
+    "source-use-register.csv": "8ddd3d768ecf2dd79d0407cff02f21150776d1985ef1d7d21667f2212ee0bc6b",
+    "status.json": "709f30758eea2e9db4d9880b14321981ec487386a37d95400cdc13781b2e15fb",
+    "verification.json": "e966f2ed36b789bdd22e3c2dc35495af3745a2ae83fe0bb3d20242a4cf8f4a8d"
+  },
+  "training_admitted": 0
+}

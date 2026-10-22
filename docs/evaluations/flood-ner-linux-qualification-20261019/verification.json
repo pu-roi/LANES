@@ -1,0 +1,47 @@
+{
+  "annotation_references_emitted": false,
+  "complete_article_workload_frozen": false,
+  "evidence_hashes": {
+    "asset-preservation.json": "71e18eb20250440aefa15c329c2fe37894ecf3d02faea7918bffd44ebda3c53c",
+    "engine-diagnostic.json": "4ace9aae05e86a73f26c3fe14198fa0bd920471b00b35cbfa116fb0e29f75009",
+    "final-backend-log.json": "18633fef6abbd10fa0b7cfcef80b34b8e31d4518619c8ac78a06b02774547736",
+    "fresh-regressions.json": "4f5a33293d7dc148882be4c15adb6482fd00d4f1434ec1d37ad3438a6a5a850a",
+    "frozen-policy.json": "a358f26fcf7a43bb7018771a5f2aa0768b7780a196d4996641c509a2d0d40954",
+    "normal-restart-interruption.json": "313c83f8aba413e600a18852952ce0d7f1fddfbea925f0df76ee3b457778f75a",
+    "training-projection-receipt.json": "8c0aeb4a35e140c88801dc91061f4fb5ce3b088bab0e5077b5fbb90492854a34"
+  },
+  "final_preflight_sha256": "6af27f7e9be00ef39c8355f82305f2f18ffba5613716810e3fb90e609325ddaf",
+  "fresh_checks": {
+    "linux_model_execution": false,
+    "new_linux_checks": 71,
+    "passed": 393
+  },
+  "implementation": {
+    "linux_runtime_qualification.py": "b1f4d071b6c2f7950b1cf9b1bfdd43f66fd48080a060b5bf2673074ca2561a1f",
+    "linux_runtime_worker.py": "59dd75ec00af211f51f460d75d5e652b244a1d82b4e789867f18196dd0d608fa",
+    "runtime_preflight.py": "ba21503a2d3335fac7d44c25b7ed71761d69748e6b761867a03e7c0c91ffddf3",
+    "runtime_probe_worker.py": "0457b88145e2b4192405d53f272b9d0e18cd4701a77086e25a8c3efeb3302589"
+  },
+  "outcome": {
+    "application_connected": false,
+    "compatibility": "unmeasured",
+    "engine_available": false,
+    "failure_handling": "constructed_tests_only",
+    "gate_3_cleared": false,
+    "image_built": false,
+    "linux_inference_run": false,
+    "performance": "unmeasured",
+    "status": "blocked_engine",
+    "training_started": false
+  },
+  "preservation": {
+    "file_hashes": 564,
+    "holdout_metadata_only": 55,
+    "validation_metadata_only": 27
+  },
+  "preserved": true,
+  "schema": "lanes-linux-runtime-blocked-verification-v1",
+  "system_repairs_performed": false,
+  "test_file_sha256": "0494fa678e7dccaca29d871ed2ca5123e2122fbe5c74cbd29b0e4894d45b2ee3",
+  "training_projection_count": 345
+}

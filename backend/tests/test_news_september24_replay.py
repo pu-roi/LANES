@@ -269,9 +269,9 @@ async def test_durable_queue_and_main_reader_preserve_historical_evidence(queue_
         version = db.query(NewsArticleVersion).filter_by(article_id=article_id).one()
         assert datetime.fromisoformat(version.input_snapshot["published_at"]) == entry.published_at
         assert version.input_snapshot["article_text"] == BODY
-        collection, count, _, _, _ = list_collection(db, page=1, page_size=12, search="", publisher=None, status="all")
+        collection, count, _, _, _, _ = list_collection(db, page=1, page_size=12, search="", publisher=None, status="all")
         assert count == 1 and tuple(collection[0][4:]) == ("ready", 5, 0)
-        _, attention_count, _, _, _ = list_collection(db, page=1, page_size=12, search="", publisher=None, status="attention")
+        _, attention_count, _, _, _, _ = list_collection(db, page=1, page_size=12, search="", publisher=None, status="attention")
         assert attention_count == 0
 
 

@@ -1,0 +1,1 @@
+Private backup/handoff of the existing AI silver corpus was verified. The 40 contextual pairs remain within the same 400 passages. This task provides no model predictions, training result, independent annotation validation or accuracy measurement. Full text remains private and ignored by Git.

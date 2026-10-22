@@ -1,0 +1,44 @@
+{
+  "archive_and_saved_selection_task_complete": true,
+  "training_ready": false,
+  "recorded_v3_payloads_verified": 3863,
+  "recorded_historical_archive_entries_verified": 7,
+  "known_drive_metadata_items_verified": 19,
+  "known_backups_verified_is_not_complete_external_history": true,
+  "user_history_status": "not_sure",
+  "independent_test_sealed": false,
+  "unchanged_test_design": {
+    "records": 60,
+    "english": 30,
+    "taglish": 30,
+    "positives_each_language": 27,
+    "negatives_each_language": 3,
+    "max_selected_passages_per_source": 3
+  },
+  "development_qualified_candidate_count_unchanged": 402,
+  "development_proposed_train_dev_unchanged": {
+    "train": 345,
+    "dev": 57
+  },
+  "current_conditional_selection_after_recorded_history_and_scoped_use": {
+    "english_genuine_negative": 3,
+    "english_positive": 17,
+    "taglish_genuine_negative": 3,
+    "taglish_positive": 13
+  },
+  "current_conditional_target_feasible": false,
+  "language_maxima_must_not_be_added_from_different_witnesses": true,
+  "missing_history_evidence": [
+    "Current source/capture/annotation/archive inventory from the recorded original desktop checkout, compared with the October16 v3 manifest.",
+    "Locations and metadata inventories of any article-collection folders/backups outside the known checkout/Drive handoff; existence remains unknown.",
+    "Evidence resolving whether other desktop/laptop collections before or after the handoff were omitted."
+  ],
+  "remaining_requirements": [
+    "Resolve actual source/event/reference/source-use holds reported by the isolated curator.",
+    "Resolve external/unrecorded cross-computer history uncertainty before any fresh-test certification.",
+    "Meet unchanged balanced positive/negative and source-cap constraints using supported independent material; do not silently relax quotas or reopen collection.",
+    "Only after the independent-test boundary passes: actual admission, grouped freeze, qualified export and desktop GPU handoff."
+  ],
+  "feasibility_scope": "Curator-reviewed finite candidate/alternative windows, not every possible article segmentation or unseen collection.",
+  "actual_admission_partition_freeze_training_export_inference_training_upload_push": false
+}

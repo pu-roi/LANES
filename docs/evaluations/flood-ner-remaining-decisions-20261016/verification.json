@@ -1,0 +1,85 @@
+{
+  "all_articles": 139,
+  "all_samples": 400,
+  "article_csv_unicode_round_trip": 68,
+  "bounded_local_copy_containers": 4,
+  "clause_pointers_verified": 22,
+  "contextual_pairs": 40,
+  "corrected_philstar_toc_pointer_rejected": true,
+  "current_index_139_sources_400_memberships_reconciled": true,
+  "direct_negative_validation_checks_not_runtime_test_suite": {
+    "apply_admission": "rejected",
+    "changed_offset": "rejected",
+    "changed_split": "rejected",
+    "duplicate_article": "rejected",
+    "false_v2": "rejected",
+    "incorrect_clause_hash": "rejected",
+    "invent_human": "rejected",
+    "invent_public_only_acquisition": "rejected",
+    "missing_article": "rejected",
+    "missing_factor": "rejected",
+    "old_toc_pointer": "rejected",
+    "publisher_permission": "rejected",
+    "source_hash": "rejected",
+    "unsupported_decision": "rejected"
+  },
+  "documentation_audit": {
+    "audited_no_change_required": [
+      "tech_stack",
+      "feature_reference",
+      "architectural_decisions",
+      "system_documentation",
+      "database_design"
+    ],
+    "reason": "No API, interface, runtime, dependency, architecture or schema changes; one research-evidence defect recorded.",
+    "updated": [
+      "task_plan",
+      "progress",
+      "documentation_index",
+      "ner_roadmap",
+      "laptop_guide",
+      "paper_method_notes",
+      "bug_log"
+    ]
+  },
+  "export_destination_created": false,
+  "exports": 0,
+  "external_messages_uploads_or_git_publication": false,
+  "historical_proposal_zero_decisions_not_current_decision_count": true,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "missing_desktop_predecessor_recreated": false,
+  "model_files_hash_verified_without_loading": 23,
+  "news_model_processing": false,
+  "nonacademic_outcomes_and_frozen_inputs_unchanged": true,
+  "original_proposal_validation": {
+    "actual_project_decisions": 0,
+    "articles": 139,
+    "contextual_pairs": 40,
+    "docbin_exported": 0,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "samples": 400,
+    "training_admitted": 0
+  },
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "prior_71_dispositions_preserved": true,
+  "prior_court_clause_pointers_reverified": 2,
+  "prior_files_unchanged": 1500,
+  "private_hash_entries_verified": 16,
+  "research_only_export_refusal_records": 400,
+  "reviewed_articles": 68,
+  "reviewed_passages": 240,
+  "runtime_api_cli_dependency_or_schema_changes": false,
+  "test_suite_rerun": false,
+  "training_admitted": 0,
+  "verified_at": "2026-10-16T00:44:13.981280+08:00"
+}

@@ -1,0 +1,18 @@
+{
+  "all_contexts_unchanged": 40,
+  "held_scope_linked_pairs": [
+    {
+      "language": "taglish",
+      "passage_sha256": "89824c5fbbbf9c978f141a0879ab130559458526413a402129c70ecb34028587",
+      "record_id": "revision3-13d600f079388082fadb",
+      "source_id": "news-7a824863d687424a"
+    },
+    {
+      "language": "taglish",
+      "passage_sha256": "6a17443304b01b777098935298ada0e36a4c867c2ea25369a7ef341a9a145de3",
+      "record_id": "revision3-d44c297c267072d6ac6b",
+      "source_id": "news-c7216b3994ab5614"
+    }
+  ],
+  "interpretation": "No pairs were changed. A future authorised sample-scope proposal must account for these linked pairs and preserve the 40-pair language/category/article requirements. This is not an alternative selection or source-use admission."
+}

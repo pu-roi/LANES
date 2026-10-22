@@ -1,0 +1,157 @@
+{
+  "accepted": true,
+  "ai_assisted_silver": true,
+  "application_connected": false,
+  "collective_misses_recovered_in_combined": true,
+  "eligible_training_references": 23,
+  "four_transport_recoveries_retained": true,
+  "generalization_claim": false,
+  "learned_depth_time_unfinished": true,
+  "location_recognition_rerun": false,
+  "new_by_family": {
+    "collective_locality": {
+      "passed": 12,
+      "total": 12
+    },
+    "competing_subjects": {
+      "passed": 12,
+      "total": 12
+    },
+    "predicate_attachment": {
+      "passed": 12,
+      "total": 12
+    }
+  },
+  "new_data": false,
+  "new_fixture_baseline_passed": 13,
+  "new_fixture_passed": 36,
+  "new_fixture_total": 36,
+  "no_post_result_tuning": true,
+  "preserved_context_fixtures": 238,
+  "pure_tagalog_real_performance": "unmeasured",
+  "raw_records": 334,
+  "references_unchanged": true,
+  "saved_location_fixtures_preserved": 36,
+  "saved_location_rows_preserved": 345,
+  "software_checks_passed": 419,
+  "system_connection_cleared": false,
+  "temporal_by_language": {
+    "english": {
+      "passed": 12,
+      "total": 12
+    },
+    "tagalog": {
+      "passed": 12,
+      "total": 12
+    },
+    "taglish": {
+      "passed": 12,
+      "total": 12
+    }
+  },
+  "temporal_passed": 36,
+  "temporal_total": 36,
+  "three_holds_retained": true,
+  "views": {
+    "combined": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "lost_correct_associations": 0,
+        "lost_v38_correct": 0,
+        "new_fixture_failures": 0,
+        "new_incorrect_associations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 0
+      },
+      "counts": {
+        "fn": 1,
+        "fp": 0,
+        "tp": 104
+      },
+      "gained_correct": 2,
+      "qualifies_context_checks": true,
+      "seven_misses_recovered": 6
+    },
+    "explicit_road": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "lost_correct_associations": 0,
+        "lost_v38_correct": 0,
+        "new_fixture_failures": 0,
+        "new_incorrect_associations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 0
+      },
+      "counts": {
+        "fn": 7,
+        "fp": 0,
+        "tp": 98
+      },
+      "gained_correct": 0,
+      "qualifies_context_checks": true,
+      "seven_misses_recovered": 0
+    },
+    "original": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "lost_correct_associations": 0,
+        "lost_v38_correct": 0,
+        "new_fixture_failures": 0,
+        "new_incorrect_associations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 0
+      },
+      "counts": {
+        "fn": 7,
+        "fp": 0,
+        "tp": 98
+      },
+      "gained_correct": 0,
+      "qualifies_context_checks": true,
+      "seven_misses_recovered": 0
+    },
+    "shared_locality": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "lost_correct_associations": 0,
+        "lost_v38_correct": 0,
+        "new_fixture_failures": 0,
+        "new_incorrect_associations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 0
+      },
+      "counts": {
+        "fn": 5,
+        "fp": 0,
+        "tp": 100
+      },
+      "gained_correct": 2,
+      "qualifies_context_checks": true,
+      "seven_misses_recovered": 2
+    },
+    "transport_asset": {
+      "checks": {
+        "existing_fixture_failures": 0,
+        "expression_regressions": 0,
+        "lost_correct_associations": 0,
+        "lost_v38_correct": 0,
+        "new_fixture_failures": 0,
+        "new_incorrect_associations": 0,
+        "qualifier_failures": 0,
+        "temporal_failures": 0
+      },
+      "counts": {
+        "fn": 3,
+        "fp": 0,
+        "tp": 102
+      },
+      "gained_correct": 0,
+      "qualifies_context_checks": true,
+      "seven_misses_recovered": 4
+    }
+  }
+}

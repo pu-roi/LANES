@@ -6,7 +6,7 @@ import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { 
-  getZone, getZones, deactivateZone, deactivateZonesBulk, AvoidanceZone,
+  getZone, deactivateZone, deactivateZonesBulk, AvoidanceZone,
   getPendingReports, getReportForSpatialReview, approveReport, rejectReport,
   createOfficialZone,
   FloodReport
@@ -14,6 +14,8 @@ import {
 import { Button, FloodReportDetailsModal, Modal, Pagination, Tabs, useToast } from "@/shared/ui";
 import BaseMap from "@/shared/ui/map/BaseMap";
 import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
+import { useFloodHeatmapLayer } from "@/features/map/hooks/useFloodHeatmapLayer";
+import { useStaffMapData } from "@/features/map/hooks/useStaffMapData";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
 import { usePendingReportsLayer } from "@/features/map/hooks/usePendingReportsLayer";
 import { computeCenterCoordinate, flyToFeature, flyToCoordinates } from "@/features/map/mapGeoUtils";
@@ -31,6 +33,7 @@ import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { NeedsReviewPanel } from "./review/NeedsReviewPanel";
 import { useNewsPlacementLayer } from "./review/useNewsPlacementLayer";
 import type { PlacementEnvelope } from "./review/reviewApi";
+import { type ZoneQueueItem, zoneDetailQuery, contributorDetailQuery, invalidateSpatialBrowsing } from "./zoneQueueApi";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { RejectFloodReportModal } from "./components/RejectFloodReportModal";
@@ -119,7 +122,6 @@ class AnalyticsControl {
   }
 }
 
-const LIMIT = 10;
 
 // Pasig City Geographical Bounding Box
 const PASIG_BOUNDS: [[number, number], [number, number]] = [
@@ -154,6 +156,7 @@ export default function LiveMapPage() {
   });
   const [reviewReport, setReviewReport] = useState<FloodReport | null>(null);
   const [reviewCount, setReviewCount] = useState<number | undefined>(undefined);
+  const [zoneCount, setZoneCount] = useState<number | null>(null);
   const [newsPlacement, setNewsPlacement] = useState<PlacementEnvelope | null>(null);
   const [selectedNewsCandidate, setSelectedNewsCandidate] = useState<string | null>(null);
   const [newsLayerError, setNewsLayerError] = useState<string | null>(null);
@@ -207,8 +210,9 @@ export default function LiveMapPage() {
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [analyticsControl, setAnalyticsControl] = useState<AnalyticsControl | null>(null);
 
-  // Responsive viewport check
-  const isMobile = useMediaQuery("(max-width: 767px), (pointer: coarse)");
+  // Layout follows available width; touch only controls map interactions.
+  const isCompactLayout = useMediaQuery("(max-width: 767px)");
+  const isTouchDevice = useMediaQuery("(max-width: 767px), (pointer: coarse)");
   const [isMobileMapVisible, setIsMobileMapVisible] = useState(false);
 
   // DRAWER WIDTH: Consistent standard width across secondary workspace panels
@@ -218,10 +222,13 @@ export default function LiveMapPage() {
 
   // Active Zones List State
   const [page, setPage] = useState(1);
+  const [inspectedZones, setInspectedZones] = useState<AvoidanceZone[]>([]);
   const [activeOnly, setActiveOnly] = useState(true);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
+  const [zoneToShowOnMap, setZoneToShowOnMap] = useState<AvoidanceZone | null>(null);
+  const [groupToShowOnMap, setGroupToShowOnMap] = useState<ZoneQueueItem | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
   const [rejectionReport, setRejectionReport] = useState<FloodReport | null>(null);
@@ -294,16 +301,18 @@ export default function LiveMapPage() {
   }, [createZoneDraftUserId, isAuthenticated, markSecondaryWorkspaceOpened]);
 
   // Queries
-  const { data: mapZones, refetch: refetchMap, isError: mapZonesError, isFetching: mapZonesFetching } = useQuery({
-    queryKey: ["activeZonesMap"],
-    queryFn: () => apiClient.get<any[]>("/reports/active-zones"),
-    staleTime: 15000,
-    refetchInterval: 60000,
-  });
+  const mapRead = useStaffMapData(mapInstance, "zones", "", isAuthenticated && pathname === "/admin/map" &&
+    (!isCompactLayout || isMergeDrawerOpen || isMobileMapVisible) &&
+    (activeTab === "zones" || isMergeDrawerOpen || isCreateZoneDrawerOpen || isEditZoneDrawerOpen));
+  const mapZones = useMemo(() => mapRead.features.map(feature => ({ ...feature.properties, geometry: feature.geometry }) as AvoidanceZone), [mapRead.features]);
+  const refetchMap = mapRead.refetch;
+  const mapZonesError = !!mapRead.error;
+  const mapZonesFetching = mapRead.isFetching;
 
   const { data: pendingReports, refetch: refetchPending } = useQuery({
     queryKey: ["adminPendingReports"],
     queryFn: getPendingReports,
+    enabled: isAuthenticated && pathname === "/admin/map" && (activeTab === "pending" || isMergeDrawerOpen),
     refetchInterval: 10000,
   });
   const focusedReportId = Number(searchParams.get("focus_report_id")) || null;
@@ -313,6 +322,11 @@ export default function LiveMapPage() {
     enabled: isAuthenticated && focusedReportId !== null,
     retry: 1,
   });
+  const handoffZone = useQuery({ ...zoneDetailQuery(focusedModerationReport?.zone_id),
+    enabled: isAuthenticated && focusedModerationReport?.status === "approved" && focusedModerationReport.zone_id != null });
+  const focusedZone = useQuery({ ...zoneDetailQuery(selectedZoneId), enabled: isAuthenticated && selectedZoneId !== null });
+  const contributorFocus = useQuery({ ...contributorDetailQuery(selectedContributorId), enabled: isAuthenticated && selectedContributorId !== null });
+  useEffect(() => { if (mapRead.error || focusedZone.error || contributorFocus.error) showMapError("Could not load the selected flood geometry. Please retry the zone or refresh the map."); }, [mapRead.error, focusedZone.error, contributorFocus.error, showMapError]);
 
   useEffect(() => {
     if (focusedReportError) showMapError("Could not locate the selected flood report. It may be unavailable or no longer exist.");
@@ -341,7 +355,7 @@ export default function LiveMapPage() {
     // still loading; otherwise the follow-up render has nothing left to focus.
     if (lastFocusedParamRef.current === queryKey) return;
     if (focusId && (focusedReportFetching || focusedReportError || !focusedModerationReport)) return;
-    if (focusedModerationReport?.status === "approved" && mapZonesFetching) return;
+    if (focusedModerationReport?.status === "approved" && handoffZone.isFetching) return;
 
     const executeFocus = () => {
       // 1. Direct coordinates passed from Reports Page
@@ -368,7 +382,7 @@ export default function LiveMapPage() {
           setNewsPlacement(null);
           setSelectedNewsCandidate(null);
           setIsolatedReportId(null);
-          const targetZone = (mapZones || []).find((zone: AvoidanceZone) =>
+          const targetZone = handoffZone.data || (mapZones || []).find((zone: AvoidanceZone) =>
             targetReport.zone_id != null ? zone.id === targetReport.zone_id :
               zone.report_id === idNum || zone.contributors?.some((contributor) => contributor.report_id === idNum));
           setSelectedZoneId(targetZone?.id ?? null);
@@ -410,18 +424,21 @@ export default function LiveMapPage() {
     // Small delay ensures MapLibre terrain and canvas resizing are settled
     const timer = setTimeout(executeFocus, 250);
     return () => clearTimeout(timer);
-  }, [searchParams, focusedModerationReport, focusedReportFetching, focusedReportError, mapZones, mapZonesFetching, mapZonesError, mapInstance, isLoaded, showMapError]);
+  }, [searchParams, focusedModerationReport, focusedReportFetching, focusedReportError, handoffZone.data, handoffZone.isFetching, mapZones, mapZonesFetching, mapZonesError, mapInstance, isLoaded, showMapError]);
 
-  const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
-    queryKey: ["adminZones", page, activeOnly],
-    queryFn: () => getZones(page, LIMIT, activeOnly),
-    placeholderData: (prev) => prev,
+  const countQuery = useQuery({
+    queryKey: ["adminZones", "count"],
+    queryFn: ({ signal }) => apiClient.get<{ total: number }>("/admin/zones/count", { signal }),
+    enabled: isAuthenticated && pathname === "/admin/map" && (activeTab !== "zones" || !activeOnly),
+    staleTime: 15_000,
     refetchInterval: 15000,
   });
+  // Workspace save callbacks must refresh summaries, cards and open member pages.
+  const refetchList = useCallback(() => invalidateSpatialBrowsing(queryClient), [queryClient]);
 
   const selectedReport = pendingReports?.find((report) => report.id === selectedReportId)
     || (reviewReport?.id === selectedReportId ? reviewReport : null);
-  const selectedZone = (mapZones || []).find((zone: AvoidanceZone) => zone.id === selectedZoneId) || null;
+  const selectedZone = inspectedZones.find(zone => zone.id === selectedZoneId) || focusedZone.data || mapZones.find(zone => zone.id === selectedZoneId) || null;
 
   const openMergeWorkspace = (report: FloodReport) => {
     // Keep Pane 2 at its current width when moving between workspaces. The
@@ -520,7 +537,7 @@ export default function LiveMapPage() {
   const newsPreviewEnabled = reviewingNews && activeTab === "pending" && pathname === "/admin/map"
     && !isCreateZoneDrawerOpen && !isEditZoneDrawerOpen && !isMergeDrawerOpen;
   useNewsPlacementLayer(mapInstance, isLoaded, newsPlacement, selectedNewsCandidate, newsPreviewEnabled,
-    !isMobile || isMobileMapVisible, setSelectedNewsCandidate, setNewsLayerError, undefined, isMobile);
+    !isCompactLayout || isMobileMapVisible, setSelectedNewsCandidate, setNewsLayerError, undefined, isTouchDevice);
   const selectQueueReportFromMap = useCallback((id: number | null) => {
     handleReportFocusChange(id);
     selectReview(id === null ? null : `user_report:${id}`);
@@ -538,18 +555,31 @@ export default function LiveMapPage() {
   // that its baseline is represented exclusively by the preview layer (orange dashed line).
   const visibleMapZones = useMemo(() => {
     if (isolatedReportId !== null) return [];
-    if (isEditZoneDrawerOpen && editingZone) {
-      return (mapZones || []).filter((z: AvoidanceZone) => z.id !== editingZone.id);
+    const source = [...mapZones];
+    if (selectedZone) {
+      const report = contributorFocus.data;
+      const focused = report && report.zone_id === selectedZone.id ? { ...selectedZone, contributors: [
+        ...(selectedZone.contributors || []).filter(item => item.report_id !== report.id),
+        { report_id: report.id, reporter_name: report.reporter_name || "Reporter", reporter_username: report.reporter_username ?? undefined,
+          reporter_role: report.reporter_role ?? undefined, reporter_trust_score: report.reporter_trust_score ?? 100,
+          is_primary: selectedZone.report_id === report.id, raw_text: report.raw_text || "", severity: report.severity,
+          depth: report.depth ?? undefined, created_at: report.created_at, geometry: report.geometry },
+      ] } : selectedZone;
+      const index = source.findIndex(zone => zone.id === selectedZone.id);
+      if (index >= 0) source[index] = focused; else source.push(focused);
     }
-    return mapZones;
-  }, [isEditZoneDrawerOpen, editingZone, isolatedReportId, mapZones]);
+    if (isEditZoneDrawerOpen && editingZone) {
+      return source.filter((z: AvoidanceZone) => z.id !== editingZone.id);
+    }
+    return source;
+  }, [isEditZoneDrawerOpen, editingZone, isolatedReportId, mapZones, selectedZone, contributorFocus.data]);
 
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(
     mapInstance,
     isLoaded,
     visibleMapZones,
-    isMobile,
+    isTouchDevice,
     activeTab,
     selectedZoneId,
     setSelectedZoneId,
@@ -564,7 +594,7 @@ export default function LiveMapPage() {
     selectQueueReportFromMap,
     selectedReportId,
     isolatedReportId,
-    isMobile
+    isTouchDevice
   );
   useMergePreviewLayer({
     map: mapInstance,
@@ -633,7 +663,7 @@ export default function LiveMapPage() {
   // Heatmap Data for Analytics
   const { data: heatmapData } = useQuery({
     queryKey: ["analytics", "heatmap"],
-    queryFn: () => apiClient.get<any>("/analytics/heatmap"),
+    queryFn: () => apiClient.get<GeoJSON.FeatureCollection>("/analytics/heatmap"),
     enabled: isAnalyticsOpen,
   });
 
@@ -644,46 +674,9 @@ export default function LiveMapPage() {
     enabled: isAnalyticsOpen,
   });
 
-  // Heatmap Layer Effect
-  useEffect(() => {
-    if (!isLoaded || !mapInstance) return;
-    const map = mapInstance;
-    if (!map.style) return;
-    
-    if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
-    if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
-
-    if (!isAnalyticsOpen || !heatmapData || !heatmapData.features || heatmapData.features.length === 0) return;
-
-    map.addSource("heatmap-source", {
-      type: "geojson",
-      data: heatmapData
-    });
-
-    map.addLayer({
-      id: "heatmap-layer",
-      type: "heatmap",
-      source: "heatmap-source",
-      maxzoom: 15,
-      paint: {
-        "heatmap-weight": ["get", "weight"],
-        "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 15, 3],
-        "heatmap-color": [
-          "interpolate",
-          ["linear"],
-          ["heatmap-density"],
-          0, "rgba(0, 0, 255, 0)",
-          0.2, "royalblue",
-          0.4, "cyan",
-          0.6, "lime",
-          0.8, "yellow",
-          1, "red"
-        ],
-        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 15, 20],
-        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 15, 0]
-      }
-    });
-  }, [heatmapData, isLoaded, isAnalyticsOpen, mapInstance]);
+  useFloodHeatmapLayer(mapInstance, isLoaded, heatmapData, isAnalyticsOpen, {
+    onError: message => { if (message) showMapError(message); },
+  });
 
   // Pending cards delegate their initial fly-to to selection state. The tab
   // switch effect below runs after this guard, avoiding a duplicate flight.
@@ -703,21 +696,21 @@ export default function LiveMapPage() {
         flyToFeature(mapInstance, selectedReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
       }
     } else {
-      if (!mapZones) return;
+      if (!mapRead.summary && !mapRead.error) return;
       if (selectedZone?.geometry) {
         flyToFeature(mapInstance, selectedZone.geometry, selectedZone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
       }
     }
 
     lastPrimaryTabRef.current = activeTab;
-  }, [activeTab, isLoaded, mapInstance, mapZones, pendingReports, selectedReport, selectedZone]);
+  }, [activeTab, isLoaded, mapInstance, mapRead.summary, mapRead.error, mapZones, pendingReports, selectedReport, selectedZone]);
 
   // Mutations
   const approveMutation = useMutation({
     mutationFn: ({ id, payload }: { id: number; payload?: any }) => approveReport(id, payload),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
-      queryClient.invalidateQueries({ queryKey: ["adminZones"] });
+      void invalidateSpatialBrowsing(queryClient);
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setSelectedReportId((current) => current === variables.id ? null : current);
@@ -753,11 +746,12 @@ export default function LiveMapPage() {
   const deactivateSingleMutation = useMutation({
     mutationFn: (id: number) => deactivateZone(id),
     onSuccess: (_data, id) => {
-      queryClient.invalidateQueries({ queryKey: ["adminZones"] });
+      void invalidateSpatialBrowsing(queryClient);
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setConfirmId(null);
       setSelectedZoneId((current) => current === id ? null : current);
+      setSelectedIds((current) => current.filter(selected => selected !== id));
       toast.success("Zone Deactivated", `Avoidance zone #${id} has been deactivated and moved to the Archive Center.`);
     },
     onError: (err: any) => {
@@ -768,7 +762,7 @@ export default function LiveMapPage() {
   const deactivateBulkMutation = useMutation({
     mutationFn: (ids: number[]) => deactivateZonesBulk(ids),
     onSuccess: (_data, ids) => {
-      queryClient.invalidateQueries({ queryKey: ["adminZones"] });
+      void invalidateSpatialBrowsing(queryClient);
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setSelectedIds([]);
@@ -786,7 +780,7 @@ export default function LiveMapPage() {
       createOfficialZone(payload, mediaFiles),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminActiveZones"] });
-      queryClient.invalidateQueries({ queryKey: ["adminZones"] });
+      void invalidateSpatialBrowsing(queryClient);
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       refetchMap();
@@ -820,19 +814,18 @@ export default function LiveMapPage() {
     analyticsControl?.updateState(isAnalyticsOpen);
   }, [isAnalyticsOpen, analyticsControl]);
 
-  const zones = listData?.zones || [];
-  const total = listData?.total || 0;
-  const totalPages = Math.ceil(total / LIMIT);
+  const zones = inspectedZones;
+  const total = activeTab === "zones" && activeOnly ? zoneCount ?? countQuery.data?.total ?? 0 : countQuery.data?.total ?? zoneCount ?? 0;
 
   const handleZoneFocusChange = useCallback((id: number | null) => {
     setSelectedZoneId(id);
     if (id === null || (!isMergeDrawerOpen && !isCreateZoneDrawerOpen && !isEditZoneDrawerOpen)) return;
 
-    const nextZone = zones.find((zone: AvoidanceZone) => zone.id === id);
+    const nextZone = zones.find((zone: AvoidanceZone) => zone.id === id) || mapZones?.find((zone: AvoidanceZone) => zone.id === id);
     if (!nextZone) return;
 
     openEditZoneWorkspace(nextZone);
-  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, openEditZoneWorkspace, zones]);
+  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, openEditZoneWorkspace, zones, mapZones]);
 
   const handleExportCSV = () => {
     if (!statsData) return;
@@ -863,6 +856,68 @@ export default function LiveMapPage() {
     }
   };
 
+  const showZoneOnMap = (zone: AvoidanceZone) => {
+    if (!zone.geometry) {
+      showMapError(`Zone #${zone.id} has no mapped boundary to show.`);
+      return;
+    }
+    setSelectedZoneId(zone.id);
+    setSelectedContributorId(null);
+    setZoneToShowOnMap(zone);
+    setGroupToShowOnMap(null);
+    if (isCompactLayout) setIsMobileMapVisible(true);
+  };
+
+  const showGroupOnMap = (group: ZoneQueueItem) => {
+    if (!group.bounds) {
+      showMapError("This zone group has no valid mapped boundary to show.");
+      return;
+    }
+    setSelectedZoneId(null);
+    setSelectedContributorId(null);
+    setZoneToShowOnMap(null);
+    setGroupToShowOnMap(group);
+    if (isCompactLayout) setIsMobileMapVisible(true);
+  };
+
+  useEffect(() => {
+    if (!groupToShowOnMap?.bounds || !mapInstance || !isLoaded || (isCompactLayout && !isMobileMapVisible)) return;
+    const bounds = groupToShowOnMap.bounds;
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        mapInstance.resize();
+        mapInstance.fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], {
+          padding: 48, maxZoom: 16, pitch: mapInstance.getPitch(), duration: 1500, essential: false,
+        });
+      } catch {
+        showMapError("Could not show this zone group on the map.");
+      }
+      setGroupToShowOnMap(null);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [groupToShowOnMap, mapInstance, isLoaded, isCompactLayout, isMobileMapVisible, showMapError]);
+
+  useEffect(() => {
+    if (!zoneToShowOnMap || !mapInstance || !isLoaded || (isCompactLayout && !isMobileMapVisible)) return;
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        mapInstance.resize();
+        if (!flyToFeature(mapInstance, zoneToShowOnMap.geometry, zoneToShowOnMap.report_geometry, {
+          zoom: 16,
+          pitch: mapInstance.getPitch(),
+          duration: 1500,
+        })) {
+          showMapError(`Zone #${zoneToShowOnMap.id} has no valid map location.`);
+        }
+      } catch (err) {
+        console.error("Failed to show flood zone on map:", err);
+        showMapError(`Could not show Zone #${zoneToShowOnMap.id} on the map.`);
+      }
+      setZoneToShowOnMap(null);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [zoneToShowOnMap, mapInstance, isLoaded, isCompactLayout, isMobileMapVisible, showMapError]);
+
   const isZoneWorkspaceOpen = isCreateZoneDrawerOpen || isEditZoneDrawerOpen;
 
   return (
@@ -873,9 +928,9 @@ export default function LiveMapPage() {
         isPreviewEnabled={isCreateZoneDrawerOpen || isEditZoneDrawerOpen}
         isCreateZoneDrawerOpen={isCreateZoneDrawerOpen || isEditZoneDrawerOpen}
       />
-      <div className={`relative flex ${isMobile ? "flex-col" : "flex-row"} h-full w-full overflow-hidden bg-white`}>
+      <div className={`relative flex ${isCompactLayout ? "flex-col" : "flex-row"} h-full w-full overflow-hidden bg-white`}>
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
-        <div className={`${isMobile && (isMergeDrawerOpen && isMergeMobileMapVisible || isMobileMapVisible) ? "hidden" : "flex"} relative ${isMobile ? "w-full" : "w-[420px] xl:w-[460px]"} shrink-0 flex-col bg-white border-r border-slate-200 h-full z-40 shadow-sm`}>
+        <div className={`${isCompactLayout && (isMergeDrawerOpen && isMergeMobileMapVisible || isMobileMapVisible) ? "hidden" : "flex"} ${isMergeDrawerOpen || isZoneWorkspaceOpen ? "md:max-lg:hidden" : ""} relative ${isCompactLayout ? "w-full" : "w-[420px] xl:w-[460px]"} shrink-0 flex-col bg-white border-r border-slate-200 h-full z-40 shadow-sm`}>
           
           {/* Mode Switcher Tabs Header */}
           <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
@@ -914,7 +969,7 @@ export default function LiveMapPage() {
                 <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
                 <span className="ml-1.5 md:hidden">Refresh</span>
               </Button>
-              {isMobile && <Button
+              {isCompactLayout && <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
@@ -965,6 +1020,7 @@ export default function LiveMapPage() {
           {/* TAB 2: ACTIVE ZONES (DETOURS & OPERATIONS) */}
           {activeTab === "zones" && (
             <ActiveZonesPanel 
+              visible={!isCompactLayout || !isMobileMapVisible}
               activeOnly={activeOnly}
               setActiveOnly={setActiveOnly}
               page={page}
@@ -975,11 +1031,12 @@ export default function LiveMapPage() {
               setSelectedZoneId={handleZoneFocusChange}
               selectedContributorId={selectedContributorId}
               setSelectedContributorId={setSelectedContributorId}
-              zones={zones}
-              listLoading={listLoading}
-              isPlaceholderData={isPlaceholderData}
-              totalPages={totalPages}
+              onRecords={setInspectedZones}
+              onCount={setZoneCount}
+              onRequestBulkDeactivate={() => setConfirmBulk(true)}
+              onViewGroupOnMap={showGroupOnMap}
               flyToZone={flyToZone}
+              onViewZoneOnMap={showZoneOnMap}
               setConfirmId={setConfirmId}
               onCreateOfficialZone={() => {
                 openCreateZoneWorkspace();
@@ -1018,17 +1075,17 @@ export default function LiveMapPage() {
             // Do not replay the drawer's zero-width entrance in that case.
             initial={false}
             animate={{
-              width: isMergeDrawerOpen || isZoneWorkspaceOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0,
-              x: isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "100%" : 0,
+              width: isMergeDrawerOpen || isZoneWorkspaceOpen ? (isCompactLayout ? "100%" : DRAWER_WIDTH) : 0,
+              x: isCompactLayout && isMergeDrawerOpen && isMergeMobileMapVisible ? "100%" : 0,
             }}
-            exit={{ width: 0, x: isMobile ? "100%" : 0 }}
+            exit={{ width: 0, x: isCompactLayout ? "100%" : 0 }}
             transition={{
               width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
               x: { duration: 0.25, ease: [0.32, 0.72, 0, 1] },
             }}
             className={isZoneWorkspaceOpen
               ? "absolute inset-0 hidden"
-              : `${isMobile ? "absolute inset-0 z-50" : "relative z-30"} flex h-full min-w-0 shrink-0 ${isMergeDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
+              : `${isCompactLayout ? "absolute inset-0 z-50" : "relative z-30"} flex h-full min-w-0 shrink-0 ${isMergeDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
             onAnimationComplete={() => {
               mapInstance?.resize();
@@ -1040,7 +1097,7 @@ export default function LiveMapPage() {
                   key={mergingReport.id}
                   primaryReport={mergingReport}
                   isOpen={isMergeDrawerOpen}
-                  onShowMap={isMobile ? () => {
+                  onShowMap={isCompactLayout ? () => {
                     setIsMergeMobileMapVisible(true);
                     window.setTimeout(() => mapInstance?.resize(), 260);
                   } : undefined}
@@ -1133,7 +1190,7 @@ export default function LiveMapPage() {
         )}
       </AnimatePresence>
 
-      {isMobile && isMergeDrawerOpen && mergingReport && isMergeMobileMapVisible && (
+      {isCompactLayout && isMergeDrawerOpen && mergingReport && isMergeMobileMapVisible && (
         <Button
           type="button"
           onClick={() => setIsMergeMobileMapVisible(false)}
@@ -1151,7 +1208,7 @@ export default function LiveMapPage() {
             // Keep a newly mounted alternative workspace at Pane 2's current
             // width so changing pages never looks like close-then-reopen.
             initial={false}
-            animate={{ width: isCreateZoneDrawerOpen || isMergeDrawerOpen || isEditZoneDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0 }}
+            animate={{ width: isCreateZoneDrawerOpen || isMergeDrawerOpen || isEditZoneDrawerOpen ? (isCompactLayout ? "100%" : DRAWER_WIDTH) : 0 }}
             transition={{
               width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
             }}
@@ -1245,7 +1302,7 @@ export default function LiveMapPage() {
           <motion.div
             key={`edit-official-zone-drawer-${editingZone.id}`}
             initial={false}
-            animate={{ width: isEditZoneDrawerOpen || isMergeDrawerOpen || isCreateZoneDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0 }}
+            animate={{ width: isEditZoneDrawerOpen || isMergeDrawerOpen || isCreateZoneDrawerOpen ? (isCompactLayout ? "100%" : DRAWER_WIDTH) : 0 }}
             transition={{ width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] } }}
             className={isMergeDrawerOpen || isCreateZoneDrawerOpen
               ? "absolute inset-0 hidden"
@@ -1331,7 +1388,7 @@ export default function LiveMapPage() {
       </AnimatePresence>
 
       {/* RIGHT PANEL: Live Map View */}
-      <div className={`${isMobile && !isMergeDrawerOpen && !isMobileMapVisible ? "hidden" : "flex"} flex-1 relative h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
+      <div className={`${isCompactLayout && !isMergeDrawerOpen && !isMobileMapVisible ? "hidden" : "flex"} flex-1 relative h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
         <BaseMap 
           actionControls={handleActionControls}
           onMapInit={handleMapInit}
@@ -1385,7 +1442,7 @@ export default function LiveMapPage() {
             </div>
           )}
         </BaseMap>
-        {isMobile && !isMergeDrawerOpen && isMobileMapVisible && (
+        {isCompactLayout && !isMergeDrawerOpen && isMobileMapVisible && (
           <Button
             type="button"
             onClick={() => {
@@ -1394,7 +1451,7 @@ export default function LiveMapPage() {
             }}
             className="fixed bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] left-1/2 z-50 min-h-11 -translate-x-1/2 rounded-full bg-slate-900 px-4 text-xs text-white shadow-xl hover:bg-slate-800"
           >
-            <ArrowRight className="mr-1.5 h-4 w-4 rotate-180" /> {selectedReviewKey ? "Evidence" : "Operations"}
+            <ArrowRight className="mr-1.5 h-4 w-4 rotate-180" /> {activeTab === "zones" ? "Back to zones" : selectedReviewKey ? "Evidence" : "Operations"}
           </Button>
         )}
       </div>

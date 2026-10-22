@@ -1,0 +1,12 @@
+{
+  "prior_files_verified_unchanged": 5234,
+  "prior_file_mismatches": [],
+  "model_files_verified_unchanged": 23,
+  "changed_or_untracked_files_inspected": 166,
+  "forbidden_publication_paths": [],
+  "likely_secret_files": [],
+  "public_documents_containing_complete_selected_passages": [],
+  "dependency_files_unchanged": true,
+  "schema_migration_changes": [],
+  "read_secret_content": false
+}

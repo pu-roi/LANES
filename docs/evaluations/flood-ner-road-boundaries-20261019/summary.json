@@ -1,0 +1,157 @@
+{
+  "ROAD_review": {
+    "ROAD_FN": 8,
+    "ROAD_FP": 6,
+    "error_passages": 7,
+    "full_articles": 5
+  },
+  "combined_counts": {
+    "abstentions": 2,
+    "changed_passages": 0,
+    "changed_spans": 0,
+    "gained_TP": 0,
+    "introduced_FN": 0,
+    "introduced_FP": 0,
+    "lost_TP": 0,
+    "matched_spans": 2,
+    "net_entity_change": 0,
+    "persistent_FN": 19,
+    "persistent_FP": 13,
+    "persistent_TP": 821,
+    "resolved_FP": 0,
+    "splits": 0,
+    "trims": 0
+  },
+  "counts": {
+    "train": 345
+  },
+  "families": {
+    "splitting": {
+      "disposition": "partially_supported",
+      "qualifying_rules": [],
+      "rules": [
+        "explicit_crossing"
+      ]
+    },
+    "trimming": {
+      "disposition": "partially_supported",
+      "qualifying_rules": [],
+      "rules": [
+        "terminal_descriptor",
+        "traffic_direction"
+      ]
+    }
+  },
+  "fixtures": {
+    "ambiguous_unscored": 6,
+    "definitive": 18,
+    "passed": 24
+  },
+  "holdout_accessed": false,
+  "languages": {
+    "english": 170,
+    "taglish": 175
+  },
+  "limitations": [
+    "Motivated by exposed validation findings; not blinded.",
+    "Training agreement is not generalization.",
+    "AI-assisted silver and incomplete-history/accounting limitations remain.",
+    "No prefix expansion, type changes, unmarked crossing inference or post-result tuning."
+  ],
+  "neural_inference": false,
+  "per_rule": {
+    "explicit_crossing": {
+      "counts": {
+        "abstentions": 0,
+        "changed_passages": 0,
+        "changed_spans": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "lost_TP": 0,
+        "matched_spans": 0,
+        "net_entity_change": 0,
+        "persistent_FN": 19,
+        "persistent_FP": 13,
+        "persistent_TP": 821,
+        "resolved_FP": 0,
+        "splits": 0,
+        "trims": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    },
+    "terminal_descriptor": {
+      "counts": {
+        "abstentions": 2,
+        "changed_passages": 0,
+        "changed_spans": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "lost_TP": 0,
+        "matched_spans": 2,
+        "net_entity_change": 0,
+        "persistent_FN": 19,
+        "persistent_FP": 13,
+        "persistent_TP": 821,
+        "resolved_FP": 0,
+        "splits": 0,
+        "trims": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    },
+    "traffic_direction": {
+      "counts": {
+        "abstentions": 0,
+        "changed_passages": 0,
+        "changed_spans": 0,
+        "gained_TP": 0,
+        "introduced_FN": 0,
+        "introduced_FP": 0,
+        "lost_TP": 0,
+        "matched_spans": 0,
+        "net_entity_change": 0,
+        "persistent_FN": 19,
+        "persistent_FP": 13,
+        "persistent_TP": 821,
+        "resolved_FP": 0,
+        "splits": 0,
+        "trims": 0
+      },
+      "disposition": "partially_supported",
+      "qualifies_for_later_proposal": false,
+      "reason": "Constructed checks pass, but no corrective training applicability was observed."
+    }
+  },
+  "primary_seed": 0,
+  "production_integration": false,
+  "qualifying_rules": [],
+  "qualifying_subset_counts": {
+    "abstentions": 0,
+    "changed_passages": 0,
+    "changed_spans": 0,
+    "gained_TP": 0,
+    "introduced_FN": 0,
+    "introduced_FP": 0,
+    "lost_TP": 0,
+    "matched_spans": 0,
+    "net_entity_change": 0,
+    "persistent_FN": 19,
+    "persistent_FP": 13,
+    "persistent_TP": 821,
+    "resolved_FP": 0,
+    "splits": 0,
+    "trims": 0
+  },
+  "qualifying_subset_safe": true,
+  "retained": "v19_corrected_control_seed_0",
+  "schema": "lanes-road-boundary-study-v1",
+  "scope": "training_only_road_boundary_feasibility",
+  "training": false,
+  "type_safeguard_composed": false,
+  "validation_evaluated": false
+}

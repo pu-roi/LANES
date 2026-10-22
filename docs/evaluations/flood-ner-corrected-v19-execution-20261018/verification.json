@@ -1,0 +1,931 @@
+{
+  "baseline_v16": {
+    "mean_f1": 0.6651036433329612,
+    "sample_stddev": 0.010323211833936512,
+    "seed_f1": [
+      0.6666666666666667,
+      0.6540880503144655,
+      0.6745562130177514
+    ]
+  },
+  "branch": "roi-branch",
+  "code_uncommitted": true,
+  "committed": false,
+  "controller_rounding_correction": {
+    "development_f1_independently_reproduced": true,
+    "original_error_record_preserved": true,
+    "original_training_successful": true,
+    "selection_score_full_precision": true
+  },
+  "deployed": false,
+  "development_language_companion": {
+    "additional_inference_required": false,
+    "helper_sha256": "bbdb35ba6cc74416d8e549df3f89c3be8f3b9ae8603bc602463c8c7b5f408b88",
+    "predictions_sha256": "3eef461f62e623b75755af296292ca8f68a46c4f20744c042b4fae44222091d2",
+    "saved_screening_runs": 5,
+    "state": "delivered_for_laptop_join_only"
+  },
+  "drive_delivery": {
+    "archive_sha256": "a6675c403216146bbf42da8790df66112a2926ebd63dedbf641c7c1cf6649345",
+    "direct_upload_failure": "418 MB upload timed out before creating a Drive file; original ZIP preserved; byte splitting only",
+    "files": [
+      {
+        "bytes": 1575,
+        "full_readback_verified": true,
+        "id": "1YVBrGreXcFYoLoz3lhQnXhgLnNN9hAJr",
+        "name": "DEVELOPMENT-LANGUAGE-INSTRUCTIONS.md",
+        "owner_only": true,
+        "sha256": "7fb9086233ebb09ea8427f5096e37cee4ed4aea372adee2d88d97d9992447eef",
+        "url": "https://drive.google.com/file/d/1YVBrGreXcFYoLoz3lhQnXhgLnNN9hAJr/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1a0FLXUN8rd93KlA6KdV9guivy8SDABko",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part01",
+        "owner_only": true,
+        "seconds": 32.252,
+        "sha256": "aecd4fd0d85b566ce8b652bdd28c5d37aee4c9ac20db7801d61ec81b4cf55bdd",
+        "url": "https://drive.google.com/file/d/1a0FLXUN8rd93KlA6KdV9guivy8SDABko/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1mNzwkSH3bmCTMjBfc1v1wA1B1qwh1cbW",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part02",
+        "owner_only": true,
+        "seconds": 41.694,
+        "sha256": "8bed6f8e52abc96723546ac6cb78dbf05e60d3775d9bb767e7fcd6ba0ee87662",
+        "url": "https://drive.google.com/file/d/1mNzwkSH3bmCTMjBfc1v1wA1B1qwh1cbW/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1PwUjSoS0d3q-z8Gog1FuFmtRxHQy43cT",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part03",
+        "owner_only": true,
+        "seconds": 43.678,
+        "sha256": "a185db86962ecafa184c6133d847c17ac6d82bd350723c880a172464f378eecd",
+        "url": "https://drive.google.com/file/d/1PwUjSoS0d3q-z8Gog1FuFmtRxHQy43cT/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1bwI9nWKDlsVGrRCgrO8w8M4VZpCOXl_F",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part04",
+        "owner_only": true,
+        "seconds": 37.744,
+        "sha256": "23d832406757b3cb1e53386e357b7dd250a6c50eac9cbf5dd5d784491d238275",
+        "url": "https://drive.google.com/file/d/1bwI9nWKDlsVGrRCgrO8w8M4VZpCOXl_F/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1zjVW1u1WJdTyB6G2ty9hhx7Tge3vJPqi",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part05",
+        "owner_only": true,
+        "seconds": 40.221,
+        "sha256": "cb4261e923c6cb1bde0ec5b6861c9b0904d190cc2c0f938aa999e719f5929633",
+        "url": "https://drive.google.com/file/d/1zjVW1u1WJdTyB6G2ty9hhx7Tge3vJPqi/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "188n4ui9W2qfaoeJDIXdDUfbaSZ8gMEDW",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part06",
+        "owner_only": true,
+        "seconds": 36.743,
+        "sha256": "081343cae70137a2d7e2ba69461e22512f1829cfc18920eebc71d388c9d49625",
+        "url": "https://drive.google.com/file/d/188n4ui9W2qfaoeJDIXdDUfbaSZ8gMEDW/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1asAoHRO9KBL7OsnDbRTOizplQkONxmwt",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part07",
+        "owner_only": true,
+        "seconds": 36.472,
+        "sha256": "6a6cb9c2a8291d5526b0293da2bd287bba7ed5ca99b08fbf987eebb813230bb4",
+        "url": "https://drive.google.com/file/d/1asAoHRO9KBL7OsnDbRTOizplQkONxmwt/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1vwhlzCTEw6aI4i0X2bgc3HRC-jBoTXcx",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part08",
+        "owner_only": true,
+        "seconds": 38.12,
+        "sha256": "8642328cf5e3ed2a4a83e75e846e2c1428511677cb13ca4b41033d7b8ed0bd4b",
+        "url": "https://drive.google.com/file/d/1vwhlzCTEw6aI4i0X2bgc3HRC-jBoTXcx/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "10XvXH6odg3u8428OwR3OJdIvppElhNmW",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part09",
+        "owner_only": true,
+        "seconds": 35.448,
+        "sha256": "692566b80dc7a3130dfb72d84593b8cd5d5c07874203b8e67a3b59b7d2556b0e",
+        "url": "https://drive.google.com/file/d/10XvXH6odg3u8428OwR3OJdIvppElhNmW/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1eFVfkRpWW4sUV_UlHnkKV7FiHNoPykXm",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part10",
+        "owner_only": true,
+        "seconds": 34.182,
+        "sha256": "5a0d4af9fee975151526d84618cc6a3d3a1b6871dda099349c864eaf94803011",
+        "url": "https://drive.google.com/file/d/1eFVfkRpWW4sUV_UlHnkKV7FiHNoPykXm/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1hX_Eb1-JoV5OiHDSJJy2aVkTxTk4SdKw",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part11",
+        "owner_only": true,
+        "seconds": 35.45,
+        "sha256": "17873edbbd106d3407f115ebb08c8f158f88ca446c510e176608054e4d2cac0d",
+        "url": "https://drive.google.com/file/d/1hX_Eb1-JoV5OiHDSJJy2aVkTxTk4SdKw/view?usp=drivesdk"
+      },
+      {
+        "bytes": 33554432,
+        "full_readback_verified": true,
+        "id": "1LjBGytgTAe2ONWQFsA3VXE73wUexo6RK",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part12",
+        "owner_only": true,
+        "seconds": 43.367,
+        "sha256": "f9a509f1eca90446b480e9b4a066e15359d61ea7c8f3679170c8884357ff0ff7",
+        "url": "https://drive.google.com/file/d/1LjBGytgTAe2ONWQFsA3VXE73wUexo6RK/view?usp=drivesdk"
+      },
+      {
+        "bytes": 15814026,
+        "full_readback_verified": true,
+        "id": "1PWxI3QCoO1f-vss9trFTgFVWIJ7tnRXc",
+        "name": "LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip.part13",
+        "owner_only": true,
+        "seconds": 19.735,
+        "sha256": "e2da8d93fda514c183d0dc79d8571615be0dc7e4b11759282778412416245ced",
+        "url": "https://drive.google.com/file/d/1PWxI3QCoO1f-vss9trFTgFVWIJ7tnRXc/view?usp=drivesdk"
+      },
+      {
+        "bytes": 9027,
+        "full_readback_verified": true,
+        "id": "1ROwpwtAgcnqig6vBuxZvxfyn69zKXdOw",
+        "name": "LAPTOP-GUIDE-UPDATED.md",
+        "owner_only": true,
+        "seconds": 0.116,
+        "sha256": "78be93c1d9ae51398e4658a0adc38617722981d13b7ea18dc76752a93c0e25d3",
+        "url": "https://drive.google.com/file/d/1ROwpwtAgcnqig6vBuxZvxfyn69zKXdOw/view?usp=drivesdk"
+      },
+      {
+        "bytes": 1470,
+        "full_readback_verified": true,
+        "id": "1nNELdoxV6xTGFqZq0E8tyaewuvI8-Bth",
+        "name": "REASSEMBLE.py",
+        "owner_only": true,
+        "seconds": 0.127,
+        "sha256": "6802f5627d529baa79844c2c7f0a158df63d0aed5aa2c70833a87e679cb8698e",
+        "url": "https://drive.google.com/file/d/1nNELdoxV6xTGFqZq0E8tyaewuvI8-Bth/view?usp=drivesdk"
+      },
+      {
+        "bytes": 49163,
+        "full_readback_verified": true,
+        "id": "1vDRLgqWgetQLK0l7HxeyuN7EVyTCeBI5",
+        "name": "SCREENED-DEVELOPMENT-PREDICTIONS.json",
+        "owner_only": true,
+        "sha256": "3eef461f62e623b75755af296292ca8f68a46c4f20744c042b4fae44222091d2",
+        "url": "https://drive.google.com/file/d/1vDRLgqWgetQLK0l7HxeyuN7EVyTCeBI5/view?usp=drivesdk"
+      },
+      {
+        "bytes": 3014,
+        "full_readback_verified": true,
+        "id": "1ZFnsh4C9KjMMPvb-wQ6nxZsS1RV0i7ek",
+        "name": "START-HERE.md",
+        "owner_only": true,
+        "seconds": 0.107,
+        "sha256": "dc82da268979465ccf1335df152a2d966f51ec91231e2f4a6a5117b476288e89",
+        "url": "https://drive.google.com/file/d/1ZFnsh4C9KjMMPvb-wQ6nxZsS1RV0i7ek/view?usp=drivesdk"
+      },
+      {
+        "bytes": 3024,
+        "full_readback_verified": true,
+        "id": "1KOC4aybVzEHD0daXnoNS7HK36bdrb5b-",
+        "name": "TRANSPORT-MANIFEST.json",
+        "owner_only": true,
+        "seconds": 0.119,
+        "sha256": "959a2404fb22fa2ea3bd86b82da59be1e9dc25a4f28a30f508b922d0b3a14879",
+        "url": "https://drive.google.com/file/d/1KOC4aybVzEHD0daXnoNS7HK36bdrb5b-/view?usp=drivesdk"
+      },
+      {
+        "bytes": 214,
+        "full_readback_verified": true,
+        "id": "1iEYM1auSxNSlNGSuZ3GkVJ1QmlFOE1VE",
+        "name": "TRANSPORT-SHA256SUMS.txt",
+        "owner_only": true,
+        "seconds": 0.132,
+        "sha256": "c96f8d22566891c6ec74ac70a9e1f4cb01e4832fe8d8c4f013c2f8db7f810fd7",
+        "url": "https://drive.google.com/file/d/1iEYM1auSxNSlNGSuZ3GkVJ1QmlFOE1VE/view?usp=drivesdk"
+      },
+      {
+        "bytes": 4133,
+        "full_readback_verified": true,
+        "id": "1kSGlC9nEurlbra3xQv8GQD1C6X_Y6uBi",
+        "name": "corrected_development_language_scores.py",
+        "owner_only": true,
+        "sha256": "bbdb35ba6cc74416d8e549df3f89c3be8f3b9ae8603bc602463c8c7b5f408b88",
+        "url": "https://drive.google.com/file/d/1kSGlC9nEurlbra3xQv8GQD1C6X_Y6uBi/view?usp=drivesdk"
+      },
+      {
+        "bytes": 3003,
+        "full_readback_verified": true,
+        "id": "1Dm88sdLMziuJLzj9RvDCtZrbFAPIX6zZ",
+        "name": "receive-corrected-v19.py",
+        "owner_only": true,
+        "seconds": 0.106,
+        "sha256": "747738515e0be0393d9dada976e5feb6ef775b14fed6c2709d8ad6a8924f1c74",
+        "url": "https://drive.google.com/file/d/1Dm88sdLMziuJLzj9RvDCtZrbFAPIX6zZ/view?usp=drivesdk"
+      }
+    ],
+    "folder_owner_only": true,
+    "folder_url": "https://drive.google.com/drive/folders/1XYPTFZ9Ooi2D6_e1jtZT-jdzl06ZEYs4",
+    "holdout_evaluated": false,
+    "holdout_included": false,
+    "local_reassembly_verified": true,
+    "manifest_sha256": "b3dd00e73d59aa11fdcdbf4a1c97c7e58abd7b30540521f2215e9c7435887367",
+    "published_extractor_tested": true,
+    "state": "all_22_files_full_readback_and_owner_only_verified",
+    "transport_manifest_sha256": "959a2404fb22fa2ea3bd86b82da59be1e9dc25a4f28a30f508b922d0b3a14879",
+    "transport_parts": 13
+  },
+  "families": {
+    "control": {
+      "mean": 0.6979742637862296,
+      "runs": 3,
+      "sample_stddev": 0.030532748813499874,
+      "seed_0": 0.7160493827160493
+    },
+    "higher_dropout": {
+      "mean": null,
+      "runs": 1,
+      "sample_stddev": null,
+      "seed_0": 0.5647058823529412
+    },
+    "lower_learning_rate": {
+      "mean": null,
+      "runs": 1,
+      "sample_stddev": null,
+      "seed_0": 0.6428571428571428
+    }
+  },
+  "handoff": {
+    "archive": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\corrected-v19-experiment-20261018-v1\\LANES-NER-corrected-v19-laptop-evaluation-20261018-v1.zip",
+    "archive_bytes": 418467210,
+    "archive_sha256": "a6675c403216146bbf42da8790df66112a2926ebd63dedbf641c7c1cf6649345",
+    "files": 132,
+    "holdout_included": false,
+    "manifest_sha256": "b3dd00e73d59aa11fdcdbf4a1c97c7e58abd7b30540521f2215e9c7435887367",
+    "models": 6,
+    "primary": "control-seed-0",
+    "retained": "control",
+    "state": "handoff_built_and_readback_verified",
+    "upload_folder": "https://drive.google.com/drive/folders/1XYPTFZ9Ooi2D6_e1jtZT-jdzl06ZEYs4"
+  },
+  "holdout": {
+    "accessed_on_desktop": false,
+    "desktop_rules_probe": "blocked: existing desktop research interpreter has no SQLAlchemy/backend environment; laptop constructed preflight required before any holdout prediction",
+    "references_stay_on_laptop": true,
+    "retry_authorized": false,
+    "roster": [
+      "control-seed-0",
+      "control-seed-1",
+      "control-seed-2",
+      "v16-seed-0",
+      "v16-seed-1",
+      "v16-seed-2",
+      "rules"
+    ],
+    "state": "pending_laptop_execution_and_authenticated_receipt"
+  },
+  "limitations": [
+    "AI-assisted silver, incomplete history/accounting, no certified freshness or human gold.",
+    "Validation Taglish ROAD support zero and Taglish LANDMARK support one; language breakdown pending laptop.",
+    "Holdout LOCAL_AREA support zero; unsupported class accuracy is unmeasured."
+  ],
+  "preservation": {
+    "env_unchanged": true,
+    "files_verified": 242,
+    "final_verification_complete": true,
+    "no_active_training_lock": true,
+    "original_packages_and_model_unchanged": true,
+    "source_backups_unchanged": true
+  },
+  "primary_label_comparison": {
+    "BARANGAY": {
+      "delta_percentage_points": 11.428571428571432,
+      "support": 19,
+      "v16_seed_0_f1": 0.6285714285714286,
+      "v19_seed_0_f1": 0.7428571428571429
+    },
+    "CITY": {
+      "delta_percentage_points": 12.029459901800333,
+      "support": 23,
+      "v16_seed_0_f1": 0.7307692307692307,
+      "v19_seed_0_f1": 0.851063829787234
+    },
+    "LANDMARK": {
+      "delta_percentage_points": 28.054298642533936,
+      "support": 7,
+      "v16_seed_0_f1": 0.3076923076923077,
+      "v19_seed_0_f1": 0.5882352941176471
+    },
+    "LOCAL_AREA": {
+      "delta_percentage_points": -21.176470588235297,
+      "support": 12,
+      "v16_seed_0_f1": 0.8,
+      "v19_seed_0_f1": 0.5882352941176471
+    },
+    "PROVINCE": {
+      "delta_percentage_points": -4.285714285714293,
+      "support": 10,
+      "v16_seed_0_f1": 0.9,
+      "v19_seed_0_f1": 0.8571428571428571
+    },
+    "ROAD": {
+      "delta_percentage_points": -2.0000000000000018,
+      "support": 14,
+      "v16_seed_0_f1": 0.5,
+      "v19_seed_0_f1": 0.48
+    }
+  },
+  "primary_model": "backend/training/flood_ner/artifacts/corrected-v19-experiment-20261018-v1/runs/control-seed-0/selected-checkpoint/model",
+  "primary_seed": 0,
+  "published_extractor_test": {
+    "files": 132,
+    "holdout_included": false,
+    "inference_performed": false,
+    "state": "extracted_verified"
+  },
+  "pushed": false,
+  "runs": [
+    {
+      "checkpoint_files": {
+        "config.cfg": "6d062672e8e0d5f4f4a86bfd5d0828516ff58ac783df46e338df95e6d97158d2",
+        "meta.json": "b388c8ec5e19c296983976f719e7e15c77eda9adb5e244449df95546a2b951be",
+        "ner/cfg": "113c55d357dd1387357a8db30f3c4587e640e0d4084a9dab9ff933f9d9fa6e5d",
+        "ner/model": "a2e232cd04174488c97c4f6b45454ab1189646d1def0ea8f4bd2432344a547d8",
+        "ner/moves": "0d2f9f9b63681465505ec5e834535c63217af19936869d9d295a10f12bdbc04a",
+        "tokenizer": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+        "vocab/key2row": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/lookups.bin": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/strings.json": "da2cb4c1ce88bd76a0561217a420ae0c0e6c5ac5eb7e163cd415cd7524f6fba7",
+        "vocab/vectors": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+        "vocab/vectors.cfg": "339f6a5e6ca096047aabaa3738a71e3e493723163207d1021440671123c74a51"
+      },
+      "development_metrics": {
+        "labels": {
+          "BARANGAY": {
+            "FN": 6,
+            "FP": 3,
+            "TP": 13,
+            "f1": 0.7428571428571429,
+            "passages": 60,
+            "precision": 0.8125,
+            "predicted_spans": 16,
+            "recall": 0.6842105263157895,
+            "reference_spans": 19
+          },
+          "CITY": {
+            "FN": 3,
+            "FP": 4,
+            "TP": 20,
+            "f1": 0.851063829787234,
+            "passages": 60,
+            "precision": 0.8333333333333334,
+            "predicted_spans": 24,
+            "recall": 0.8695652173913043,
+            "reference_spans": 23
+          },
+          "LANDMARK": {
+            "FN": 2,
+            "FP": 5,
+            "TP": 5,
+            "f1": 0.5882352941176471,
+            "passages": 60,
+            "precision": 0.5,
+            "predicted_spans": 10,
+            "recall": 0.7142857142857143,
+            "reference_spans": 7
+          },
+          "LOCAL_AREA": {
+            "FN": 7,
+            "FP": 0,
+            "TP": 5,
+            "f1": 0.5882352941176471,
+            "passages": 60,
+            "precision": 1.0,
+            "predicted_spans": 5,
+            "recall": 0.4166666666666667,
+            "reference_spans": 12
+          },
+          "PROVINCE": {
+            "FN": 1,
+            "FP": 2,
+            "TP": 9,
+            "f1": 0.8571428571428571,
+            "passages": 60,
+            "precision": 0.8181818181818182,
+            "predicted_spans": 11,
+            "recall": 0.9,
+            "reference_spans": 10
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 5,
+            "TP": 6,
+            "f1": 0.48,
+            "passages": 60,
+            "precision": 0.5454545454545454,
+            "predicted_spans": 11,
+            "recall": 0.42857142857142855,
+            "reference_spans": 14
+          }
+        },
+        "language_metrics": "pending laptop development-only partition metadata; not present in trainer delivery",
+        "overall": {
+          "FN": 27,
+          "FP": 19,
+          "TP": 58,
+          "f1": 0.7160493827160493,
+          "passages": 60,
+          "precision": 0.7532467532467533,
+          "predicted_spans": 77,
+          "recall": 0.6823529411764706,
+          "reference_spans": 85
+        }
+      },
+      "f1": 0.7160493827160493,
+      "last_optimizer_step": 1000,
+      "output": "backend/training/flood_ner/artifacts/corrected-v19-experiment-20261018-v1/runs/control-seed-0",
+      "precision": 0.7532467532467533,
+      "recall": 0.6823529411764706,
+      "seed": 0,
+      "selected_step": 945,
+      "selection_sha256": "91be93ae508b2e113c44ac9f9ded073a0a61995d82cffee18252242e84859339",
+      "state": "completed",
+      "stopping_reason": "configured maximum 1000 steps reached",
+      "variant": "control"
+    },
+    {
+      "checkpoint_files": {
+        "config.cfg": "2b5e274e2190cc04f241c19ded20b2b42b51d4d3e1a957a74060c22e23e51987",
+        "meta.json": "d3643668d29384d519216509d45fdb2a67398c3e515982bd4771b263d6c8d2be",
+        "ner/cfg": "113c55d357dd1387357a8db30f3c4587e640e0d4084a9dab9ff933f9d9fa6e5d",
+        "ner/model": "eba06c4db5313e947496a95046df09bb4f7a66a8dc7eb5588fb204c410f66c45",
+        "ner/moves": "0d2f9f9b63681465505ec5e834535c63217af19936869d9d295a10f12bdbc04a",
+        "tokenizer": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+        "vocab/key2row": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/lookups.bin": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/strings.json": "da2cb4c1ce88bd76a0561217a420ae0c0e6c5ac5eb7e163cd415cd7524f6fba7",
+        "vocab/vectors": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+        "vocab/vectors.cfg": "339f6a5e6ca096047aabaa3738a71e3e493723163207d1021440671123c74a51"
+      },
+      "development_metrics": {
+        "labels": {
+          "BARANGAY": {
+            "FN": 8,
+            "FP": 7,
+            "TP": 11,
+            "f1": 0.5945945945945946,
+            "passages": 60,
+            "precision": 0.6111111111111112,
+            "predicted_spans": 18,
+            "recall": 0.5789473684210527,
+            "reference_spans": 19
+          },
+          "CITY": {
+            "FN": 4,
+            "FP": 16,
+            "TP": 19,
+            "f1": 0.6551724137931034,
+            "passages": 60,
+            "precision": 0.5428571428571428,
+            "predicted_spans": 35,
+            "recall": 0.8260869565217391,
+            "reference_spans": 23
+          },
+          "LANDMARK": {
+            "FN": 2,
+            "FP": 10,
+            "TP": 5,
+            "f1": 0.45454545454545453,
+            "passages": 60,
+            "precision": 0.3333333333333333,
+            "predicted_spans": 15,
+            "recall": 0.7142857142857143,
+            "reference_spans": 7
+          },
+          "LOCAL_AREA": {
+            "FN": 9,
+            "FP": 0,
+            "TP": 3,
+            "f1": 0.4,
+            "passages": 60,
+            "precision": 1.0,
+            "predicted_spans": 3,
+            "recall": 0.25,
+            "reference_spans": 12
+          },
+          "PROVINCE": {
+            "FN": 4,
+            "FP": 1,
+            "TP": 6,
+            "f1": 0.7058823529411765,
+            "passages": 60,
+            "precision": 0.8571428571428571,
+            "predicted_spans": 7,
+            "recall": 0.6,
+            "reference_spans": 10
+          },
+          "ROAD": {
+            "FN": 10,
+            "FP": 3,
+            "TP": 4,
+            "f1": 0.38095238095238093,
+            "passages": 60,
+            "precision": 0.5714285714285714,
+            "predicted_spans": 7,
+            "recall": 0.2857142857142857,
+            "reference_spans": 14
+          }
+        },
+        "language_metrics": "pending laptop development-only partition metadata; not present in trainer delivery",
+        "overall": {
+          "FN": 37,
+          "FP": 37,
+          "TP": 48,
+          "f1": 0.5647058823529412,
+          "passages": 60,
+          "precision": 0.5647058823529412,
+          "predicted_spans": 85,
+          "recall": 0.5647058823529412,
+          "reference_spans": 85
+        }
+      },
+      "f1": 0.5647058823529412,
+      "last_optimizer_step": 595,
+      "output": "backend/training/flood_ner/artifacts/corrected-v19-experiment-20261018-v1/runs/higher_dropout-seed-0",
+      "precision": 0.5647058823529412,
+      "recall": 0.5647058823529412,
+      "seed": 0,
+      "selected_step": 420,
+      "selection_sha256": "daf10f304748356d4069be7131622389a10b6f0ed85650bb1ffb1e7b26087e72",
+      "state": "completed",
+      "stopping_reason": "early stopping after 175 optimizer steps without development improvement",
+      "variant": "higher_dropout"
+    },
+    {
+      "checkpoint_files": {
+        "config.cfg": "521c0ee69bfc275f9eb5530bb3ccc63775bef3f122f11cdbede38d049f85ef08",
+        "meta.json": "3bd9be7f29efe2bdc508feee6101be2cf4b154f7829714eff1980ad0730b9878",
+        "ner/cfg": "113c55d357dd1387357a8db30f3c4587e640e0d4084a9dab9ff933f9d9fa6e5d",
+        "ner/model": "2b5115b0295d496a5a267c63ea3123530e7e98036e14fba4d17ac882c6793ccf",
+        "ner/moves": "0d2f9f9b63681465505ec5e834535c63217af19936869d9d295a10f12bdbc04a",
+        "tokenizer": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+        "vocab/key2row": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/lookups.bin": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/strings.json": "da2cb4c1ce88bd76a0561217a420ae0c0e6c5ac5eb7e163cd415cd7524f6fba7",
+        "vocab/vectors": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+        "vocab/vectors.cfg": "339f6a5e6ca096047aabaa3738a71e3e493723163207d1021440671123c74a51"
+      },
+      "development_metrics": {
+        "labels": {
+          "BARANGAY": {
+            "FN": 8,
+            "FP": 3,
+            "TP": 11,
+            "f1": 0.6666666666666666,
+            "passages": 60,
+            "precision": 0.7857142857142857,
+            "predicted_spans": 14,
+            "recall": 0.5789473684210527,
+            "reference_spans": 19
+          },
+          "CITY": {
+            "FN": 3,
+            "FP": 11,
+            "TP": 20,
+            "f1": 0.7407407407407407,
+            "passages": 60,
+            "precision": 0.6451612903225806,
+            "predicted_spans": 31,
+            "recall": 0.8695652173913043,
+            "reference_spans": 23
+          },
+          "LANDMARK": {
+            "FN": 4,
+            "FP": 4,
+            "TP": 3,
+            "f1": 0.42857142857142855,
+            "passages": 60,
+            "precision": 0.42857142857142855,
+            "predicted_spans": 7,
+            "recall": 0.42857142857142855,
+            "reference_spans": 7
+          },
+          "LOCAL_AREA": {
+            "FN": 6,
+            "FP": 0,
+            "TP": 6,
+            "f1": 0.6666666666666666,
+            "passages": 60,
+            "precision": 1.0,
+            "predicted_spans": 6,
+            "recall": 0.5,
+            "reference_spans": 12
+          },
+          "PROVINCE": {
+            "FN": 2,
+            "FP": 2,
+            "TP": 8,
+            "f1": 0.8,
+            "passages": 60,
+            "precision": 0.8,
+            "predicted_spans": 10,
+            "recall": 0.8,
+            "reference_spans": 10
+          },
+          "ROAD": {
+            "FN": 8,
+            "FP": 9,
+            "TP": 6,
+            "f1": 0.41379310344827586,
+            "passages": 60,
+            "precision": 0.4,
+            "predicted_spans": 15,
+            "recall": 0.42857142857142855,
+            "reference_spans": 14
+          }
+        },
+        "language_metrics": "pending laptop development-only partition metadata; not present in trainer delivery",
+        "overall": {
+          "FN": 31,
+          "FP": 29,
+          "TP": 54,
+          "f1": 0.6428571428571429,
+          "passages": 60,
+          "precision": 0.6506024096385542,
+          "predicted_spans": 83,
+          "recall": 0.6352941176470588,
+          "reference_spans": 85
+        }
+      },
+      "f1": 0.6428571428571428,
+      "last_optimizer_step": 1000,
+      "output": "backend/training/flood_ner/artifacts/corrected-v19-experiment-20261018-v1/runs/lower_learning_rate-seed-0",
+      "precision": 0.6506024096385542,
+      "recall": 0.6352941176470588,
+      "seed": 0,
+      "selected_step": 875,
+      "selection_sha256": "74734dc395c70fdbe01035a941dd9da607541206738010a7e38b5a500baee854",
+      "state": "completed",
+      "stopping_reason": "configured maximum 1000 steps reached",
+      "variant": "lower_learning_rate"
+    },
+    {
+      "checkpoint_files": {
+        "config.cfg": "48b392f54f665febe4a1f701f75470dc014d08a81e4c02b06ab1b22d271d8c31",
+        "meta.json": "d6acac21dcec587b1a00a0078d255078bf2d83faa2d93920050b25c8e3c8f6cf",
+        "ner/cfg": "113c55d357dd1387357a8db30f3c4587e640e0d4084a9dab9ff933f9d9fa6e5d",
+        "ner/model": "9bd46b0cb05c6f2bdbd5f4040c3c6663eb6830606e2747fcc3dd1151f2d4c02d",
+        "ner/moves": "0d2f9f9b63681465505ec5e834535c63217af19936869d9d295a10f12bdbc04a",
+        "tokenizer": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+        "vocab/key2row": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/lookups.bin": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/strings.json": "da2cb4c1ce88bd76a0561217a420ae0c0e6c5ac5eb7e163cd415cd7524f6fba7",
+        "vocab/vectors": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+        "vocab/vectors.cfg": "339f6a5e6ca096047aabaa3738a71e3e493723163207d1021440671123c74a51"
+      },
+      "development_metrics": {
+        "labels": {
+          "BARANGAY": {
+            "FN": 8,
+            "FP": 4,
+            "TP": 11,
+            "f1": 0.6470588235294118,
+            "passages": 60,
+            "precision": 0.7333333333333333,
+            "predicted_spans": 15,
+            "recall": 0.5789473684210527,
+            "reference_spans": 19
+          },
+          "CITY": {
+            "FN": 4,
+            "FP": 7,
+            "TP": 19,
+            "f1": 0.7755102040816326,
+            "passages": 60,
+            "precision": 0.7307692307692307,
+            "predicted_spans": 26,
+            "recall": 0.8260869565217391,
+            "reference_spans": 23
+          },
+          "LANDMARK": {
+            "FN": 1,
+            "FP": 7,
+            "TP": 6,
+            "f1": 0.6,
+            "passages": 60,
+            "precision": 0.46153846153846156,
+            "predicted_spans": 13,
+            "recall": 0.8571428571428571,
+            "reference_spans": 7
+          },
+          "LOCAL_AREA": {
+            "FN": 5,
+            "FP": 1,
+            "TP": 7,
+            "f1": 0.7,
+            "passages": 60,
+            "precision": 0.875,
+            "predicted_spans": 8,
+            "recall": 0.5833333333333334,
+            "reference_spans": 12
+          },
+          "PROVINCE": {
+            "FN": 2,
+            "FP": 1,
+            "TP": 8,
+            "f1": 0.8421052631578947,
+            "passages": 60,
+            "precision": 0.8888888888888888,
+            "predicted_spans": 9,
+            "recall": 0.8,
+            "reference_spans": 10
+          },
+          "ROAD": {
+            "FN": 6,
+            "FP": 1,
+            "TP": 8,
+            "f1": 0.6956521739130435,
+            "passages": 60,
+            "precision": 0.8888888888888888,
+            "predicted_spans": 9,
+            "recall": 0.5714285714285714,
+            "reference_spans": 14
+          }
+        },
+        "language_metrics": "pending laptop development-only partition metadata; not present in trainer delivery",
+        "overall": {
+          "FN": 26,
+          "FP": 21,
+          "TP": 59,
+          "f1": 0.7151515151515152,
+          "passages": 60,
+          "precision": 0.7375,
+          "predicted_spans": 80,
+          "recall": 0.6941176470588235,
+          "reference_spans": 85
+        }
+      },
+      "f1": 0.7151515151515152,
+      "last_optimizer_step": 770,
+      "output": "backend/training/flood_ner/artifacts/corrected-v19-experiment-20261018-v1/runs/control-seed-1",
+      "precision": 0.7375,
+      "recall": 0.6941176470588235,
+      "seed": 1,
+      "selected_step": 595,
+      "selection_sha256": "92979cd81d31360046dd2467bb5a68b5e158c5e92ac9d5bf5d692506a3033a4f",
+      "state": "completed",
+      "stopping_reason": "early stopping after 175 optimizer steps without development improvement",
+      "variant": "control"
+    },
+    {
+      "checkpoint_files": {
+        "config.cfg": "67333f1eabd2d05d8aa0dfb0dcd726965b3bfc5660739feef0e885248e8b78d1",
+        "meta.json": "f2974931bb74af651bf7b34ddf2be9f11905e62f05c824c79336bd3877367666",
+        "ner/cfg": "113c55d357dd1387357a8db30f3c4587e640e0d4084a9dab9ff933f9d9fa6e5d",
+        "ner/model": "e7e75c0bd6d5c3a188e2409b464327aaf4bab059baa789adfce5ea124c678f08",
+        "ner/moves": "0d2f9f9b63681465505ec5e834535c63217af19936869d9d295a10f12bdbc04a",
+        "tokenizer": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+        "vocab/key2row": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/lookups.bin": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+        "vocab/strings.json": "da2cb4c1ce88bd76a0561217a420ae0c0e6c5ac5eb7e163cd415cd7524f6fba7",
+        "vocab/vectors": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+        "vocab/vectors.cfg": "339f6a5e6ca096047aabaa3738a71e3e493723163207d1021440671123c74a51"
+      },
+      "development_metrics": {
+        "labels": {
+          "BARANGAY": {
+            "FN": 6,
+            "FP": 3,
+            "TP": 13,
+            "f1": 0.7428571428571429,
+            "passages": 60,
+            "precision": 0.8125,
+            "predicted_spans": 16,
+            "recall": 0.6842105263157895,
+            "reference_spans": 19
+          },
+          "CITY": {
+            "FN": 3,
+            "FP": 7,
+            "TP": 20,
+            "f1": 0.8,
+            "passages": 60,
+            "precision": 0.7407407407407407,
+            "predicted_spans": 27,
+            "recall": 0.8695652173913043,
+            "reference_spans": 23
+          },
+          "LANDMARK": {
+            "FN": 2,
+            "FP": 9,
+            "TP": 5,
+            "f1": 0.47619047619047616,
+            "passages": 60,
+            "precision": 0.35714285714285715,
+            "predicted_spans": 14,
+            "recall": 0.7142857142857143,
+            "reference_spans": 7
+          },
+          "LOCAL_AREA": {
+            "FN": 6,
+            "FP": 1,
+            "TP": 6,
+            "f1": 0.631578947368421,
+            "passages": 60,
+            "precision": 0.8571428571428571,
+            "predicted_spans": 7,
+            "recall": 0.5,
+            "reference_spans": 12
+          },
+          "PROVINCE": {
+            "FN": 2,
+            "FP": 2,
+            "TP": 8,
+            "f1": 0.8,
+            "passages": 60,
+            "precision": 0.8,
+            "predicted_spans": 10,
+            "recall": 0.8,
+            "reference_spans": 10
+          },
+          "ROAD": {
+            "FN": 10,
+            "FP": 6,
+            "TP": 4,
+            "f1": 0.3333333333333333,
+            "passages": 60,
+            "precision": 0.4,
+            "predicted_spans": 10,
+            "recall": 0.2857142857142857,
+            "reference_spans": 14
+          }
+        },
+        "language_metrics": "pending laptop development-only partition metadata; not present in trainer delivery",
+        "overall": {
+          "FN": 29,
+          "FP": 28,
+          "TP": 56,
+          "f1": 0.6627218934911243,
+          "passages": 60,
+          "precision": 0.6666666666666666,
+          "predicted_spans": 84,
+          "recall": 0.6588235294117647,
+          "reference_spans": 85
+        }
+      },
+      "f1": 0.6627218934911243,
+      "last_optimizer_step": 840,
+      "output": "backend/training/flood_ner/artifacts/corrected-v19-experiment-20261018-v1/runs/control-seed-2",
+      "precision": 0.6666666666666666,
+      "recall": 0.6588235294117647,
+      "seed": 2,
+      "selected_step": 665,
+      "selection_sha256": "9600df9f36619f175d7b5101becdb63ffc42487151f3ae02149ac64755086215",
+      "state": "completed",
+      "stopping_reason": "early stopping after 175 optimizer steps without development improvement",
+      "variant": "control"
+    }
+  ],
+  "selection": {
+    "completed_runs": 5,
+    "next": null,
+    "retained": "control",
+    "screening_winner": "control",
+    "state": "complete",
+    "training_started": false
+  },
+  "source_commit": "882049cb3a709099ef3547a98dad57905f90f84a",
+  "state": "desktop_training_complete_laptop_evaluation_pending",
+  "tests": {
+    "additional_development_language_tests": 6,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 201
+  },
+  "training_retried": false,
+  "validation_language_metrics": "pending authenticated laptop development metadata; trainer delivery has IDs only"
+}

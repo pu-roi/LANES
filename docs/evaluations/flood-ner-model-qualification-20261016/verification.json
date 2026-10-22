@@ -1,0 +1,58 @@
+{
+  "ai_judgment_counts": {
+    "model_disagreement_supported_under_current_profile": 334,
+    "reference_question_unresolved": 57
+  },
+  "annotation_source_use_changes": false,
+  "api_schema_cli_dependency_changes": false,
+  "articles": 22,
+  "bindings_verified": 10,
+  "completion_audit": {
+    "path": "backend/training/flood_ner/artifacts/model-qualification-review-20261016-v1/completion-audit.json",
+    "sha256": "95cee56e4fdda85e7d498daa174332f63172f32f92142715f225c08504e9d2fa"
+  },
+  "context_note": "13 source-context/notes consultations; one selected passage already equals its complete captured source, leaving 12 with additional surrounding text.",
+  "error_events": 391,
+  "error_events_individually_covered": true,
+  "error_free_passages_by_model": {
+    "A-seed-0": 23,
+    "original-seed-0": 18
+  },
+  "event_totals_model_class_language_slices_checked": 42,
+  "export_deployment_correspondence_commit_push_shutdown": false,
+  "fixed_models_and_inputs_revalidated": true,
+  "historical_evidence_limitations_preserved": true,
+  "mechanical_all_overlap_links_verified": true,
+  "model_assessments": 120,
+  "new_article_or_passage_body_copies": 0,
+  "new_inference_or_training": false,
+  "new_inference_training_or_fresh_test_suite": false,
+  "official_scores_labels_offsets_unchanged": true,
+  "operational_model_qualified": false,
+  "passages": 60,
+  "passages_with_additional_surrounding_source_text": 12,
+  "preservation": {
+    "added_research_environment": [],
+    "changed_or_missing_artifacts": [],
+    "changed_research_environment": [],
+    "cli_package_count": 109,
+    "cli_package_versions_unchanged": true,
+    "env_unchanged": true,
+    "frozen_input_bindings_revalidated": true,
+    "model_files_hash_verified": 23,
+    "prior_artifact_files_hash_verified": 11676,
+    "recorded_at": "2026-10-16T20:34:53.139803+08:00",
+    "requirements_unchanged": true,
+    "research_environment_files_size_mtime_verified": 22759,
+    "research_environment_scope": "Size/mtime audit, not full environment content hashing; bytecode consistently excluded.",
+    "state": "passed"
+  },
+  "public_article_or_passage_quotations": 0,
+  "recorded_at": "2026-10-16T20:34:30.845413+08:00",
+  "reference_question_passages": 14,
+  "reference_questions": 14,
+  "schema_version": "lanes-model-qualification-review-verification-v1",
+  "scope_completed": true,
+  "source_context_consulted_passages": 13,
+  "state": "passed"
+}

@@ -1,0 +1,11 @@
+{
+  "articles": 342,
+  "context_pairs": 40,
+  "external_backup_performed": false,
+  "files_verified": 1051,
+  "folder": "backend/training/flood_ner/artifacts/stronger-400-continuation-20261015",
+  "hash_manifest_sha256": "8b285826ab89a24bffe2b50ae906664ef2782bbb2588487a62ca96a14df865c8",
+  "ignored_by_git": true,
+  "samples": 400,
+  "selected_articles": 139
+}

@@ -1,0 +1,258 @@
+[
+  {
+    "clause_id": "abs-external-rights",
+    "evidence_id": "preserved-prior-abs-cbn-0",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "General content-use restrictions; no express team academic NER grant established. Current web observation corroborates this theme; current HTTP remained 403.",
+    "pointer": {
+      "end": 3586,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/preserved-prior-abs-cbn-0.txt",
+        "sha256": "a9f6281a08db24912899b8643a168a8aa225b19d7b4ebb678beb6619b05f26d7"
+      },
+      "span_sha256": "88b246580c9e40dbc35ba7ecdfedeb02f17ff806fba888961cb7494eaef5d49d",
+      "start": 3039
+    },
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "clause_id": "abs-third-party",
+    "evidence_id": "preserved-prior-abs-cbn-0",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Independent content-provider rights cannot be assumed to belong solely to ABS-CBN.",
+    "pointer": {
+      "end": 2801,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/preserved-prior-abs-cbn-0.txt",
+        "sha256": "a9f6281a08db24912899b8643a168a8aa225b19d7b4ebb678beb6619b05f26d7"
+      },
+      "span_sha256": "4e597c1765e445f98eed22a44aae49edd8cc6f2d599c620d4979c24dea39e7ad",
+      "start": 2539
+    },
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "clause_id": "abs-ai-newsroom",
+    "evidence_id": "preserved-prior-abs-cbn-1",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Internal newsroom AI conduct, not third-party model-training permission.",
+    "pointer": {
+      "end": 709,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/preserved-prior-abs-cbn-1.txt",
+        "sha256": "e0a83e4b3d302ca88c19e76638ff4f020878e930494e19d640cde2ed964885a3"
+      },
+      "span_sha256": "2f27e0ba824bb9c4e94674e72015151202a4bd5e39a50c2a3e684e9b607cc902",
+      "start": 232
+    },
+    "url": "https://www.abs-cbn.com/ai-policy"
+  },
+  {
+    "clause_id": "gma-educational-download",
+    "evidence_id": "gma-policy",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Express educational/noncommercial downloading language; application to NER processing and team/adviser copies remains interpretive.",
+    "pointer": {
+      "end": 2499,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-policy.txt",
+        "sha256": "24989380fdbddecacdadaa3bae429ceb57816b04b9c272f1cbe3bd4566d9fefa"
+      },
+      "span_sha256": "9c317fdb78c156512d88916023fde70380d64c06bb8ce710e238fc30d320e86f",
+      "start": 2387
+    },
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "clause_id": "gma-content-rights",
+    "evidence_id": "gma-policy",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Content remains protected and additional restrictions apply.",
+    "pointer": {
+      "end": 2386,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-policy.txt",
+        "sha256": "24989380fdbddecacdadaa3bae429ceb57816b04b9c272f1cbe3bd4566d9fefa"
+      },
+      "span_sha256": "7a9443a0e54c2e682d121a43e732d2b5663628be86a69ee789ea192d9e38c85b",
+      "start": 2005
+    },
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "clause_id": "gma-partnership",
+    "evidence_id": "gma-policy",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Partnership invitation is not a granted NER license; no message sent.",
+    "pointer": {
+      "end": 3146,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-policy.txt",
+        "sha256": "24989380fdbddecacdadaa3bae429ceb57816b04b9c272f1cbe3bd4566d9fefa"
+      },
+      "span_sha256": "fb9a3437478969766be2c2403f4ea4106dc12c3827010a3378614c624218c0a3",
+      "start": 2669
+    },
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "clause_id": "gma-ai-newsroom",
+    "evidence_id": "gma-ai",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Describes newsroom tool approval, not approval for this external research corpus.",
+    "pointer": {
+      "end": 2061,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-ai.txt",
+        "sha256": "f7b6dca94e3005c7635d4c5fef9a756f863793fa0ec7e469518899b2083f88b6"
+      },
+      "span_sha256": "219539c91cbf0e3d0163bc1a59976ba88db065a37d99df8f6cbaa1e460a0fcc3",
+      "start": 1838
+    },
+    "url": "https://www.gmanetwork.com/news/artificial-intelligence-policy/"
+  },
+  {
+    "clause_id": "philstar-copy-limit",
+    "evidence_id": "philstar-copyright",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Personal single-copy download language does not explicitly cover shared academic model work.",
+    "pointer": {
+      "end": 1611,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/philstar-copyright.txt",
+        "sha256": "15e3a1f13e7526f3212634fe46d6d18071903b3a103abe748536f6cb84deb7de"
+      },
+      "span_sha256": "0e38f93949186dcfda2067ce006ca864b3c53dcca8ed3c57c14a2c3b2b251170",
+      "start": 1045
+    },
+    "url": "https://www.philstar.com/copyright-notice"
+  },
+  {
+    "clause_id": "philstar-third-party",
+    "evidence_id": "philstar-agreement",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Sections 2.1–2.4 restrict uses and identify third-party content; blanket site ownership is unsupported.",
+    "pointer": {
+      "end": 4440,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/philstar-agreement.txt",
+        "sha256": "80507b0451cd6990ce9586b4f0c624752ea316013de62c0973f9a3739ae88c50"
+      },
+      "span_sha256": "b46019dde80b6ce40025406c7ba7aca99d63e456799c23902d005d978ede8dec",
+      "start": 2794
+    },
+    "url": "https://www.philstar.com/member-agreement"
+  },
+  {
+    "clause_id": "sec173",
+    "evidence_id": "wipo-consolidated",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Compilation rights do not supply rights in underlying article wording.",
+    "pointer": {
+      "end": 168965,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.txt",
+        "sha256": "733d6ff1c3716b14b6d27b24c74577f3fd56259712350977a6e53a97d16b2b43"
+      },
+      "span_sha256": "85c86e96e0e43b48221f9fbfc9e587c4df5c6435d103fb3b22387c0b385697a2",
+      "start": 168070
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "sec175",
+    "evidence_id": "wipo-consolidated",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Facts/news items and expressive prose require distinct treatment.",
+    "pointer": {
+      "end": 169817,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.txt",
+        "sha256": "733d6ff1c3716b14b6d27b24c74577f3fd56259712350977a6e53a97d16b2b43"
+      },
+      "span_sha256": "6381252b7d2818f2203c16667d011d4c31835fd22c8180fdf7ddf03cfee0d769",
+      "start": 169267
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "sec184",
+    "evidence_id": "wipo-consolidated",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Quotation/teaching/institutional provisions have conditions; research team status alone does not establish an institutional exception.",
+    "pointer": {
+      "end": 182372,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.txt",
+        "sha256": "733d6ff1c3716b14b6d27b24c74577f3fd56259712350977a6e53a97d16b2b43"
+      },
+      "span_sha256": "9a4fd5957f40049d298973946ad6f1c8c1f9555a0a9b3ca75dc89392cec4b59c",
+      "start": 178143
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "sec185",
+    "evidence_id": "wipo-consolidated",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Section 185 supplies a candidate research/fair-use analysis, not an NER-specific automatic exception.",
+    "pointer": {
+      "end": 183929,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.txt",
+        "sha256": "733d6ff1c3716b14b6d27b24c74577f3fd56259712350977a6e53a97d16b2b43"
+      },
+      "span_sha256": "94baf3875894c0ceb775f2e909c48ddaa17d0d1721af1d79136ddc01625ccb76",
+      "start": 182363
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "sec187",
+    "evidence_id": "wipo-consolidated",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Single natural-person private-copy provision is not a blanket basis for shared/repeated corpus copies; exclusions also apply.",
+    "pointer": {
+      "end": 185387,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.txt",
+        "sha256": "733d6ff1c3716b14b6d27b24c74577f3fd56259712350977a6e53a97d16b2b43"
+      },
+      "span_sha256": "b34273e9757c87ad815e0c74b001ca82e6acac2111b245e72eb6471b109df1a1",
+      "start": 184405
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "clause_id": "ra10372-sec12",
+    "evidence_id": "ncda-amendment",
+    "evidence_kind": "source-exact saved policy/statutory text",
+    "interpretation": "Section 185 amendment corroboration; NCDA transcription has visible typographical errors, so exact statutory phrasing is taken from WIPO consolidation.",
+    "pointer": {
+      "end": 12022,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/ncda-amendment.txt",
+        "sha256": "a8c700498bc455c03e6d6227e0e41a2c36547687102d35bf0f5e80bbd4d04822"
+      },
+      "span_sha256": "4ab0db62c4e853be54b71dae393ab80a14aac9ebb74786bf6bdad5e04e10a8e7",
+      "start": 11205
+    },
+    "url": "https://ncda.gov.ph/disability-laws/republic-acts/republic-act-no-10372-an-act-amending-certain-provisions-of-republic-act-no-8293-otherwise-known-as-the-intellectual-property-code-of-the-philippines-and-for-other-purposes/"
+  },
+  {
+    "clause_id": "ipophl-guidance",
+    "evidence_id": "web-ipophl",
+    "evidence_kind": "saved paraphrase of readable official web-page observation",
+    "interpretation": "Official four-factor guidance observed on a readable web page; saved observation is paraphrase, not a verbatim clause.",
+    "pointer": {
+      "end": 512,
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json",
+        "sha256": "a102ac899848d2934bb26539562200868b22e83bd41f6ec3eaf542f68a3bd8a7"
+      },
+      "span_sha256": "75a19503cd3188b1255680b5b8201d1b691fea10955546f5fd2c033034cad306",
+      "start": 221
+    },
+    "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6"
+  }
+]

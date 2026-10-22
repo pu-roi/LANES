@@ -1,0 +1,44 @@
+{
+  "baseline_family": "v19_corrected_control",
+  "baseline_metrics_sha256": "785a67d0182554bd354112658803ec3e157013b2cf5c6ce5ffabc401f0894585",
+  "candidate": {
+    "L2": 0.05,
+    "L2_is_weight_decay": true,
+    "name": "stronger_weight_decay"
+  },
+  "claim_unbiased_new_test_improvement": false,
+  "failure_policy": "stop; preserve evidence; no retry, concurrency, destination reuse or substitute configuration",
+  "future_run_requirements": [
+    "explicit execution authorization",
+    "actual qualified desktop GPU",
+    "fresh six-class head with pinned encoder initialization",
+    "new sequential output directories",
+    "strict validation checkpoint reload and score reproduction",
+    "all-label/language support, negative errors and train/validation gaps",
+    "raw stdout/stderr, evaluation-step curves, resolved config, selected/last-step evidence"
+  ],
+  "guaranteed_f1": null,
+  "holdout_access_authorized": false,
+  "inference_authorized_by_preparation": false,
+  "maximum_new_runs": 3,
+  "metric": "full_precision_strict_validation_micro_f1",
+  "ordered_seeds": [
+    0,
+    1,
+    2
+  ],
+  "protected_labels": [
+    "ROAD",
+    "LOCAL_AREA"
+  ],
+  "repeat_holdout_evaluation_authorized": false,
+  "retention": "screen passes; three-seed overall mean strictly improves; key-label means do not regress",
+  "schema": "lanes-regularization-protocol-v1",
+  "scope": "development_regularization_preparation_only",
+  "screen_first": true,
+  "screening": "seed0 overall strictly improves; key labels do not regress",
+  "tie_tolerance": 1e-12,
+  "ties": "overall fails improvement; protected-label tie passes nonregression",
+  "training_authorized": false,
+  "validation_is_reused": true
+}

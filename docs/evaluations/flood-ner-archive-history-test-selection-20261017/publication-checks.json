@@ -1,0 +1,18 @@
+{
+  "archive_and_saved_selection_task_complete": true,
+  "training_ready": false,
+  "public_metadata_matches_private_aggregates": true,
+  "known_drive_metadata_items": 19,
+  "v3_payload_files_verified": 3863,
+  "historical_zip_entries_verified": 7,
+  "archive_privacy_tests_passed": 12,
+  "protected_prior_files_unchanged": 4077,
+  "source_evidence_bindings_unchanged": 1691,
+  "coordinator_read_only_two_safe_curator_files": true,
+  "fresh_test_sealed": false,
+  "external_unknown_history_retained": true,
+  "development_402_candidates_unchanged": true,
+  "documentation_records_synchronized": 7,
+  "actual_admission_freeze_export_inference_training_upload_push": false,
+  "local_report_links_verified": 10
+}

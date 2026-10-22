@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-10-16T20:59:38.790478+08:00",
+  "cli_package_versions_unchanged": 109,
+  "contextual_pairs": 40,
+  "env_unchanged": true,
+  "environment_check_limit": "Research environment size/mtime excluding bytecode, not complete content hashes.",
+  "failures": [],
+  "head_branch_unchanged": true,
+  "permitted_document_updates": [
+    "docs/README.md",
+    "docs/plans/lanes-ner-training-plan.md",
+    "docs/progress.md",
+    "docs/task_plan.md"
+  ],
+  "pinned_model_files_unchanged": 23,
+  "prior_artifact_hashes_unchanged": 11689,
+  "repository_file_hashes_unchanged": 2880,
+  "requirements_unchanged": true,
+  "research_environment_file_stats_unchanged": 22759,
+  "sealed_test_revalidated_read_only": true,
+  "source_use_flags_annotations_partitions_prior_checkpoints_unchanged": true,
+  "state": "passed"
+}

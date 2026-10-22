@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CircleDot,
@@ -110,6 +110,12 @@ export default function RoutePanel() {
     return orderA - orderB;
   }) : [];
   const [hoveredStepIdx, setHoveredStepIdx] = useState<number | null>(null);
+  const selectedMobileStepIdx = useRef<number | null>(null);
+
+  useEffect(() => {
+    selectedMobileStepIdx.current = null;
+    window.dispatchEvent(new CustomEvent("route-step-clear"));
+  }, [selectedRoute]);
 
   useEffect(() => {
     const handleCenterChange = (e: Event) => {
@@ -603,9 +609,15 @@ export default function RoutePanel() {
                             }}
                             onMouseLeave={() => {
                               setHoveredStepIdx(null);
-                              fireStepHover(null);
+                              if (selectedMobileStepIdx.current === null) fireStepHover(null);
+                              else fireStepHover(selectedMobileStepIdx.current);
                             }}
-                            onClick={() => fireStepClick(idx)}
+                            onClick={() => {
+                              selectedMobileStepIdx.current = idx;
+                              fireStepClick(idx);
+                              setIsTopBarCollapsed(true);
+                              setActivePanel(null);
+                            }}
                           >
                             <div className={cn(
                               "w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors",

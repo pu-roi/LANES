@@ -1,0 +1,142 @@
+{
+  "note": "Metadata projection uses repository-root-relative qualification evidence. The unchanged original contract uses a package-local report reference.",
+  "original_contract": {
+    "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/actual-v1/evaluation-contract.json",
+    "sha256": "76d37664d71463c2bee6695b208a8b804bbe89b76d3257a677b3b9af274678dd"
+  },
+  "protocol": {
+    "contextual_evaluation": "All 40 pairs are training references, not a held-out contextual benchmark; depth/time diagnostics do not score contextual accuracy",
+    "contextual_pairs": 40,
+    "exports": 0,
+    "input_bindings": {
+      "admission_ledger": {
+        "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/admission-ledger.json",
+        "sha256": "5563206da2830f1e107e4c883c780b4b186d2d5b86c36acdeeb69ff3c47115ad"
+      },
+      "admission_package": {
+        "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/hash-manifest.json",
+        "sha256": "0b3bea737fa6004c600cb6c55141718bca54b4283c7a88583222d95b02de4f14"
+      },
+      "cohort": {
+        "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/cohort-admitted-v1/partition_manifest.json",
+        "sha256": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8"
+      },
+      "context": {
+        "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/contextual-admitted-v1/manifest.json",
+        "sha256": "4a0fbd7760730ecb4055fd6c837da1d3cf37884a8f0fb8a09ef54a80d7ad2c78"
+      },
+      "model_manifest": {
+        "path": "backend/training/flood_ner/artifacts/preflight-use-20261015/model_manifest.json",
+        "sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc"
+      },
+      "tokenizer_manifest": {
+        "path": "backend/training/flood_ner/artifacts/tokenizer-qualification-20261015/final-v5/tokenizer_manifest.json",
+        "sha256": "4257f8f8d6bc56157624cd8332263e834ecc3333caeed3617ce329abcc95689c"
+      }
+    },
+    "interpretation": "Agreement with same-AI-reviewed silver references; not independently verified accuracy or human gold labels",
+    "labels": [
+      "BARANGAY",
+      "CITY",
+      "LANDMARK",
+      "LOCAL_AREA",
+      "PROVINCE",
+      "ROAD"
+    ],
+    "matching": [
+      "record_id",
+      "start",
+      "end",
+      "label"
+    ],
+    "metrics": {
+      "aggregation": "micro counts; no token-accuracy substitute",
+      "counts": [
+        "TP",
+        "FP",
+        "FN",
+        "reference_spans",
+        "predicted_spans",
+        "passages"
+      ],
+      "f1": "2*TP/(2*TP+FP+FN); null when denominator is zero",
+      "negative_passage_false_positive_rate": "negative passages with >=1 in-profile prediction / negative passages; null when none",
+      "negative_support": "Report negative passage count and false-positive passage count overall and by language",
+      "precision": "TP/(TP+FP); null when denominator is zero",
+      "recall": "TP/(TP+FN); null when denominator is zero",
+      "slices": [
+        "overall",
+        "label",
+        "language",
+        "language_and_label"
+      ]
+    },
+    "model_predictions_performed": false,
+    "model_selection": {
+      "configuration_policy": "Freeze configuration identities before training; select using development results only",
+      "metric": "strict six-class micro F1",
+      "partition": "dev",
+      "primary_seed": 0,
+      "robustness_seeds": [
+        1,
+        2
+      ],
+      "test_boundary_audit": "Deterministic token-boundary inspection is permitted here; it is not NER test evaluation",
+      "test_policy": "No test predictions, metrics or errors for tuning; final selected experiment only after configurations/checkpoints are frozen",
+      "tie_break": "earlier checkpoint step"
+    },
+    "partitions": {
+      "dev": {
+        "english": 30,
+        "taglish": 30
+      },
+      "test": {
+        "english": 30,
+        "taglish": 30
+      },
+      "train": {
+        "english": 140,
+        "taglish": 140
+      }
+    },
+    "pretrained_comparison": {
+      "metric": "Exact record/start/end matching in the separate coarse LOC task",
+      "no_reference_driven_prediction_relabeling": true,
+      "prediction": "Use pretrained LOC predictions only; ORG/PER remain separate diagnostics",
+      "reference": "Collapse all six location classes to LOC, without merging adjacent entities",
+      "six_class_accuracy_claim": false
+    },
+    "production_acceptance": "Existing roadmap targets remain proposals pending baseline measurement; this protocol grants no production readiness",
+    "qualification": {
+      "report": {
+        "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/actual-v1/qualification.json",
+        "sha256": "7d28c551de5a5c64f204c6943f6d74dde197935c9bc3a93e42f27b29742c05ba"
+      },
+      "state": "blocked"
+    },
+    "rules_baseline": {
+      "requirements": [
+        "Freeze extractor code/configuration hashes",
+        "Document each emitted type to six-class label mapping and original character-offset convention",
+        "Validate source-exact offsets; preserve unresolved/unsupported types separately",
+        "Never infer a missing rule label or offset from reference annotations"
+      ],
+      "state": "mapping_required_before_comparison"
+    },
+    "sample_count": 400,
+    "schema_version": "lanes-ner-evaluation-contract-v1",
+    "source_use_scope": "private_owner_only_academic_training_evaluation",
+    "state": "protocol_frozen_tokenizer_qualification_pending",
+    "tokenizer": {
+      "name": "lanes.tl.calamancy-address-v1",
+      "qualified": false,
+      "sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+      "vocabulary_binding": {
+        "path": "backend/training/flood_ner/artifacts/preflight-use-20261015/model_manifest.json",
+        "sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc"
+      }
+    },
+    "training_performed": false
+  },
+  "schema_version": "lanes-evaluation-contract-public-projection-v1"
+}

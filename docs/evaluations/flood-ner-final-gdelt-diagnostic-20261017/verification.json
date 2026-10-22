@@ -1,0 +1,84 @@
+{
+  "new_adapter_tests_passed": 82,
+  "focused_tests_run": 97,
+  "focused_tests_passed": 96,
+  "focused_tests_skipped": 1,
+  "skip_reason": "Windows symlink creation unavailable",
+  "test_command": "backend\\venv\\Scripts\\python.exe -B -m unittest backend.tests.test_flood_ner_bounded_discovery backend.tests.test_flood_ner_history_inventory backend.tests.test_flood_ner_repository_bytes",
+  "live_requests_in_tests": 0,
+  "production_api_dependencies_database_schema_unchanged": true,
+  "postmortem_fix": {
+    "adapter_tests_passed": 87,
+    "focused_tests_run": 102,
+    "focused_tests_passed": 101,
+    "focused_tests_skipped": 1,
+    "new_tests": "Coarse wall-clock quantum, elapsed-time quantum, bounded wait after clock rollback.",
+    "live_gets_after_fix": 0,
+    "original_failure_exact_guard_known": false,
+    "original_dispatched_adapter_sha256": "fc1cf72c1aa45a7c0c669d20d5c7282ce13b02e1c8c7c6dfe0295c733254aafe",
+    "current_adapter_sha256": "7498fbd99f53119f8bf734a2a71c5f8903b3536a6dd3dabc8223fce91bb283a2",
+    "current_tests_sha256": "046038e10f5251578c6d96a4eb366fdbe985386b084184e7e495fdb39ed9b25a",
+    "platform_clock_info": {
+      "monotonic": {
+        "implementation": "GetTickCount64()",
+        "monotonic": true,
+        "adjustable": false,
+        "resolution": 0.015625
+      },
+      "perf_counter": {
+        "implementation": "QueryPerformanceCounter()",
+        "monotonic": true,
+        "adjustable": false,
+        "resolution": 1e-07
+      },
+      "time": {
+        "implementation": "GetSystemTimeAsFileTime()",
+        "monotonic": false,
+        "adjustable": true,
+        "resolution": 0.015625
+      }
+    },
+    "diagnosis_limit": "A platform-sensitive false-failure condition is covered by constructed regression tests; the original exception text was not retained, so this is not proof of its exact cause.",
+    "final_grant_preflight_failure_and_reopen_guards_passed": 2
+  },
+  "dispatched_code": {
+    "backend/training/flood_ner/bounded_discovery.py": "fc1cf72c1aa45a7c0c669d20d5c7282ce13b02e1c8c7c6dfe0295c733254aafe",
+    "backend/tests/test_flood_ner_bounded_discovery.py": "d6e1238ed04d7d70fa98c0115436bca6857406a7e140dc19a9ed6403be755dac"
+  },
+  "code": {
+    "backend/training/flood_ner/bounded_discovery.py": "7498fbd99f53119f8bf734a2a71c5f8903b3536a6dd3dabc8223fce91bb283a2",
+    "backend/tests/test_flood_ner_bounded_discovery.py": "046038e10f5251578c6d96a4eb366fdbe985386b084184e7e495fdb39ed9b25a"
+  },
+  "final_focused_tests_passed": 101,
+  "final_focused_tests_skipped": 1,
+  "final_adapter_tests_passed": 87,
+  "coordinator_preservation": {
+    "files": 6219,
+    "unchanged": 6219,
+    "failures": [],
+    "prior_datasets_reviews_journals_tokenizer_models_scores_unchanged": true
+  },
+  "safe_curator_hashes": {
+    "aggregate-status.json": "836a182cadf276c74491cc17daa7ef1c01dbfad5217cf14c83b8d3289372ddc4",
+    "verification-manifest.json": "3727d34688696fe65a1af14a8b83e171702fdccc19846de60ebfcb9319c67391",
+    "postmortem-aggregate-status.json": "9c17e6cb4d4305e64892308a864de4fbf3afbcbc922375455c97e27e6e967fc2",
+    "postmortem-verification-manifest.json": "787d5b092f9e6b620850b990ed6856bc532cad34dedeb0bcbb4824cd05f20bf9"
+  },
+  "curator_predecessor_files_unchanged": 412,
+  "curator_fresh_guards": 0,
+  "prior_reference_validation_reused_not_remeasured": true,
+  "no_collection_admission_freeze_seal_export_inference_training_upload_push": true,
+  "real_clock_mock_check": {
+    "real_wait_seconds": 30.0005203000037,
+    "mock_dispatches": 1,
+    "real_network_requests": 0,
+    "fake_clock_used": false,
+    "owned_headers": {
+      "user_agent": "LANES-NER-Research/1.0",
+      "accept": "application/json",
+      "maxrecords": "1"
+    },
+    "schema_valid_fixture_returned": true,
+    "adapter_sha256": "2c9cf7a54aa292e2c95f3d4679781cbdb762e8cbe300eb993b5442d0c938f8be"
+  }
+}

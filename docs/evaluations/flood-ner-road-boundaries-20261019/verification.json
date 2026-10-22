@@ -1,0 +1,100 @@
+{
+  "aggregate_privacy_check": "passed",
+  "annotations_changed": false,
+  "baseline_and_all_shadow_metrics_identical": true,
+  "checkout_byte_preservation_files": 4,
+  "coordinator_parent_projection": "authenticated source container deterministically filtered for training articles only",
+  "fresh_tests": {
+    "ambiguous_unscored": 6,
+    "command": "backend/.venv/Scripts/python.exe -B -m pytest --noconftest backend/tests/test_flood_ner_road_boundary_study.py backend/tests/test_flood_ner_context_safeguards.py backend/tests/test_flood_ner_regularization_comparison.py backend/tests/test_flood_ner_development_error_audit.py -q",
+    "definitive_cases": 18,
+    "fictional_core": 24,
+    "new_boundary_checks": 71,
+    "passed": 269,
+    "python_version": "3.12.14"
+  },
+  "git_diff_check": "passed",
+  "grant_sha256": "003b99f742d9e5f62c429e306ea6d56dc83ba3af6110fea123fe109a17bd3e20",
+  "holdout_content_opened": false,
+  "implementation": [
+    {
+      "path": "backend/training/flood_ner/road_boundary_rules.py",
+      "sha256": "a7f384f5a6fcbc627e4e737ce57a3cf5471f3b84c6995835c8b9aaae3724a6ee"
+    },
+    {
+      "path": "backend/training/flood_ner/road_boundary_cases.py",
+      "sha256": "0a9094d7e5c4c4cba784441a4b9a7c49afa19ccd9d6cea3688d8d681a26fa877"
+    },
+    {
+      "path": "backend/training/flood_ner/road_boundary_study.py",
+      "sha256": "865488838bc8e65cf88da8eceb5c3997a56fcfee0e06dbfab97a124564cc2d52"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguards.py",
+      "sha256": "1d73e8431100e7bb828fb435d423a0d601571d14dbba2ba28220509fe95b8e51"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguard_study.py",
+      "sha256": "55198b0f04012c926236de649f06c4e5075e5089284948f687e48dacabf55cfa"
+    },
+    {
+      "path": "backend/training/flood_ner/development_error_audit.py",
+      "sha256": "2e15193e95aec10a3360ef1bb0cee31427f06790b92d197e7f691fc8e0df0cbb"
+    },
+    {
+      "path": "backend/training/flood_ner/regularization_comparison.py",
+      "sha256": "10acef9ada697a0988d6006d4f6eea9fccb3dc44d031cbcb7cefa175c602c550"
+    },
+    {
+      "path": "backend/training/flood_ner/annotation/schema.py",
+      "sha256": "f43c50101c729ccae1d01036760289b865be6b2fdfba168173046e27932954a2"
+    },
+    {
+      "path": "backend/training/flood_ner/evaluation/contract.py",
+      "sha256": "f779be24936ecd5a625d31f2f8f60efb7578c7fbee73fa4ff30b77c74fac4ff7"
+    }
+  ],
+  "independent_replay_byte_identical_members": 10,
+  "limitations": [
+    "Motivated by exposed validation findings; not blinded.",
+    "AI-assisted silver and incomplete history/accounting.",
+    "No-op training agreement does not establish generalization or exhaust all possible methods."
+  ],
+  "links": "checked",
+  "model_selection_changed": false,
+  "neural_inference": false,
+  "partitions_changed": false,
+  "preservation": {
+    "completed_holdout_stat_only": 55,
+    "hashed_files": 507,
+    "prior_validation_stat_only": 27,
+    "status": "passed"
+  },
+  "private_packages_ignored": true,
+  "production_api_dependencies_schema_changes": false,
+  "production_integration": false,
+  "protocol_sha256": "4456af5adc1b9aa56b6d84d4451aed097c072235c0051957167d7f287c2b7b23",
+  "qualification": "no rule qualifies; both families partially supported, no observed corrective applicability",
+  "replay_manifest_sha256": "3088693133e640513107a32b3a81763798451f00c7aad718c87fecbba892d645",
+  "schema": "lanes-road-boundary-verification-v1",
+  "scope": "training_only_road_boundary_feasibility",
+  "source_review": {
+    "ROAD_FN": 8,
+    "ROAD_FP": 6,
+    "ROAD_error_passages": 7,
+    "complete_articles": 5
+  },
+  "study_manifest_sha256": "3088693133e640513107a32b3a81763798451f00c7aad718c87fecbba892d645",
+  "study_worker_parent_containers_opened": false,
+  "tests": {
+    "path": "backend/tests/test_flood_ner_road_boundary_study.py",
+    "sha256": "7cc6012a931d4f0bc57db01e9d9623e95e684446871cfe4b515bcbca614a9fea"
+  },
+  "training": false,
+  "training_manifest_sha256": "e95b88175c5116e5f66b79e3560d545ee8276041e57bb8f2c055f41674f113e2",
+  "training_record_decisions_checked": 345,
+  "type_safeguard_composed": false,
+  "upload_commit_push": false,
+  "validation_scored": false,
+  "validation_supplied_to_prototype": false
+}

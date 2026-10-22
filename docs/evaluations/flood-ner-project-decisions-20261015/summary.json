@@ -1,0 +1,237 @@
+{
+  "schema_version": "lanes-delegated-project-decision-completion-v1",
+  "state": "delegated_project_dispositions_recorded_partial_source_use_progress",
+  "decision_actor": {
+    "name": "Codex",
+    "kind": "ai",
+    "capacity": "acting_under_researcher_delegation",
+    "independent_human_reviewer_claimed": false,
+    "publisher_authorization_claimed": false,
+    "legal_approval_claimed": false
+  },
+  "recorded_at": "2026-10-15T17:46:49.652397+08:00",
+  "decision_date": "2026-10-15",
+  "authority": "Explicit researcher delegation and direct implementation instruction for the approved plan; no independent human review, publisher authorization or legal approval claimed",
+  "scope": "private_owner_only_academic_ner_training_evaluation",
+  "private_checkpoint": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1",
+  "counts": {
+    "case_groups": 4,
+    "articles": 139,
+    "sample_memberships": 400,
+    "adopted_basis_articles": 70,
+    "adopted_basis_passages": 157,
+    "held_articles": 69,
+    "held_passages": 243
+  },
+  "case_dispositions": [
+    {
+      "case_id": "gma_recommended_subset",
+      "publisher": "GMA News",
+      "project_disposition": "adopt_existing_recommendation",
+      "article_count": 70,
+      "sample_count": 157,
+      "basis_status": "existing_basis_adopted_for_limited_project_scope"
+    },
+    {
+      "case_id": "gma_afp_article",
+      "publisher": "GMA News",
+      "project_disposition": "retain_hold",
+      "article_count": 1,
+      "sample_count": 3,
+      "basis_status": "unresolved"
+    },
+    {
+      "case_id": "abs_cbn_held_articles",
+      "publisher": "ABS-CBN News",
+      "project_disposition": "retain_hold",
+      "article_count": 50,
+      "sample_count": 158,
+      "basis_status": "unresolved"
+    },
+    {
+      "case_id": "philstar_held_articles",
+      "publisher": "Philstar",
+      "project_disposition": "retain_hold",
+      "article_count": 18,
+      "sample_count": 82,
+      "basis_status": "unresolved"
+    }
+  ],
+  "project_dispositions_recorded": true,
+  "source_use_finalization_complete": false,
+  "current_task": "Finalize the case-specific supported research-use basis and explicit project decision",
+  "current_task_status": "partial; existing task remains unchecked",
+  "remaining_task": "Resolve the AFP third-party-rights, ABS-CBN website-use/contractual and Philstar copying/derivation plus opinion/QA-source questions for the 69 held articles / 243 passages.",
+  "publisher_replies": "optional evidence, not a universal prerequisite",
+  "nine_proposal_bindings_verified": 9,
+  "used_evidence_records_verified": 9,
+  "used_evidence_file_or_clause_references_verified": 13,
+  "original_proposal_packet_files_verified": 31,
+  "read_only_original_proposal_validator": {
+    "articles": 139,
+    "samples": 400,
+    "contextual_pairs": 40,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "actual_project_decisions": 0,
+    "training_admitted": 0,
+    "docbin_exported": 0
+  },
+  "original_proposal_validator_result_scope": "Preserved historical AI proposal; its zero-decision result does not describe the separate current delegated decision record",
+  "delegated_decision_validation": "passed; all 139 dispositions and adopted/held basis fields independently reconciled",
+  "negative_validation_scenarios": {
+    "release_held_AFP": "rejected",
+    "invent_human_reviewer": "rejected",
+    "broaden_to_public_demo": "rejected",
+    "apply_admission": "rejected",
+    "remove_sample_membership": "rejected",
+    "duplicate_article": "rejected",
+    "change_other_use_outcome": "rejected",
+    "drop_adopted_basis": "rejected",
+    "claim_publisher_permission": "rejected",
+    "lose_exception_disposition": "rejected",
+    "claim_full_cohort_satisfied": "rejected",
+    "alter_evidence_hash": "rejected"
+  },
+  "duplicates": 0,
+  "omissions": 0,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "partitions": {
+    "train": 280,
+    "validation": 60,
+    "testing": 60
+  },
+  "contextual_pairs": 40,
+  "original_files_verified_unchanged": 7541,
+  "preexisting_uncommitted_files": 36,
+  "intended_document_updates": [
+    "docs/task_plan.md",
+    "docs/progress.md",
+    "docs/README.md"
+  ],
+  "documentation_updates_verified": true,
+  "six_paper_excerpt_dataset_distribution_outcomes_separate_pending": true,
+  "six_production_model_distribution_outcomes_deferred": true,
+  "twelve_original_nonacademic_outcomes_unchanged": true,
+  "original_annotations_contexts_partitions_source_use_flags_unchanged": true,
+  "historical_proposals_and_blank_forms_unchanged": true,
+  "existing_gpu_checkpoint_files_verified_unchanged": 71,
+  "existing_gpu_packages_verified_unchanged": 73,
+  "backend_env_unchanged": true,
+  "private_checkpoint_ignored": true,
+  "historical_reference_gaps": {
+    "backend/training/flood_ner/artifacts/adviser-guidance-20261015-v1/manifest.json": {
+      "expected": "d9c8cc984afffefdb13fb16b801a5257a4e227e0f8873a925026ea1865219b6f",
+      "actual": "missing",
+      "referenced_by": "backend/training/flood_ner/artifacts/private-access-20261015-v1/adviser-and-access-update.json"
+    },
+    "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review.json": {
+      "expected": "d4f4406295563d0da7acd8ae562dd3ebf136e56082a6c83866ffc6a9ccce603d",
+      "actual": "missing",
+      "referenced_by": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review-v2.json"
+    },
+    "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/manifest.json": {
+      "expected": "5b8e3a752d248a1f14ce3857290272957db6ea75c735c9724ab6b07624985f09",
+      "actual": "missing",
+      "referenced_by": "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1/manifest.json"
+    }
+  },
+  "historical_gaps_block_decision_record": false,
+  "admission_applied": false,
+  "training_admitted": 0,
+  "docbin_exported": 0,
+  "training_started": false,
+  "model_inference_performed": false,
+  "deployment_started": false,
+  "external_messages_sent": 0,
+  "gpu_environment_modified": false,
+  "adopted_subset_satisfies_required_400_sample_cohort": false,
+  "private_checkpoint_output_hashes": {
+    "README.md": {
+      "sha256": "fac1ad716476830b24d31179788ebef4ba5c47dba42142731405161a1d2f6438",
+      "bytes": 3858
+    },
+    "decisions.json": {
+      "sha256": "eb92412a830aad8a4cc40aaf94f0558ed77fad60ae75c5a3311afe113813ac9f",
+      "bytes": 1321085
+    },
+    "delegation-record.json": {
+      "sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "bytes": 1227
+    },
+    "verification.json": {
+      "sha256": "e4b1afd72bb9e7a09ff9f535e93d0bd7129a620a7147189c2d7f3d3d9c52df23",
+      "bytes": 9171
+    },
+    "manifest.json": {
+      "sha256": "d6dd32e655d54aa56ff2de42c9365310cacf0ecf18fd5a2c17d4bb401aa1ecf0",
+      "bytes": 1966
+    }
+  },
+  "input_hashes": {
+    "proposal": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/proposal.json",
+      "sha256": "1341ac83946365735f76a9878cbe025ff2e4064f9aabf665a6e8cb125307f260"
+    },
+    "historical_forms": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/editable-project-decisions.json",
+      "sha256": "3a8ebb7b1943756916d1e0b2054ca98898111d93f5138083082510a365d2d565"
+    },
+    "proposal_manifest": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/manifest.json",
+      "sha256": "b3d470a9d3b296c3aeeef5ffeb83254d86cb035d837a6ba1ef9e3c283ea6fee9"
+    },
+    "checklist_manifest": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1/manifest.json",
+      "sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f"
+    },
+    "delegation_record": {
+      "path": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1/delegation-record.json",
+      "sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5"
+    }
+  },
+  "proposal_bindings": {
+    "access_verification": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/access-verification.json",
+      "sha256": "f1cfb37e84db9c141657d6049ab801ff74396b2e4eed6d264aa386a0816d9078"
+    },
+    "adviser_access": {
+      "path": "backend/training/flood_ner/artifacts/private-access-20261015-v1/adviser-and-access-update.json",
+      "sha256": "4bbcfdb888fac53a358d76842d97a9ed0102267d29731c30b5030741f30bd9b0"
+    },
+    "cohort_manifest": {
+      "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/cohort-v2/partition_manifest.json",
+      "sha256": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a"
+    },
+    "context_manifest": {
+      "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/contextual-v3/manifest.json",
+      "sha256": "e1f002dd69019713b8e8309743201084e5f731b99aaa4d0fbb69c5819b1f8578"
+    },
+    "copy_inventory": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/copy-inventory.json",
+      "sha256": "93b48ab1b1039d94877a5212adab9a7a1ae9fe7d5bc06c6572592ab670ed4401"
+    },
+    "evidence_register": {
+      "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/evidence-register.json",
+      "sha256": "ef827df53befc6d91e02d870d3c7b1a437906d8308f6398a6d1741592e9a51bc"
+    },
+    "prior_review": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/academic_review-v2.json",
+      "sha256": "65f3d196289d9296c3edc51e8173d9b85107d99d55ee80ead04c780b7bfb91d7"
+    },
+    "researcher_facts": {
+      "path": "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1/user-facts.json",
+      "sha256": "5a62a2695ec06929341cac7778c171aabe9e0ec4d38fd667af123335e786921a"
+    },
+    "review_packet": {
+      "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/review-packet-v3.json",
+      "sha256": "8a0ca1c0b3b175d3435b57bcde690ed03dba28f64eee98c7cbbf5cd5033626bd"
+    }
+  },
+  "report_scope": "metadata only"
+}

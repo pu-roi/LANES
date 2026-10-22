@@ -1,0 +1,85 @@
+{
+  "annotations_changed": false,
+  "bound_helper_checkout_bytes_verified": 4,
+  "determinism": {
+    "files": 11,
+    "independent_process_replay": "byte-identical"
+  },
+  "documentation_links": "checked",
+  "evidence_offsets": "exact unchanged Unicode text",
+  "fresh_checks": {
+    "ambiguous_unscored": 12,
+    "command": "backend/.venv/Scripts/python.exe -B -m pytest --noconftest backend/tests/test_flood_ner_context_safeguards.py backend/tests/test_flood_ner_regularization_comparison.py backend/tests/test_flood_ner_development_error_audit.py -q",
+    "core_fictional_cases": 48,
+    "definitive_cases": 36,
+    "new_context_tests": 94,
+    "passed": 198,
+    "runtime": "3.12.14",
+    "suites": [
+      "test_flood_ner_context_safeguards.py",
+      "test_flood_ner_regularization_comparison.py",
+      "test_flood_ner_development_error_audit.py"
+    ]
+  },
+  "frozen_protocol_sha256": "e08dd1b67f51401ff7108a57552e7b30a612107ea1928737341998e099a6da0e",
+  "git_diff_check": "passed",
+  "holdout_content_opened": false,
+  "implementation": [
+    {
+      "path": "backend/training/flood_ner/context_safeguards.py",
+      "sha256": "1d73e8431100e7bb828fb435d423a0d601571d14dbba2ba28220509fe95b8e51"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguard_cases.py",
+      "sha256": "17e92628b99918eec9a1fafc3d48c4cbec16e5328573fd35aa1b1a9f4516cea2"
+    },
+    {
+      "path": "backend/training/flood_ner/context_safeguard_study.py",
+      "sha256": "55198b0f04012c926236de649f06c4e5075e5089284948f687e48dacabf55cfa"
+    },
+    {
+      "path": "backend/training/flood_ner/development_error_audit.py",
+      "sha256": "2e15193e95aec10a3360ef1bb0cee31427f06790b92d197e7f691fc8e0df0cbb"
+    },
+    {
+      "path": "backend/training/flood_ner/regularization_comparison.py",
+      "sha256": "10acef9ada697a0988d6006d4f6eea9fccb3dc44d031cbcb7cefa175c602c550"
+    },
+    {
+      "path": "backend/training/flood_ner/evaluation/contract.py",
+      "sha256": "f779be24936ecd5a625d31f2f8f60efb7578c7fbee73fa4ff30b77c74fac4ff7"
+    },
+    {
+      "path": "backend/training/flood_ner/annotation/schema.py",
+      "sha256": "f43c50101c729ccae1d01036760289b865be6b2fdfba168173046e27932954a2"
+    }
+  ],
+  "limitations": [
+    "Training agreement is not generalization or model improvement.",
+    "Rule development was motivated by exposed validation findings, not blinded.",
+    "References remain AI-assisted silver; incomplete-history/accounting limitations persist.",
+    "Later validation proposal and evaluation require a separate task; completed holdout remains excluded."
+  ],
+  "prediction_boundaries_changed": false,
+  "preparation_grant_sha256": "57f0f26682d1e493d1e899679fa34f29eca0c8195842cb6e4a8e2a17d2e9417b",
+  "preservation": {
+    "hashed_files": 451,
+    "holdout_stat_only": 55,
+    "status": "passed"
+  },
+  "private_artifacts_git_ignored": true,
+  "production_api_dependencies_schema_changes": false,
+  "public_aggregate_privacy_check": "no individual text, source identities, annotations or prediction rows",
+  "schema": "lanes-context-safeguard-verification-v1",
+  "scope": "training_only_context_safeguard_feasibility",
+  "study_manifest_sha256": "755e8dd1052a6b2aa359a01a9f3e4e10f4ad14b48c7405465cd8696bc6c33be7",
+  "tests": {
+    "path": "backend/tests/test_flood_ner_context_safeguards.py",
+    "sha256": "a5d58c62ed3d8ad04a85a6fef268d736160537b1ed2e448d79efc1507f1c47aa"
+  },
+  "trained_or_inferred": false,
+  "training_view_manifest_sha256": "e95b88175c5116e5f66b79e3560d545ee8276041e57bb8f2c055f41674f113e2",
+  "upload_commit_push": false,
+  "validation_evaluated": false,
+  "verified_record_decisions": 345
+}

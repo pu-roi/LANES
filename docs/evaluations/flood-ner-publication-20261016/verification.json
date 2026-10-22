@@ -1,0 +1,31 @@
+{
+  "recorded_at": "2026-10-16T22:35:00.381730+08:00",
+  "owner": "[@roicambe](https://github.com/roicambe) (Roi Cambe)",
+  "actor": "Codex documentation auditor under user instruction",
+  "branch": "roi-branch",
+  "tests_run": 59,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "test_files": [
+    "test_flood_ner_qualified_export.py",
+    "test_flood_ner_experiment_preparation.py",
+    "test_flood_ner_manual_training.py",
+    "test_flood_ner_validation_comparison.py",
+    "test_flood_ner_study_recipes.py",
+    "test_flood_ner_heldout_test.py"
+  ],
+  "test_log_sha256": "4205f7927bf231ce89f93224bd71887fa2cec7f2e0b4016f7340b4fd76378d60",
+  "dependency_changes": false,
+  "database_schema_or_migration_changes": false,
+  "env_excluded_and_preserved": true,
+  "private_artifacts_ignored": true,
+  "dataset_readiness_complete": false,
+  "heldout_package_sealed": false,
+  "real_inference_or_training_run": false,
+  "push_status": "Commit/push completion is reported separately with the actual Git result.",
+  "readiness_report": {
+    "path": "docs/evaluations/flood-ner-additional-dataset-20261016/README.md",
+    "sha256": "ec4ffd1d079a8af354f3c62affe3bb1311ea5167fb4f1c40a30242384134e1b5"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "annotated_passages": 0,
+  "assigned_splits": 0,
+  "context_blocks": 113,
+  "editorial_reviews": 100,
+  "excluded_ranges": {
+    "caption": 4,
+    "publisher_interface": 24,
+    "publisher_metadata": 22,
+    "related_story": 10
+  },
+  "hold_reasons": {
+    "annotation_not_started": 113,
+    "cross_block_context_review_pending": 22,
+    "event_syndication_review_pending": 113,
+    "legacy_original_html_retrieval_gap": 3,
+    "measurement_role_annotation_review_pending": 1,
+    "outside_paper_english_taglish_scope": 34,
+    "research_team_manual_review_pending": 113,
+    "reuse_assessment_pending": 113,
+    "unsupported_or_unresolved_language_review_pending": 1
+  },
+  "human_reviewed_articles": 0,
+  "note": "Editorial blocks are context for manual annotation, not independent accepted training samples.",
+  "paper_dataset_target": {
+    "dev": 60,
+    "test": 60,
+    "total": 400,
+    "train": 280
+  },
+  "paper_language_compatible_blocks": 78,
+  "passage_languages": {
+    "english": 45,
+    "tagalog": 34,
+    "taglish": 33,
+    "unknown": 1
+  },
+  "review_kinds": {
+    "ai_assisted": 100
+  },
+  "schema_version": "lanes-flood-ner-editorial-report-v1",
+  "source_articles": 100,
+  "training_admitted": 0
+}

@@ -1,0 +1,64 @@
+{
+  "archive_bytes": 153734,
+  "archive_sha256": "7fb4f16f4726f9dc104c5236a5151543a7831cf64987e356dfe165b060ce334a",
+  "branch": "roi-branch",
+  "committed": false,
+  "completed_training_runs": 0,
+  "counts": {
+    "dev": 60,
+    "research_holdout": 60,
+    "train": 345
+  },
+  "database_changed": false,
+  "dependencies_changed": false,
+  "derivative_payload_files_unchanged": 11,
+  "derived_manifest_sha256": "3236f9c5f097633506e7cd84ad01f9104d1ada92e26bedce6b7fe1c55edc781e",
+  "desktop_gpu_verified": true,
+  "env_unchanged": true,
+  "holdout_accessed": false,
+  "holdout_evaluated": false,
+  "launcher_sha256": "cf0c7a50165cc390d9fa20bcb1b9d7f5d9f4ba1812d03d08524d59618cc9309a",
+  "original_manifest_sha256": "ec3abd74e2201f116a90a90a3dc203877c3f511284b11374d7beb381c1faa11a",
+  "original_package_unchanged": true,
+  "pinned_model_files_verified": 23,
+  "protected_files_unchanged": true,
+  "protected_predecessor_files": 12343,
+  "pushed": false,
+  "recipe_changed": false,
+  "remaining_task": "Versioned case-preserving config repair and full spaCy registry validation before an authorized new seed-0 attempt.",
+  "runtime": {
+    "cupy_version": "13.6.0",
+    "gpu_compute_capability": [
+      8,
+      6
+    ],
+    "gpu_name": "NVIDIA GeForce RTX 3060 Ti",
+    "python_version": "3.11.17",
+    "spacy_version": "3.7.5",
+    "torch_version": "2.11.0+cu128"
+  },
+  "schema": "lanes-successor-desktop-training-verification-v1",
+  "seed_0": {
+    "active_lock_exists": false,
+    "automatic_retry": false,
+    "exit_code": 1,
+    "later_seeds_started": false,
+    "optimizer_updates": 0,
+    "required_case_sensitive_keys": [
+      "L2",
+      "L2_is_weight_decay"
+    ],
+    "seed": 0,
+    "selected_checkpoint_exists": false,
+    "stage": "configuration_validation_before_pipeline_initialization",
+    "unexpected_optimizer_keys": [
+      "l2",
+      "l2_is_weight_decay"
+    ]
+  },
+  "seeds_1_and_2_started": false,
+  "synced_commit": "adffbb8",
+  "test_failures": 0,
+  "tests_passed": 64,
+  "tests_xml_sha256": "668157ab2587eb8e8af44c11cc9253c5951e6de7579ea909e0e2fc517399554e"
+}

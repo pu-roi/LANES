@@ -1,0 +1,85 @@
+{
+  "configs": [
+    {
+      "config": "configs/recovery-seed-2.cfg",
+      "config_sha256": "69544ac2a354a553bf3769b49f6aee29bf70bbadff1165a501d51b5231b83e32",
+      "output": "runs/recovery/seed-2",
+      "recipe": "recovery",
+      "seed": 2
+    },
+    {
+      "config": "configs/A-seed-0.cfg",
+      "config_sha256": "0bc5523467bc6cbb3f7bef4e3f2f02b270eb80e1bcb9095713b58a01d3ea0ad2",
+      "output": "runs/A/seed-0",
+      "recipe": "A",
+      "seed": 0
+    },
+    {
+      "config": "configs/A-seed-1.cfg",
+      "config_sha256": "8a3a19e04c41ef5600c2b130aed3206c34ec812084f6b7120dedbe337d647cc8",
+      "output": "runs/A/seed-1",
+      "recipe": "A",
+      "seed": 1
+    },
+    {
+      "config": "configs/A-seed-2.cfg",
+      "config_sha256": "f44ada3ec1150c0c219909acea8b7f56b062a7f95c4392925e0150166823afcd",
+      "output": "runs/A/seed-2",
+      "recipe": "A",
+      "seed": 2
+    },
+    {
+      "config": "configs/B-seed-0.cfg",
+      "config_sha256": "a771c76cdb372e750660024103e01ee082e547e581e7201a62e6e8ae4fb4c4f5",
+      "output": "runs/B/seed-0",
+      "recipe": "B",
+      "seed": 0
+    },
+    {
+      "config": "configs/B-seed-1.cfg",
+      "config_sha256": "ef942e6217fd577916a1fe443194419b054fb7830ad1b46851e0975f1848681b",
+      "output": "runs/B/seed-1",
+      "recipe": "B",
+      "seed": 1
+    },
+    {
+      "config": "configs/B-seed-2.cfg",
+      "config_sha256": "6cc81920325cba38e98f50192dd2cfd0d33b31f21cf5cc068cba200f130ca3ea",
+      "output": "runs/B/seed-2",
+      "recipe": "B",
+      "seed": 2
+    }
+  ],
+  "files": {
+    "configs/A-seed-0.cfg": "0bc5523467bc6cbb3f7bef4e3f2f02b270eb80e1bcb9095713b58a01d3ea0ad2",
+    "configs/A-seed-1.cfg": "8a3a19e04c41ef5600c2b130aed3206c34ec812084f6b7120dedbe337d647cc8",
+    "configs/A-seed-2.cfg": "f44ada3ec1150c0c219909acea8b7f56b062a7f95c4392925e0150166823afcd",
+    "configs/B-seed-0.cfg": "a771c76cdb372e750660024103e01ee082e547e581e7201a62e6e8ae4fb4c4f5",
+    "configs/B-seed-1.cfg": "ef942e6217fd577916a1fe443194419b054fb7830ad1b46851e0975f1848681b",
+    "configs/B-seed-2.cfg": "6cc81920325cba38e98f50192dd2cfd0d33b31f21cf5cc068cba200f130ca3ea",
+    "configs/recovery-seed-2.cfg": "69544ac2a354a553bf3769b49f6aee29bf70bbadff1165a501d51b5231b83e32"
+  },
+  "implementation_sha256": "589dc85587395f4ed92b2b4db9c959ebe25b39276d574dd85138b261e1385c9e",
+  "no_new_training_after": "2026-10-16T20:09:22.479472+08:00",
+  "preparation": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\experiment-preparation-20261016-v2",
+  "preparation_sha256": "e3e37d699f8f59dae3c5daa911fcfd16fc03500ec4de60be5d495dfffa4e6b87",
+  "recipes": {
+    "A": {
+      "learning_rate": 0.001,
+      "patience": 350
+    },
+    "B": {
+      "learning_rate": 0.0005,
+      "patience": 350
+    },
+    "recovery": {
+      "learning_rate": 0.001,
+      "patience": 175
+    }
+  },
+  "schema_version": "lanes-bounded-validation-recipes-v1",
+  "selection": "Seed 0 dev strict F1; original wins ties, then A, then B. Robustness only for a strict improvement.",
+  "state": "preregistered",
+  "test_predictions_permitted": false,
+  "training_started": false
+}

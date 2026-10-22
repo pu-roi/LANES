@@ -1,0 +1,27 @@
+{
+  "archive_reconciliation_complete": true,
+  "training_ready": false,
+  "known_drive_items": 19,
+  "drive_metadata_matches": 19,
+  "remote_bytes_rehashed": false,
+  "v3_payload_files_accounted": 3863,
+  "v3_payload_status": {
+    "identical": 3863
+  },
+  "v3_content_addressed_objects_verified": 2357,
+  "v3_parts_verified": 11,
+  "historical_archive_entries_accounted": 7,
+  "distinct_historical_archive_bytes": 6,
+  "historical_archive_entries_verified": 7,
+  "historical_structured_members_filtered": 1584,
+  "historical_parse_issues": 0,
+  "source_only_body_variants": 907,
+  "exposure_metadata_variants": 11528,
+  "user_unknown_cross_computer_history_preserved": true,
+  "external_history_completeness_certified": false,
+  "fresh_test_contents_opened_by_coordinator": false,
+  "archived_helpers_executed": false,
+  "files_restored_or_overwritten": 0,
+  "development_qualification_repeated": false,
+  "actual_admission_freeze_export_inference_training_push": false
+}

@@ -1716,10 +1716,13 @@ def apply_shared_update_times(claims: list[ExtractedClaim], body: str) -> None:
     """Retain a nearby narrative update clock without transferring other facts.
 
     Shared clocks are explicitly marked for independent auditing. A clearance,
-    chronology/source change, or unrelated long passage ends the update scope.
+    chronology/source change, independent paragraph, or unrelated long passage
+    ends the update scope. A directly adjacent city-led narrative continuation
+    retains the existing shared-update behavior, with its uncertainty marker.
     Original per-road evidence and explicit observation clocks stay intact.
     """
     anchor: ExtractedClaim | None = None
+    continuation_paragraph: int | None = None
     boundary = re.compile(
         r"\b(?:meanwhile|earlier|later|yesterday|tomorrow|subsided|cleared|receded|"
         r"no longer|according to|forecast|on (?:Monday|Tuesday|Wednesday|Thursday|"
@@ -1737,6 +1740,7 @@ def apply_shared_update_times(claims: list[ExtractedClaim], body: str) -> None:
             anchor = None
             continue
         if claim.event_time_resolved is not None:
+            continuation_paragraph = None
             anchor = (claim if claim.event_time_kind == "observation"
                       and (claim.event_time_raw or "").lower().startswith("as of")
                       and claim.condition in {"active", "rising"}
@@ -1748,6 +1752,19 @@ def apply_shared_update_times(claims: list[ExtractedClaim], body: str) -> None:
         if len(gap) > 2000 or boundary.search(gap) or extract_event_time_from_text(gap)[0]:
             anchor = None
             continue
+        if "\n" in gap:
+            paragraph_start = body.rfind("\n", 0, claim.place_char_start) + 1
+            if paragraph_start != continuation_paragraph:
+                lead = re.match(r"\s*(?:In|Sa)\s+([^,\n]{1,100}),", claim.evidence_sentence, re.I)
+                parent = _loc_service.resolve_location_hierarchy(lead.group(1)) if lead else None
+                # Preserve the supported city-led dispatch continuation used by
+                # the September 24 replay, without assigning clocks to ordinary
+                # newly worded road paragraphs or skipping unrelated paragraphs.
+                if (gap.count("\n") != 1 or not parent or parent.get("level") not in {"City", "Mun"}
+                        or parent.get("ambiguity") or parent.get("city_municipality") != claim.canonical_city):
+                    anchor = None
+                    continue
+                continuation_paragraph = paragraph_start
         claim.event_time_raw = anchor.event_time_raw
         claim.event_time_resolved = anchor.event_time_resolved
         claim.event_time_kind = "observation"
@@ -2088,6 +2105,6 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
         processed_text_length=len(text_to_process),
         claims=all_claims,
         extracted_at=datetime.now(timezone.utc),
-        extractor_version="taglish-rules-v1.7",
+        extractor_version="taglish-rules-v1.8",
         errors=[],
     )

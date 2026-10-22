@@ -1,0 +1,16 @@
+{
+  "public_files": {
+    "curator-safe-status.json": "a90e6b148d4f846312f0408ffcf4cab8af0e10a27085797fc479cd7f02cac950",
+    "curator-safe-verification.json": "e5c5d58beab27602376b2988f51c050dc02ffe92b6be12e90737533d86625470",
+    "laptop-smoke-verification.json": "c9fa0e98381d083b36ae37c267656b6668a8b8af0842d33135a9ab176c2ded0e",
+    "preservation-verification.json": "f671d6faaa190773284e46b00f77d89ded8ac847c119b8e67f66e45c91e9fce0",
+    "readiness.json": "3f72e899715d8be03c2a98f264206198f0a0588f0b59f8d62dfdf9cb67cb86c9",
+    "README.md": "bfd958dc15f4224a7edb3658add572db855be4e611cea20b1e2473f7f17ea5dd",
+    "test-results.json": "47955f80c3b9525eafc80dedea942ef5166b3b407b7bf05532f62f9e5ec580b0"
+  },
+  "public_private_safe_aggregates_equal": true,
+  "coordinator_opened_private_test_content": false,
+  "desktop_run_claimed": false,
+  "test_sealed": false,
+  "training_started": false
+}

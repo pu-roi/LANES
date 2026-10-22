@@ -1,0 +1,58 @@
+{
+  "all_quotas_pass": true,
+  "articles": 139,
+  "authoritative_document_audit": {
+    "README": "new evaluation indexed and current folder linked",
+    "bug-log": "missing span and compound inconsistency resolved in a new version",
+    "database-design-plan": "reviewed; no schemas or migrations",
+    "decisions": "reviewed; no architecture pivot",
+    "feature-reference": "existing offline news checkpoint only",
+    "progress": "newest milestone first",
+    "system-documentation": "offline helper; no endpoint or database behavior",
+    "task_plan": "completed corrections; feed backlog retained; source/model gates open",
+    "tech-stack": "same dependencies; correction helper added"
+  },
+  "bundle_files_verified": 606,
+  "byte_identical_replays": true,
+  "context_changes": [
+    "revision-0c5383a6e83533b71498"
+  ],
+  "context_fact_qualifiers_added": 3,
+  "contexts": 40,
+  "distribution_ready": false,
+  "docbin_written": false,
+  "earlier_preservation_hashes_verified": 26679,
+  "export_refused_records": 400,
+  "git_publication_performed": false,
+  "labels": {
+    "BARANGAY": 180,
+    "CITY": 494,
+    "LANDMARK": 108,
+    "LOCAL_AREA": 88,
+    "PROVINCE": 278,
+    "ROAD": 349
+  },
+  "location_changes": [
+    "continuation-34c901f67e195db9849b",
+    "revision-0c5383a6e83533b71498",
+    "revision-7cda6f7a9e2b1f2793d4"
+  ],
+  "main_environment_unchanged": true,
+  "model_files_verified": 23,
+  "prior_artifact_hashes_verified": 9145,
+  "prior_public_files_verified": 514,
+  "same_article_event_syndication_groups": true,
+  "samples": 400,
+  "test_suite": {
+    "existing_warning": "spaCy/Click deprecation",
+    "historical_baseline_is_different_test_selection": true,
+    "historical_broader_baseline": 666,
+    "passed": 638,
+    "seconds": 155.67,
+    "selection": "All test_flood_ner*.py plus PSGC/locality-number/locality-anchor/heading and three article-road suites"
+  },
+  "training_admitted": 0,
+  "training_pilots_unchanged": 10,
+  "unchanged_record_membership_and_splits": true,
+  "verified": true
+}

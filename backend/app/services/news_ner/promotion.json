@@ -1,0 +1,32 @@
+{
+  "context_association.py": {
+    "source": "backend/training/flood_ner/context_association.py",
+    "source_sha256": "b0299ca99b6360bf5a19eb1a7460ac3f8f6ccdff33ed4ebae7b840f083db303a",
+    "runtime_sha256": "b753edcb168a96e3a7103267ccea4d948667b6da20217e4087c569a341814a20",
+    "change": "standalone validator import only"
+  },
+  "context_association_v38.py": {
+    "source": "backend/training/flood_ner/context_association_v38.py",
+    "source_sha256": "b18945319dc8481f0bda2d9d582ded7cfe50a35e421a5ba7f95ba6baca7a3b29",
+    "runtime_sha256": "ad624a10752774eedba9f4368500addb40a2844c276d9a1082e1a81581b4c539",
+    "change": "standalone validator import only"
+  },
+  "context_association_v41.py": {
+    "source": "backend/training/flood_ner/context_association_v41.py",
+    "source_sha256": "be1b6726687a6ef3cc6832da21b2d6c7307cdbc4fc5967849e1184507efedb1d",
+    "runtime_sha256": "ab9c3db1d3482382d177fee753cce7c488754b78f322ae4a7f2490d5dc0bda26",
+    "change": "standalone validator import only"
+  },
+  "location_repair_v40.py": {
+    "source": "backend/training/flood_ner/location_repair_v40.py",
+    "source_sha256": "2782d899949665a57af07e2c9fe74108206ccceae1e10a6f7ec5cd6ffac6d674",
+    "runtime_sha256": "2782d899949665a57af07e2c9fe74108206ccceae1e10a6f7ec5cd6ffac6d674",
+    "change": "standalone validator import only"
+  },
+  "location_repair_v44.py": {
+    "source": "backend/training/flood_ner/location_repair_v44.py",
+    "source_sha256": "28712a89b75bb84cd6ac0b98274418d58718e24e6bf396a90bcd8f77fb2055fb",
+    "runtime_sha256": "28712a89b75bb84cd6ac0b98274418d58718e24e6bf396a90bcd8f77fb2055fb",
+    "change": "verbatim runtime copy; no rule changes"
+  }
+}

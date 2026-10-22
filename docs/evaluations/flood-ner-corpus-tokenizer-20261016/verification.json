@@ -1,0 +1,78 @@
+{
+  "actual_tokenizer_replay_performed": false,
+  "application_control_error": 4551,
+  "artifact_check_count": 17,
+  "artifact_checks": {
+    "400_records_40_contexts_exact_memberships_admission_and_all_quotas_revalidated": "pass",
+    "48_constructed_cases_56_controls_preserved": "pass",
+    "actual_failure_package_hashes": "pass",
+    "actual_orchestrator_and_worker_hashes_bound": "pass",
+    "actual_request_exactly_matches_current_frozen_passages": "pass",
+    "actual_stderr_records_4551_before_spacy_import_completed": "pass",
+    "contract_records_pending_qualification_without_false_freeze": "pass",
+    "contract_report_hash_binding": "pass",
+    "evaluation_protocol_deterministic_regeneration": "pass",
+    "executed_code_archive_hashes": "pass",
+    "fresh_software_regressions_pass": "pass",
+    "no_export_or_training_artifacts_created": "pass",
+    "no_worker_tokens_or_predictions_returned": "pass",
+    "pinned_model_files_unchanged_without_loading": "pass",
+    "previous_checkpoint_capture_and_tokenizer_files_unchanged": "pass",
+    "saved_candidate_and_vocabulary_bindings_unchanged": "pass",
+    "worker_and_evaluation_protocol_unchanged_since_attempt": "pass"
+  },
+  "constructed_controls_executed_in_actual_attempt": 0,
+  "contextual_pairs": 40,
+  "copy_inventory": {
+    "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/copy-inventory.json",
+    "sha256": "b7f7d1fcaed95184259938161b54c1bf7c34a45e47cc1aff02dd46a1fc4e8d0e"
+  },
+  "current_tooling": {
+    "backend/training/flood_ner/cli.py": "ec879178827d68cb6cef0e1706064c7d14d889e87bfe5c27c801e47b646bcd9a",
+    "backend/training/flood_ner/corpus_tokenizer_qualification.py": "bc229c315a8b3a6764cf183392ffec8c7672203cfa570b83fda28f08005f04f4",
+    "backend/training/flood_ner/corpus_tokenizer_worker.py": "422f276e54cd43fc29c27c399ec36f9806410a09bc31320273bdcb7eec27c22c",
+    "backend/training/flood_ner/evaluation/contract.py": "718a894fb5e74fc3332ab351013a666eb37bf7cdead6a1c04de83b81351834c7"
+  },
+  "environment_or_security_policy_modified": false,
+  "evaluation_protocol": "frozen; qualified-tokenizer binding remains pending",
+  "executed_code": {
+    "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/executed-code/manifest.json",
+    "sha256": "25320a4cf4236a7c712e294f7394fbf48c6895e4472a378f2aee187d20956da1"
+  },
+  "exports": 0,
+  "fresh_software_tests": {
+    "command": {
+      "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/pytest-command-v2.json",
+      "sha256": "f7c7bd4c65ec959f208ff4f0e1074d46f31cfa5902605387cfc4778a39fab961"
+    },
+    "passed": 840,
+    "skipped": 1,
+    "stdout": {
+      "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/pytest-v2.stdout.log",
+      "sha256": "ebeb932a5b085a173ca812054708ff5a9cc593fb8d4bf74ad51747956d6f420d"
+    },
+    "warnings": 4
+  },
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "location_records": 400,
+  "location_spans": 1465,
+  "model_files_hashed_without_loading": 23,
+  "model_predictions_performed": false,
+  "negative_passages": 48,
+  "nonacademic_outcomes_unchanged": 12,
+  "passages_tokenized_in_actual_attempt": 0,
+  "post_attempt_hardening": "Current orchestrator additionally rejects non-object/malformed worker payloads explicitly. Actual run code is archived; unchanged worker and contract hashes are checked. No second environment attempt.",
+  "preserved_prior_files": 5234,
+  "protocol_regenerations_verified": 1,
+  "qualification_completed": false,
+  "qualification_state": "blocked",
+  "schema_version": "lanes-corpus-tokenizer-verification-v1",
+  "source_admission": 400,
+  "source_articles": 138,
+  "tokenizer_alignment_results": "unavailable; worker import failed",
+  "training_performed": false,
+  "worker_attempts_after_planning_failure": 1
+}

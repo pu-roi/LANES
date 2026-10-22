@@ -1,0 +1,142 @@
+{
+  "schema_version": "lanes-additional-dataset-review-v1",
+  "reviewed_on": "2026-10-17",
+  "draft_passages_reviewed": 244,
+  "full_saved_articles_read": 49,
+  "article_characters_read": 82820,
+  "draft_characters_read": 59436,
+  "original_draft_spans_checked": 359,
+  "recommendations": {
+    "hold": 47,
+    "exclude_from_successor_core": 29,
+    "keep": 166,
+    "correct": 2
+  },
+  "article_topics": {
+    "recovery": 10,
+    "observed_flooding": 35,
+    "warning_forecast": 1,
+    "prevention_project": 3
+  },
+  "passage_topics": {
+    "recovery": 70,
+    "unrelated": 4,
+    "observed_flooding": 93,
+    "warning_forecast": 24,
+    "prevention_project": 28,
+    "adjacent_hazard": 25
+  },
+  "original_languages": {
+    "taglish": 121,
+    "english": 123
+  },
+  "new_holds_reconciled": 65,
+  "new_hold_dispositions": {
+    "retained_hold": 45,
+    "resolved_by_existing_rules_or_supported_correction": 8,
+    "excluded_without_reference_resolution": 12
+  },
+  "original_holds_revisited": 33,
+  "original_hold_dispositions": {
+    "retained_hold": 31,
+    "resolved_by_supported_future_correction": 2
+  },
+  "new_candidates_after_review": 168,
+  "new_candidate_languages": {
+    "taglish": 84,
+    "english": 84
+  },
+  "new_candidate_positive_passages": 70,
+  "new_candidate_empty_location_passages": 98,
+  "new_candidate_label_spans": {
+    "CITY": 57,
+    "PROVINCE": 44,
+    "BARANGAY": 27,
+    "ROAD": 24,
+    "LANDMARK": 12,
+    "LOCAL_AREA": 0
+  },
+  "new_candidate_theme_language": {
+    "geographic-type-ambiguity:taglish": 16,
+    "misleading-names-time-common-words:taglish": 21,
+    "short-codes:taglish": 4,
+    "shared-identifiers:taglish": 4,
+    "compound-crossing-roads:taglish": 4,
+    "project-asset-names:taglish": 14,
+    "facilities-institutions:taglish": 13,
+    "locality-designators:taglish": 8,
+    "shared-identifiers:english": 3,
+    "project-asset-names:english": 10,
+    "short-codes:english": 3,
+    "misleading-names-time-common-words:english": 17,
+    "geographic-type-ambiguity:english": 20,
+    "facilities-institutions:english": 12,
+    "compound-crossing-roads:english": 15,
+    "locality-designators:english": 4
+  },
+  "positive_theme_language_counts": {
+    "geographic-type-ambiguity:taglish": 9,
+    "shared-identifiers:taglish": 3,
+    "compound-crossing-roads:taglish": 2,
+    "facilities-institutions:taglish": 4,
+    "project-asset-names:taglish": 6,
+    "locality-designators:taglish": 8,
+    "geographic-type-ambiguity:english": 9,
+    "compound-crossing-roads:english": 11,
+    "locality-designators:english": 4,
+    "facilities-institutions:english": 5,
+    "project-asset-names:english": 5,
+    "short-codes:taglish": 2,
+    "shared-identifiers:english": 1,
+    "short-codes:english": 1
+  },
+  "source_use_holds_preserved_passages": 6,
+  "proposal_records": 5,
+  "new_draft_proposals": 3,
+  "original_hold_proposals": 2,
+  "new_entity_edit_records": 2,
+  "new_language_proposal_records": 1,
+  "source_use_policy_artifact_hashes_verified": 6,
+  "cross_pool_relationships_reconciled": 75,
+  "cross_pool_relationship_states": {
+    "confirmed_related_reporting": 16,
+    "inherited_conservative_component_relationship": 19,
+    "potential_weather_sequence": 11,
+    "confirmed_related_storm_aftermath": 3,
+    "broad_component_requires_subreview": 11,
+    "confirmed_tino_subcomponent_other_members_unresolved": 2,
+    "confirmed_broad_habagat_reporting_period": 13
+  },
+  "duplicate_screen_counts": {
+    "exact_new_passages": 0,
+    "normalized_new_passages": 0,
+    "new_article_aliases": 0,
+    "cross_pool_exact_passages": 0,
+    "cross_pool_article_aliases": 0,
+    "cross_pool_exact_bodies": 0,
+    "within_new_passage_similarity": 0,
+    "cross_pool_passage_similarity": 0,
+    "within_new_body_similarity": 0
+  },
+  "originals_or_new_drafts_changed": false,
+  "existing_source_use_decisions_changed": false,
+  "new_admission_export_partition_training": false,
+  "fresh_heldout_text_or_labels_read": false,
+  "ready_for_training": false,
+  "reviewer": "Codex AI source-reading review; silver, not independently verified gold",
+  "review_complete": true,
+  "shared_schema_and_record_checks": 282,
+  "unexpected_validation_failures": 0,
+  "known_draft_alignment_failure_preserved": true,
+  "proposal_alignment_errors": 0,
+  "proposal_spans_strictly_aligned": 29,
+  "original_held_spans_strictly_aligned": 187,
+  "candidate_capacity_capped_15_per_theme_language": 154,
+  "policy_and_article_binding_checks_passed": true,
+  "protected_files_unchanged": 1174,
+  "frozen_model_files_verified": 66,
+  "guard_scenarios_passed": {
+    "duplicate_and_missing_id_rejected": true,
+    "changed_span_rejected": true
+  }
+}

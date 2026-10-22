@@ -1,0 +1,15 @@
+{
+  "review_complete": true,
+  "training_ready": false,
+  "aggregate_counts_reconcile": true,
+  "public_summary_matches_private_summary": true,
+  "public_verification_is_redacted_projection": true,
+  "private_record_identifiers_and_reference_arrays_published": false,
+  "documentation_files_synchronized": 5,
+  "protected_input_hashes_verified": 1174,
+  "fresh_heldout_private_content_opened": false,
+  "ai_silver_not_human_gold": true,
+  "source_datasets_changed": false,
+  "new_admission_export_split_training_push": false,
+  "local_report_links_verified": 8
+}

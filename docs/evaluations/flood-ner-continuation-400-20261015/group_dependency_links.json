@@ -1,0 +1,1399 @@
+[
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 58,
+      "sha256": "930d70cd52ba4245d1979639598504bf241106ed7ae02cee651b6cd998c85e6b",
+      "start": 52
+    },
+    "first": "5acd9701699d671e551a1d6ce5133c6e115fa3aa2cb7603a3a9db8078050fdd1",
+    "name": "Maring",
+    "physical_incident": "unresolved",
+    "second": "4e7cb94d195375a15f3cdbcf8ecc1ccd93872597c8dfe8a1e821eb261e5305dd"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 37,
+      "sha256": "496c0456fa019e0586dcea780bf016b07e636cd78c0853ea6b714140720284c0",
+      "start": 31
+    },
+    "first": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55",
+    "name": "Pepito",
+    "physical_incident": "unresolved",
+    "second": "7eedf52135e6b97e71fdabef7d00494896895b0a88ce8dc70685bdd2fbeb1d1e"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 281,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 274
+    },
+    "first": "1d93fcf08313003e838c4570776632d1b12362f90ba0e356a1a20a889a4365f6",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "c45e3d31ba27ae8ba0e0ce6ae532f94e0201cdcef6eb2d9817ec9c94412b6326"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 71,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 64
+    },
+    "first": "76cff17ab27408da3f8fecc0bfd62003101ccbf852607171048a674ff34defb5",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "1d93fcf08313003e838c4570776632d1b12362f90ba0e356a1a20a889a4365f6"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 134,
+      "sha256": "ad6ea672ecddad8aab18bf0adc8330ba8e5b9728ab402154834f9dbd0f653839",
+      "start": 130
+    },
+    "first": "6cca2f45179997879a7070182e17bc7d64753f290c8dfe9603eec59d03a82026",
+    "name": "Egay",
+    "physical_incident": "unresolved",
+    "second": "c9df37096f225b02d3fdf039ebd0891121ee52346a4bbbb24bbdd78a8e344cd2"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 6910,
+      "sha256": "723cd1890d868dee8548d68f4d358a4b4bb65643b8a1715a15bbdf151af911d1",
+      "start": 6904
+    },
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "name": "Maymay",
+    "physical_incident": "unresolved",
+    "second": "e240294830a74e6cd892fdd2edddfd5db90a360e40b0e032a7be778ec21f03f2"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 451,
+      "sha256": "496c0456fa019e0586dcea780bf016b07e636cd78c0853ea6b714140720284c0",
+      "start": 445
+    },
+    "first": "b12138b86b845473bbeedd11f593e813741b591a8c7e6e2fef28caa75b17f9ce",
+    "name": "Pepito",
+    "physical_incident": "unresolved",
+    "second": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 983,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 976
+    },
+    "first": "12e1473bf99e31b6890b40205befccbfc5f943bfe64c9bbe5a8f4773b920cfa7",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "76cff17ab27408da3f8fecc0bfd62003101ccbf852607171048a674ff34defb5"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 65,
+      "sha256": "b86729e922f27a293f2e163486aedb5acddda77a9546c109e4bc69a360647b1f",
+      "start": 59
+    },
+    "first": "f551a9580b9daae467ccaa1dd5ac856d3aaedd6458c18135b45fd54ee841bc08",
+    "name": "Quinta",
+    "physical_incident": "unresolved",
+    "second": "9c207ecc83658038ca3de8a8af30e1d0f92b81b673b8f99f82800453acdb3998"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 59,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 52
+    },
+    "first": "6f98373eef7816915ca69701a13b8c24b7a253467f5be7d804c5f7a0165a5e25",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "12e1473bf99e31b6890b40205befccbfc5f943bfe64c9bbe5a8f4773b920cfa7"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 98,
+      "sha256": "09e7532779eb467f72d74889c227dcc2644c062e6db4535e783c8160452d907a",
+      "start": 93
+    },
+    "first": "0400a3868d686b3742baf8e71d9bc206f5a43cc687a26725ba634a389a71d962",
+    "name": "Josie",
+    "physical_incident": "unresolved",
+    "second": "8550360841dad1cdea7a0495ed816fcb6d88efb37683caa22a12425987c6d95c"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 25,
+      "sha256": "20323720829a8a62b5fd9ac8df80ff5edd8d53243ed7336a1fa11bba3b32a636",
+      "start": 19
+    },
+    "first": "958195a38b94b6182cb70157e118ae6880b2175d8eeedf859bfcc003fba61e41",
+    "name": "Ompong",
+    "physical_incident": "unresolved",
+    "second": "1f356eab6ef44138e7be3ebe730d442cdd5bf16877fd184bf8a349d6b901e669"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 349,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 342
+    },
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "6f98373eef7816915ca69701a13b8c24b7a253467f5be7d804c5f7a0165a5e25"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 41,
+      "sha256": "f25600efd2afd88cbafa167b7e6179eaaccee9b02c4a42cde362ebfae9b3a8a7",
+      "start": 36
+    },
+    "first": "5ab64a88d6ffeae480bb633b79bfce97ee8610f4087e39a074a224c2e5afd3cf",
+    "name": "Rolly",
+    "physical_incident": "unresolved",
+    "second": "34d0de66cbd3e7a13f7fcf2833a84a87412342502183eea294fff8e5c887f6f2"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 29,
+      "sha256": "930d70cd52ba4245d1979639598504bf241106ed7ae02cee651b6cd998c85e6b",
+      "start": 23
+    },
+    "first": "6e47908e58b552818ff40ded5a75c1356ac5511265a704567736e92591f5e2bb",
+    "name": "Maring",
+    "physical_incident": "unresolved",
+    "second": "5acd9701699d671e551a1d6ce5133c6e115fa3aa2cb7603a3a9db8078050fdd1"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 604,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 597
+    },
+    "first": "c7894a98b46497a88986895d73739d579fdec9fc79fabdf8de080f3fbfd3c725",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 301,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 294
+    },
+    "first": "4acd5c11b599b9c7b424ce8bc719e96f0b3ecf9a77a39dd900b33dd7438a30c2",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "c7894a98b46497a88986895d73739d579fdec9fc79fabdf8de080f3fbfd3c725"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 105,
+      "sha256": "57d44291603313751ea3a6c203be5f2e951c3c9d3e3f8289eac5da5bf17a3a61",
+      "start": 101
+    },
+    "first": "bec3d1db9b1695adc5e3406c2ca6d5e2a60e0477d7159b53568214af78ae60f3",
+    "name": "Nika",
+    "physical_incident": "unresolved",
+    "second": "7c7aff6ce07f238bd1c5b44b43ba1e3e26700e1e5a109ebb5be5fd128154c1c8"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 313,
+      "sha256": "a87cb946f232c74980e503223341f36dc82324cbdabcf76ad41d47d76239b556",
+      "start": 309
+    },
+    "first": "7293bfc45fe02f669db570cfc65eb9de1ec337b7e44f372dfeddebae20491b01",
+    "name": "Ofel",
+    "physical_incident": "unresolved",
+    "second": "322d6061752f4854b18df013c44e0abc589e6f88f57741c443994decd62f6c68"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 68,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 61
+    },
+    "first": "7d74ba40781ea31d984394a708a1fdd2f9344a71cd58a7477fedb03e2a713ef6",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "4acd5c11b599b9c7b424ce8bc719e96f0b3ecf9a77a39dd900b33dd7438a30c2"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 43,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 36
+    },
+    "first": "3496e54f0509043989cb9ca4036269e29a61d7c523bc1c34e20330c5fe75249b",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "7d74ba40781ea31d984394a708a1fdd2f9344a71cd58a7477fedb03e2a713ef6"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 168,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 161
+    },
+    "first": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "3496e54f0509043989cb9ca4036269e29a61d7c523bc1c34e20330c5fe75249b"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 41,
+      "sha256": "a9a9b2590845db9e9d8b1fe97e4cab15815044c7439443187f499cc428f3eb01",
+      "start": 35
+    },
+    "first": "6f76ca46c5723ab5a3d016728afabfd4f61279e3aa578368c4b22233b56cca77",
+    "name": "Enteng",
+    "physical_incident": "unresolved",
+    "second": "86c841f5ec5c4ecad44a0e0aca6e8a19d68decb4d4fd92e830058cc033b53369"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 123,
+      "sha256": "28ceec15ce859adf7020ce3ac8436ae94645243ebf13eb89fca31b99344df2d3",
+      "start": 115
+    },
+    "first": "fba9ece673ba2cdb4374b31ffd8fbc60dc1df76b227fec0b3c5b947da60c5337",
+    "name": "Kristine",
+    "physical_incident": "unresolved",
+    "second": "607cd72015d475c69e3dd2704e108823797332ab68085f84cda8ec851cea2ef4"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 132,
+      "sha256": "28ceec15ce859adf7020ce3ac8436ae94645243ebf13eb89fca31b99344df2d3",
+      "start": 124
+    },
+    "first": "709ee0d4089aeb2dbf99ab2739355159bf4b322c240b5b7a005d669d88da8e43",
+    "name": "Kristine",
+    "physical_incident": "unresolved",
+    "second": "fba9ece673ba2cdb4374b31ffd8fbc60dc1df76b227fec0b3c5b947da60c5337"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 93,
+      "sha256": "8aadd57ab2d169e215f408ad231a792dcc31f178660bfcd71cf287a89e173e28",
+      "start": 89
+    },
+    "first": "344bf359dc0f6784d5e4baa7c769e9d8cb040cf787244f81a7790818ea8d11c0",
+    "name": "Tino",
+    "physical_incident": "unresolved",
+    "second": "0c2fb2358af63ec57dcce8564ada2365519ade9e69ffc8d8c9bf8c5cedb8a527"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 1098,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 1091
+    },
+    "first": "32e6a08c856ca76816daec5ccef7cae01328d654802e794145005019c901314a",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 68,
+      "sha256": "930d70cd52ba4245d1979639598504bf241106ed7ae02cee651b6cd998c85e6b",
+      "start": 62
+    },
+    "first": "afe88f265ae926c76d305019e70df234fe3cc73699d2a21ae6aac43a0f75520c",
+    "name": "Maring",
+    "physical_incident": "unresolved",
+    "second": "6e47908e58b552818ff40ded5a75c1356ac5511265a704567736e92591f5e2bb"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 2015,
+      "sha256": "20323720829a8a62b5fd9ac8df80ff5edd8d53243ed7336a1fa11bba3b32a636",
+      "start": 2009
+    },
+    "first": "ed8996ded9012057e703aae4f6fab59973a88edb2896013906b3ee3628880be0",
+    "name": "Ompong",
+    "physical_incident": "unresolved",
+    "second": "958195a38b94b6182cb70157e118ae6880b2175d8eeedf859bfcc003fba61e41"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 374,
+      "sha256": "d3fc3547346f0ef9cc47b9d5951912559bda2322ed3a2794d0ae49f76110dc61",
+      "start": 369
+    },
+    "first": "773d85c662fa630b3cbc72d3dbc5873a414f3296c8191d3345c8ca19e29fbc94",
+    "name": "Hanna",
+    "physical_incident": "unresolved",
+    "second": "309e8e55f35c00d71ddabb3664b098b9ffb5f8937fc92cfb809b491754455fd3"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 135,
+      "sha256": "73a9f5d445f7f97d2f99b9a163b147d132f1252f75b37a1b112f5b6d6c0a35c1",
+      "start": 129
+    },
+    "first": "fae218de87d105e19739360d22aad0b19a333f0a46e3af0856820bb799e89013",
+    "name": "Agaton",
+    "physical_incident": "unresolved",
+    "second": "48c5992e60886b280fd959043ec6c8c7775667c411a2f91e03300a0d5ca25cfa"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 45,
+      "sha256": "f04e6d6a234e19091e20c5eade74ad798d67eead2900b502c092afbfbbd386d0",
+      "start": 40
+    },
+    "first": "a73c9598d9758e133335ea86b8e4dae9d3340abc153a8f45e5d59d4236dc1c2d",
+    "name": "Paeng",
+    "physical_incident": "unresolved",
+    "second": "a64f9761692abdd8921f5a16d264d2ecf3a931b6c458e797360ae66d213292b8"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 83,
+      "sha256": "28ceec15ce859adf7020ce3ac8436ae94645243ebf13eb89fca31b99344df2d3",
+      "start": 75
+    },
+    "first": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e",
+    "name": "Kristine",
+    "physical_incident": "unresolved",
+    "second": "709ee0d4089aeb2dbf99ab2739355159bf4b322c240b5b7a005d669d88da8e43"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 160,
+      "sha256": "25befdbcee5f61e358abbf6aaeb10b0a111d40b959bb7c33e61492ad168a0fa6",
+      "start": 154
+    },
+    "first": "31e88d4d19a743a1dc277ef3c12d56611ef8bf8de05de2e61bcb32aa61cb4ca6",
+    "name": "Urduja",
+    "physical_incident": "unresolved",
+    "second": "27655730e6bb045e4ad2f3457276668fc3d1d271ede03ec45be109bacefc0fc8"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 26,
+      "sha256": "20ba552ee655456c69059c39d892ec7d1559d144ef83151fa4869564ccd66a21",
+      "start": 20
+    },
+    "first": "d7a9d3380c6318bd7a74058ef0df008f87cea368e20e678c17a7d5967ce362ee",
+    "name": "Auring",
+    "physical_incident": "unresolved",
+    "second": "9e698edfacef5eb6cbd55ebe6e7e2bbb6fddb9ce2c8adc61ca348a99c8c78cf6"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 33,
+      "sha256": "57d44291603313751ea3a6c203be5f2e951c3c9d3e3f8289eac5da5bf17a3a61",
+      "start": 29
+    },
+    "first": "d4f8e34682385c780330ce9e2a6e878fcbb2b78a3a37881a21ee6fa579d65fef",
+    "name": "Nika",
+    "physical_incident": "unresolved",
+    "second": "bec3d1db9b1695adc5e3406c2ca6d5e2a60e0477d7159b53568214af78ae60f3"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 351,
+      "sha256": "8aadd57ab2d169e215f408ad231a792dcc31f178660bfcd71cf287a89e173e28",
+      "start": 347
+    },
+    "first": "359f322248180aba773dbbc3b78a60aa9d7b6710ddd5ca3f87fab1794c4a792d",
+    "name": "Tino",
+    "physical_incident": "unresolved",
+    "second": "344bf359dc0f6784d5e4baa7c769e9d8cb040cf787244f81a7790818ea8d11c0"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 3707,
+      "sha256": "a950f30a7250cdaa104c6e74406bc6b7634b278ce6f62b53cfeba0d2e36d58dc",
+      "start": 3702
+    },
+    "first": "8b905f88573f9999696e9755bb2cc882343728a4d4a60b8a656643bae7f2d90e",
+    "name": "Henry",
+    "physical_incident": "unresolved",
+    "second": "d48b522e95d16f5a382b959734856f6d5ca72cd00999be151ed6343874936dfe"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 2699,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 2692
+    },
+    "first": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "32e6a08c856ca76816daec5ccef7cae01328d654802e794145005019c901314a"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 470,
+      "sha256": "f25600efd2afd88cbafa167b7e6179eaaccee9b02c4a42cde362ebfae9b3a8a7",
+      "start": 465
+    },
+    "first": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df",
+    "name": "Rolly",
+    "physical_incident": "unresolved",
+    "second": "5ab64a88d6ffeae480bb633b79bfce97ee8610f4087e39a074a224c2e5afd3cf"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 272,
+      "sha256": "b86729e922f27a293f2e163486aedb5acddda77a9546c109e4bc69a360647b1f",
+      "start": 266
+    },
+    "first": "f88505aedd8019837758f0fdf207237bd8db68de9c51ff0f2e3537355b95684b",
+    "name": "Quinta",
+    "physical_incident": "unresolved",
+    "second": "f551a9580b9daae467ccaa1dd5ac856d3aaedd6458c18135b45fd54ee841bc08"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 209,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 202
+    },
+    "first": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 354,
+      "sha256": "2389e173b5c7d88ae46a316d0feecb024d1cf57f70827327263082c2692a0efa",
+      "start": 349
+    },
+    "first": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f",
+    "name": "Ondoy",
+    "physical_incident": "unresolved",
+    "second": "66cc42ff28ee14e5270558312c8761d92f7fa4b79ac12a8c75e368796b81617f"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 148,
+      "sha256": "33f83be02e086d379ecdaef1db22a1e01e1056e337440555095ab678799599f5",
+      "start": 141
+    },
+    "first": "091ac970d326a83c3a382e15c26474348d2d6f5eff70070d08f4846465748c59",
+    "name": "Ulysses",
+    "physical_incident": "unresolved",
+    "second": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f"
+  },
+  {
+    "basis": "conservative named-storm co-mention",
+    "evidence": {
+      "end": 484,
+      "sha256": "28ceec15ce859adf7020ce3ac8436ae94645243ebf13eb89fca31b99344df2d3",
+      "start": 476
+    },
+    "first": "fa06e13c3f1d0f1ebf8c207bf17f50dd177fc69366fd9ecd0e1743261d11cbc9",
+    "name": "Kristine",
+    "physical_incident": "unresolved",
+    "second": "518b19afe0c5ebe35378fbd5ba92c2f20e4c297247b380c43fb5c2c98669c54e"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 7,
+    "first": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5",
+    "physical_incident": "unresolved",
+    "second": "091ac970d326a83c3a382e15c26474348d2d6f5eff70070d08f4846465748c59"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 9,
+    "first": "0cf7082aaaac5d44f41570ddc054b1dca5a9056e234c3f7bfdad7f9a658982fd",
+    "physical_incident": "unresolved",
+    "second": "082606edb1f091b22391a1a3edd250b22a5ac93984983c45f56701ba77db1939"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 0,
+    "first": "166b3f84a09465fdfbd270abd1a24823c55522ecec129ead22358f691bf9575a",
+    "physical_incident": "unresolved",
+    "second": "0cd692fc2ac0a40d81fb1e64a591e3615cccf9b300ba45e8b07a8d91611e79fb"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 3,
+    "first": "1a25c7997f452a159cc27b860ec11f7c171791e5c144d8f941ec78d503c6e1a7",
+    "physical_incident": "unresolved",
+    "second": "091ac970d326a83c3a382e15c26474348d2d6f5eff70070d08f4846465748c59"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 4,
+    "first": "1a25c7997f452a159cc27b860ec11f7c171791e5c144d8f941ec78d503c6e1a7",
+    "physical_incident": "unresolved",
+    "second": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "arteche",
+      "buenavista",
+      "cabadbaran city",
+      "carigara",
+      "carmen",
+      "general macarthur",
+      "jabonga",
+      "jipapad",
+      "kitcharao",
+      "liloan",
+      "maydolong",
+      "sulat",
+      "taft"
+    ],
+    "days": 0,
+    "first": "31e88d4d19a743a1dc277ef3c12d56611ef8bf8de05de2e61bcb32aa61cb4ca6",
+    "physical_incident": "unresolved",
+    "second": "27655730e6bb045e4ad2f3457276668fc3d1d271ede03ec45be109bacefc0fc8"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 10,
+    "first": "333ea8fd77d4f0d760bd3590cde89ae037793d4dd5f8292b57cf890b6cda56d5",
+    "physical_incident": "unresolved",
+    "second": "2cd2986a50bd6883f9528bd08c6b32b6b626cca89a49792c777991c472f51764"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "talisay"
+    ],
+    "days": 0,
+    "first": "344bf359dc0f6784d5e4baa7c769e9d8cb040cf787244f81a7790818ea8d11c0",
+    "physical_incident": "unresolved",
+    "second": "0c2fb2358af63ec57dcce8564ada2365519ade9e69ffc8d8c9bf8c5cedb8a527"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "talisay"
+    ],
+    "days": 5,
+    "first": "359f322248180aba773dbbc3b78a60aa9d7b6710ddd5ca3f87fab1794c4a792d",
+    "physical_incident": "unresolved",
+    "second": "0c2fb2358af63ec57dcce8564ada2365519ade9e69ffc8d8c9bf8c5cedb8a527"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "talisay"
+    ],
+    "days": 5,
+    "first": "359f322248180aba773dbbc3b78a60aa9d7b6710ddd5ca3f87fab1794c4a792d",
+    "physical_incident": "unresolved",
+    "second": "344bf359dc0f6784d5e4baa7c769e9d8cb040cf787244f81a7790818ea8d11c0"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina",
+      "maynila"
+    ],
+    "days": 10,
+    "first": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f",
+    "physical_incident": "unresolved",
+    "second": "091ac970d326a83c3a382e15c26474348d2d6f5eff70070d08f4846465748c59"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 3,
+    "first": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f",
+    "physical_incident": "unresolved",
+    "second": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 7,
+    "first": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f",
+    "physical_incident": "unresolved",
+    "second": "1a25c7997f452a159cc27b860ec11f7c171791e5c144d8f941ec78d503c6e1a7"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 9,
+    "first": "48d60161987757677c17485a0b82b56b98f0e86021713c2d13245b177577282c",
+    "physical_incident": "unresolved",
+    "second": "1fe578b81f47c85e4175bedc973edd47211a7d84cd36a9922259206c0fb2746a"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "atimonan"
+    ],
+    "days": 0,
+    "first": "4e7cb94d195375a15f3cdbcf8ecc1ccd93872597c8dfe8a1e821eb261e5305dd",
+    "physical_incident": "unresolved",
+    "second": "48d60161987757677c17485a0b82b56b98f0e86021713c2d13245b177577282c"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 6,
+    "first": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+    "physical_incident": "unresolved",
+    "second": "2cd2986a50bd6883f9528bd08c6b32b6b626cca89a49792c777991c472f51764"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 4,
+    "first": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+    "physical_incident": "unresolved",
+    "second": "333ea8fd77d4f0d760bd3590cde89ae037793d4dd5f8292b57cf890b6cda56d5"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "sultan mastura"
+    ],
+    "days": 2,
+    "first": "5ba30b644912068669ed7cc04a6739d10db490a526a3ad9e35dabb32ccb36908",
+    "physical_incident": "unresolved",
+    "second": "33f02bb020b6c0630636846851df958e0435aeab93c145856fd1e44c317abffa"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "roxas"
+    ],
+    "days": 10,
+    "first": "6f76ca46c5723ab5a3d016728afabfd4f61279e3aa578368c4b22233b56cca77",
+    "physical_incident": "unresolved",
+    "second": "0c5d198cf83533858e8fa8d8817eb91bc503e2e2ffe90439fa540c8216f02e33"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 10,
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "physical_incident": "unresolved",
+    "second": "091ac970d326a83c3a382e15c26474348d2d6f5eff70070d08f4846465748c59"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 3,
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "physical_incident": "unresolved",
+    "second": "096d6f5c0b9ee1b52f6de23b4a8fa9c775eb4fbab07172dd3aa6861a79c7e4c5"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 7,
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "physical_incident": "unresolved",
+    "second": "1a25c7997f452a159cc27b860ec11f7c171791e5c144d8f941ec78d503c6e1a7"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina city"
+    ],
+    "days": 4,
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "physical_incident": "unresolved",
+    "second": "32e6a08c856ca76816daec5ccef7cae01328d654802e794145005019c901314a"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "marikina"
+    ],
+    "days": 0,
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "physical_incident": "unresolved",
+    "second": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 1,
+    "first": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2",
+    "physical_incident": "unresolved",
+    "second": "6f98373eef7816915ca69701a13b8c24b7a253467f5be7d804c5f7a0165a5e25"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 14,
+    "first": "73317cbfbc115f4a3af98e05cc92e4ca60a6605260ea52a75f1794872daa8154",
+    "physical_incident": "unresolved",
+    "second": "5c9cfcb73dac85ecbe2f8d06e4e50ca6bbc3ddd7ebde168b4ccaa4b55674c859"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 8,
+    "first": "73317cbfbc115f4a3af98e05cc92e4ca60a6605260ea52a75f1794872daa8154",
+    "physical_incident": "unresolved",
+    "second": "62027caf5825"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 1,
+    "first": "7331eea8cd3b257391b8de0f6ff008e50e08e4dd009477b19b349380fd2f7a94",
+    "physical_incident": "unresolved",
+    "second": "5169777e25a4d3198d386987f33ed85798fba503cfb3d98460acece940616e7b"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "rodriguez"
+    ],
+    "days": 0,
+    "first": "7a86f8020de059a045b045e2227ededc3bfaad8bd2fe1057c3fbf8a24f349018",
+    "physical_incident": "unresolved",
+    "second": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "mauban",
+      "tagkawayan"
+    ],
+    "days": 11,
+    "first": "7d74ba40781ea31d984394a708a1fdd2f9344a71cd58a7477fedb03e2a713ef6",
+    "physical_incident": "unresolved",
+    "second": "5ab64a88d6ffeae480bb633b79bfce97ee8610f4087e39a074a224c2e5afd3cf"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "cauayan city"
+    ],
+    "days": 4,
+    "first": "80dbabf0ffff81907af620fedeec7232e6cd10a365033e8d812ebe5ee17d4354",
+    "physical_incident": "unresolved",
+    "second": "12e1473bf99e31b6890b40205befccbfc5f943bfe64c9bbe5a8f4773b920cfa7"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "balanga city",
+      "hermosa"
+    ],
+    "days": 1,
+    "first": "8550360841dad1cdea7a0495ed816fcb6d88efb37683caa22a12425987c6d95c",
+    "physical_incident": "unresolved",
+    "second": "0400a3868d686b3742baf8e71d9bc206f5a43cc687a26725ba634a389a71d962"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 11,
+    "first": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df",
+    "physical_incident": "unresolved",
+    "second": "091ac970d326a83c3a382e15c26474348d2d6f5eff70070d08f4846465748c59"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 1,
+    "first": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df",
+    "physical_incident": "unresolved",
+    "second": "47c21a5afd268870099071131ce378cf4c1e484aae9d3114ec1c2e0c9068b42f"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "rodriguez"
+    ],
+    "days": 1,
+    "first": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df",
+    "physical_incident": "unresolved",
+    "second": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "rodriguez"
+    ],
+    "days": 1,
+    "first": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df",
+    "physical_incident": "unresolved",
+    "second": "7a86f8020de059a045b045e2227ededc3bfaad8bd2fe1057c3fbf8a24f349018"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "balanga",
+      "balanga city",
+      "hermosa"
+    ],
+    "days": 5,
+    "first": "8b905f88573f9999696e9755bb2cc882343728a4d4a60b8a656643bae7f2d90e",
+    "physical_incident": "unresolved",
+    "second": "0400a3868d686b3742baf8e71d9bc206f5a43cc687a26725ba634a389a71d962"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "balanga city",
+      "dinalupihan",
+      "hermosa",
+      "mariveles",
+      "morong",
+      "orani",
+      "pilar"
+    ],
+    "days": 6,
+    "first": "8b905f88573f9999696e9755bb2cc882343728a4d4a60b8a656643bae7f2d90e",
+    "physical_incident": "unresolved",
+    "second": "8550360841dad1cdea7a0495ed816fcb6d88efb37683caa22a12425987c6d95c"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 0,
+    "first": "8d34d8e0dbfc",
+    "physical_incident": "unresolved",
+    "second": "2cd2986a50bd6883f9528bd08c6b32b6b626cca89a49792c777991c472f51764"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "malabon city"
+    ],
+    "days": 1,
+    "first": "8d6da681ee3d3e9b826f70fa803d019722042909c154c00c066f18f38187a212",
+    "physical_incident": "unresolved",
+    "second": "8b905f88573f9999696e9755bb2cc882343728a4d4a60b8a656643bae7f2d90e"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "rodriguez"
+    ],
+    "days": 5,
+    "first": "97075e8485c934c99f0d8611bc5b566e2786d5d23041668e3b1b2b74f7a2003e",
+    "physical_incident": "unresolved",
+    "second": "727c02cb64f82a7241a709dd29cadd54c45b40a6b0c4b13e5a3ddc210ae5aee2"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "rodriguez"
+    ],
+    "days": 6,
+    "first": "97075e8485c934c99f0d8611bc5b566e2786d5d23041668e3b1b2b74f7a2003e",
+    "physical_incident": "unresolved",
+    "second": "89e59a82a579fddde0cc6ce812188e9f9f319f01ee0584e8a5b27a65d0ec86df"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 14,
+    "first": "97b4891b12f963ee12cd3995d20d0759a6f7306b0eee743052ad74721384c3d9",
+    "physical_incident": "unresolved",
+    "second": "76a9e64e88ea96755928679f70c8bb9023e553fc6eb8537dfed685360c8df08d"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 2,
+    "first": "9e417cd387850fa1c21a6dd8fd0a1fca723f18a40b40908ebe096a7237512b5a",
+    "physical_incident": "unresolved",
+    "second": "97b4891b12f963ee12cd3995d20d0759a6f7306b0eee743052ad74721384c3d9"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 13,
+    "first": "a00ccbe0fd1e2a3c2023827fb4e55c631314a7dd7d98499c60804abb959ddfc1",
+    "physical_incident": "unresolved",
+    "second": "97b4891b12f963ee12cd3995d20d0759a6f7306b0eee743052ad74721384c3d9"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 6,
+    "first": "a43ddf351544f2ddb118ecea1cc9c73ae27bc338d12bc06b5c44dbbe7cb1ba0b",
+    "physical_incident": "unresolved",
+    "second": "97b4891b12f963ee12cd3995d20d0759a6f7306b0eee743052ad74721384c3d9"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "makati city"
+    ],
+    "days": 0,
+    "first": "a950f30bb5d18bda038bd8f55e8f0ea4c109652040e8f28bde56ac2cb670d462",
+    "physical_incident": "unresolved",
+    "second": "123dfc8b42e03d1045f08e32a0c41ba67d82e183e7d222cdb6bbb2721b1625c9"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 14,
+    "first": "bdd62e7c7ed633e1200007a633c210d36d1b087ee38642011f5851128679ca12",
+    "physical_incident": "unresolved",
+    "second": "97b4891b12f963ee12cd3995d20d0759a6f7306b0eee743052ad74721384c3d9"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 1,
+    "first": "bec3d1db9b1695adc5e3406c2ca6d5e2a60e0477d7159b53568214af78ae60f3",
+    "physical_incident": "unresolved",
+    "second": "7c7aff6ce07f238bd1c5b44b43ba1e3e26700e1e5a109ebb5be5fd128154c1c8"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 10,
+    "first": "c2269782c7dacc47b2702e0fe47aedda792d22a113526e90a2e6768d8d4055de",
+    "physical_incident": "unresolved",
+    "second": "8da259c03bc94730d4d5496f8655009678359b4db3414939248246b5c0f4aa09"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "atimonan",
+      "pitogo"
+    ],
+    "days": 0,
+    "first": "c22e80b7c3d0c5184ee76d23dd327edc54c8262fec7ea76b8956e59617fd2684",
+    "physical_incident": "unresolved",
+    "second": "48d60161987757677c17485a0b82b56b98f0e86021713c2d13245b177577282c"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "atimonan"
+    ],
+    "days": 0,
+    "first": "c22e80b7c3d0c5184ee76d23dd327edc54c8262fec7ea76b8956e59617fd2684",
+    "physical_incident": "unresolved",
+    "second": "4e7cb94d195375a15f3cdbcf8ecc1ccd93872597c8dfe8a1e821eb261e5305dd"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "cauayan city"
+    ],
+    "days": 8,
+    "first": "c45e3d31ba27ae8ba0e0ce6ae532f94e0201cdcef6eb2d9817ec9c94412b6326",
+    "physical_incident": "unresolved",
+    "second": "12e1473bf99e31b6890b40205befccbfc5f943bfe64c9bbe5a8f4773b920cfa7"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "davao city"
+    ],
+    "days": 4,
+    "first": "c4941a3dc8d294bb11846900e7cce4a1b4430484769dee6709e2f73b60289ecd",
+    "physical_incident": "unresolved",
+    "second": "2b8e17691b1306a20a76ffdf1bb2cc074487b468c713a0c63101607e7754f184"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 6,
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "physical_incident": "unresolved",
+    "second": "3cc3371e4e975c7b44f6d2df99d000c87d449ea7ed2b69be551d5060dfb12e84"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 2,
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "physical_incident": "unresolved",
+    "second": "4caca53176c11e1a9e43ef84442349568293eb76d92a50485bb9ea385d41e3df"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 5,
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "physical_incident": "unresolved",
+    "second": "50096961112f99defe4702e01e8f5a57f3348c65fe0ad466c03d9e39060aca9f"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "baguio city"
+    ],
+    "days": 6,
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "physical_incident": "unresolved",
+    "second": "59aa88db75a525739c47b66eabe28c1829b8cc3062e2621697ef24445bff3d1d"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 5,
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "physical_incident": "unresolved",
+    "second": "a3e2ef7af0971f9b7f417a870250e0def082fec6b54d7b6c36dc0c57563ac487"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 10,
+    "first": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784",
+    "physical_incident": "unresolved",
+    "second": "a43ddf351544f2ddb118ecea1cc9c73ae27bc338d12bc06b5c44dbbe7cb1ba0b"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city"
+    ],
+    "days": 5,
+    "first": "c733e98bd5439b8c990c087d747945e3e498a0c1e1cb810dd16a71faa59d656e",
+    "physical_incident": "unresolved",
+    "second": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila",
+      "maynila"
+    ],
+    "days": 0,
+    "first": "c7db345fda373dfa427976078c1184e05eaca71c3c5e4f03ec9d485683cd4a28",
+    "physical_incident": "unresolved",
+    "second": "2cd2986a50bd6883f9528bd08c6b32b6b626cca89a49792c777991c472f51764"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 10,
+    "first": "c7db345fda373dfa427976078c1184e05eaca71c3c5e4f03ec9d485683cd4a28",
+    "physical_incident": "unresolved",
+    "second": "333ea8fd77d4f0d760bd3590cde89ae037793d4dd5f8292b57cf890b6cda56d5"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "maynila"
+    ],
+    "days": 6,
+    "first": "c7db345fda373dfa427976078c1184e05eaca71c3c5e4f03ec9d485683cd4a28",
+    "physical_incident": "unresolved",
+    "second": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "cagayan de oro city"
+    ],
+    "days": 14,
+    "first": "c99f7f041f3194979d86f74c34a811ac89f82ba8b66515a013ced25debc8f41c",
+    "physical_incident": "unresolved",
+    "second": "9b5999462a61dd0e2512e5093e8e5184f7540e6b16c10fd21a84590afec3eab1"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 8,
+    "first": "cc938227fcf32751d11f82724a238e6eb0b461cb1450b40f9f90c14f1e49126b",
+    "physical_incident": "unresolved",
+    "second": "4ca4c8fc9fcee103e6e7b206337001dc07aa38e08ee3bf11efe6b9348e6c2de8"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 10,
+    "first": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+    "physical_incident": "unresolved",
+    "second": "73317cbfbc115f4a3af98e05cc92e4ca60a6605260ea52a75f1794872daa8154"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "dagupan city",
+      "marilao"
+    ],
+    "days": 7,
+    "first": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+    "physical_incident": "unresolved",
+    "second": "c60c75a56fe867ceba3724219bb07baabddee8f3a056b4a6d2f03bb0eb5ef784"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 6,
+    "first": "d4c6f68d684509139e1dcc542992ad7d4315d5f563b3a0f9352c4bbfeea5ccc6",
+    "physical_incident": "unresolved",
+    "second": "a3e2f4aaf91bc9dadc5f1e78601ed5486a52736f28b4d3782b107350f9767c5a"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "sinait"
+    ],
+    "days": 0,
+    "first": "d4f8e34682385c780330ce9e2a6e878fcbb2b78a3a37881a21ee6fa579d65fef",
+    "physical_incident": "unresolved",
+    "second": "7c7aff6ce07f238bd1c5b44b43ba1e3e26700e1e5a109ebb5be5fd128154c1c8"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "toledo city"
+    ],
+    "days": 0,
+    "first": "d7a9d3380c6318bd7a74058ef0df008f87cea368e20e678c17a7d5967ce362ee",
+    "physical_incident": "unresolved",
+    "second": "9e698edfacef5eb6cbd55ebe6e7e2bbb6fddb9ce2c8adc61ca348a99c8c78cf6"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "malabon"
+    ],
+    "days": 10,
+    "first": "dcb77c8842b3d82f7a79760ce479c857191b73809f43f9019fcf0ecc5ad4ba77",
+    "physical_incident": "unresolved",
+    "second": "527761ecfec2e5e800ee42860908eb8c8d5781b9a8f14519e760f185d42d7c7b"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 5,
+    "first": "dcc205cd1384619bd279ab561e1700dd72618307e3b4689f3190c29abc160c20",
+    "physical_incident": "unresolved",
+    "second": "0cd692fc2ac0a40d81fb1e64a591e3615cccf9b300ba45e8b07a8d91611e79fb"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 5,
+    "first": "dcc205cd1384619bd279ab561e1700dd72618307e3b4689f3190c29abc160c20",
+    "physical_incident": "unresolved",
+    "second": "166b3f84a09465fdfbd270abd1a24823c55522ecec129ead22358f691bf9575a"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 3,
+    "first": "dcc205cd1384619bd279ab561e1700dd72618307e3b4689f3190c29abc160c20",
+    "physical_incident": "unresolved",
+    "second": "b7c312b263770f2c94c27be7a93bba7ee1328723eb2f26953fd30a0e1d778015"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "abulug",
+      "claveria"
+    ],
+    "days": 3,
+    "first": "e34527a5e361cdc09f645f2b3d238b7826e1bec4587208566d13cc76c7215407",
+    "physical_incident": "unresolved",
+    "second": "6f140e6caa42a76f2154b921a432fcf66571ebd6f934259d4477298428e9d70f"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 5,
+    "first": "f233cdba59e128f80006a71d11537ccdf83d8053fe7a6a59624c8eb5c6e7f259",
+    "physical_incident": "unresolved",
+    "second": "1d15636bfb683e95dfce3d997bf64ab77737ee9be329c6cc7c68296fc33f082c"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 1,
+    "first": "f8999bbbede9e849e052e12c5f65dc10dd2ceda2300d475368c523e098d5090a",
+    "physical_incident": "unresolved",
+    "second": "4ca4c8fc9fcee103e6e7b206337001dc07aa38e08ee3bf11efe6b9348e6c2de8"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "quezon city"
+    ],
+    "days": 7,
+    "first": "f8999bbbede9e849e052e12c5f65dc10dd2ceda2300d475368c523e098d5090a",
+    "physical_incident": "unresolved",
+    "second": "cc938227fcf32751d11f82724a238e6eb0b461cb1450b40f9f90c14f1e49126b"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "lopez"
+    ],
+    "days": 4,
+    "first": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55",
+    "physical_incident": "unresolved",
+    "second": "322d6061752f4854b18df013c44e0abc589e6f88f57741c443994decd62f6c68"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "tagkawayan"
+    ],
+    "days": 12,
+    "first": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55",
+    "physical_incident": "unresolved",
+    "second": "5ab64a88d6ffeae480bb633b79bfce97ee8610f4087e39a074a224c2e5afd3cf"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "calauag"
+    ],
+    "days": 3,
+    "first": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55",
+    "physical_incident": "unresolved",
+    "second": "7293bfc45fe02f669db570cfc65eb9de1ec337b7e44f372dfeddebae20491b01"
+  },
+  {
+    "basis": "shared source-mentioned city within14 publication days; conservative uncertain reporting dependency",
+    "cities": [
+      "manila"
+    ],
+    "days": 8,
+    "first": "f951dd9476e417dc1f25ad6ae293c58bf7e79182b28567144f4b09318a8ccc55",
+    "physical_incident": "unresolved",
+    "second": "d4f8e34682385c780330ce9e2a6e878fcbb2b78a3a37881a21ee6fa579d65fef"
+  }
+]

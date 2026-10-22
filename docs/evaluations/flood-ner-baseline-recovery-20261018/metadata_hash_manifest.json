@@ -1,0 +1,10 @@
+{
+  "schema": "lanes-recovery-public-hashes-v1",
+  "files": {
+    "curator-aggregate-status.json": "d270ad4fd8f837acadd5d1e85894fa413f35c9f92bc7b0e728519d774aaea5cf",
+    "curator-verification-manifest.json": "e6017b5df44031bbf13526060012da13bebe51073c06ddc759fe10c68448a43a",
+    "progress-views.json": "ad33a211974700357fcc383ed66065ab1c8cc25ab0bcace20e95e3898fe026cd",
+    "README.md": "4a885c1c150b4ddf4f8c6e7e5e7338cb7bbed00b6b6250f5fe52d7f9dc17bb12",
+    "verification.json": "b411c88b9b543474cb1e28e34a263ffa8f79793673bcba75809e4b0006745e12"
+  }
+}

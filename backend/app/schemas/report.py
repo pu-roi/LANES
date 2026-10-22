@@ -274,6 +274,7 @@ class ZoneContributorResponse(BaseModel):
 
 
 class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
+    contributor_count: Optional[int] = None
     id: int
     report_id: Optional[int] = None
     event_id: Optional[int] = None

@@ -1,0 +1,188 @@
+{
+  "failed_preflights": [
+    {
+      "checkpoint": "actual-preflight-v1",
+      "report": {
+        "case_count": 24,
+        "cases_sha256": "62f317b78101dd8abacf5c60155c05948b990cef79be803e71ecb4e1fc5ea1b9",
+        "constructed_only": true,
+        "error": "Traceback (most recent call last):\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\preflight_worker.py\", line 62, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\preflight_worker.py\", line 29, in main\n    request=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\interpreters\\cpython-3.11-windows-x86_64-none\\Lib\\pathlib.py\", line 1058, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\interpreters\\cpython-3.11-windows-x86_64-none\\Lib\\pathlib.py\", line 1044, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'training\\\\flood_ner\\\\artifacts\\\\preflight-use-20261015\\\\actual-preflight-v1\\\\request.json'\n",
+        "failure_stage": "worker_execution",
+        "files": {
+          "request.json": "9444a8b92b8e522d55ccb79e4826f34b94c600285bb25a0d14d30b398ae50a86",
+          "stderr.log": "1f326a515d3f342e18f4bced03f9721b22de796554740581fbf2777ebe70768e",
+          "stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "model_manifest_sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+        "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "model_training_performed": false,
+        "news_samples_processed": 0,
+        "production_runtime_qualified": false,
+        "research_interpreter": "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+        "resources": null,
+        "returncode": 1,
+        "schema_version": "lanes-model-preflight-v1",
+        "six_class_accuracy_measured": false,
+        "state": "failed"
+      }
+    },
+    {
+      "checkpoint": "actual-preflight-v2",
+      "report": {
+        "case_count": 24,
+        "cases_sha256": "62f317b78101dd8abacf5c60155c05948b990cef79be803e71ecb4e1fc5ea1b9",
+        "constructed_only": true,
+        "error": "Traceback (most recent call last):\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\preflight_worker.py\", line 62, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\preflight_worker.py\", line 32, in main\n    import spacy\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Lib\\site-packages\\spacy\\__init__.py\", line 16, in <module>\n    from .cli.info import info  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Lib\\site-packages\\spacy\\cli\\__init__.py\", line 4, in <module>\n    from . import download as download_module  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Lib\\site-packages\\spacy\\cli\\download.py\", line 19, in <module>\n    from ._util import SDIST_SUFFIX, WHEEL_SUFFIX, Arg, Opt, app\n  File \"D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Lib\\site-packages\\spacy\\cli\\_util.py\", line 22, in <module>\n    from click import NoSuchOption\nModuleNotFoundError: No module named 'click'\n",
+        "failure_stage": "worker_execution",
+        "files": {
+          "request.json": "9444a8b92b8e522d55ccb79e4826f34b94c600285bb25a0d14d30b398ae50a86",
+          "stderr.log": "7aa2e07ac474f4ae4d93e96323e0d2d8534d5fe17f1e80e9052c4109af9738dc",
+          "stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "model_manifest_sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+        "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "model_training_performed": false,
+        "news_samples_processed": 0,
+        "production_runtime_qualified": false,
+        "research_interpreter": "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+        "resources": null,
+        "returncode": 1,
+        "schema_version": "lanes-model-preflight-v1",
+        "six_class_accuracy_measured": false,
+        "state": "failed"
+      }
+    },
+    {
+      "checkpoint": "actual-preflight-v3",
+      "report": {
+        "case_count": 24,
+        "cases_sha256": "62f317b78101dd8abacf5c60155c05948b990cef79be803e71ecb4e1fc5ea1b9",
+        "constructed_only": true,
+        "error": "data must be str, not NoneType",
+        "failure_stage": "worker_output_validation",
+        "files": {
+          "request.json": "9444a8b92b8e522d55ccb79e4826f34b94c600285bb25a0d14d30b398ae50a86"
+        },
+        "model_manifest_sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+        "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "model_training_performed": false,
+        "news_samples_processed": 0,
+        "os_error": null,
+        "production_runtime_qualified": false,
+        "research_interpreter": "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+        "resources": null,
+        "schema_version": "lanes-model-preflight-v1",
+        "six_class_accuracy_measured": false,
+        "state": "failed"
+      }
+    }
+  ],
+  "initial_setup": {
+    "completed_steps": [
+      {
+        "arguments": [
+          "D:\\Documents\\Github\\LANES\\backend\\.venv\\Scripts\\python.exe",
+          "-m",
+          "venv",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap"
+        ],
+        "exit_code": 0,
+        "log": "bootstrap-venv.log",
+        "step": "bootstrap-venv"
+      },
+      {
+        "arguments": [
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap\\Scripts\\python.exe",
+          "-m",
+          "pip",
+          "install",
+          "--only-binary=:all:",
+          "uv==0.13.1"
+        ],
+        "exit_code": 0,
+        "log": "bootstrap-uv.log",
+        "step": "bootstrap-uv"
+      },
+      {
+        "arguments": [
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap\\Scripts\\uv.exe",
+          "python",
+          "install",
+          "3.11",
+          "--install-dir",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\interpreters",
+          "--no-bin",
+          "--no-config"
+        ],
+        "exit_code": 0,
+        "log": "managed-python.log",
+        "step": "managed-python"
+      },
+      {
+        "arguments": [
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap\\Scripts\\uv.exe",
+          "python",
+          "find",
+          "3.11",
+          "--managed-python",
+          "--no-config"
+        ],
+        "exit_code": 0,
+        "log": "locate-python.log",
+        "step": "locate-python"
+      },
+      {
+        "arguments": [
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap\\Scripts\\uv.exe",
+          "venv",
+          "--python",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\interpreters\\cpython-3.11-windows-x86_64-none\\python.exe",
+          "--no-config",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env"
+        ],
+        "exit_code": 0,
+        "log": "research-venv.log",
+        "step": "research-venv"
+      },
+      {
+        "arguments": [
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap\\Scripts\\uv.exe",
+          "pip",
+          "compile",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\requirements-run.in",
+          "--python",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+          "--generate-hashes",
+          "--no-build",
+          "--no-config",
+          "--output-file",
+          "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\requirements.lock"
+        ],
+        "exit_code": 2,
+        "log": "resolve-lock.log",
+        "step": "resolve-lock"
+      }
+    ],
+    "error": "resolve-lock failed; see captured log",
+    "state": "failed"
+  },
+  "same_resolver_retry": {
+    "arguments": [
+      "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\bootstrap\\Scripts\\uv.exe",
+      "pip",
+      "compile",
+      "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\requirements-run.in",
+      "--python",
+      "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+      "--generate-hashes",
+      "--no-build",
+      "--no-config",
+      "--output-file",
+      "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\requirements.lock"
+    ],
+    "exit_code": 0,
+    "same_failed_operation_retried": true,
+    "security_policy_changes": false
+  },
+  "security_policy_changes": false
+}

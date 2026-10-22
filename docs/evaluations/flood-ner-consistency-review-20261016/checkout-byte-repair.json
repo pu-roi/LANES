@@ -1,0 +1,29 @@
+{
+  "cause": "core.autocrlf=true converted tracked LF source to CRLF",
+  "restored_from": "unchanged Git index blobs",
+  "files": [
+    "backend/training/flood_ner/cli.py",
+    "backend/training/flood_ner/experiment_preparation.py",
+    "backend/training/flood_ner/experiment_registry.py",
+    "backend/training/flood_ner/experiment_worker.py",
+    "backend/training/flood_ner/heldout_test.py",
+    "backend/training/flood_ner/heldout_test_worker.py",
+    "backend/training/flood_ner/manual_training.py",
+    "backend/training/flood_ner/qualified_export.py",
+    "backend/training/flood_ner/qualified_export_worker.py",
+    "backend/training/flood_ner/rules_baseline.py",
+    "backend/training/flood_ner/study_recipes.py",
+    "backend/training/flood_ner/validation_comparison.py",
+    "backend/training/flood_ner/validation_worker.py"
+  ],
+  "semantic_code_changes": false,
+  "initial_index_restoration_only_not_final_style_policy": true,
+  "final_crlf_exceptions": [
+    "backend/training/flood_ner/cli.py",
+    "backend/training/flood_ner/corpus_tokenizer_qualification.py",
+    "backend/training/flood_ner/corpus_tokenizer_worker.py",
+    "backend/training/flood_ner/evaluation/contract.py"
+  ],
+  "frozen_manifests_changed": false,
+  "staged_content_changes": false
+}

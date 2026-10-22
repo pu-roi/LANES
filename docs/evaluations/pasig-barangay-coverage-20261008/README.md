@@ -12,7 +12,7 @@ The current conditional model used only 37 projections across **Dela Paz, Maybun
 
 ## Complete prediction-location continuation
 
-The separate [COD prediction locality catalog](../evaluations/pasig-location-feature-models-20261008/README.md) now has all 30 canonical barangays and the source-consistent city boundary. The coverage CSV adds prediction_location_catalog_present alongside the unchanged 20-record OSM news boundary presence. These are different purpose/source catalogs; no news activation gate is weakened. Feature capture/evaluation is implemented, while useful street-specific model effects remain unqualified.
+The separate [COD prediction locality catalog](../pasig-location-feature-models-20261008/README.md) now has all 30 canonical barangays and the source-consistent city boundary. The coverage CSV adds prediction_location_catalog_present alongside the unchanged 20-record OSM news boundary presence. These are different purpose/source catalogs; no news activation gate is weakened. Feature capture/evaluation is implemented, while useful street-specific model effects remain unqualified.
 
 ## Subsequent model/simulation continuation
 

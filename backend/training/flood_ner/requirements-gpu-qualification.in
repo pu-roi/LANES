@@ -1,0 +1,10 @@
+# Optional Windows CPython 3.11 GPU research environment; never backend/.venv.
+# Resolve binary wheels and generate hashes before installation.
+-r requirements-qualification.in
+# Shared preflight validation imports the existing offline HTTP client module.
+httpx==0.27.0
+cupy-cuda12x==13.6.0
+nvidia-cuda-runtime-cu12==12.8.90
+nvidia-cuda-nvrtc-cu12==12.8.93
+# Official CUDA wheel: provenance/hash are also retained in the generated lock.
+torch @ https://download-r2.pytorch.org/whl/cu128/torch-2.11.0%2Bcu128-cp311-cp311-win_amd64.whl#sha256=90ef0c2454e5296a9fb021ddd42252e4ce1abe2c0a4988a173ef90a6cded0bf5

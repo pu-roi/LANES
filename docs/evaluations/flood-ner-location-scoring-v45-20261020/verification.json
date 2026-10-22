@@ -1,0 +1,34 @@
+{
+  "article_facts_per_method": 93,
+  "article_occurrences_per_method": 34,
+  "article_rows_per_method": 19,
+  "backend_promoted": false,
+  "candidate_checks_per_method": 418,
+  "context_records": 24,
+  "eligible_context_references": 23,
+  "extraction_calls": 0,
+  "fictional_cases": 418,
+  "freeze_sha256": "beace0fd7d5cf84e39cec71f23e4abfe8e8e2020f4bb1020294160725b915a9b",
+  "historical_misses_per_method": 7,
+  "historical_v44_source_offsets_provenance_isolation_reverified": true,
+  "inference": false,
+  "original_control_checks": 418,
+  "original_v44_unchanged": true,
+  "paired_view_checks_per_method": 3,
+  "preservation": {
+    "excluded_metadata_unchanged": 82,
+    "historical_metadata_unchanged": 1538,
+    "preexisting_declared_config_change": [
+      "backend/app/core/config.py"
+    ],
+    "protected_evidence_hashes": 208,
+    "v40_v42_and_promoted_application_unchanged": true,
+    "v41_source_test_hashes": 55,
+    "validation_holdout_content_opened": false
+  },
+  "saved_raw_records": 788,
+  "status": "independently_verified",
+  "training_and_association_counts_recomputed": true,
+  "training_records": 345,
+  "worker_rerun": false
+}

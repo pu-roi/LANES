@@ -1,0 +1,42 @@
+{
+  "prior_files_unchanged": 6039,
+  "desktop_inventory_sha256": "304f20d467669a483c0446801f2f3c33c64c49272b15028f92f5a0798936846a",
+  "desktop_manifest_sha256": "642d1cffad345f123e7d650b09fcb5111f61257f99552eff315dc694f3203b6e",
+  "inventory_helper_sha256": "bc046535909a9894fb0feabb38557ccbea707443dbec98f5c954f7638a2cd824",
+  "new_validation_records": 3,
+  "new_spans_aligned": 7,
+  "known_alignment_failure_preserved": true,
+  "new_schema_exact_offset_or_tokenizer_errors": 0,
+  "historical_training_leakage": 0,
+  "group_fragmentation": 0,
+  "new_development_sources_collected": 0,
+  "tests": {
+    "coordinator_gap_fault_checks": {
+      "passed": 14,
+      "skipped": 0,
+      "command": "backend/venv/Scripts/python.exe -B backend/training/flood_ner/artifacts/desktop-history-validation-gap-20261017-v1/test_gap_review.py"
+    },
+    "portable_inventory_and_checkout_bytes": {
+      "passed": 14,
+      "skipped": 1,
+      "command": "backend/venv/Scripts/python.exe -B -m unittest backend.tests.test_flood_ner_history_inventory backend.tests.test_flood_ner_repository_bytes"
+    },
+    "total_coordinator_passed": 28,
+    "total_coordinator_skipped": 1,
+    "curator_fault_checks_passed": 19,
+    "skip_reason": "Native Windows symlink creation unavailable; deterministic reparse/link exclusion check passes."
+  },
+  "curator_verification_binding": {
+    "sha256": "520841408d1b031da1bb9f017ba6d320fd1f37b2ee9cff087565c779bd93218b"
+  },
+  "private_history_and_validation_packages": [
+    {
+      "manifest_sha256": "f9674d151b3d3b8b7261656e982143377acd32bcd3576f2eaca884c14c06bac8"
+    },
+    {
+      "manifest_sha256": "63a04f0d193f1e4d2b164f55dca31b94b2e553a6f946c0b2f987f9b9c99e0a60"
+    }
+  ],
+  "public_api_dependencies_database_changed": false,
+  "private_content_published": false
+}

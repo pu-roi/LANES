@@ -1,0 +1,9 @@
+{
+  "heldout_safe_metadata": {
+    "backend/training/flood_ner/artifacts/additional-heldout-curation-20261016-v1/aggregate-status.json": "5fa97fa6faceeb50424a205995c3ee73fec10dd6fe3c397539ebbd5c1ea0267f",
+    "backend/training/flood_ner/artifacts/additional-heldout-curation-20261016-v1/verification-manifest.json": "9fc32cfae62fbb80fbd06f03d5e3232f100893497b0aff06c0a4dcf7b8a1663c"
+  },
+  "manifest_sha256": "e1e2dc8dbe77847e5c0d0ffeab9f392513f103465b91ad5421c2f8ac10af6f2f",
+  "private_checkpoint": "backend/training/flood_ner/artifacts/additional-dataset-20261016-v1",
+  "status": "incomplete"
+}

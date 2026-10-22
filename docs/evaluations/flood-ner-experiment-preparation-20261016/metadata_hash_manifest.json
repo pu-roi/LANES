@@ -1,0 +1,12 @@
+{
+  "files": {
+    "README.md": "4d8394f141e9c75264272dd52f3c09c80922c6aa980d487815279c59fbdd2d90",
+    "experiment-manifest.json": "e3e37d699f8f59dae3c5daa911fcfd16fc03500ec4de60be5d495dfffa4e6b87",
+    "initialization.json": "0ff2f93fdd08c37d4c5e0a0580df4c37d5000d6653f77ee24daacd799a64862c",
+    "manual-launcher-verification.json": "b27cae7b5c88e5dcd9592bcdd2b2f266237401dfad97beaf0f564726ed56b3e9",
+    "rules-baseline.json": "a41fccfcc6d633d1a5cbb09dbdd0ecd3869e30cf39031699765e3615bd3b2fce",
+    "rules-smoke.json": "bf59da0e64276d067962ed29e1d76e3b82d9642c144ce4b01fa7269e1feb70a8",
+    "verification.json": "356811f0f21bfdfd924566626b743a052e4cdba44f504db79fd9ed1990a10fd5"
+  },
+  "schema_version": "lanes-metadata-hashes-v1"
+}

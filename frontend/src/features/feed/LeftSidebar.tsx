@@ -65,6 +65,21 @@ export function LeftSidebar() {
     { name: 'Submit Report', href: '/map?action=report', icon: MessageSquarePlus },
   ];
 
+  const handleFeedClick = () => {
+    if (pathname.startsWith('/feed')) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+      document.body.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (pathname === '/feed') {
+        if (typeof window !== 'undefined' && window.location.search) {
+          router.push('/feed');
+        }
+        window.dispatchEvent(new CustomEvent('lanes:refresh-feed'));
+      }
+    }
+  };
+
   return (
     <aside aria-label="Community navigation" className="w-64 xl:w-[280px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] bg-transparent overflow-y-auto hidden md:flex px-4 border-r border-gray-200 custom-scrollbar [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full transition-colors duration-200">
       <div className="flex-1 py-6 space-y-6">
@@ -78,6 +93,7 @@ export function LeftSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={item.href === '/feed' ? handleFeedClick : undefined}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors font-medium text-sm ${
                   isActive
                     ? 'bg-blue-50 text-blue-700'

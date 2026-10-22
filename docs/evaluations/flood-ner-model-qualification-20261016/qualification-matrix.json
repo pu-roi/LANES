@@ -1,0 +1,100 @@
+{
+  "matrix": [
+    {
+      "claim": "Frozen private academic research benchmark execution",
+      "evidence": "Verified fixed roster, 400/138/40 input bindings, one completed 60-test evaluation and unchanged scores. Project-use provenance is retained; no legal permission is supplied.",
+      "remaining": "Report AI silver provenance and historical acquisition/use limitations.",
+      "status": "supported_scoped"
+    },
+    {
+      "claim": "Descriptive original/A six-class comparison",
+      "evidence": "Primary 63.12 and exploratory 67.72 test F1; family means 68.46/70.24 with three-seed variability.",
+      "remaining": "No test-driven seed promotion, significance or field-accuracy claim.",
+      "status": "supported_scoped"
+    },
+    {
+      "claim": "Complete/geographically verified place labels",
+      "evidence": "All 60 passages reviewed; reference-scope/type/boundary/completeness questions and unresolved source spellings remain.",
+      "remaining": "Resolve a versioned reference-scope specification and any proposed revisions separately; preserve this benchmark.",
+      "status": "pending"
+    },
+    {
+      "claim": "Independently verified accuracy",
+      "evidence": "Labels and this contextual review are same-agent AI silver, not independent human gold.",
+      "remaining": "Independent reference review for independent-accuracy claims; not a prerequisite for this authorized AI review.",
+      "status": "unsupported_by_current_evidence"
+    },
+    {
+      "claim": "Six-class operational model qualification",
+      "evidence": "Weak LANDMARK/LOCAL_AREA/ROAD and English results plus mixed negative/seed outcomes. Numerical roadmap targets remain proposals.",
+      "remaining": "Freeze explicit qualification criteria prospectively; retain unsupported slices and fresh untouched holdout if tuning occurs.",
+      "status": "pending_not_qualified"
+    },
+    {
+      "claim": "Contextual flood-fact associations and severity",
+      "evidence": "Forty pairs are training references, not held-out place/depth/time/status/access assessment.",
+      "remaining": "Separate association/severity reference specification and held-out evaluation.",
+      "status": "pending"
+    },
+    {
+      "claim": "PSGC/OSM identity and road placement",
+      "evidence": "NER spans do not resolve canonical places, uniquely affected segments or observed geometry.",
+      "remaining": "Qualified parent/identity resolution and isolated article-grounded placement checks.",
+      "status": "pending"
+    },
+    {
+      "claim": "Selected trained-model CPU and clean Linux compatibility",
+      "evidence": "Recorded selected-model evaluation is on the existing Windows GPU runtime; earlier constructed/native CPU evidence is narrower.",
+      "remaining": "Bounded offline selected-model loading, tokenizer parity and constructed inference in target CPU/Linux runtime.",
+      "status": "pending"
+    },
+    {
+      "claim": "CPU latency, memory and long-article behavior",
+      "evidence": "No selected-model CPU p95 or deployment-sized memory/long-text qualification. Training utilization and whole GPU evaluation time are not substitutes.",
+      "remaining": "Declared cold/warm workload, token-length limits, p50/p95, peak RSS and visible long-article failures.",
+      "status": "pending"
+    },
+    {
+      "claim": "Operational missing/corrupt-model handling",
+      "evidence": "Offline hash/attempt/output guards pass; trained NER is not connected to the application path.",
+      "remaining": "Isolated failure injection, version traceability and fail-closed publication; no silent regex success labeled NER.",
+      "status": "pending"
+    },
+    {
+      "claim": "Publication safety and autonomous lifecycle",
+      "evidence": "Only 3 negative entity passages; no field false-activation, full RSS-to-map or lifecycle acceptance is established by NER.",
+      "remaining": "Separate negative/ambiguous/stale-source, duplicate/retry/rollback, geometry and lifecycle checks on isolated records.",
+      "status": "pending"
+    },
+    {
+      "claim": "Distribution, production use and deployment",
+      "evidence": "Private academic admission does not decide the six paper/dataset and six production/model-distribution outcomes.",
+      "remaining": "Use-specific decisions before those uses; source-use status is unchanged by this review.",
+      "status": "not_established_deferred"
+    }
+  ],
+  "overall": "Review complete and verification passed; operational model qualification remains open.",
+  "proposed_targets_not_retroactively_adopted": true,
+  "remaining_work": [
+    {
+      "evidence_needed": "Hash-bound reference-question addendum and constructed regression matrix for compound/split roads, short codes, explicit/shared locality cues, named institutions/assets, bylines, time/common-word/generic-structure negatives. Do not alter or rescore the exposed benchmark.",
+      "priority": 1,
+      "task": "Prepare the bounded remaining Gate 3 qualification specification"
+    },
+    {
+      "evidence_needed": "Fixed original-primary/A-exploratory checkpoint roles; CPU and target Linux offline load/tokenizer parity, constructed probes, corrupt/missing-model behavior, resource and long-text measurements. No runtime installation or dependency change is performed here.",
+      "priority": 2,
+      "task": "Plan and run a separately authorized offline compatibility/failure/performance qualification"
+    },
+    {
+      "evidence_needed": "Clear supported/unsupported label and language slices; independent review if independent-accuracy claims are pursued; fresh untouched grouped holdout for future tuning, no test-driven seed choice.",
+      "priority": 3,
+      "task": "Resolve evaluation scope and qualification criteria prospectively"
+    },
+    {
+      "evidence_needed": "Versioned model-loading/neutral fact-helper boundary, contextual association and source/identity/placement checks, visible failures and shadow comparisons without public writes; separate Gate 5 system safety and deployment authorization.",
+      "priority": 4,
+      "task": "Gate 4 isolated integration only after required model-qualification evidence"
+    }
+  ]
+}

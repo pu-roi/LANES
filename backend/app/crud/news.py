@@ -1,8 +1,10 @@
 """Database operations for the read-only news discovery evidence queue."""
+from __future__ import annotations
 
 import hashlib
 import re
 from datetime import datetime, timedelta, timezone
+from typing import TYPE_CHECKING
 
 from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session, selectinload
@@ -11,6 +13,9 @@ from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoin
 from app.services.news_discovery_service import NewsCandidate
 from app.services.news_feed_service import FeedProbe, NewsEntry
 from app.services.news_sources import NewsSource
+
+if TYPE_CHECKING:
+    from app.services.news_ner_durable.collection import NativeCollectionContext
 
 
 def content_fingerprint(entry: NewsEntry) -> str:
@@ -61,10 +66,15 @@ def list_due_feed_articles(db: Session, source: NewsSource, feed_url: str, *, no
         or_(NewsArticle.published_at.between(now - max_age, now),
             (NewsArticle.published_at.is_(None) & NewsArticle.first_seen_at.between(now - max_age, now))),
     ).order_by(NewsArticle.fetched_at.asc(), NewsArticle.id, NewsArticleFeedEntry.id).limit(limit)).all()
+    def publication(article: NewsArticle, feed: NewsArticleFeedEntry) -> dict:
+        from app.services.news_ner_durable.collection import body_binding
+        saved = (feed.raw_metadata or {}).get('captured_input', {})
+        return saved.get('publication_evidence', {}) if saved.get('binding') == body_binding(article) else {}
     return [NewsEntry(source.id, source.publisher, feed_url, feed.feed_guid,
                       article.title, article.excerpt or "", article.canonical_url,
                       article.published_at.replace(tzinfo=timezone.utc) if article.published_at
-                      and article.published_at.tzinfo is None else article.published_at)
+                      and article.published_at.tzinfo is None else article.published_at,
+                      publication(article, feed).get('raw'), publication(article, feed).get('timezone_known', False))
             for article, feed in rows]
 
 
@@ -86,9 +96,21 @@ def save_checkpoint(db: Session, probe: FeedProbe) -> NewsFeedCheckpoint:
 
 
 def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | None,
-                   *, local_update_only: bool = False) -> NewsArticle:
+                   *, local_update_only: bool = False,
+                   processing_context: NativeCollectionContext | None = None) -> NewsArticle:
     """Save article plus feed provenance; repeated URLs/GUIDs update their seen time."""
     from app.crud.news_processing import enqueue_article
+
+    def enqueue(article: NewsArticle) -> None:
+        if processing_context is None:
+            enqueue_article(db, article)
+        else:
+            from app.services.news_ner_durable.collection import saved_publication
+            enqueue_article(db, article, mode='ner_rules_v1', pipeline_version=processing_context.pipeline_version,
+                            publication_evidence=saved_publication(db, article))
+
+    if processing_context is not None:
+        processing_context.validate(db)
 
     if candidate is not None and (candidate.source_id != entry.source_id or candidate.article_url != entry.article_url):
         raise ValueError("Captured article identity does not match its feed entry")
@@ -114,7 +136,7 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
         db.add(article)
         db.flush()
     else:
-        enqueue_article(db, article)  # Preserve the successful input before replacing it.
+        enqueue(article)  # Preserve the successful input before replacing it.
         if article.review_state == "local_update" and not local_update_only:
             article.review_state = "pending"  # Newly observed flooding follows normal processing.
         article.last_seen_at = now
@@ -144,7 +166,7 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
         NewsArticleFeedEntry.feed_guid == entry.feed_id,
     ))
     if feed_entry is None:
-        db.add(NewsArticleFeedEntry(
+        feed_entry = NewsArticleFeedEntry(
             article_id=article.id,
             source_id=entry.source_id,
             feed_url=entry.feed_url,
@@ -153,12 +175,26 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
             last_seen_at=now,
             raw_metadata={"title": entry.title, "excerpt": entry.excerpt,
                           "published_at": entry.published_at.isoformat() if entry.published_at else None},
-        ))
+        )
+        db.add(feed_entry)
     else:
         feed_entry.last_seen_at = now
         feed_entry.article_id = article.id
+    if processing_context is not None:
+        from app.services.news_ner_durable.collection import body_binding, entry_publication
+        metadata = dict(feed_entry.raw_metadata or {})
+        metadata.update(title=entry.title, excerpt=entry.excerpt,
+                        published_at=entry.published_at.isoformat() if entry.published_at else None,
+                        publication_evidence=entry_publication(entry).model_dump(mode='json'))
+        successful_body = candidate is not None and candidate.article_text is not None
+        same_metadata = (candidate is None and article.title == entry.title and (article.excerpt or '') == entry.excerpt
+                         and article.published_at == entry.published_at)
+        if successful_body or same_metadata:
+            metadata['captured_input'] = {'binding': body_binding(article),
+                                         'publication_evidence': entry_publication(entry).model_dump(mode='json')}
+        feed_entry.raw_metadata = metadata
     db.flush()
-    enqueue_article(db, article)
+    enqueue(article)
     return article
 
 

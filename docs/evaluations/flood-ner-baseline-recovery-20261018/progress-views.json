@@ -1,0 +1,34 @@
+{
+  "schema_version": "lanes-review-progress-v1",
+  "archived_compatible_candidates": {
+    "english_positive": 27,
+    "english_negative": 3,
+    "taglish_positive": 20,
+    "taglish_negative": 3
+  },
+  "protocol_conditional_candidates": {
+    "english_positive": 27,
+    "english_negative": 3,
+    "taglish_positive": 16,
+    "taglish_negative": 3
+  },
+  "strict_evidence_eligible": {
+    "english_positive": 27,
+    "english_negative": 3,
+    "taglish_positive": 16,
+    "taglish_negative": 3
+  },
+  "evidence_package_sha256": "335ac963ffde9c1ec4f968612e0f34e291db504b3a20325d721c53457e567b17",
+  "interpretation": "candidate_coverage_is_not_admission",
+  "reviewed_candidate_slots_unfilled": 7,
+  "candidates_pending_protocol_clearance": 4,
+  "conditional_candidates_pending_evidence": 0,
+  "strict_eligibility_slots_unfilled": 11,
+  "new_article_collection_requirement": null,
+  "admitted_records": 0,
+  "test_sealed": false,
+  "ready_for_training": false,
+  "admission_performed": false,
+  "export_performed": false,
+  "network_operations": 0
+}

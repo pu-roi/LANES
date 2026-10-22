@@ -1,0 +1,28 @@
+{
+  "checkpoint": "backend/training/flood_ner/artifacts/improvement-preparation-20261016-v1",
+  "files": {
+    "README.md": "6ee41076ffc2d646dac340db0ec94833d4e8ad9578e9b3303316fb1ae87f3a9b",
+    "authored-cases.json": "670354dd72b162d7f0e9d648a064e90d82aedea67d7a8f7187e9cf4e4ae798cb",
+    "authored-coverage-notes.json": "09febd99771fe1f2553a5a8892fa27767c80df73d55d2be3dbc6843de34185e0",
+    "authored-decisions.json": "45d92dc4768ee5bf3fba6b348ab70d6abf55835163d4ab2cb7ecc7cc3c109149",
+    "before.json": "723c0fbab0aba4ad0c5fe8f78224e69649fb07a16e1c1f9840f8d4aa52e97f9f",
+    "bind_outputs.py": "1fdc948955f4a1ec46ae366607fa64c14340a7ca27ae96ba2f8330ec3ffe05b9",
+    "build_preparation.py": "c5a2aa6d775736649110d0bc05eeeddedab4f6ab133928c7d406cc3c632195c1",
+    "completion-audit.json": "b4dbf86081e386cb1e3a9a1cf81713364b7889bbd6618e90bd1108f88213eb70",
+    "constructed-cases.jsonl": "f257c04355898df07ea24dce3d5417c7596a23762fa58267c894d2dc5fb4e95b",
+    "coverage-and-acquisition.json": "11d5e2715b9ddd65feaf402eb90424bd4d471996aeb308423b6bdaeb4f5e0939",
+    "exposure-exclusion-index.json": "57bc8c059b1536c337721c0eb8f9dce6cc357528ac19d34ba428e61ce341e044",
+    "finalize_preparation.py": "ad5f491d33509f49ed8245304fd624b834871544d9f41e4edf58787d1564a1cf",
+    "future-evaluation-protocol.json": "7c65cd68a2e24f68d5949ab123747f239c785ae1faec110cb2918e3e8dbdecc9",
+    "preservation.json": "5699c6ed4d68e1c6b1877cc862216d5003a86499807c4fb21197850640d6afed",
+    "question-register.json": "0a6d3c3780be500b586246e03b7be7865e8bbbdf4acf6f41d15bb31d3a1c8da7",
+    "session.json": "9912f703ee564fed859568855724d5efbe2a7b738738cd8cdd9c889ed2484e7c",
+    "summary.json": "be81560acb54ee21f15608371ae15bb738e1090c6bd4566573f03c1f1462c465",
+    "verification-tests.log": "d0cdfa114807cad423f13a50f3b4d14af5b4d124360add879f3ef392f5149f85",
+    "verification.json": "ef4c5cd75bfe56c158c284dee806c04f79aa14a71588dff6a647f391b2ac8ef0",
+    "verify_preparation.py": "46d54a708f1a4251e9d0d6408d3f8de16bb2068dd045ecac2d1b4d3e408eaa42",
+    "verify_preservation.py": "714ced9c76473429caf9ed5e03afa56be282fb2bff8925cdfde51769877028c1",
+    "write_documents.py": "de5a8a2e1a05de705169dbf9c218d573ae41a85f93d6d468cdc017299c1c0d4a"
+  },
+  "manifest_sha256": "d6075a794798706fad3c177fa3b9e0287bd7593a0cbf33f33f6fe949865db233"
+}

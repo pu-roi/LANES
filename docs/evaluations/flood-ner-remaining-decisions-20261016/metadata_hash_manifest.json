@@ -1,0 +1,10 @@
+{
+  "files": {
+    "README.md": "9d07a97c1cbad29a6d24678afd365280b176e520bacb3254bb28b4594fda3af8",
+    "article-decisions.csv": "dd520db4a49cfce325dd85909195156bd65eec7dfc238a3bdefad6065def9d0a",
+    "evidence-correction.json": "8ddfe9a6fb961edb2dc1e2b8cf209451a634efd9b9f1a6d9f3c8fe4173802829",
+    "methods-notes.md": "d663c3a9e4b162bccd08f5be8b842ee8976b869d237bff0412ec2445123767ab",
+    "status.json": "c19dde28aa111272cfbf4b6f4186fd1d92291fdf634ec38a5775b8cdbe6a71d8",
+    "verification.json": "fbd219af7def77fc9d51e310cd4669a8ef897616dbd048ef80602d12747546d3"
+  }
+}

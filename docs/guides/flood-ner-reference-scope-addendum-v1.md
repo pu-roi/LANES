@@ -1,0 +1,44 @@
+# Flood NER reference-scope addendum v1
+
+> **Last Updated:** October 16, 2026, 8:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+This is a prospective development specification prepared by **Codex under researcher delegation** from the completed [Gate 3 review](../evaluations/flood-ner-model-qualification-20261016/README.md). It accompanies the immutable [annotation specification v1](flood-ner-annotation-v1.md); dated preparation/training statements in that older document describe its historical checkpoint. The original 400 admitted records, 40 contextual pairs, labels, offsets, partitions, scores and original-primary/A-exploratory roles remain unchanged. This addendum is not a corrected benchmark or independent adjudication.
+
+## Applicable conventions
+
+- Keep six location classes: ROAD, LANDMARK, LOCAL_AREA, BARANGAY, CITY (including municipalities) and PROVINCE. Preserve exact source text and non-overlapping half-open Python Unicode code-point offsets, including accents, leading zeros, suffixes and integral designators. Do not normalize raw strings or infer map identity.
+- Integral compound road names stay whole; two crossing roads remain separate. Road/locality segmentation requires context rather than a universal punctuation rule. Direction/position words do not become part of a name without evidence. An explicit road cue can support a short code; a batch/report/equipment code alone cannot.
+- Separate block/lot/phase/sitio/purok and administrative components. Generic workflow phases, equipment counts and clock values are not local areas. Region/country/island-group/water-body scope remains outside this six-class profile; do not force it into a supported class.
+- A clearly physical named facility/asset is LANDMARK, including in repair-project prose. A purely organizational board/professional statement is outside this place profile. Professional attribution and project-title cases without a clear physical referent remain unresolved; the contrasts do not settle the original questionable occurrences.
+- **Newly documented future convention:** with explicit contiguous coordination and a source-supported shared locality antecedent, label the second short identifier as its own raw contiguous LOCAL_AREA span and record the antecedent separately. Never prepend absent words or invent a parent identity. Existing training has one clear numeric-ellipsis example; the held-out review raised the same convention. This is a design rule for new development references, not an empirical accuracy claim.
+- Bare settlement position, a village-like name or a model prediction cannot establish administrative type. The type, referent, ramp taxonomy, town suffix and spelling/parent questions below stay unresolved where evidence is insufficient. Store unresolved spans separately with **expected_entities=null**, **allow_definitive_scoring=false** and **is_negative=false**. They must not count as empty-label negative passages or definitive scoring references.
+- Label location mentions even in forecasts, denials and history. These labels do not establish flood facts, current flooding, severity, identity or affected road geometry.
+
+## All 14 historical review questions
+
+The table accounts for each original question once. Thirteen retain occurrence-level identity/sense/taxonomy/boundary/scope uncertainty; one documents the future ellipsis convention. No historical annotation decision is adopted here. Exact record IDs, offsets and source/input hashes are bound in the ignored question register.
+
+| Question ID | Disposition | Future handling / convention | Evidence still needed |
+|---|---|---|---|
+| reference-question-00-00 | unresolved identity | Bare locality names do not determine type. Keep historical labels; future references require explicit/supported type context or unresolved status. | Source-supported locality type/parent; reviewed geographic reference if resolved identity is claimed. |
+| reference-question-22-00 | unresolved sense | A clear physical facility is LANDMARK; organization-only attribution is excluded. The saved attribution sense remains undecided. | Captured context establishing physical versus organizational referent; no assumption from an acronym alone. |
+| reference-question-23-00 | unresolved identity | A residential enumeration alone does not settle administrative level. | Source-supported locality type and parent, without treating a model prediction as evidence. |
+| reference-question-24-00 | unresolved sense | Island groups/water bodies are outside scope; an administrative province mention is in scope. Same-article evidence is relevant but does not automatically settle this occurrence. | Explicit occurrence-level administrative/island interpretation and completeness review in a future version. |
+| reference-question-29-00 | unresolved scope | Physical asset mentions can be landmarks in project prose; geographic substrings used only in project branding are not automatically place mentions. | Resolve the title/asset referent consistently with the related question at review index 48 before labeling ambiguous new material. |
+| reference-question-30-00 | unresolved identity | Preserve raw spellings and separate supported mention types from unverified identity. Do not normalize a port, island or administrative name from labels alone. | Occurrence-level type context and separate reviewed geographic identity evidence where needed. |
+| reference-question-34-00 | unresolved identity | Route endpoints and bare settlements do not intrinsically specify CITY, BARANGAY or LANDMARK. | Captured type/physical-role context; geographic evidence for definitive identity. |
+| reference-question-35-00 | unresolved identity | A village-name surface cue alone does not establish barangay status. | Source-supported administrative designation or unresolved status. |
+| reference-question-42-00 | unresolved taxonomy | The existing six-class guide does not settle named ramps versus road/structure typing. The expressway itself remains ROAD when explicitly supported. | A prospectively versioned ramp taxonomy decision with source-backed examples before definitive scoring of that distinction. |
+| reference-question-44-00 | unresolved boundary | Explicit city/municipality designators remain inside spans; the generic town suffix remains undecided here. | A prospectively frozen suffix rule and non-test examples; no retroactive score change. |
+| reference-question-48-00 | unresolved scope | An explicitly physical asset is LANDMARK; an ambiguous proposed asset inside a formal title remains unresolved, paired with question 29. | Consistent asset/title convention backed by captured non-test examples; no test-label revision here. |
+| reference-question-49-00 | unresolved identity | Retain the source spelling and avoid invented parent/municipality normalization. | Reviewed source/geographic evidence establishing identity; annotation class and identity remain separate. |
+| reference-question-56-00 | unresolved identity | An address position between a sitio and municipality does not independently establish barangay identity. | Source-supported administrative cue/parent or unresolved status. |
+| reference-question-58-00 | future convention documented | For new development references, an explicit shared locality antecedent can support a contiguous shortened identifier span. Record its antecedent separately; never synthesize omitted words. | Apply only when coordination and antecedent are explicit; otherwise leave unresolved. Geographic identity remains unverified. |
+
+## Constructed development matrix
+
+The separate ignored preparation checkpoint contains **48 newly authored fictional passages**: eight themes, three English and three operational Taglish cases per theme, exactly one negative per language/theme. Of these, **30** have positive location references, **16** are true six-class negatives and **2** explicitly preserve unsupported bare-name type. The 46 definitive constructed references are design fixtures, not captured news, gold labels, training additions or model predictions. Taglish uses Filipino clauses with English common/technical lexical material; names alone do not establish mixing.
+
+Every case stores its exact text/hash, Unicode offsets, labels or unresolved spans, rationale, provenance, guide/review hash bindings and future-only development role. Shared shortened identifiers carry antecedent links. The wording is new; exact prior passage hashes and exposed-test eight-word sequences are checked. This check does not establish statistical or event independence of future acquired news.
+
+See the [preparation report](../evaluations/flood-ner-improvement-preparation-20261016/README.md) and [future evaluation protocol](../evaluations/flood-ner-improvement-preparation-20261016/future-evaluation-protocol.md). No corpus export or model run is authorized by these fixtures.

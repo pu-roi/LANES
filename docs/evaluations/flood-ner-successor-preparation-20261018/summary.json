@@ -1,0 +1,281 @@
+{
+  "commit_performed": false,
+  "counts": {
+    "dev": 60,
+    "research_holdout": 60,
+    "train": 345
+  },
+  "coverage": {
+    "dev": {
+      "articles": 25,
+      "flood_roles": {
+        "observed_flooding": 29,
+        "prevention_project": 11,
+        "recovery": 16,
+        "warning_forecast": 4
+      },
+      "independent_components": 20,
+      "languages": {
+        "english": {
+          "labels": {
+            "BARANGAY": 10,
+            "CITY": 9,
+            "LANDMARK": 6,
+            "LOCAL_AREA": 9,
+            "PROVINCE": 2,
+            "ROAD": 14
+          },
+          "negative": 17,
+          "positive": 21
+        },
+        "taglish": {
+          "labels": {
+            "BARANGAY": 9,
+            "CITY": 14,
+            "LANDMARK": 1,
+            "LOCAL_AREA": 3,
+            "PROVINCE": 8,
+            "ROAD": 0
+          },
+          "negative": 10,
+          "positive": 12
+        }
+      },
+      "themes": {
+        "compound-crossing-roads": 9,
+        "facilities-institutions": 12,
+        "geographic-type-ambiguity": 10,
+        "locality-designators": 9,
+        "misleading-names-time-common-words": 11,
+        "project-asset-names": 6,
+        "shared-identifiers": 3
+      }
+    },
+    "research_holdout": {
+      "articles": 37,
+      "flood_roles": {
+        "unclassified_metadata": 60
+      },
+      "independent_components": 30,
+      "languages": {
+        "english": {
+          "labels": {
+            "BARANGAY": 11,
+            "CITY": 24,
+            "LANDMARK": 4,
+            "LOCAL_AREA": 0,
+            "PROVINCE": 4,
+            "ROAD": 7
+          },
+          "negative": 3,
+          "positive": 27
+        },
+        "taglish": {
+          "labels": {
+            "BARANGAY": 11,
+            "CITY": 21,
+            "LANDMARK": 3,
+            "LOCAL_AREA": 0,
+            "PROVINCE": 5,
+            "ROAD": 6
+          },
+          "negative": 3,
+          "positive": 27
+        }
+      },
+      "themes": {
+        "unclassified_metadata": 60
+      }
+    },
+    "train": {
+      "articles": 126,
+      "flood_roles": {
+        "observed_flooding": 161,
+        "prevention_project": 55,
+        "recovery": 81,
+        "warning_forecast": 48
+      },
+      "independent_components": 38,
+      "languages": {
+        "english": {
+          "labels": {
+            "BARANGAY": 34,
+            "CITY": 186,
+            "LANDMARK": 38,
+            "LOCAL_AREA": 6,
+            "PROVINCE": 106,
+            "ROAD": 155
+          },
+          "negative": 38,
+          "positive": 132
+        },
+        "taglish": {
+          "labels": {
+            "BARANGAY": 51,
+            "CITY": 122,
+            "LANDMARK": 20,
+            "LOCAL_AREA": 13,
+            "PROVINCE": 63,
+            "ROAD": 46
+          },
+          "negative": 65,
+          "positive": 110
+        }
+      },
+      "themes": {
+        "compound-crossing-roads": 13,
+        "facilities-institutions": 22,
+        "geographic-type-ambiguity": 26,
+        "locality-designators": 11,
+        "misleading-names-time-common-words": 27,
+        "project-asset-names": 18,
+        "shared-identifiers": 5,
+        "short-codes": 9,
+        "unclassified_metadata": 214
+      }
+    }
+  },
+  "desktop_gpu_verified": false,
+  "development": {
+    "accounting_verified": false,
+    "capability": "development",
+    "certified_fresh": false,
+    "counts": {
+      "dev": 60,
+      "train": 345
+    },
+    "files": {
+      "admission-ledger.json": "cca0db97389e0a48ab77d8f24135dd706793efa538cc000c4d438a28282083b2",
+      "admitted-records.jsonl": "c15aac5760687ab532f6577fc704276fb9bff515be6511205c3f5061ba9e2446",
+      "coverage.json": "47c0a3d340a7ce62348d839ba1fa6c7d45545242b95c69a1084cea157293bf02",
+      "dev.spacy": "6b98529d3d65e1f5b5664a843220e9f19d49028b9d5edb10d86d538e60bffb02",
+      "partitions.json": "931083a155c4b964b43fd1dd4528ef8bc394114614884fdcdc1fc3c689f1b781",
+      "source-only-join-metadata.json": "a5cb97f4a07a8be7d72590a0c90bea347b3821f9ed1db4acb0207bdd3a507dfd",
+      "tokenizer.bin": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+      "train.spacy": "a28b39a78fb93414d2695db802871fcd8e4a254422d4a823214c9923fec81f71"
+    },
+    "global_history_verified": false,
+    "labels": {
+      "dev": {
+        "BARANGAY": 19,
+        "CITY": 23,
+        "LANDMARK": 7,
+        "LOCAL_AREA": 12,
+        "PROVINCE": 10,
+        "ROAD": 14
+      },
+      "train": {
+        "BARANGAY": 85,
+        "CITY": 308,
+        "LANDMARK": 58,
+        "LOCAL_AREA": 19,
+        "PROVINCE": 169,
+        "ROAD": 201
+      }
+    },
+    "languages": {
+      "dev": {
+        "english": 38,
+        "taglish": 22
+      },
+      "train": {
+        "english": 170,
+        "taglish": 175
+      }
+    },
+    "model_predictions_performed": false,
+    "model_weights_loaded": false,
+    "pipeline_components_loaded": [],
+    "polarities": {
+      "dev": {
+        "english_negative": 17,
+        "english_positive": 21,
+        "taglish_negative": 10,
+        "taglish_positive": 12
+      },
+      "train": {
+        "english_negative": 38,
+        "english_positive": 132,
+        "taglish_negative": 65,
+        "taglish_positive": 110
+      }
+    },
+    "python_version": "3.11.17",
+    "schema": "lanes-successor-qualified-export-v1",
+    "scope": "limited_provenance_silver_research",
+    "serialization_reload_verified": true,
+    "spacy_version": "3.7.5",
+    "training_performed": false
+  },
+  "fresh_subtests_passed": 165,
+  "fresh_tests_passed": 215,
+  "inference_performed": false,
+  "manifest_hashes": {
+    "admission": "ce74f1101b4b9ea8f79b5d3ebcd9ce21899ee39aa05de2f7399be3b2cf7cd5b8",
+    "development_status": "ff9739623d5add14b15b0515b4cd63f4a6c0843316aff8ec47712312e477aef4",
+    "evaluation_contract": "f5c36917fc35215c642125001e94bed4268f2444d37b0ab4663b43f74a65f443",
+    "holdout_status": "fe3cd0024cd9dcc67106068dba076286469baa0ae9a54a048c3c9f27bfc938a4",
+    "partitions": "4be5213e0b4106d358505027af936bedd7f80b8151345e62362127fcb2a5f20e",
+    "preservation": "701b3cd867e45667279fcd1c005e88859f182f1e4562c980754224d1c8347ec1",
+    "tests": "5b1aea03e05a9f96f272283c613c12614d43854ad53b718461b9e55925007ceb",
+    "trainer_handoff": "ec3abd74e2201f116a90a90a3dc203877c3f511284b11374d7beb381c1faa11a"
+  },
+  "private_delivery_complete": false,
+  "protected_file_mismatches": 0,
+  "protected_files_checked": 7320,
+  "push_performed": false,
+  "research_holdout": {
+    "accounting_verified": false,
+    "capability": "research_holdout",
+    "certified_fresh": false,
+    "counts": {
+      "research_holdout": 60
+    },
+    "files": {
+      "admission-ledger.json": "72a1a56c52410e0f860206c19ec9d593b559f94bc8f93573517bbf9aac34ff42",
+      "admitted-records.jsonl": "fee2bd313846c4d2e6f582ac70d12fe50566a89aabf04b01fb02bb548d2dd10c",
+      "coverage.json": "1a92c54f9a6694ed7997d1ec19b7fb8c0e71c372e17749a9c8c71a852ce7ad5b",
+      "partitions.json": "eb9db2af1ac57033794cdde55a1eea22f5b5fbc084eaf857a4c1b4f3aaa22998",
+      "research-holdout.spacy": "ff167abc4ac87d9d555cfd3228abc306e87c81bdf93df969a1b34e68ae181411",
+      "source-only-join-metadata.json": "802b70b75177641fafcd60dc483ca50303aa2c4f7de4754f5c62d3ee9c61637b",
+      "tokenizer.bin": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+    },
+    "global_history_verified": false,
+    "labels": {
+      "research_holdout": {
+        "BARANGAY": 22,
+        "CITY": 45,
+        "LANDMARK": 7,
+        "PROVINCE": 9,
+        "ROAD": 13
+      }
+    },
+    "languages": {
+      "research_holdout": {
+        "english": 30,
+        "taglish": 30
+      }
+    },
+    "model_predictions_performed": false,
+    "model_weights_loaded": false,
+    "pipeline_components_loaded": [],
+    "polarities": {
+      "research_holdout": {
+        "english_negative": 3,
+        "english_positive": 27,
+        "taglish_negative": 3,
+        "taglish_positive": 27
+      }
+    },
+    "python_version": "3.11.17",
+    "schema": "lanes-successor-qualified-export-v1",
+    "scope": "limited_provenance_silver_research",
+    "serialization_reload_verified": true,
+    "spacy_version": "3.7.5",
+    "training_performed": false
+  },
+  "schema": "lanes-public-successor-preparation-v1",
+  "scope": "limited_provenance_silver_research",
+  "training_performed": false,
+  "upload_performed": false
+}

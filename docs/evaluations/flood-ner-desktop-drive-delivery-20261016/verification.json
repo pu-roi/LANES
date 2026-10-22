@@ -1,0 +1,97 @@
+{
+  "account": "roicambe02@gmail.com",
+  "all_seven_cloud_files_hash_verified": true,
+  "all_seven_files_owner_only": true,
+  "articles": 138,
+  "cloud_file_count": 7,
+  "cloud_files": [
+    {
+      "bytes": 11788,
+      "id": "1BBHKltF_TEDENsAUt_aJQvfye1FYJ61Q",
+      "name": "delivery-receipt.json",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/1BBHKltF_TEDENsAUt_aJQvfye1FYJ61Q/view?usp=drivesdk"
+    },
+    {
+      "bytes": 7158,
+      "id": "17qPnZKpbi7Sd7Apx-ERe622CC4WvLegi",
+      "name": "DESKTOP-INSTRUCTIONS.md",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/17qPnZKpbi7Sd7Apx-ERe622CC4WvLegi/view?usp=drivesdk"
+    },
+    {
+      "bytes": 1315,
+      "id": "1apUnbvTbd0mBno2gVpV7os4K1c4MNs7B",
+      "name": "START-HERE.md",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/1apUnbvTbd0mBno2gVpV7os4K1c4MNs7B/view?usp=drivesdk"
+    },
+    {
+      "bytes": 484,
+      "id": "1NwbVywZT5LGvjIqiecRAMHid0PIj75qv",
+      "name": "restoration-verification.json",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/1NwbVywZT5LGvjIqiecRAMHid0PIj75qv/view?usp=drivesdk"
+    },
+    {
+      "bytes": 442689,
+      "id": "1o1gnxmDabu_Z-CzswMtLA99gIesaS2tI",
+      "name": "file-manifest.json",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/1o1gnxmDabu_Z-CzswMtLA99gIesaS2tI/view?usp=drivesdk"
+    },
+    {
+      "bytes": 109,
+      "id": "1zvEPemxQu3ARNeV1ySu8280tfWwuqPwX",
+      "name": "LANES-NER-desktop-handoff-20261016-v2.zip.sha256",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/1zvEPemxQu3ARNeV1ySu8280tfWwuqPwX/view?usp=drivesdk"
+    },
+    {
+      "bytes": 28476420,
+      "id": "1bir775mAWUtHPBDbsTsLavsX8mChYtsp",
+      "name": "LANES-NER-desktop-handoff-20261016-v2.zip",
+      "shared": false,
+      "url": "https://drive.google.com/file/d/1bir775mAWUtHPBDbsTsLavsX8mChYtsp/view?usp=drivesdk"
+    }
+  ],
+  "contexts": 40,
+  "copy_inventory_note": "One private ZIP backup of the unchanged evidence closure; streamed readback was hashed without retention. No article/sample count increase or new body serialization.",
+  "corpus_tokenizer_qualification": "not_run_on_desktop",
+  "desktop_restoration": "not_run",
+  "detailed_desktop_predecessor": "unreconciled",
+  "exports": 0,
+  "folder_url": "https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT",
+  "handoff_folder_owner_only": true,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "laptop_qualification": "blocked_import_4551_preserved",
+  "latest_software_result": {
+    "passed": 880,
+    "rerun_for_delivery": false,
+    "skipped": 1
+  },
+  "local_archive_payload_files_verified": 1757,
+  "locations": 400,
+  "new_complete_article_serializations": 0,
+  "original_capture_evidence_files": 407,
+  "parent_folder_owner_only": true,
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "previous_checkpoint_files_verified_unchanged": 5234,
+  "previous_handoff_checkpoint_files_verified_unchanged": 16,
+  "schema_version": "lanes-ner-drive-delivery-verification-v1",
+  "sharing_changes": 0,
+  "temporary_restoration_previously_verified": true,
+  "three_historical_evidence_gaps": "unchanged and unreconciled",
+  "training_runs": 0,
+  "verified_at": "2026-10-16T12:42:11.658864+08:00",
+  "zip_bytes": 28476420,
+  "zip_sha256": "afe11aa15398d9b88e7ef268c75f7d51c79107206a60f29ac4313264f4dba65f",
+  "zip_url": "https://drive.google.com/file/d/1bir775mAWUtHPBDbsTsLavsX8mChYtsp/view?usp=drivesdk"
+}

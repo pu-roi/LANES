@@ -1,0 +1,226 @@
+{
+  "additional_majority_context_pointers": 3,
+  "all_hard_quotas_still_pass": true,
+  "content_anchors": 29,
+  "contextual_pairs": 40,
+  "deterministic_file_replay": true,
+  "existing_research_code_files_preserved": 60,
+  "export_destination_created": false,
+  "exports": 0,
+  "focused_articles": 12,
+  "focused_passage_memberships": 49,
+  "fresh_pytest_run": false,
+  "frozen_location_records": 400,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "inherited_policy_statute_pointers": 22,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "model_hashes_verified_without_loading": 23,
+  "negative_artifact_check_count": 35,
+  "negative_artifact_checks": {
+    "admission_applied": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "unsupported permission/admission/verification claim"
+    },
+    "boolean_count": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "admission/export must remain unchanged"
+    },
+    "broken_anchor": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "clause evidence hash or offsets differ"
+    },
+    "broken_full_body_reference": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "body reference differs"
+    },
+    "canonical_desktop_v2_claim": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "missing predecessor must remain unreconciled"
+    },
+    "changed_copy_count": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "copy evidence differs"
+    },
+    "changed_other_disposition": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "126 prior dispositions must be preserved exactly"
+    },
+    "cohort_hash": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "correct frozen bindings required"
+    },
+    "context_hash": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "correct frozen bindings required"
+    },
+    "duplicate_decision": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "missing or duplicate article decision"
+    },
+    "duplicate_membership": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "selected memberships/offsets differ"
+    },
+    "export_count": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "admission/export must remain unchanged"
+    },
+    "independent_human_claim": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "unsupported permission/admission/verification claim"
+    },
+    "invented_acquisition": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "acquisition facts cannot be invented"
+    },
+    "invented_human_actor": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "actual AI provenance required"
+    },
+    "invented_reconciliation": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "missing predecessor must remain unreconciled"
+    },
+    "legal_approval_claim": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "unsupported permission/admission/verification claim"
+    },
+    "missing_agency_notes": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "specific contract/agency notes required"
+    },
+    "missing_decision": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "missing or duplicate article decision"
+    },
+    "missing_market_factor": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "four factors incomplete"
+    },
+    "missing_necessity": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "authored substantive findings must match"
+    },
+    "missing_nonacademic_outcome": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "all nonacademic outcomes must remain unchanged"
+    },
+    "missing_policy_reference": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "policy evidence binding required"
+    },
+    "missing_selection_evidence": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "selection evidence missing/different"
+    },
+    "offset_change": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "selected memberships/offsets differ"
+    },
+    "placeholder_only_findings": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "authored substantive findings must match"
+    },
+    "publisher_permission_claim": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "unsupported permission/admission/verification claim"
+    },
+    "refuse_overwrite": {
+      "outcome": "rejected",
+      "reason": "new local checkpoint output required"
+    },
+    "source_hash": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "source identity differs"
+    },
+    "source_id": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "missing or duplicate article decision"
+    },
+    "split_movement": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "selected memberships/offsets differ"
+    },
+    "training_admission_count": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "admission/export must remain unchanged"
+    },
+    "unauthored_favourable_result": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "unsupported or unauthored outcome"
+    },
+    "unsupported_contract_claim": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "source classification/policy differs"
+    },
+    "unsupported_outcome": {
+      "exception_type": "ValueError",
+      "outcome": "rejected",
+      "reason": "unsupported or unauthored outcome"
+    }
+  },
+  "nonacademic_outcomes_unchanged": 12,
+  "partitions": {
+    "dev": {
+      "english": 30,
+      "taglish": 30
+    },
+    "test": {
+      "english": 30,
+      "taglish": 30
+    },
+    "train": {
+      "english": 140,
+      "taglish": 140
+    }
+  },
+  "preserved_other_dispositions": 126,
+  "preserved_test_records": 60,
+  "preserved_training_pilots": 10,
+  "prior_checkpoint_files_preserved": 2802,
+  "research_only_export_refusals": 400,
+  "selection_pointers": 49,
+  "structural_validation_is_not_substantive_or_legal_approval": true,
+  "tokenizer_hash_unchanged": true,
+  "tokenizer_identity": "lanes.xx.address-v3",
+  "training_admitted": 0
+}

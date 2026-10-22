@@ -1,0 +1,144 @@
+[
+  {
+    "characters": 438,
+    "entity_labels": [
+      "BARANGAY",
+      "CITY",
+      "LANDMARK",
+      "LOCAL_AREA",
+      "ROAD"
+    ],
+    "language": "taglish",
+    "passage_sha256": "576715bb73af53eae1434b8fe0f2f1d1e1f0d0c6f84c8b093ac8b42f4aa9c50a",
+    "publisher": "ABS-CBN News",
+    "record_id": "continuation-272923bc929ad6f03eac",
+    "source_id": "news-8d7467f1c4782199",
+    "split": "train",
+    "url": "https://www.abs-cbn.com/news/nation/2026/8/30/ilang-kalsada-sa-malabon-lubog-sa-baha-dahil-sa-sunod-sunod-na-pag-ulan-0106"
+  },
+  {
+    "characters": 334,
+    "entity_labels": [
+      "CITY",
+      "PROVINCE"
+    ],
+    "language": "english",
+    "passage_sha256": "434c01d2460e050ddcb034424b48077012e079b2982f8b056cc63a5f49f74722",
+    "publisher": "GMA News",
+    "record_id": "cohort-00374a317a404336ad07",
+    "source_id": "news-a75484806c378f88",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/896016/families-rescued-from-floods-in-davao-region/story/"
+  },
+  {
+    "characters": 310,
+    "entity_labels": [],
+    "language": "taglish",
+    "passage_sha256": "f97c82aa34c6ee3f6edb4bd725ed3d733f9d4af896123402dc41b3078d525e7f",
+    "publisher": "Philstar",
+    "record_id": "continuation-0015463c16667c6768ae",
+    "source_id": "news-7a824863d687424a",
+    "split": "train",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+  },
+  {
+    "characters": 376,
+    "entity_labels": [
+      "CITY",
+      "PROVINCE"
+    ],
+    "language": "english",
+    "passage_sha256": "06a07fb6577e9be1f2e6f2d99c179ba0b624f4c6f69bcfc3ffb25973b190d208",
+    "publisher": "GMA News",
+    "record_id": "cohort-03417c2af9ddd83caba4",
+    "source_id": "news-017e86f44194f17e",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/952989/crising-flooding-regions/story/"
+  },
+  {
+    "characters": 270,
+    "entity_labels": [
+      "CITY",
+      "ROAD"
+    ],
+    "language": "english",
+    "passage_sha256": "2aad8f95521e5e10d21976e0bc2c75ef7ab037b6b410ebfb89cd6180628c27ee",
+    "publisher": "GMA News",
+    "record_id": "cohort-0466370820373d408be2",
+    "source_id": "GMA-20250722-953419",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/953419/mmda-list-of-flooded-areas-as-of-tuesday-4-40-p-m/story/"
+  },
+  {
+    "characters": 510,
+    "entity_labels": [
+      "LANDMARK",
+      "LOCAL_AREA",
+      "ROAD"
+    ],
+    "language": "english",
+    "passage_sha256": "8ebe6314c235ec5ff0a3ac7ac9ebee05b36202be8902a720df6c7f5a9aae0356",
+    "publisher": "GMA News",
+    "record_id": "cohort-06745e20b8d295b9fbef",
+    "source_id": "GMA-20260817-998778",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+  },
+  {
+    "characters": 339,
+    "entity_labels": [
+      "BARANGAY",
+      "LOCAL_AREA",
+      "ROAD"
+    ],
+    "language": "english",
+    "passage_sha256": "1de64d44781013da18c2ec0f04c97b2def0e6ed646d4ce38f2c5dddd1b084629",
+    "publisher": "GMA News",
+    "record_id": "cohort-06ebc2d761f6331afe35",
+    "source_id": "GMA-20260817-998778",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+  },
+  {
+    "characters": 227,
+    "entity_labels": [
+      "CITY"
+    ],
+    "language": "taglish",
+    "passage_sha256": "87d33bdd8452f7f5fee0b68a723f1ca6f992721b233d386820eae34b7c648641",
+    "publisher": "GMA News",
+    "record_id": "continuation-0138d20fad9216fe0b2c",
+    "source_id": "news-7885d5aaecfdc9ff",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/876996/4-anyos-na-babae-patay-nang-mabagsakan-ng-puno-sa-gitna-ng-hagupit-ni-egay-sa-palawan/story/"
+  },
+  {
+    "characters": 475,
+    "entity_labels": [
+      "CITY",
+      "PROVINCE",
+      "ROAD"
+    ],
+    "language": "taglish",
+    "passage_sha256": "3118dd805f5cd46d9a3eabb9159fba0d2f1ba4fcca44924b09bbbf24e451e29f",
+    "publisher": "GMA News",
+    "record_id": "continuation-07cbb6eedc4a8212693c",
+    "source_id": "news-492bc6234d82aecb",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/balitambayan/promdi/763793/quezon-province-binaha-at-nagka-landslide-dahil-kay-ulysses/story/"
+  },
+  {
+    "characters": 242,
+    "entity_labels": [
+      "CITY",
+      "PROVINCE"
+    ],
+    "language": "taglish",
+    "passage_sha256": "ed6b35ce5bec9a1b4fafdfea1af54cfe2494c4e5d9ac3d80035c87afabdf3169",
+    "publisher": "GMA News",
+    "record_id": "continuation-08ef968f8799fbe92ed7",
+    "source_id": "news-b60f94bc963eaeec",
+    "split": "train",
+    "url": "https://www.gmanetwork.com/news/balitambayan/talakayan/998860/dating-magandang-subdivision-sa-hagonoy-bulacan-iniwan-ng-ilang-dating-nakatira-dahil-nalubog-na/story"
+  }
+]

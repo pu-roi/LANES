@@ -41,9 +41,10 @@ def migration_config() -> Config:
     return config
 
 
-def test_publication_migration_extends_one_head_and_registers_relationships() -> None:
+def test_publication_migration_remains_in_single_chain_and_registers_relationships() -> None:
     scripts = ScriptDirectory.from_config(migration_config())
-    assert scripts.get_heads() == [REVISION]
+    assert len(scripts.get_heads()) == 1
+    assert REVISION in {step.revision for step in scripts.walk_revisions()}
     assert scripts.get_revision(REVISION).down_revision == PREVIOUS
     configure_mappers()
     assert NewsClaimSource.extraction_run.property.mapper.class_ is NewsExtractionRun
@@ -107,7 +108,7 @@ def test_upgrade_repeat_downgrade_reupgrade_preserves_evidence(publication_datab
     assert set(inspect(engine).get_table_names()) == prior_tables | TABLES
     assert_prior_evidence(engine, prior_rows)
     with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == REVISION
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == ScriptDirectory.from_config(config).get_current_head()
         for table in TABLES:
             assert connection.scalar(text(f"SELECT count(*) FROM {table}")) == 0
     command.downgrade(config, PREVIOUS)

@@ -1,0 +1,89 @@
+{
+  "status": "passed locally; no push or deployment",
+  "branch": "roi-branch",
+  "checkpoint": "64c49413c513aa1920920dbd3365a2b91242c6e2",
+  "chris": "5aeaafc92a4affff51e271cf34d29c188e5290f5",
+  "preservation": {
+    "checkpoint_files_present": 29,
+    "checkpoint_files_with_documentation_updates": [
+      "docs/README.md",
+      "docs/others/bug-log.md",
+      "docs/others/system-documentation.md",
+      "docs/progress.md",
+      "docs/task_plan.md"
+    ],
+    "backend_identical_to_checkpoint": true,
+    "news_ui_identical_to_checkpoint": true,
+    "schema_migration_changes": false,
+    "identical_tree_ids": {
+      "backend": "a50c86659afb367f2cff47a80803f18040a8a8b1",
+      "backend/app/models": "dd2109d592e4745e8db200de5d29681ee222680a",
+      "backend/alembic": "e510f9409e9f5b858392b40748e16cf95ad4e384",
+      "frontend/src/features/news": "aefab3f32d782f3e80c67b023d108454734a74a2",
+      "frontend/src/app/admin/news": "5882636657cad05f5fc987790c842179af5aa21a"
+    },
+    "checkpoint_files_unchanged_except_five_documentation_files": true
+  },
+  "browser": {
+    "passed": 41,
+    "skipped": 3,
+    "failed": 0,
+    "projects": [
+      "desktop-chromium",
+      "mobile-chromium"
+    ],
+    "runs": {
+      "main-chromium": {
+        "stats": {
+          "startTime": "2026-10-20T18:19:13.436Z",
+          "duration": 197371.007,
+          "expected": 19,
+          "skipped": 3,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "report_sha256": "f6a083a05eae41aa2a7052fda05377c01c24e84e53942eecb8f32949a2c703eb"
+      },
+      "feed-final": {
+        "stats": {
+          "startTime": "2026-10-20T18:10:38.720Z",
+          "duration": 327056.901,
+          "expected": 22,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "report_sha256": "4c5a2f90f89d49154450e40e71874ad55a95c8f3cf9f82c26250c22a7ad95187"
+      }
+    },
+    "skips": [
+      "Desktop: mobile feed drawer",
+      "Desktop: mobile flood picker return",
+      "Desktop: mobile history map/list switcher"
+    ],
+    "fixtures": "fictional API, map, geocoder, auth and EventSource; no backend connection"
+  },
+  "typescript": "passed --noEmit --incremental false",
+  "lint": {
+    "new_and_updated_legal_and_test_files": 8,
+    "errors": 0,
+    "warnings": 0,
+    "changed_production_baseline_errors": 95,
+    "changed_production_merged_errors": 95,
+    "new_production_error_signatures": 0
+  },
+  "dependency_and_environment": {
+    "localOverride": true,
+    "missingLocalFallsBack": true,
+    "localOverrideFileExists": false,
+    "installedSourceMapVersion": "1.2.2"
+  },
+  "limitations": [
+    "Production build and real-service smoke tests not run",
+    "Package lifecycle scripts excluded from isolated npm ci",
+    "Existing 95 production lint errors remain",
+    "Earlier Phase D auditor configuration blocks independent publication maintenance; unchanged by this integration",
+    "No NER Phase E implementation, backend worker launch, schema/cloud activation, push or deployment",
+    "Mobile direct ?action=report startup not qualified; menu-based picker return passes"
+  ]
+}

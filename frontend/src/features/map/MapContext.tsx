@@ -146,6 +146,10 @@ interface MapContextValue {
 
   savedPlaces: any[];
   setSavedPlaces: (places: any[]) => void;
+  showSavedPlaces: boolean;
+  setShowSavedPlaces: (show: boolean) => void;
+  selectedSavedPlaceId: number | null;
+  setSelectedSavedPlaceId: (id: number | null) => void;
   draftSavePlaceCoords: {coords: [number, number], label: string} | null;
   setDraftSavePlaceCoords: (data: {coords: [number, number], label: string} | null) => void;
   savePlaceIcon: string;
@@ -200,6 +204,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [isPickingOnMap, setIsPickingOnMap] = useState(false);
   const [isReportPanelOpen, setIsReportPanelOpenState] = useState(false);
   const [isSavePlacePanelOpen, setIsSavePlacePanelOpenState] = useState(false);
+  const [showSavedPlaces, setShowSavedPlaces] = useState(false);
+  const [selectedSavedPlaceId, setSelectedSavedPlaceId] = useState<number | null>(null);
 
   const setIsSavePlacePanelOpen = useCallback((open: boolean) => {
     setIsSavePlacePanelOpenState(open);
@@ -209,6 +215,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setActivePanelState("save_place");
       setLastOpenedLeftPanel("save_place");
     } else {
+      setShowSavedPlaces(false);
+      setSelectedSavedPlaceId(null);
       setActivePanelState((prev) => (prev === "save_place" ? null : prev));
     }
   }, []);
@@ -340,6 +348,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
     if (open) {
       setIsReportPanelOpenState(false);
       setIsSavePlacePanelOpenState(false);
+      setShowSavedPlaces(false);
+      setSelectedSavedPlaceId(null);
       setLastOpenedLeftPanel("analytics");
       setIsAnalyticsCollapsedState(false);
     } else {
@@ -353,6 +363,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setIsAnalyticsOpenState(false);
       setIsAnalyticsCollapsedState(false);
       setIsSavePlacePanelOpenState(false);
+      setShowSavedPlaces(false);
+      setSelectedSavedPlaceId(null);
       setActivePanelState("flood");
     } else {
       setActivePanelState((prev) => (prev === "flood" ? null : prev));
@@ -710,6 +722,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       draftReports,
       setDraftReports,
       savedPlaces,
+      showSavedPlaces,
+      selectedSavedPlaceId,
       draftSavePlaceCoords,
       savePlaceIcon,
       setSavePlaceIcon,
@@ -717,6 +731,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setIsReportPanelOpen,
       setIsSavePlacePanelOpen,
       setSavedPlaces,
+      setShowSavedPlaces,
+      setSelectedSavedPlaceId,
       setDraftSavePlaceCoords,
       setActivePoint,
       setActivePanel,
@@ -782,6 +798,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       draftReports,
       setDraftReports,
       savedPlaces,
+      showSavedPlaces,
+      selectedSavedPlaceId,
       draftSavePlaceCoords,
       savePlaceIcon,
       setSavePlaceIcon,
@@ -789,6 +807,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setIsReportPanelOpen,
       setIsSavePlacePanelOpen,
       setSavedPlaces,
+      setShowSavedPlaces,
+      setSelectedSavedPlaceId,
       setDraftSavePlaceCoords,
       setActivePoint,
       setActivePanel,

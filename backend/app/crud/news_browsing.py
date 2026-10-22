@@ -16,18 +16,24 @@ def article_body_status() -> object:
     )
 
 
-def latest_article_runs() -> Subquery:
+def latest_article_runs(mode: str | None = None, pipeline_version: str | None = None) -> Subquery:
     """Select the newest recorded run, including failures and pending attempts."""
-    return select(NewsArticleVersion.article_id, func.max(NewsExtractionRun.id).label("run_id")).join(
+    query = select(NewsArticleVersion.article_id, func.max(NewsExtractionRun.id).label("run_id")).join(
         NewsExtractionRun, NewsExtractionRun.article_version_id == NewsArticleVersion.id,
-    ).group_by(NewsArticleVersion.article_id).subquery()
+    )
+    if mode is not None:
+        query = query.where(NewsExtractionRun.mode == mode)
+    if pipeline_version is not None:
+        query = query.where(NewsExtractionRun.pipeline_version == pipeline_version)
+    return query.group_by(NewsArticleVersion.article_id).subquery()
 
 
 def list_articles(
     db: Session, *, page: int, page_size: int, search: str, publisher: str | None,
     body: BodyStatus | None, processing: ProcessingStatus | None, order: ArticleOrder,
+    mode: str | None = None, pipeline_version: str | None = None,
 ) -> tuple[list[tuple[NewsArticle, str, str, int | None]], int, int, list[str]]:
-    latest = latest_article_runs()
+    latest = latest_article_runs(mode,pipeline_version)
     body_status = article_body_status()
     processing_status = func.coalesce(NewsExtractionRun.status, "not_recorded")
     query = select(NewsArticle, body_status, processing_status, NewsExtractionRun.id).outerjoin(

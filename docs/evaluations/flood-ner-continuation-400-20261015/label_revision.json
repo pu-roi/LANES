@@ -1,0 +1,33 @@
+[
+  {
+    "changes": [
+      {
+        "after": "LANDMARK",
+        "before": "ROAD",
+        "entity_id": "e344",
+        "reason": "This sentence names drainage outfalls, not streets. Later street-context mentions remain separately typed.",
+        "text": "Faura"
+      },
+      {
+        "after": "LANDMARK",
+        "before": "ROAD",
+        "entity_id": "e351",
+        "reason": "This sentence names drainage outfalls, not streets. Later street-context mentions remain separately typed.",
+        "text": "Remedios"
+      }
+    ],
+    "record_id": "continuation-7083e3d12285e30c158a"
+  },
+  {
+    "changes": [
+      {
+        "after": "CITY",
+        "before": "BARANGAY",
+        "entity_id": "e80",
+        "reason": "Source co-enumerates municipalities/cities; original spelling remains unresolved, possibly Abucay. No PSGC identity inferred.",
+        "text": "Bucay"
+      }
+    ],
+    "record_id": "continuation-8e335fe67769bcfe66db"
+  }
+]

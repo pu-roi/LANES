@@ -88,9 +88,32 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
         state, label = "idle", "Idle; last cycle finished"
     else:
         state, label = "not_recorded", "No worker cycle recorded"
+    audit = read_audit_diagnostics(db)
+    return NewsAutomationStatus(checked_at=now, state=state, status_label=label, running=running, audit=audit,
+        current_stage=runtime.current_stage if running else None,
+        stage_label=stage_label if running else None,
+        stage_started_at=runtime.stage_started_at if running else None, last_progress_at=runtime.last_progress_at,
+        collection_enabled=config.news_collection_enabled, processing_enabled=config.news_processing_enabled,
+        publication_enabled=config.news_publication_enabled, enabled_sources=active,
+        collection_interval_minutes=decision.interval_minutes, weather=weather,
+        scheduler_tick_target_minutes=runtime.scheduler_tick_minutes, next_collection_due_at=due,
+        collection_overdue=overdue, last_started_at=runtime.last_started_at, last_finished_at=runtime.last_finished_at,
+        last_successful_at=runtime.last_successful_at, last_cycle=last_cycle, recent_cycles=runtime.recent_cycles, stages=runtime.stages,
+        latest_collection_at=latest_at, feed_counts=feeds,
+        queue_counts=monitor.latest_processing_counts,
+        error_code="worker_interrupted" if interrupted else runtime.error_code)
+
+
+def read_audit_diagnostics(db: Session) -> NewsAuditDiagnostics:
     from app.services.news_audit_quota_service import read_quota, quota_identity, deadline, real_now
-    from app.services.news_claim_auditor import NewsClaimAuditor
-    auditor = NewsClaimAuditor()
+    from app.services.news_claim_auditor import NewsClaimAuditor, AuditorConfigurationError
+    try:
+        auditor = NewsClaimAuditor()
+    except AuditorConfigurationError as exc:
+        return NewsAuditDiagnostics(state="requires_attention",error_code=exc.code)
+    if auditor.config.error_code():
+        return NewsAuditDiagnostics(state="requires_attention",error_code=auditor.config.error_code(),
+            validation_mode="source_rules" if auditor.config.provider=="source_rules" else "llm")
     quota = read_quota(db, identity=quota_identity(auditor))
     from app.services.news_audit_availability_service import read_availability
     availability = read_availability(db, auditor)
@@ -129,16 +152,4 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
             validation_mode="source_rules", error_code=auditor.config.error_code(),
             boundary_qualified=len(boundaries.records), boundary_expected=expected_boundaries,
             boundary_missing=max(0, expected_boundaries-len(boundaries.records)), boundary_error=boundaries.error)
-    return NewsAutomationStatus(checked_at=now, state=state, status_label=label, running=running, audit=audit,
-        current_stage=runtime.current_stage if running else None,
-        stage_label=stage_label if running else None,
-        stage_started_at=runtime.stage_started_at if running else None, last_progress_at=runtime.last_progress_at,
-        collection_enabled=config.news_collection_enabled, processing_enabled=config.news_processing_enabled,
-        publication_enabled=config.news_publication_enabled, enabled_sources=active,
-        collection_interval_minutes=decision.interval_minutes, weather=weather,
-        scheduler_tick_target_minutes=runtime.scheduler_tick_minutes, next_collection_due_at=due,
-        collection_overdue=overdue, last_started_at=runtime.last_started_at, last_finished_at=runtime.last_finished_at,
-        last_successful_at=runtime.last_successful_at, last_cycle=last_cycle, stages=runtime.stages,
-        latest_collection_at=latest_at, feed_counts=feeds,
-        queue_counts=monitor.latest_processing_counts,
-        error_code="worker_interrupted" if interrupted else runtime.error_code)
+    return audit
