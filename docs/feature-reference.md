@@ -1,12 +1,12 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Latest News Intelligence / placement checkpoint:** Three corrected GMA active presentation event/zone pairs **77–79** are saved and served through API `lanes-api-reader-recovery-20261024-v1`; the qualified manual worker remains **v30**. They are linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. This is a versioned opt-in extension of the existing news module; ordinary scheduled placement retains its prior gates. [Connected-road rollout](evaluations/gma-connected-road-20261023.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 
 
-Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. Scoped main/trigger integration remains pending. [Evidence](evaluations/event76-inspection-20261024.md).
+Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. PR #142/main integration is complete; exact-commit build d52b144e-2809-4f3c-b941-5d378c21bc33 passes and the existing main trigger is enabled. Current serving API is `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. [Evidence](evaluations/event76-inspection-20261024.md).
 
 ## Earlier v27 news-data correction checkpoint
 

@@ -1,15 +1,15 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
-Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. Scoped main/trigger integration remains pending. [Evidence](evaluations/event76-inspection-20261024.md).
+Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. PR #142/main integration is complete; exact-commit build d52b144e-2809-4f3c-b941-5d378c21bc33 passes and the existing main trigger is enabled. Current serving API is `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. [Evidence](evaluations/event76-inspection-20261024.md).
 
 ## Current news runtime and release audit — October 24
 
 [@roicambe](https://github.com/roicambe) (Roi Cambe). Manual cloud processing has qualified actual location NER → full-article Gemini correction → backend evidence validation for GMA, followed by separately authorized connected-road OSM/NOAH placement. The six-location-label model remains unchanged; learned DEPTH/TIME training and ordinary scheduled acceptance are not implied. The existing news scheduler stays paused. API `lanes-api-reader-recovery-20261024-v1` reads saved correction 388; manual worker v30 retains Linux amd64, one CPU, 3 GiB, 600 seconds and zero retries. LANES Secret Manager version 2 remains selected; the personal key is not used.
 
-The standard API image now authenticates a small saved-reader manifest independently of inference assets. Existing Python stdlib, HTTPX, SQLAlchemy, python-jose, pytest/Playwright, Cloud Run Jobs and Cloud Storage support read-only readiness, immutable receipts and protected traffic promotion; no package/version, schema, model or migration was added by the recovery. API CI retains image tests/migration gates but replaces RSS execution/worker overwrites with `deploy_api_checked.py` and a credential-isolated reader-check job. The repaired configuration must reach `main` before the disabled backend trigger is re-enabled. [Release details](evaluations/news-reader-recovery-20261024.md).
+The standard API image now authenticates a small saved-reader manifest independently of inference assets. Existing Python stdlib, HTTPX, SQLAlchemy, python-jose, pytest/Playwright, Cloud Run Jobs and Cloud Storage support read-only readiness, immutable receipts and protected traffic promotion; no package/version, schema, model or migration was added by the recovery. API CI retains image tests/migration gates but replaces RSS execution/worker overwrites with `deploy_api_checked.py` and a credential-isolated reader-check job. The repaired configuration is merged into `main`; the restored trigger passed its exact-commit cloud deployment. [Release details](evaluations/news-reader-recovery-20261024.md).
 
 Earlier dated stack assertions describe their original checkpoints.
 
@@ -410,7 +410,7 @@ The Linux image also installs Debian `libexpat1`, required by the existing `osmi
 * **CLI Deployment & Automation:** **Firebase CLI (`firebase-tools`)**
   * *Role:* Local project linking, App Hosting backend lifecycle management, build verification, and deployment orchestration.
 * **CI/CD Build Automation & Container Orchestration:** **Google Cloud Build**  
-  * *Role:* Automates container image build (`cloudbuild.yaml`), pushes tagged images to Google Container Registry (`gcr.io`), executes automated database migrations ahead of rollouts via Cloud Run Jobs (`lanes-migration`), and stages Cloud Run API candidates. The repaired deployment path verifies packaged saved-reader configuration and authenticated database-compatible reads before traffic promotion, with `CLOUD_LOGGING_ONLY`; automatic backend deployment remains disabled pending integration into `main`. API readiness no longer executes RSS or replaces news-worker resources.
+  * *Role:* Automates container image build (`cloudbuild.yaml`), pushes tagged images to Google Container Registry (`gcr.io`), executes automated database migrations ahead of rollouts via Cloud Run Jobs (`lanes-migration`), and stages Cloud Run API candidates. The repaired deployment path verifies packaged saved-reader configuration and authenticated database-compatible reads before traffic promotion, with `CLOUD_LOGGING_ONLY`; automatic backend deployment is enabled after reviewed PR #142/main integration and its verified controlled build. API readiness no longer executes RSS or replaces news-worker resources.
 * **Database Migration Jobs:** **Google Cloud Run Jobs (`lanes-migration`)**  
   * *Role:* Serverless batch execution task triggered synchronously during Cloud Build (`gcloud run jobs execute lanes-migration --wait`) to apply latest Alembic schema migrations (`alembic upgrade head`) before new web service revisions are deployed, eliminating schema drift between backend code and production PostgreSQL.
 

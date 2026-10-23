@@ -1,9 +1,9 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
-Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. Scoped main/trigger integration remains pending. [Evidence](../evaluations/event76-inspection-20261024.md).
+Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. PR #142/main integration is complete; exact-commit build d52b144e-2809-4f3c-b941-5d378c21bc33 passes and the existing main trigger is enabled. Current serving API is `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. [Evidence](../evaluations/event76-inspection-20261024.md).
 
 ## Current News Intelligence readers and presentation state — October 24
 

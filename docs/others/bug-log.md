@@ -1,15 +1,15 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Event 76 history-detail 503 — JSON-null media counting
 
-**Status:** Resolved on serving API `lanes-api-history-details-20261024-v1`; CI/CD integration in progress. **Severity:** Medium (history inspection unavailable). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Resolved and integrated through PR #142/main; checked build d52b144e-2809-4f3c-b941-5d378c21bc33 serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. **Severity:** Medium (history inspection unavailable). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 1. **Problem:** Opening event 76's detail modal returns 503 while history cards and the three News Intelligence results load normally.
 2. **Root cause:** `history_overview` directly invokes `jsonb_array_length` on zone 76's JSON-null `media_urls`. PostgreSQL raises `cannot get array length of a scalar`; aggregate coalesce cannot catch that error, and the read wrapper returns 503. Both current reader-recovery and retained v30 reproduce it, ruling out a new deployment replacement.
 3. **Solution:** Normalize only SQL/JSON null inside the array-count expression; keep malformed scalars rejected. Mandatory isolated PostGIS gates cover arrays/no-photo and staff authorization. Protected canary checks real history overviews/collections against database expectations, and hosted desktop/mobile actually open event 76. Linux 323 passed/one source-only skip, PostGIS 18 passed and fresh/repeated migration head passed.
-4. **Files/verification:** `spatial_browse_service.py`, `test_history_media_postgres.py`, `check_history_media_ci.sh`, `run_history_media_tests.py`, `check_news_reader.py`, `cloudbuild.yaml` and responsive `history-inspection.spec.ts`. Zero-traffic and serving checks passed; all protected records/manual-worker spec unchanged. CI/CD remains disabled pending scoped PR/main integration. [Evidence and exact integration state](../evaluations/event76-inspection-20261024.md).
+4. **Files/verification:** `spatial_browse_service.py`, `test_history_media_postgres.py`, `check_history_media_ci.sh`, `run_history_media_tests.py`, `check_news_reader.py`, `cloudbuild.yaml` and responsive `history-inspection.spec.ts`. Zero-traffic and serving checks passed; all protected records/manual-worker spec unchanged. CI/CD integration completed through PR #142; the main trigger is enabled after exact-commit deployment acceptance. [Evidence and exact integration state](../evaluations/event76-inspection-20261024.md).
 
 ## Conversation status reconciliation — October 24
 
@@ -29,7 +29,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The entries below r
 
 ## Saved News Intelligence reader missing from automatic deployment image
 
-**Status:** Resolved on serving API `lanes-api-reader-recovery-20261024-v1`; protected-branch integration remains pending. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Resolved and integrated through PR #142; the main trigger is enabled and its verified build serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 1. **Problem:** News Intelligence returned 503 while the three saved observations and zones 77–79 remained in Cloud SQL.
 2. **Root cause:** The ordinary Docker image omitted the hash-pinned reader file but inherited `/release/read-context.json` from a manually qualified release. Cloud Build checked ordinary source-mode tests and a discovery execution rather than the protected saved-reader endpoint, then promoted the incomplete image.

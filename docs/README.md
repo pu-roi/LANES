@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Latest completion — event details and checked CI/CD restored
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). PR [#142](https://github.com/pu-roi/LANES/pull/142), main `8c33ae04b071bdf587b4b72e98289de5f77db583`, cloud build `d52b144e-2809-4f3c-b941-5d378c21bc33`: all gates and final desktop/mobile acceptance pass. Serving API `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33` loads event 76 with zero media; three correction-388 observations and active zones 77–79 remain intact. The existing main trigger is enabled; news automation remains paused. [Release evidence](evaluations/event76-inspection-20261024.md#completed-publication-and-restored-cicd). Earlier sections retain their checkpoint status.
 
 ## Latest investigation — event 76 details and CI/CD integration
 

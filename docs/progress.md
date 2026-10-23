@@ -1,6 +1,14 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Event details and checked main deployment completed
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). PR [#142](https://github.com/pu-roi/LANES/pull/142) merged reviewed head `b88dcd6e4a015163ae6e5c5a7a8859c42e965d63` into `main` as `8c33ae04b071bdf587b4b72e98289de5f77db583`. The existing `^main$` trigger was restored only after that exact tree was verified. Controlled build `d52b144e-2809-4f3c-b941-5d378c21bc33` passed all seven stages and serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33` at 100% traffic. Its protected canary confirms correction 388 (three observations) and event 76 with all five evidence collections. Cloud tests: 323 passed/one repository-only skip, required PostGIS 18 passed plus repeated migration; no new schema migration.
+
+Final hosted desktop/mobile News Intelligence evidence/scrolling, real history detail/collections/map focus, active-zone details and public-map popups all pass. Direct history, analytics and JSON exports contain only genuine event 76; active zones remain 77–79. All 13 protected fingerprints, manual-worker specification, stopped 42-attempt ledger (US$0.7524937), expiry OFF, paused news, inert old seed and four unrelated frontend edits are unchanged. No NER, Gemini, token counts, seeding or database cleanup occurred.
+
+[Verification and recovery](evaluations/event76-inspection-20261024.md#completed-publication-and-restored-cicd).
 
 ## Event 76 detail repair deployed; CI/CD integration in progress
 

@@ -1,17 +1,19 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Current follow-up — event 76 history inspection failure
+
+**Completed:** lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33 serves the checked main build. [Final integration evidence](evaluations/event76-inspection-20261024.md#completed-publication-and-restored-cicd).
 
 Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Confirmed root cause and CI/CD state](evaluations/event76-inspection-20261024.md).
 
 - [x] Reproduce event-detail 503 on serving reader-recovery and v30; confirm history list/news still return 200 and no newer automatic deployment replaced the repaired API.
 - [x] Identify JSON-null photo metadata in zone 76 and the unsafe array-length aggregate; confirm the event exists and has no report rows.
-- [x] Verify remote branches/build history: recovery source remains uncommitted locally; backend trigger remains disabled pending reviewed `main` integration.
+- [x] Verify remote branches/build history: initially found recovery source uncommitted and trigger disabled; this observation is superseded by completed PR #142 integration below.
 - [x] Patch null-safe report/zone media counting; mandatory isolated PostGIS gate passes 18 checks and fresh/repeated migrations.
 - [x] Extend protected canary with database-expected history/collections and open the real detail modal on desktop/mobile; promote `lanes-api-history-details-20261024-v1` and verify unchanged 13 protected fingerprints.
-- [ ] Complete reviewed feature-branch publication/main integration before restoring automatic backend deployment. Do not re-enable against the old deployment path.
+- [x] Publish scoped repair through PR #142/main; verify exact merge 8c33ae04b071bdf587b4b72e98289de5f77db583, restore the existing trigger and pass controlled build d52b144e-2809-4f3c-b941-5d378c21bc33.
 
 The earlier reader recovery remains valid for News Intelligence; its verification did not include opening event 76's history-detail modal. This new inspection task is not a database reset or a reason to replay articles.
 
@@ -24,7 +26,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 - [x] Promote `lanes-api-reader-recovery-20261024-v1` after zero-provider cloud acceptance; preserve manual worker v30 and active zones 77–79.
 - [x] Verify hosted desktop/mobile cards, source details/scrolling, active/admin/public maps, history and exports; all 13 protected table fingerprints remain unchanged.
 - [x] Preserve stopped ledger content/generation: 42 attempts / US$0.7524937. Keep news automation paused, expiry OFF and old seed disabled.
-- [ ] Review/merge the repaired API packaging, tests/deployer and `cloudbuild.yaml` into `main`, then re-enable the existing backend trigger. The trigger intentionally remains disabled while `main` still contains the old deployment path. No commit/push/merge was performed in this recovery.
+- [x] Complete packaging/deployer/test integration through PR #142 and restore the trigger after main verification; exact-commit cloud deployment and serving acceptance pass.
 
 [Recovery evidence](evaluations/news-reader-recovery-20261024.md) · [Release procedure](guides/news-reader-release.md).
 
