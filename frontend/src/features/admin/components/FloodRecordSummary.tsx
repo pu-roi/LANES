@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { MapPin } from "lucide-react";
 import { Button } from "@/shared/ui";
 import type { ButtonProps } from "@/shared/ui/forms/Button";
 import { formatFloodDepth } from "@/lib/floodDepth";
 import { parseUtcDate } from "@/lib/utils";
+import type { AvoidanceZone } from "../adminApi";
 
 const severityStyles: Record<string, string> = {
   low: "bg-lime-100 text-lime-800 border-lime-300",
@@ -29,10 +30,47 @@ export function floodRecordTime(value?: string | null) {
   return parseUtcDate(value)?.toLocaleString("en-PH", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) ?? "Time unavailable";
 }
 
+export function floodZoneSourceLabel(zone: AvoidanceZone) {
+  if (zone.report_source === "news") {
+    return zone.news?.find(item => item.source_publisher?.trim())?.source_publisher
+      || zone.historical?.source_publisher?.trim() || zone.reporter_name?.trim() || "News";
+  }
+  return zone.report_source === "direct_user" ? "User report" : zone.report_source?.replaceAll("_", " ") || "Official zone";
+}
+
+/** Keep the original evidence intact while limiting its initial display height. */
+export function ExpandableFloodText({ text, quoted = true }: { text: string; quoted?: boolean }) {
+  const [expanded, setExpanded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+  const paragraph = useRef<HTMLParagraphElement>(null);
+  const id = useId();
+
+  useEffect(() => {
+    const element = paragraph.current;
+    if (!element || expanded) return;
+    const measure = () => setCanExpand(element.scrollHeight > element.clientHeight + 1);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [text, expanded]);
+
+  return <div className="mb-2 min-w-0">
+    <p id={id} ref={paragraph} className={`whitespace-pre-line break-words text-xs font-medium leading-5 text-slate-700 ${expanded ? "" : "line-clamp-3"}`}>
+      {quoted ? <>&ldquo;{text}&rdquo;</> : text}
+    </p>
+    {canExpand && <SpatialPanelButton type="button" variant="ghost" aria-expanded={expanded} aria-controls={id}
+      className="mt-1 px-0 text-blue-700 hover:bg-transparent hover:underline"
+      onClick={event => { event.stopPropagation(); setExpanded(value => !value); }}>
+      {expanded ? "See less" : "See more"}
+    </SpatialPanelButton>}
+  </div>;
+}
+
 /** Flat presentation shared by pending evidence and published zones; actions stay with callers. */
-export function FloodRecordSummary({ title, severity, depth, timestamp, text, location, headingExtra, aside, facts = [], children, actions }: {
+export function FloodRecordSummary({ title, severity, depth, timestamp, text, collapseText = false, location, headingExtra, aside, facts = [], children, actions }: {
   title: string; severity?: string | null; depth?: string | null; timestamp: string;
-  text?: string | null; location?: string | null; headingExtra?: ReactNode; aside?: ReactNode;
+  text?: string | null; collapseText?: boolean; location?: string | null; headingExtra?: ReactNode; aside?: ReactNode;
   facts?: { label: string; value: ReactNode }[]; children?: ReactNode; actions?: ReactNode;
 }) {
   return <>
@@ -44,7 +82,7 @@ export function FloodRecordSummary({ title, severity, depth, timestamp, text, lo
       {aside && <div className="shrink-0">{aside}</div>}
     </div>
     <time dateTime={timestamp} className="mb-2 block text-[11px] text-slate-500">{floodRecordTime(timestamp)}</time>
-    {text && <p className="mb-2 whitespace-pre-line break-words text-xs font-medium leading-5 text-slate-700">&ldquo;{text}&rdquo;</p>}
+    {text && (collapseText ? <ExpandableFloodText key={text} text={text} /> : <p className="mb-2 whitespace-pre-line break-words text-xs font-medium leading-5 text-slate-700">&ldquo;{text}&rdquo;</p>)}
     {location && <p className="mb-3 flex items-start gap-1.5 text-xs text-slate-500"><MapPin className="mt-0.5 size-3.5 shrink-0 text-slate-400" /><span className="min-w-0 break-words">{location}</span></p>}
     {!!facts.length && <dl className="mb-3 space-y-1 text-xs leading-5">{facts.map(({ label, value }) => <div key={label} className="flex gap-2"><dt className="w-24 shrink-0 text-slate-500">{label}</dt><dd className="min-w-0 break-words text-slate-700">{value}</dd></div>)}</dl>}
     {children}

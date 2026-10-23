@@ -11,7 +11,7 @@ import { zoneDetailQuery } from "../zoneQueueApi";
 import { formatFloodDepth } from "@/lib/floodDepth";
 import { getZoneUpdates, ZONE_CONDITIONS, type ZoneEditorProposal } from "@/features/hazards/zoneUpdatesApi";
 import type { AvoidanceZone } from "../adminApi";
-import { floodRecordTime } from "./FloodRecordSummary";
+import { floodRecordTime, floodZoneSourceLabel } from "./FloodRecordSummary";
 import { publisherLink } from "@/features/news/newsPresentation";
 import { ZoneObservationReview } from "./ZoneObservationReview";
 import { CaseReviewSuggestion } from "@/features/flood-followups/CaseReviewSuggestion";
@@ -36,7 +36,7 @@ export function ActiveZoneDetails({ zone, initialTab, onClose, onEdit, onViewMap
     <Tabs tabs={[{ id: "overview", label: "Overview" }, { id: "updates", label: "Community updates" }]} activeTab={tab} onChange={setTab} variant="underline" tabClassName="min-h-11" layoutId={`zone-details-${zone.id}`} />
     {fresh.isError && <div role="alert" className="text-sm text-red-700">Could not refresh official zone details. <Button variant="ghost" size="sm" onClick={() => fresh.refetch()}>Retry</Button></div>}
     {tab === "overview" ? <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3"><div className="flex items-center gap-2"><span className="text-xs font-semibold uppercase text-slate-500">Severity:</span><FloodSeverityBadge severity={current.severity} /></div><div className="flex items-center gap-2"><span className="text-xs font-semibold uppercase text-slate-500">Source:</span><span className="rounded-md bg-slate-200/80 px-2 py-1 text-xs font-bold uppercase text-slate-700">{current.report_source?.replaceAll("_", " ") || "Official zone"}</span></div></div>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3"><div className="flex items-center gap-2"><span className="text-xs font-semibold uppercase text-slate-500">Severity:</span><FloodSeverityBadge severity={current.severity} /></div><div className="flex items-center gap-2"><span className="text-xs font-semibold uppercase text-slate-500">Source:</span><span className="rounded-md bg-slate-200/80 px-2 py-1 text-xs font-bold uppercase text-slate-700">{floodZoneSourceLabel(current)}</span></div></div>
       {current.admin_notes && <div className="space-y-2"><h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Operational description</h3><p className="whitespace-pre-line break-words rounded-xl border border-blue-100 bg-blue-50/50 p-4 text-sm leading-6 text-slate-800">{current.admin_notes}</p></div>}
       <FloodFacts depth={current.depth} hazards={current.hidden_hazards} vehicles={current.passable_vehicles} bidirectional={current.is_bidirectional} />
       <div className="space-y-2 rounded-xl border border-slate-200/70 bg-slate-50/80 p-4"><h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400"><MapPin className="size-3.5" />Spatial location</h3><p className="break-words text-sm font-semibold">{current.location_label || "Location name not recorded"}</p><p className="break-words font-mono text-xs text-slate-500">{coordinates ? `${coordinates[1].toFixed(5)}° latitude, ${coordinates[0].toFixed(5)}° longitude · Polygon boundary` : "No coordinates mapped"}</p>{onViewMap && <Button variant="outline" className="min-h-11" onClick={() => { onClose(); onViewMap(current); }}>View on Map</Button>}</div>
