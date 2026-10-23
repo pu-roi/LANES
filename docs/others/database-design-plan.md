@@ -1,6 +1,10 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:59 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 24 recovery audit — records preserved, schema unchanged
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The News Intelligence 503 was an image/configuration mismatch, not missing Cloud SQL data. Recovery and the repaired API release preserved exact fingerprints for 13 tables: accounts, community posts, reports/moderation, articles/versions/runs/evaluations, events/zones/locations/timelines and system settings. Correction 388 and active presentation event/zone pairs 77–79 remain linked to corrected source 140/native 569. Their historical/statistical/routing exclusions remain in existing metadata; unrelated ended event 76 is retained. The earlier scoped 62-row cleanup removed only the incorrect capture chain and five old event/zone pairs 71–75; that cleanup was not repeated during reader recovery. Existing migration head `f1a9c7e2b604` is unchanged; no model, column, trigger, foreign key or migration definition changed. [Preservation evidence](../evaluations/news-reader-recovery-20261024.md).
 
 ## Connected-road active-only persistence — existing schema
 

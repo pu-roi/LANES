@@ -1,10 +1,27 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. Scoped main/trigger integration remains pending. [Evidence](../evaluations/event76-inspection-20261024.md).
+
+## Current News Intelligence readers and presentation state — October 24
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The serving API is `lanes-api-reader-recovery-20261024-v1`; the manually invoked qualified worker remains v30. A missing reader file in the automatic image caused 503s without deleting data. The restored normal image packages the authenticated saved-reader manifest and fails startup on a missing/invalid required reader or wrong database binding. Protected canary checks gate traffic promotion. Automatic backend deployment remains disabled until the repaired configuration is reviewed/merged into `main`. API release readiness does not execute RSS or replace worker specifications. No screen, endpoint path, public response shape or schema was added by this recovery. [Recovery](../evaluations/news-reader-recovery-20261024.md) · [Operator procedure](../guides/news-reader-release.md).
+
+| Existing screen | Current verified behavior |
+|---|---|
+| News Intelligence → Flooded Areas | Three correction-388 observations: Rizal Ave Extn, Tañong F. Sevilla Blvd. (Bayan), Marcos Highway Underloop; gutter deep, Sep 9 at 2:47 PM, all vehicles passable |
+| News Flood Details | Selected observation summary, supported time/depth/access and source evidence; raw NER and immutable inputs remain in Source Article/Processing History; desktop/mobile scrolling verified |
+| Collection Status / Source Article | Corrected article 47 with original 140/native 569 and its retained clean-capture processing history; no repeat of the incorrect 137/574 capture chain |
+| Spatial Operations / public Active Zones | Active presentation event/zone pairs 77–79; connected-road OSM/NOAH estimates, separately attributed user coordinate hints, unknown measured depth retained |
+| Flood History, analytics and exports | Presentation incidents excluded; unrelated ended event 76 retained; five incorrect test archives 71–75 were removed under the scoped cleanup |
+
+The three-article pilot is only partially complete: Tribune 25 and Philstar 274 remain pending. Scheduled news/publication remains paused; both expiry switches are OFF and the old seed job is inert. These deliberately active presentation instances are excluded from ordinary routing and real occurrence/duration statistics. Earlier dated sections below record prior deployments and blockers rather than current serving state.
 
 ## Connected-road active projection — current GMA release
 
-Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. No frontend components, visible labels, layouts, routes or public response fields were added. `news_connected_road_service.py` handles authenticated road/NOAH placement; `news_gma_active_outputs.py` performs authorized atomic persistence; `news_presentation_source_facts.py` supplies exact saved depth to existing readers. Existing response revalidation retains unknown source measurements for this dataset. [Evidence](../evaluations/gma-connected-road-20261023.md).
+Three corrected GMA active presentation event/zone pairs **77–79** are saved and served through API `lanes-api-reader-recovery-20261024-v1`; the qualified manual worker remains **v30**. They are linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. No frontend components, visible labels, layouts, routes or public response fields were added. `news_connected_road_service.py` handles authenticated road/NOAH placement; `news_gma_active_outputs.py` performs authorized atomic persistence; `news_presentation_source_facts.py` supplies exact saved depth to existing readers. Existing response revalidation retains unknown source measurements for this dataset. [Evidence](../evaluations/gma-connected-road-20261023.md).
 
 
 ## Earlier v27 GMA data and active-only output checkpoint
@@ -20,28 +37,28 @@ API/manual worker v26 and the private local saved-reader context select **comple
 No GMA history/event/polygon/active-instance writes occurred. Existing admin-created/deactivated event 76 remains in normal history, with old superseded news archives excluded. Ledger stopped at 42 attempts / US$0.7524937; news automation paused, expiry OFF and old seed disabled. [Actual verification and review stop](../evaluations/gma-three-location-completion-20261023.md).
 
 
-## Latest manual news verification checkpoint (October 23 evening)
+## Earlier manual news verification checkpoint (October 23 evening)
 
 The versioned v3 plain-list city-heading parser is deployed in manual worker v24. Serving API remains v23 and local readers still select two accepted run-384 observations. Correction 386 failed on an unexpected duplicate-locality observation, so the third request was not sent and no new accepted cards/history/active polygons were released. Existing pages, UI, public API shapes, schema and source bodies are unchanged. The ledger is stopped at 41 attempts / US$0.748841; automation paused, expiry OFF. [Exact implementation, retained response and recovery](../evaluations/gma-city-heading-20261023.md).
 
 
-## Current clean-source GMA database state (October 23)
+## Earlier clean-source GMA database checkpoint (October 23)
 
 The API/manual worker v23 serves two accepted observations from source 140/native 569/correction 384. Source Article and selected Flood Details match the current publisher capture. Five old event/zone pairs remain immutable evidence, with versioned `news_source_superseded` timeline markers excluded by current history/cards/maps/analytics/exports; direct current-history inspection rejects them. There are **zero replacement historical polygons and zero active zones**, because locality/road qualification is unresolved. Reader compatibility and local connection identity are preserved; frontend unchanged. [Verification and exact limitations](../evaluations/gma-source-correction-20261023.md).
 
-## Current News Flood Details and source-version review
+## Flood Details/source-version repair — original deployment checkpoint
 
 `NewsResultDialog` renders the selected backend summary, raw depth/shared scope, reported locality, observation time, condition/passability and exact field-specific quotes. It no longer places the entire `NativeExtractionEvidence` report in Flood Details. Source Article displays the current collected publisher body and retrieval time, warning on a different extraction input; `NewsExtractionRecordView` retains raw NER and the exact run-version body. Collection defaults to its current article; explicit history selection remains version-bound. `NewsSourceArticle` strips decorative play bullets only for presentation. Shared `RecordDetailsPanels` preserves desktop/mobile scroll ownership. Existing admin GET details gain additive `source_review` metadata; native details also expose validated `supporting_passages` and `depth_scope`, with the same authentication and no writes/network retrieval. API v20/frontend build 2026-10-23-002 and worker source guard v21 are deployed. The five old GMA observations/events remain preserved and need source reprocessing; see [source investigation](../evaluations/news-source-review-20261023.md).
 
-## Latest personal credential attempt
+## Earlier personal credential attempt — personal key not selected
 
 All three cloud Gemini consumers remain pinned to Secret Manager version 2. New version 3 contains the supplied personal credential, verified in memory, but one native-resolution smoke request returned HTTP 400. The worker bindings were restored and no API canary, weather request or promotion followed. Before/after database/configuration fingerprints match; models/images/resources and public interfaces remain unchanged. News remains paused, seed disabled, automatic expiry and Pasig ML expiry OFF. [Attempt and recovery](../evaluations/gemini-key-rotation-20261022/README.md). Earlier cloud-release paragraphs retain their original HTTP 402 checkpoint; the latest failed credential attempt does not establish its cause or successful billing/authentication.
 
-## Current cloud correction release
+## Earlier cloud correction release — initial provider qualification checkpoint
 
 API revision `lanes-api-gemini-20261022-v4` serves 100% of backend traffic with matching derived/raw saved readers. Unscheduled job `lanes-news-verified` runs one CPU/3 GiB, 600 seconds, one task and zero retries, defaulting to read-only preflight. `news_verified_cloud.py` checks code/assets/Cloud SQL/schema/reader identity and paused settings. The existing Gemini secret binding is preserved. Seven software contracts pass on Cloud Run; the one authorized real request returns HTTP 402, so provider correction remains unqualified. General provider execution is disabled; future resolve-only writes require exact target/input/assets/model authority and at most two parent run IDs. No article seeding, frontend artifact, schema or dependency change. All database fingerprints remain unchanged and existing news pauses/disabled seed persist. [Release evidence and rollback](../evaluations/ner-gemini-cloud-release-20261022/README.md).
 
-## Authorized maintenance reset — current operating state
+## Authorized maintenance reset — October 22 checkpoint
 
 On October 22, 2026, the user explicitly approved clearing all flood records and extracted news output while retaining accounts/community/source articles. Existing screens now return their normal empty states; Collection status retains 174 articles, backed by 224 immutable versions. Community posts retain content/media/timestamps/history; 34 report links were detached before reports were removed. All public API response contracts and frontend source remain unchanged. `flood_data_reset.py` is a maintenance-only transactional service with no HTTP/startup/scheduler integration. Exact target/snapshot checks, fingerprints, explicit deletes, rollback and restoration of four deletion-protection triggers preserve unrelated records and FK enforcement. No new migration/dependency.
 

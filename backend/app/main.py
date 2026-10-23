@@ -17,6 +17,8 @@ from app import models
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     validate_production_routing_configuration()
+    from app.services.news_native_read_context import validate_native_reader_startup
+    validate_native_reader_startup(engine)
     # Attempt to create database tables on startup
     try:
         # Base.metadata.create_all(bind=engine) # Disabled to enforce Alembic migrations

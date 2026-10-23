@@ -1,6 +1,9 @@
 # PDFs are binary documents, even when Git's content heuristic sees text.
 *.pdf binary
 
+# The required PostGIS CI gate must also run from Windows release checkouts.
+/backend/scripts/check_history_media_ci.sh text eol=lf
+
 # Immutable research captures must retain their original bytes and manifest hashes.
 # Treat captured HTML/text as evidence artifacts rather than editable source files.
 /docs/evaluations/**/sources/** binary
