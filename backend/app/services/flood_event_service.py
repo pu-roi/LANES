@@ -186,6 +186,8 @@ def build_flood_event_history_query(
     query = query.filter(~superseded_event())
     from app.services.news_gma_active_outputs import active_only_event
     query = query.filter(~active_only_event())
+    from app.services.news_tribune_pilot import pending_history_event
+    query = query.filter(~pending_history_event())
     from app.services.historical_news_metadata import DATASET, Timeline, ENTRY, occurrence_day, metadata_field
     if dataset_id:
         import re

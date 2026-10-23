@@ -1,6 +1,15 @@
 # LANES documentation
 
-> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Tribune context and cleared-list repair — October 24
+
+[Context, saved evidence and release checks](evaluations/tribune-context-repair-20261024.md). Correction 395 saves three Tribune road observations; the patched reader excludes Quezon City subsided evidence from Flooded Areas while preserving authenticated source inspection. API `lanes-api-tribune-context-20261024-v6` now serves the repair; candidate/serving and hosted/local desktop/mobile checks pass. Four active zones and all original data/ledger are preserved. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Tribune saved-article pilot — October 24
+
+[Approved source/lifecycle plan](plans/tribune-saved-article-pilot.md) · [Actual cloud runs, spending, tests and limitations](evaluations/tribune-pilot-20261024.md). Raw NER 390 and zero-provider finalized correction 392 are saved. Active event/zone **80** is deployed through `lanes-api-tribune-20261024-v3`; protected candidate/serving checks and hosted/local desktop/mobile acceptance pass. Source/CI changes remain uncommitted on `roi-branch`. Quirino/Gov. Pascual and specific cleared-road evidence gaps remain unresolved. Tribune's selected lifecycle enters unified history after manual deactivation; GMA's original exclusion is unchanged.
+
 
 ## Latest completion — event details and checked CI/CD restored
 
@@ -20,7 +29,7 @@ API `lanes-api-reader-recovery-20261024-v1` restores the three saved correction-
 - [Conversation bug/status reconciliation](others/bug-log.md#conversation-status-reconciliation--october-24)
 - [Current screen behavior and reader release](others/system-documentation.md#current-news-intelligence-readers-and-presentation-state--october-24)
 
-The latest verified pilot has three GMA observations and active presentation zones; Tribune 25 and Philstar 274 are unprocessed. Existing history contains unrelated event 76, not replacement GMA archives. Older headings below record earlier results and are not the current work queue.
+The latest verified pilot has five observations and four active polygons: unchanged GMA 77–79 plus Tribune Boni event/zone 80. Tribune 25 is processed with partial evidence acceptance; Philstar 274 remains unprocessed. Existing history contains unrelated event 76, not replacement GMA archives. Older headings below record earlier results and are not the current work queue.
 
 
 ## Prior spatial rollout — three connected-road GMA active zones

@@ -19,7 +19,8 @@ def main() -> int:
         'gma-shared-preview','gma-shared-archive',
         'source-ner','source-count','source-resolve','source-preview','source-archive',
         'heading-count','heading-resolve','inline-count','inline-resolve','inline-finalize',
-        'gma-active-preview','gma-active-apply'),nargs='?',default='preflight')
+        'gma-active-preview','gma-active-apply',
+        'tribune-ner','tribune-count','tribune-resolve','tribune-finalize','tribune-preview','tribune-apply'),nargs='?',default='preflight')
     parser.add_argument('--allow-one-provider-request',action='store_true')
     parser.add_argument('--run-id',type=int,action='append',default=[])
     parser.add_argument('--authority',type=Path)
@@ -37,7 +38,10 @@ def main() -> int:
         resources=[checkpoint()]
         release=release_file(Path(os.environ['LANES_NEWS_VERIFIED_RELEASE']),
                              os.environ['LANES_NEWS_VERIFIED_RELEASE_SHA256'])
-        if args.mode in ('gma-active-preview','gma-active-apply'):
+        if args.mode.startswith('tribune-'):
+            from scripts.run_news_tribune_pilot import run_tribune
+            result=run_tribune(args,release)
+        elif args.mode in ('gma-active-preview','gma-active-apply'):
             from scripts.run_news_gma_active import run_active
             result=run_active(args,release)
         elif args.mode=='inline-finalize':
@@ -113,8 +117,13 @@ def main() -> int:
         result={'status':'interrupted','error_code':'verified_worker_cancelled'}
     except Exception as exc:
         # No provider bodies, credentials, URLs or source articles in Cloud Logs.
+        # Frame identifiers locate unexpected failures without exception text,
+        # source lines or local variables (which may contain private data).
+        import traceback
         result={'status':'failed','error_code':exc.code if isinstance(exc,error_type) else 'verified_worker_failed',
-                'error_type':type(exc).__name__}
+                'error_type':type(exc).__name__,
+                'error_frames':[{'file':Path(frame.filename).name,'function':frame.name,'line':frame.lineno}
+                    for frame in traceback.extract_tb(exc.__traceback__)[-5:]]}
     print(json.dumps({'schema':'news-verified-cloud-receipt-v1','mode':args.mode,**result},sort_keys=True),flush=True)
     return 130 if result['status']=='interrupted' else 0 if result['status'] in ('preflight_passed','completed') else 1
 

@@ -1,6 +1,17 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## Tribune context repair deployed — cleared observations excluded
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Serving API `lanes-api-tribune-context-20261024-v6` selects zero-provider correction **395**. Flooded Areas now shows six road observations: three unchanged GMA plus Boni, Quirino and Gov. Pascual. Quezon City's subsided evidence remains inspectable but is excluded before list/collection counting and pagination. The source-linked weekday citation and Sitio 6 role are repaired without transferring Boni's 4:34 PM clock or inventing a barangay. No new polygon is created; active zones 77–80 and unified history 76 remain unchanged. Protected candidate/serving and hosted/local desktop/mobile news checks pass, as do 110 Linux regressions, 42 required PostGIS checks/repeated migrations and actual-data/offline replay checks. All original records and stopped 46 / US$0.7683261 ledger content/generation are preserved. Receipt collision 394 is retained; corrected 395 and repeat reuse incur zero provider/count/NER calls. Source/CI remains uncommitted. [Evidence](evaluations/tribune-context-repair-20261024.md).
+
+
+## Tribune pilot deployed — one active Boni polygon; partial evidence acceptance
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Article 25/source 568 is authenticated and backed up; actual cloud NER 390 supplies fifteen location mentions. Four paid Gemini batches save correction 391, then immutable-response replay saves correction 392 with Boni as the accepted flooded primary road and F. Ortigas retained as crossing context. Quirino/Gov. Pascual and specific cleared-road citation/role gaps remain unresolved. The bounded Boni intersection polygon is saved as active event/zone **80** and served by `lanes-api-tribune-20261024-v3`. Two offline replays, 142 Linux regressions, 41 mandatory PostGIS checks and actual-data atomicity/concurrency/repeat/deactivation/history inspection pass. Candidate/serving selection checks and hosted/local desktop/mobile news, active/public maps and real history inspection pass. News shows five observations; active maps show four polygons. History remains event 76 while Tribune 80 stays active; deactivation-to-history passes on the restored database. All baseline rows are preserved, and repeat commands reuse 392/80 without calls/writes. Source/CI changes remain uncommitted on `roi-branch`; no push/main integration is claimed. Ledger stopped at 46 / US$0.7683261, with no additional calls for finalization. [Evidence](evaluations/tribune-pilot-20261024.md).
+
 
 ## Event details and checked main deployment completed
 

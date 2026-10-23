@@ -1,6 +1,27 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## Tribune cleared-list inclusion, missing date citations and sitio role
+
+**Status:** Resolved on serving API `lanes-api-tribune-context-20261024-v6`; source publication pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Quezon City correctly says subsided in saved evidence but appears under Flooded Areas. Quirino/Gov. Pascual provider rows return Thursday without its source citation; Sitio 6 is placed in a canonical barangay slot.
+2. **Root cause:** Native/legacy list readers permit cleared rows. Structured provider evidence omits date links and confuses a local-area qualifier with a barangay. A replay attempted to reuse the previous write-once receipt prefix, then a missing zero-budget `stop` method masked its storage failure.
+3. **Solution:** Exclude subsided rows before all attention-list counts/pagination while retaining direct saved evidence. Exact-source V2 adoption repairs the reviewed citation and role, preserves clocks/measurements and classifies crossing/locality context. Use a separate receipt session and nonmutating failure-stop handler; retain failed 394 and append corrected 395.
+4. **Files/verification:** `crud/news_ner_results.py`, `crud/news_results.py`, `services/news_tribune_replay.py`, worker diagnostics, packaged-reader selection and dedicated tests. 113 targeted checks plus the added diagnostic regression, 110 Linux checks, 42 mandatory PostGIS checks, two original-response replays, actual-data preservation/reuse, protected candidate/serving and desktop/mobile news checks pass. No new paid calls, geometry/schema/dependencies or frontend design changes. [Evidence](../evaluations/tribune-context-repair-20261024.md).
+
+
+## Tribune crossing-road duplication and count-stage dispatch contract
+
+**Status:** Software repairs, cloud finalization and active event/zone 80 deployed and verified; genuine source-evidence gaps remain unresolved. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The first count stage failed before token dispatch. The subsequent four accepted provider responses also treated F. Ortigas as a separately flooded road at Boni's intersection. Other rows omitted date citations, put Sitio 6 in a canonical-barangay field, or supplied unsupported access/locality evidence.
+2. **Root cause:** A keyword-only authority operation was passed positionally. Separately, per-target validation alone did not distinguish a named crossing qualifier from its accepted owning-road observation. Transport success did not establish complete article acceptance.
+3. **Solution:** Repair the typed call and exercise the complete count stage with a mocked tokenizer. Adopt only the four immutable responses under a separate zero-provider replay identity; suppress a secondary road only when its exact intersection, facts and citations equal a separately accepted owner. Preserve independent/conflicting observations. Keep genuine citation/role gaps unresolved rather than inserting evidence.
+4. **Changed/verified:** `news_tribune_pilot.py`, `news_tribune_budget.py`, `news_tribune_replay.py`, scoped worker/reader wiring and dedicated regressions. 142 Linux checks, 41 mandatory PostGIS checks, two actual-response replays and restored-data persistence/lifecycle checks pass. GMA/source/provider history remains unchanged. [Actual outcomes and unresolved facts](../evaluations/tribune-pilot-20261024.md).
+
 
 ## Event 76 history-detail 503 — JSON-null media counting
 

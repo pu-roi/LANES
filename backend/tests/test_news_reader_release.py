@@ -19,7 +19,10 @@ def test_packaged_manifest_preserves_existing_selection():
     result = verify_package(READER_SOURCE_PATH)
     assert result['manifest_sha256'] == READER_MANIFEST_SHA256
     assert result['provider_requests'] == result['database_writes'] == 0
-    assert result['pipeline_version'] == 'ner-v1:abb4e0674b807a124328dbabc65cd71f2df9c4f8362a4280a197a1b9672482f6'
+    value = json.loads(READER_SOURCE_PATH.read_text())
+    # The newer article pipeline must retain the completed GMA reader.
+    assert 'ner-v1:abb4e0674b807a124328dbabc65cd71f2df9c4f8362a4280a197a1b9672482f6' in value['fallback_pipeline_versions']
+    assert result['pipeline_version'] not in value['fallback_pipeline_versions']
 
 
 @pytest.mark.parametrize('failure', ['missing', 'hash', 'pipeline', 'fallback'])

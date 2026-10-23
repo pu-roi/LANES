@@ -1,6 +1,37 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 02:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## Tribune context follow-up — completed on serving API
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Evidence](evaluations/tribune-context-repair-20261024.md).
+
+- [x] Exclude subsided rows server-side before Flooded Areas, collection counts, publisher filtering and pagination; retain saved-source inspection.
+- [x] Adopt original responses under an exact-source V2 context policy: supported Thursday citations, Sitio 6 as a qualifier, one observation per flooded road and no borrowed 4:34 PM clock.
+- [x] Save correction 395 with zero provider/count/NER requests; retain failed receipt-collision attempt 394 and fix the zero-budget failure handler.
+- [x] Pass Linux regressions, 42 mandatory PostGIS checks/repeated migrations, two offline replays and restored actual-data repeat/preservation checks.
+- [x] Pass protected candidate/serving selection and hosted/local desktop/mobile news/source/scroll checks; promote `lanes-api-tribune-context-20261024-v6`.
+- [x] Preserve all original rows, four active zones, history 76, paused automation/expiry and the stopped 46-attempt ledger.
+
+Quirino and Gov. Pascual now appear as source-supported flooded roads with unknown exact times; they remain unplotted. Source/CI changes remain uncommitted on `roi-branch`; the separately listed publication task remains pending.
+
+
+## Tribune pilot — completed active Boni output and retained unresolved evidence
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Approved plan](plans/tribune-saved-article-pilot.md) · [Execution evidence](evaluations/tribune-pilot-20261024.md).
+
+- [x] Authenticate article 25/source 568 and retain a recoverable backup; skip RSS and preserve existing sources.
+- [x] Execute actual cloud NER 390 and four bounded Gemini batches; retain correction 391 and all original responses.
+- [x] Correct the duplicate crossing-road observation through zero-provider finalization 392. Keep missing date/locality/access citations unresolved; do not invent three completed locations.
+- [x] Qualify the source-bound Boni intersection corridor in the actual cloud preview. Preserve cleared/unresolved outcomes without active polygons.
+- [x] Verify 142 Linux regressions, 41 mandatory PostGIS checks/repeated migrations, two offline replays and actual-data rollback/concurrency/reuse/deactivation-to-history behavior.
+- [x] Pass protected candidate/serving API selection checks, save active event/zone 80, and verify hosted/local desktop/mobile news, active/public maps and history.
+- [x] Verify baseline rows/GMA/history preserved, repeat commands reuse 392/80 without calls or writes, leave shared zone 80 active and ledger stopped.
+- [ ] Publish the scoped source/CI changes through a separately requested commit/PR/main integration; this execution leaves them uncommitted on `roi-branch`.
+
+The selected Tribune policy creates no separate historical counterpart initially. Its ended presentation instances become visible in the existing unified history after manual deactivation, without real-occurrence/duration or routing eligibility. GMA remains unchanged. Ledger: stopped, 46 attempts / US$0.7683261 effective conservative commitment; unchanged US$1 cap. Philstar, broader semantic repairs and scheduled processing remain outside this run.
+
 
 ## Current follow-up — event 76 history inspection failure
 
