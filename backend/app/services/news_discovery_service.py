@@ -334,6 +334,102 @@ class _ArticleParser(HTMLParser):
             self.parts.append(data)
 
 
+class _GmaArticleParser(HTMLParser):
+    """Read GMA reporting containers, retaining explicit publisher time evidence.
+
+    The outer article also contains promotions, captions and other stories.
+    Never treat that wrapper, or an index/JSON summary, as a reporting body.
+    """
+
+    _VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+             "link", "meta", "param", "source", "track", "wbr"}
+    _BLOCKS = {"p", "h1", "h2", "h3", "h4", "h5", "h6", "li", "br"}
+    _EXCLUDED_CLASSES = {"lower_article", "ivs-placeholder-more-videos", "cta-container",
+                         "story_related_content_holder", "image-caption", "photo-caption"}
+    _EXCLUDED_IDS = {"mrect_related_content_holder", "related_block", "load_more"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.stack: list[tuple[str, str | None, bool]] = []
+        self.body_parts: list[str] = []
+        self.byline_parts: list[str] = []
+        self.date_parts: list[str] = []
+        self.body_seen = False
+        self.has_continuation = False
+        self.links: list[str] = []
+
+    @property
+    def parts(self) -> list[str]:
+        # The existing temporal extractor checks the sourced byline/publication
+        # and update headers together. Keep those, without the headline or CTA.
+        byline = "".join(self.byline_parts).strip()
+        dates = "".join(self.date_parts).strip()
+        header = " ".join(value for value in (byline, dates) if value)
+        return ([header, "\n"] if header else []) + self.body_parts
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attr = dict(attrs)
+        classes = set((attr.get("class") or "").split())
+        scope, blocked = self.stack[-1][1:] if self.stack else (None, False)
+        blocked = (blocked or tag in {"script", "style", "nav", "footer", "aside", "figure", "figcaption"}
+                   or attr.get("id") in self._EXCLUDED_IDS
+                   or bool(classes & self._EXCLUDED_CLASSES))
+        if not blocked:
+            if tag == "div" and ("story_main" in classes or attr.get("id") == "article-text"):
+                if scope != "body":
+                    blocked = self.body_seen
+                    if not blocked:
+                        self.body_seen = True
+                        scope = "body"
+            elif not self.body_seen and (
+                (tag == "div" and "main-byline" in classes)
+                or (tag == "span" and attr.get("id") == "byline")
+            ):
+                scope = "byline"
+            elif not self.body_seen and (
+                (tag == "div" and "article-time" in classes)
+                or (tag == "time" and "article-date" in classes)
+            ):
+                scope = "dates"
+        if tag == "a" and attr.get("href"):
+            self.links.append(attr["href"])
+        if tag in {"a", "link"} and (tag == "link" or scope == "body"):
+            if "next" in (attr.get("rel") or "").casefold().split():
+                self.has_continuation = True
+        if not blocked:
+            if scope == "body" and tag in self._BLOCKS:
+                self.body_parts.append("\n")
+            elif scope == "dates" and tag in {"time", "br"}:
+                self.date_parts.append("\n")
+        if tag not in self._VOID:
+            self.stack.append((tag, scope, blocked))
+
+    def handle_endtag(self, tag: str) -> None:
+        for index in range(len(self.stack) - 1, -1, -1):
+            if self.stack[index][0] == tag:
+                _, scope, blocked = self.stack[index]
+                if not blocked:
+                    if scope == "body" and tag in self._BLOCKS:
+                        self.body_parts.append("\n")
+                    elif scope == "dates" and tag == "time":
+                        self.date_parts.append("\n")
+                del self.stack[index:]
+                break
+
+    def handle_data(self, data: str) -> None:
+        if not self.stack:
+            return
+        _, scope, blocked = self.stack[-1]
+        if blocked:
+            return
+        if scope == "body":
+            self.body_parts.append(data)
+        elif scope == "byline":
+            self.byline_parts.append(data)
+        elif scope == "dates":
+            self.date_parts.append(data)
+
+
 def _same_article_continuation(article_url: str, href: str) -> bool:
     """Recognize common page-two URLs without confusing publisher next-story loaders."""
     current = urlsplit(article_url)
@@ -385,8 +481,9 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                 # <article> closes. Read only those named body containers, not
                 # unrelated stories or embedded JavaScript/JSON summaries.
                 publisher_host = (urlsplit(current_url).hostname or "").removeprefix("www.")
-                parser = _ArticleParser("daily-tribune" if publisher_host == "tribune.net.ph"
-                                        and "/amp/story/" not in urlsplit(current_url).path else source.id)
+                parser = (_GmaArticleParser() if publisher_host == "gmanetwork.com" else
+                          _ArticleParser("daily-tribune" if publisher_host == "tribune.net.ph"
+                                         and "/amp/story/" not in urlsplit(current_url).path else source.id))
                 parser.feed(body.decode(response.encoding or "utf-8", errors="replace"))
                 if parser.has_continuation or any(
                     _same_article_continuation(current_url, href) for href in parser.links
@@ -398,6 +495,10 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                 lines = (" ".join(line.split()) for line in captured.splitlines())
                 readable = "\n".join(line for line in lines if line)
                 text = captured if preserve_whitespace else readable
+                if isinstance(parser, _GmaArticleParser) and len(
+                    " ".join("".join(parser.body_parts).split())
+                ) < MIN_ARTICLE_CHARS:
+                    return None, "Article text unavailable or too short"
                 if len(text) > MAX_ARTICLE_CHARS:
                     return None, "Article text exceeds processing limit; full body was not extracted"
                 if len(readable) < MIN_ARTICLE_CHARS:

@@ -33,6 +33,9 @@ def test_spatial_moderation_merging_and_trust_scores():
             db.add(profile_a)
             db.commit()
 
+        user_a.profile.trust_score = 50
+        user_a.profile.reports_approved = 0
+        db.commit()
         user_b = db.query(models.User).filter(models.User.username == "commuter_b").first()
         if not user_b:
             user_b = models.User(username="commuter_b", email="commuter_b@lanes.ph", hashed_password="pw", role_id=1, is_active=True)

@@ -1,0 +1,148 @@
+{
+  "api_revision": "lanes-api-gma-review-20261023-v9",
+  "continuation_candidate": {
+    "additional_reservation_nanodollars": 505140600,
+    "candidate_batch_size": 4,
+    "current_reserved_nanodollars": 773199400,
+    "dispatch_authorized": false,
+    "fits_existing_cap": false,
+    "new_requests_required": 12,
+    "projected_cumulative_nanodollars": 1278340000,
+    "provider_requests": 0
+  },
+  "desktop_mobile_checks": "failed run visibility, raw NER history, scrolling, original collection, flood empty states and exports passed; populated mapping pending",
+  "events_created": 0,
+  "full_article_prompt_and_generation_settings_unchanged": true,
+  "http_status": 400,
+  "image": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-news-verified@sha256:25c3f6d0b524b53a5264952407677b8a48fdc1945d24425506b76918f701d71e",
+  "later_batches_dispatched": 0,
+  "leading_hypothesis": "Serving schema complexity from raising result bounds and target enum from four to eight; not conclusively identified by the generic provider error.",
+  "ledger_attempts": 20,
+  "ledger_stopped": true,
+  "live_execution": "lanes-news-verified-pnn9b",
+  "new_corrections_saved": 0,
+  "new_provider_requests": 1,
+  "original_attempts_unchanged": true,
+  "pending": [
+    "cause-specific provider contract qualification",
+    "new cumulative budget plan",
+    "full GMA acceptance",
+    "archive spatial preview/apply",
+    "populated hosted acceptance",
+    "user review before other articles or activation"
+  ],
+  "pilot_complete": false,
+  "preservation": {
+    "accounts_posts_articles_versions_reports_moderation_unchanged": true,
+    "api_revision": "lanes-api-gma-review-20261023-v9",
+    "at": "2026-10-22T16:53:33.532252+00:00",
+    "changed_sequences": [
+      "news_extraction_runs_id_seq"
+    ],
+    "changed_tables": [
+      "news_extraction_runs"
+    ],
+    "counts": {
+      "community_posts": 37,
+      "flood_avoidance_zones": 0,
+      "flood_events": 0,
+      "flood_reports": 0,
+      "news_article_versions": 226,
+      "news_articles": 175,
+      "news_extraction_runs": 3,
+      "users": 8
+    },
+    "expiry_off": true,
+    "key_version": "2",
+    "ledger_attempts": 20,
+    "ledger_stopped": true,
+    "new_run": {
+      "error_code": "native_resolution_http_error",
+      "id": 378,
+      "result": null,
+      "status": "failed"
+    },
+    "news_paused": true,
+    "old_seed_unchanged": true,
+    "original_runs375_376_exactly_unchanged": true,
+    "personal_key_unused": true,
+    "reserved_nanodollars": 773199400,
+    "schema_constraints_triggers_unchanged": true,
+    "status": "preservation_passed",
+    "worker_profile": {
+      "cpu": 1,
+      "memory_gib": 3,
+      "retries": 0,
+      "timeout_seconds": 600
+    }
+  },
+  "private_receipt_sha256": {
+    "failed-request-bundle-pin.json": "fb4e724509c3de474da8422822dbdb0a81d5da11e60041fa7a1da516b444a4e0",
+    "failure-investigation.json": "83431845c611df48db85a0f868664ba494d60a1b2f7a4db0d8371387e5855f1a",
+    "final-preservation-acceptance.json": "ccf6ad06804cb79710aba22753f19feb0aac3222c5d7fca5ef050ad59b02cfa0",
+    "freeze-v9.json": "6e9b0713e6fdba1e149f3db82ae9f16d2f83c611b9f1bb7bd7ee4259b9269daf",
+    "image-contract-v9.json": "655837f51be364f1ceb1e5f1432649cf55884a6a2cf470487fcdb498d9f177c2",
+    "ledger-after-private.json": "3fbe5a2d8b0e988fd85aac9943b2ffc2031bc1f66f3773ae1923adb4a42a8e82",
+    "offline-replays.json": "cc9fffea4e8259716ceba3b0a3d9d0bf27519fd4726dd9ecc74e517bc333e89f",
+    "parent-recomputation.json": "42257a6d04da2ab4239f287cc3a2110b488242d0444ed95ea4dc30d92f123e3b",
+    "recovery-restored.json": "97abf13d8fea12e5fd950305ce048ac6092015c3c80bce860d7e76c7a17d7b67"
+  },
+  "provider_error_details_present": false,
+  "provider_status": "INVALID_ARGUMENT",
+  "reader_sha256": "206d25c32eb4031840e2d93810dbac094f1081cb06096b7154fc13d42cf9326d",
+  "recorded_at": "2026-10-23T00:56:05.512504+08:00",
+  "release_sha256": "92cb231daababeaa78491ca905714dfbd52e2dbaf015803c52edac2a26a0d2b9",
+  "remaining_allowance_nanodollars": 226800600,
+  "request_sha256": "566111dde6fafd17a800ca3b0104265c4b8a049cb66a45768da40a3bd0fc23fe",
+  "reserved_nanodollars": 773199400,
+  "schema_differences": [
+    {
+      "accepted": 4,
+      "path": "/properties/results/minItems",
+      "rejected": 8
+    },
+    {
+      "accepted": 4,
+      "path": "/properties/results/maxItems",
+      "rejected": 8
+    },
+    {
+      "accepted": [
+        "n0",
+        "n1",
+        "n2",
+        "n3"
+      ],
+      "path": "/$defs/ResolvedMention/properties/target_id/enum",
+      "rejected": [
+        "n4",
+        "n5",
+        "n6",
+        "n7",
+        "n8",
+        "n9",
+        "n10",
+        "n11"
+      ]
+    }
+  ],
+  "stage": "GMA-only review",
+  "status": "request_rejected_before_correction",
+  "target_ids": [
+    "n4",
+    "n5",
+    "n6",
+    "n7",
+    "n8",
+    "n9",
+    "n10",
+    "n11"
+  ],
+  "tests": {
+    "cloud_software_contracts": 7,
+    "linux_software_contracts": 7,
+    "offline_failed_response_replays": 2,
+    "targeted_pytest": 151
+  },
+  "zones_created": 0
+}

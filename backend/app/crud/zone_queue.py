@@ -22,7 +22,7 @@ def queue_metadata(db: Session, *, active_only: bool) -> list[dict[str, Any]]:
     geometry = projected_geometry(zone.geometry)
     map_geometry = (func.ST_AsBinary(func.ST_Envelope(zone.geometry)) if db.get_bind().dialect.name == "postgresql" else cast(zone.geometry, Text)) if active_only else literal(None)
     eligible = avoidance_zones_query(db, active_only=active_only)
-    rows = eligible.with_entities(zone.id, zone.name, zone.created_at, zone.curated_by_admin_id,
+    rows = eligible.with_entities(zone.id, zone.event_id, zone.name, zone.created_at, zone.curated_by_admin_id,
         zone.severity_override, zone.depth_override, zone.admin_notes,
         projected_geometry(zone.source_geometry).label("source_geometry"),
         map_geometry.label("map_geometry"), geometry.label("geometry")).all()
@@ -55,7 +55,13 @@ def queue_metadata(db: Session, *, active_only: bool) -> list[dict[str, Any]]:
     for item in db.execute(statement).mappings():
         news[item["zone_id"]].append({"snapshot": {"public": {key: item[key] for key in public_keys}},
             "claim": {key: item[key] for key in claim_keys}})
-    return [dict(row._mapping, reports=reports[row.id], news=news[row.id]) for row in rows]
+    from app.services.historical_news_metadata import event_metadata, public_metadata
+    historical = event_metadata(db, [row.event_id for row in rows if row.event_id])
+    from app.services.news_presentation_source_facts import source_facts
+    reported = source_facts(db, historical)
+    return [dict(row._mapping, reports=reports[row.id], news=news[row.id],
+        historical=public_metadata(historical.get(row.event_id)),
+        **({'reported_depth': reported[row.event_id]['depth']} if row.event_id in reported else {})) for row in rows]
 
 
 def queue_zone_details(db: Session, ids: list[int], *, brief: bool = False) -> list[FloodAvoidanceZone]:

@@ -28,8 +28,9 @@ function FilterControls({ filters, onChange }: { filters: FloodHistoryFilters; o
   </div>;
 }
 
-export function FloodEventAnalytics({ active = true }: { active?: boolean }) {
-  const [filters, setFilters] = useState(initialFilters);
+export function FloodEventAnalytics({ active = true, datasetId = "" }: { active?: boolean; datasetId?: string }) {
+  const [localFilters, setFilters] = useState(initialFilters);
+  const filters = { ...localFilters, datasetId };
   const [textFilters, setTextFilters] = useState({ search: "", road: "", barangay: "" });
   const [isExporting, setIsExporting] = useState(false);
   const toast = useToast();

@@ -171,6 +171,7 @@ export function useFloodZonesLayer(
           hidden_hazards: zone.hidden_hazards,
           contributors_json: JSON.stringify(zone.contributors || []),
           news_json: JSON.stringify(zone.news || []),
+          historical_json: JSON.stringify(zone.historical || null),
         };
 
         // 1. Zoomed-in Road Solid Core feature (Street Level: Zoom > 14)

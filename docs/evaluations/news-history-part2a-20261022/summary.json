@@ -1,0 +1,139 @@
+{
+  "schema_version": "news-history-part2a-verification-v1",
+  "verified_at": "2026-10-22T05:10:39.536876+08:00",
+  "status": "local_implementation_verified_shared_execution_blocked",
+  "phase_2a_complete": false,
+  "backend_combined": {
+    "tests": 374,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "receipt_sha256": "912c3fbaa446cdf42151bbd4d3f3b0ff2b6e45ec075a76c74b61b76d994fc047"
+  },
+  "browser": {
+    "passed": 19,
+    "skipped": 1,
+    "failures": 0,
+    "projects": [
+      "desktop-chromium",
+      "mobile-chromium"
+    ],
+    "mobile_width_css_px": 320,
+    "skip": "desktop copy of mobile-only switcher",
+    "transport": "fictional fixtures against isolated production build"
+  },
+  "typescript": "passed",
+  "focused_eslint": "passed",
+  "production_build": "passed via normal dotenvx build",
+  "source_inventory": {
+    "saved_full_body_articles": 12,
+    "complete_training_sources": 132,
+    "publisher_selected_training_captures": 99,
+    "publisher_unresolved_training_captures": 33,
+    "ner_or_geometry_qualification_claimed": false
+  },
+  "retained_history_readonly": {
+    "read_only": true,
+    "original_e0_manifest_verified": true,
+    "events": [
+      {
+        "event_id": 23,
+        "occurrence_date": "2026-09-24",
+        "versions": [
+          66
+        ],
+        "run_ids": [
+          66
+        ],
+        "publishers": [
+          "Daily Tribune"
+        ]
+      },
+      {
+        "event_id": 59,
+        "occurrence_date": "2026-09-24",
+        "versions": [
+          66
+        ],
+        "run_ids": [
+          134
+        ],
+        "publishers": [
+          "Daily Tribune"
+        ]
+      },
+      {
+        "event_id": 60,
+        "occurrence_date": "2026-09-24",
+        "versions": [
+          66
+        ],
+        "run_ids": [
+          134
+        ],
+        "publishers": [
+          "Daily Tribune"
+        ]
+      },
+      {
+        "event_id": 61,
+        "occurrence_date": "2026-09-09",
+        "versions": [
+          137
+        ],
+        "run_ids": [
+          137
+        ],
+        "publishers": [
+          "GMA News Online"
+        ]
+      },
+      {
+        "event_id": 62,
+        "occurrence_date": "2026-09-09",
+        "versions": [
+          137
+        ],
+        "run_ids": [
+          137
+        ],
+        "publishers": [
+          "GMA News Online"
+        ]
+      },
+      {
+        "event_id": 63,
+        "occurrence_date": "2026-09-09",
+        "versions": [
+          137
+        ],
+        "run_ids": [
+          137
+        ],
+        "publishers": [
+          "GMA News Online"
+        ]
+      }
+    ],
+    "preflight_status": "blocked",
+    "blockers": [
+      "historical_cloud_processing_not_qualified",
+      "historical_linux_amd64_required",
+      "historical_native_migration_required",
+      "historical_native_storage_incompatible"
+    ]
+  },
+  "shared_preflight_blockers": [
+    "historical_cloud_processing_not_qualified",
+    "historical_linux_amd64_required",
+    "historical_native_migration_required",
+    "historical_native_storage_incompatible"
+  ],
+  "shared_writes": 0,
+  "real_inference_calls": 0,
+  "new_models_or_migrations": 0,
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "owned_disposable_databases_removed": 2
+}

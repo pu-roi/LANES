@@ -24,6 +24,8 @@ from .collection import require_native_storage
 def native_evaluation_policy(trusted: TrustedAssets, configuration) -> EvaluationPolicy:
     identity={'provider':'source_rules','model':'ner-source-consistency-v1','prompt_version':SOURCE_VERSION,
               'response_version':'source-evidence-v2','processing_method':'ner_rules_v1'}
+    if trusted.manifest['projection'].get('llm_resolution') is not None:
+        identity = {**trusted.manifest['projection']['llm_resolution'],'processing_method':'ner_rules_v1'}
     base=canonical_sha256({'expiry_minutes':configuration.evidence_expiry_minutes,
         'retention_hours':configuration.news_unconfirmed_retention_hours,'identity':identity})
     from types import SimpleNamespace

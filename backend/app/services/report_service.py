@@ -226,4 +226,16 @@ def get_active_floods(db: Session):
                 for profile in ("walk", "motorcycle", "light", "heavy")
             },
         })
+    # Demonstrations are displayed/cached, but never passed to route exclusions.
+    from app.services.historical_news_metadata import demo_event, event_metadata, public_metadata
+    from app.crud.report import get_active_avoidance_zone_query
+    demos = get_active_avoidance_zone_query(db).filter(demo_event(FloodAvoidanceZone.event_id)).all()
+    metadata = event_metadata(db, [zone.event_id for zone in demos])
+    for zone in demos:
+        from geoalchemy2.shape import to_shape
+        from shapely.geometry import mapping
+        data.append({'id': zone.id, 'status': 'active', 'severity': zone.severity,
+            'polygon': mapping(to_shape(zone.geometry)), 'affects_routing': False,
+            'historical': public_metadata(metadata[zone.event_id]),
+            'routing_restrictions': {profile: 'passable' for profile in ('walk', 'motorcycle', 'light', 'heavy')}})
     return data

@@ -18,6 +18,8 @@ This document defines the core operational boundaries, architecture, and require
 ## 2. Global Boundaries & Vibe Coding Rules
 
 ### ✅ Always Do:
+- **Preserve Existing Design**: Keep existing badges, modals, layouts and visual styling unless the user explicitly requests a design change. Functional integration does not authorize a redesign or new presentation labels. Do not display the historical-demonstration label in presentation screens; retain internal lineage and eligibility metadata separately.
+- **Unified Flood History**: Flood History & Analytics uses its existing unified history view and normal filters. Do not add a historical-dataset selector; dataset/session tracking belongs in internal processing metadata.
 - **Keep logic on the server**: All data manipulation, pricing, permissions, and database queries must occur in the FastAPI backend, NEVER in the Next.js frontend.
 - **Proactively Use Specific Skills**: You MUST independently determine if your task relates to any of the specialized agents defined in `.agents/skills/` (such as `api-agent`, `security-agent`, `test-agent`, `ui-agent`, or `senior-planner-agent`). If a task matches a skill's domain, you MUST automatically read and follow that skill's instructions, even if the human developer does not explicitly mention them or use a slash command.
 - **Surface Errors to the User**: Do not swallow errors (e.g., `catch (err) { console.error(err) }` without updating UI state). Ensure the user is notified if a request fails.

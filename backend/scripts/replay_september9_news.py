@@ -207,12 +207,13 @@ async def persist(capture_dir: Path) -> dict:
 
     urls = [spec.url for spec in ARTICLES]
     original_save = news.save_candidate
-    def historical_save(db, entry, candidate):
+    def historical_save(db, entry, candidate, *, local_update_only=False):
         # Keep actual parser source IDs during retrieval; mark saved provenance
         # visibly as local test without touching global publisher registration.
         label = f"{entry.publisher} ({TEST_LABEL})"
         return original_save(db, replace(entry, source_id=label),
-                             replace(candidate, source_id=label) if candidate is not None else None)
+                             replace(candidate, source_id=label) if candidate is not None else None,
+                             local_update_only=local_update_only)
 
     def counts(db) -> dict:
         ids = select(NewsArticle.id).where(NewsArticle.canonical_url.in_(urls))

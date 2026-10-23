@@ -1,6 +1,150 @@
 # LANES documentation
 
-> **Last Updated:** October 21, 2026, 09:23 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Latest verified cloud state — three connected-road GMA active zones
+
+Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. [Release and geometry verification](evaluations/gma-connected-road-20261023.md); [current checklist](task_plan.md#current-state--three-connected-road-gma-active-locations-saved). Hosted/local desktop/mobile acceptance passed. Earlier stopped checkpoints below describe their earlier releases.
+
+
+## Earlier v27 verification — scoped GMA cleanup; plotting blocked
+
+[Incorrect-capture cleanup and active-only gate](evaluations/gma-active-cleanup-20261023.md): old event/zone pairs 71–75 and their incorrect capture/processing chain were removed after backup/rehearsal. Three corrected run-388 observations remain visible; unrelated history event 76 is preserved. API/worker v27 supports active-only output without ended counterparts, but the actual three-location spatial preview remains unresolved and **no active GMA polygons were created**. No provider calls; stopped ledger unchanged at 42 / US$0.7524937. [Current work and blockers](task_plan.md#current-state--incorrect-gma-chain-removed-active-plotting-blocked).
+
+## Latest verified completion — three GMA News Intelligence observations
+
+[GMA three-location completion](evaluations/gma-three-location-completion-20261023.md): correction 388 is live on API v26 and localhost, including **Tañong F. Sevilla Blvd. (Bayan)**. Exact article evidence, gutter depth, Sep 9 at 2:47 PM and vehicle passage agree across all three cards. Cached responses and zero-provider finalization avoided further calls after the one authorized request. Hosted/local desktop/mobile pass; ledger stopped at **42 attempts / US$0.7524937**. No GMA history/polygon/active output; other articles and spatial qualification remain pending review.
+
+
+## Earlier cloud checkpoint — heading repair deployed; continuation stopped
+
+[GMA city-heading repair and duplicate-locality diagnosis](evaluations/gma-city-heading-20261023.md): v3 fixes plain-list city context and passes offline/disposable qualification. The real second batch additionally classified Brgy San Agustin using Rizal Avenue's road evidence, so processing stopped before batch three. Only failed run 386 was appended. API v23/local readers still show two accepted observations, current history/active zones remain empty, and the ledger is stopped at **41 attempts / US$0.748841**. No promotion, retry, NER inference or polygon creation followed.
+
+
+## Previous accepted source correction — two observations; plotting unresolved
+
+[GMA clean-source correction and superseded-history withdrawal](evaluations/gma-source-correction-20261023.md): actual NER/Gemini processing now uses original 140/native 569. Two correct gutter-deep observations at Sep 9, 2:47 PM appear in News Intelligence. Five obsolete history polygons are retained as evidence but withdrawn from current history/maps/analytics/exports; **no replacement polygon qualifies yet**. F. Sevilla citation and spatial coverage/road interpretation remain pending. API/worker v23, frontend unchanged; preserved accounts/posts/reports and repeat/offline/desktop/mobile checks pass. Stopped ledger: 39 attempts / US$0.7418188, cap US$1. Older checkpoints below are not current geometry acceptance.
+
+## Latest source review — GMA capture mismatch and deployed admin reader repair
+
+[GMA source review and summary repair](evaluations/news-source-review-20261023.md): the pilot reused an indexed snapshot despite a clean publisher body already being saved. The current source display now matches that publisher capture; selected Flood Details replaces duplicated raw NER diagnostics, and immutable processing evidence stays accessible. API/frontend/manual guard deployed and hosted/local desktop/mobile checks pass without data or Gemini-budget changes. Existing five derived observations/events require reprocessing/review before source accuracy is claimed. Other articles and activation remain pending.
+
+## Latest verified outcome — GMA Flood History populated; review stop
+
+[GMA shared-depth historical archives](evaluations/three-article-cloud-pilot-20261022/gma-shared-history.md): five ended incidents and five inactive estimated corridors now appear in existing hosted/local history cards, maps, analytics and exports. News Intelligence retains five observations. Source-supported shared severity is preserved without individual depth measurements; old evaluations remain immutable. Worker v18 only, API v17 unchanged; no extra Gemini/inference calls, ledger unchanged/stopped, protected records preserved. Desktop/mobile acceptance and repeat zero-write checks pass. Tribune, Philstar and active instances remain pending.
+
+
+## Earlier hosted checkpoint — five corrected GMA observations; archives unresolved
+
+[GMA population, reader patch and remaining historical blocker](evaluations/three-article-cloud-pilot-20261022/gma-population.md): run 380 supplies five live News Intelligence cards with September 9, 8:55 AM times; all 51 targets have outcomes. Five historical evaluations remain unresolved because shared depth cannot satisfy the current individual-depth polygon rule; Flood History/Active Zones stay empty. Corrected-group Info HTTP 422 is patched, desktop/mobile scrolling/source work, replay/idempotence pass and the ledger is stopped at US$0.7314696 under US$1. Tribune, Philstar and activation await review. Earlier dated checkpoints below remain retained.
+
+## Latest cloud verification — one GMA batch accepted; review stop
+
+[Restricted scoped GMA gate](evaluations/three-article-cloud-pilot-20261022/scoped-cloud-gate.md): 231 tests and seven worker contracts pass; one token-count and one real generation accept both road observations with correct source dates/clocks/shared depth, leaving barangay headings as context. Two offline replays reproduce the result. Ledger stopped at 24 attempts/US$0.6726674 effective commitment; new usage estimate US$0.005293. Manual worker v14 deployed, API v11 and all application-table fingerprints unchanged. **No seeding or new public data**; full GMA/article/history/presentation stages remain pending. Earlier entries retain their dated scope.
+
+## Latest implementation — scoped Gemini evidence contract (offline candidate)
+
+[Scoped contract repair and qualification](evaluations/three-article-cloud-pilot-20261022/scoped-evidence-repair.md) records the opt-in V2 passage/heading/field contract, explicit unresolved row outcomes, strict recomputation, usage compatibility and offline retained-response checks. **197 regression tests and seven frozen Linux worker contracts pass**. Cloud deployment, new budgeting/authority review and real-model acceptance remain pending. No paid requests or flood data were created; v11 is still the last verified hosted checkpoint. The research entries below retain their dated scope.
+
+## Latest investigation — GMA evidence handoff and grounding options
+
+[Source-evidence investigation](research/gemini-evidence-validation-20261023.md) reproduces the real four-row failure offline and finds an additional missing-date citation in every row, plus a latent thinking-token transport mismatch. Research compares current Google docs with firsthand developer-forum, Reddit and Stack Overflow reports; older Search/JSON incompatibility advice is checked against its October 5, 2026 fix. Recommended repair pre-binds target passages, represents heading scope and context-only barangay roles, collects complete diagnostics, and evaluates row-level unresolved outcomes. Search/Maps remain a separate enrichment/cost/attribution decision. **Investigation only:** no runtime/source-code deployment, paid request, database write or ledger change. GMA seeding remains incomplete.
+
+## Latest GMA continuation — accounting repaired; source evidence blocks seeding
+
+[Four-target cloud execution and V2 accounting](evaluations/three-article-cloud-pilot-20261022/budget-review.md): matching API/worker v11 deployed after local, Linux, cloud and protected-reader checks. CountTokens fits the complete schedule under US$1. Three new requests return HTTP 200; gate and next batch pass, following response fails strict source semantics and stops at run 379. Final ledger: 23 preserved attempts/US$0.6673744 effective commitment; usage estimates are not an invoice. No complete correction, flood history or active zone was created. Hosted desktop/mobile failure/scroll/empty-state checks and full preservation audit pass. Source-evidence repair, complete GMA acceptance and seeding remain pending. Earlier entries retain dated scope.
+
+## Latest GMA-only continuation — stopped before seeding
+
+[GMA-first release and retained HTTP 400](evaluations/three-article-cloud-pilot-20261022/gma-review.md): v9 worker/API readers pass 151 tests, seven image/cloud contracts and hosted desktop/mobile failure/history/scroll/empty-state checks. Cached four-target evidence is reused without a request; the first new eight-target call is rejected with generic `INVALID_ARGUMENT`. No later batches, corrected flood observations, history or active zones. New failed run 378 is preserved; all pre-existing protected data and original 375/376 are unchanged. Ledger stopped at 20 attempts/US$0.7731994 reservations under unchanged US$1 cap. A compatible request and fresh cost plan are required; schema complexity is a hypothesis. Earlier entries below retain dated scope.
+
+## Current three-article pilot
+
+[Single repaired GMA cloud batch accepted](evaluations/three-article-cloud-pilot-20261022/quote-contract-cloud.md): separate V2 authority, matching deployed manual worker, 127 tests and seven image/cloud contracts. Exactly one HTTP-200 four-target response passes evidence-reference validation and two offline replays. Ledger stops at 19 preserved attempts/US$0.7306760 conservative reservations. API/protected data unchanged; concurrent normal visitor heartbeat is recorded separately. No full article correction, spatial output or seeding; the three-article continuation remains pending.
+
+[Cause-specific evidence-contract repair](evaluations/three-article-cloud-pilot-20261022/evidence-contract.md): article-specific passage-ID enums and explicit offset/index instructions pass 114 local tests and seven network-disabled Linux contracts. Full inputs and semantic/source checks are preserved; original rejected evidence remains rejected. No provider call, cloud/database deployment or ledger change. Matching cloud release, live acceptance and three-article outputs remain pending.
+
+[Private retention repair and single GMA diagnostic](evaluations/three-article-cloud-pilot-20261022/evidence-retention.md): worker-only release passes 91 local tests, seven local/cloud contracts and real private-storage retention/immutability checks. One frozen GMA batch returns HTTP 200 but nine evidence fields reference 318/327/347 instead of valid passage IDs 0–58. The retained response replays twice without networking or paid calls; source-character/index confusion is the evidence-supported explanation. Every database fingerprint and serving API v5 remains unchanged. The ledger stops at 18 preserved attempts/US$0.6885786 conservative reservations. Full GMA correction, spatial qualification and all seeding remain pending. [Retention/replay operator guide](guides/news-gemini-runtime.md#private-batch-retention-and-offline-inspection). Earlier entries below retain their dated scope.
+
+[Pilot execution and evidence-validation blocker](evaluations/three-article-cloud-pilot-20261022/pilot-execution.md): Philstar is registered, all three inputs/permissions are frozen, and actual GMA NER succeeds with 51 mentions. Thirteen successful Gemini requests are followed by a backend evidence-index rejection. The pilot stops before other articles or flood writes; no events/zones were created. Exact rejected arrays are not retained by the current failed-run handler, so diagnostic retention and evidence repair remain pending. Existing rows and paused/expiry settings are preserved; the same US$1 ledger is stopped with US$0.6481486 conservative reservations. Protected API and desktop/mobile failure/history/scroll/empty-state checks pass. This is not completed seeding.
+
+[Gemini repair and real cloud acceptance](evaluations/three-article-cloud-pilot-20261022/provider-repair.md): schema-only comparison isolates HTTP 400, and the compact response with exact batch IDs/count passes actual provider/backend validation. Matching API v5 serves navlanes.live after protected canary/serving checks; all database fingerprints remain unchanged. Fifty focused tests and seven local/cloud contracts pass. Three original articles remain frozen and unprocessed; news remains paused, expiry OFF and the US$1 ledger stopped pending the article stage. [Pilot inventory and implementation](evaluations/three-article-cloud-pilot-20261022/README.md) · [Earlier no-generation-call investigation](evaluations/three-article-cloud-pilot-20261022/provider-investigation.md).
+
+## Latest Gemini credential attempt — not promoted
+
+[Personal-key rotation and recovery](evaluations/gemini-key-rotation-20261022/README.md): the withdrawn personal credential remains stored as version 3 and unused. API/discovery/manual verification retain original LANES version 2; its later successful acceptance is recorded above. Three-article seeding remains pending; news stays paused and expiry stays OFF.
+
+## Current database state — authorized flood reset completed
+
+[Execution, verification and recovery](evaluations/flood-data-reset-20261022/README.md) · [Counts and hashes](evaluations/flood-data-reset-20261022/summary.json). Flood/history/report/moderation/news-output records are cleared. Preserved all 37 community posts, eight accounts and 174 source articles/224 versions; 34 post/report links detached. Backups restored/rehearsed; 12 guard tests and actual desktop/mobile/API/map/SSE/export checks pass. Public access restored. News processing/scheduling stays paused; old extraction IDs are absent. Earlier delivery records below retain their original pre-reset checkpoints.
+
+## NER → Gemini verification
+
+[Implementation/release plan](plans/ner-gemini-verification.md) · [Operator guide](guides/ner-gemini-verification.md) · [Guarded cloud release and provider blocker](evaluations/ner-gemini-cloud-release-20261022/README.md). Matching backend/readers now serve navlanes.live; the separate manual verification worker reuses the existing key. The single authorized real request returned HTTP 402, so successful provider correction remains unqualified. Sixty current local checks, cloud software contracts, protected hosted APIs and desktop/mobile empty-state/export checks pass. All database fingerprints remain unchanged; news automation stays paused and no articles were seeded. Earlier [297-check local acceptance](evaluations/ner-gemini-verification-20261022/README.md) remains retained; test counts are not additive.
+
+## Completed Part 2A shared execution
+
+[Final release and aggregate evidence](evaluations/news-history-shared-execution-20261022/README.md): 111 full articles / 56 actual cloud batches, all 56 repeated without inference; 33 training publisher outcomes unresolved. All 629 group receipts remain unresolved, so no new archive/polygon was created. Original citizen/event/zone rows are unchanged; hosted counts/filters/source/history/maps/exports agree. Existing frontend source was deployed only for reader compatibility; no UI edits. Manual seed execution disabled; Part 2B remains separate. Earlier preparation snapshots below retain their original dates.
+
+## NER deployment first — separate test package verified locally
+
+**Latest result: the trained NER passes the full isolated Cloud Run qualification.** `lanes-ner-check-nbpmz` independently matches 355 graph/provenance results, 352 retained prediction records and 53 reviewed mentions; all 358 resource snapshots, isolation, timing and clean shutdown pass under the approved cloud profile. Peak memory 2,067.3 MiB (<2,688). The ordinary worker, Cloud SQL, schedules and application remain unchanged; production integration/history seeding are still separate. [Cloud acceptance and evidence](evaluations/ner-cloud-check-20261022/README.md#cloud-acceptance--full-frozen-workload-passed).
+
+[Original local/failed attempts and current cloud acceptance](evaluations/ner-cloud-check-20261022/README.md) · [Operator guide](guides/ner-cloud-check.md). Local software checks: 150 tests and 12 Linux profile cases. Earlier 75/83/103-test checkpoints and both diagnostic executions are retained and are not additive totals. Cloud qualification is complete for the separate inference-only job; connecting the automatic news worker, shared Part 2A seeding, Part 2B and temporary resource cleanup remain separately gated.
+
+## Part 2A — news-derived history and general article seeding
+
+[Implementation, read-only audit and verification](evaluations/news-history-part2a-20261022/README.md): 374 backend passes; 19 desktop/mobile passes with one intentional skip; TypeScript, focused lint and production build pass. Twelve saved full-body articles and 132 training sources are inventoried; shared processing/application remains blocked and unexecuted. [General operator workflow](guides/historical-news-preparation.md#part-2a--general-source-inventory-and-archive-preparation).
+
+## Publisher-body capture corrected before Phase 2
+
+[Fix, tests and prepared September 9 replacement](evaluations/news-publisher-body-capture-20261022/README.md) · [Structured evidence](evaluations/news-publisher-body-capture-20261022/summary.json). GMA standard/AMP body selection excludes page chrome while retaining temporal evidence. September 24 is unchanged. Capture/native regression union: 245 distinct passes plus 13 subtests; the two separately reproduced pre-existing extraction failures were subsequently resolved in Part 2A. With explicit one-article approval, article 47 now uses original-publisher version 140/completed rules-only run 140; old extraction/history remain intact. No UI redesign or flood activation. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## September database cleanup question — inspected read-only
+
+[Current Cloud SQL records, table dependencies and recommendation](evaluations/september-database-reuse-20261022/README.md) · [Structured evidence](evaluations/september-database-reuse-20261022/summary.json). Articles 25/47 retain three versions, ten legacy runs and six ended/inactive event/zone pairs. No native run or historical-import output exists. Immutable publication dependencies and unchanged E0 inputs are confirmed; retaining the records supports separately qualified active September output. No deletion, migration or other cloud write occurred. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Phase 1 — connected local workflow verification
+
+**Latest user amendment:** [unified history restored](evaluations/news-historical-phase1-20261022/README.md#unified-history-amendment). The historical-dataset dropdown is removed; dataset/session tracking remains internal. Existing history filters and event links remain.
+
+[Backend integration and final acceptance record](evaluations/news-historical-phase1-20261022/README.md) · [Operator guide](guides/historical-news-preparation.md#phase-1--saved-output-materialization-and-reading). **Complete locally:** all eight tasks pass with 434 backend checks, 45 desktop/mobile project checks (three intentional skips), TypeScript, focused lint and production build. The final changed-workflow/offline rerun passes 12 checks. The visible demonstration label and added badge/modal presentation are removed as requested. No real September inference, shared/cloud output or deployment. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## October 25 presentation — two active phases
+
+**Phase 2 execution order:** [2A — seed Flood History from saved articles and NER training articles](task_plan.md#part-2a--seed-flood-history-including-ner-training-articles), then [2B — generate September active flood zones and verify deactivation/history](task_plan.md#part-2b--september-articles-for-active-flood-zones). Both shared execution paths remain unexecuted; Part 2A implementation is locally verified.
+
+**Latest scope correction:** [Phase 2 includes existing saved articles in Flood History](task_plan.md#phase-2--deploy-and-demonstrate). The selected September articles are specifically intended for active flood zones; their original historical records remain retained. Other saved articles supply supported Flood History observations. General batch support, source inventory and cross-article reuse are locally verified; shared qualification, actual NER processing/application and deployment remain pending.
+
+[Phase 1 — connect the existing system; Phase 2 — deploy and demonstrate](task_plan.md#october-25-presentation--two-phase-delivery-plan). Completed E0/E1 remains retained; existing extraction, plotting and interfaces are reused. [Technical details](plans/historical-news-demonstration-phase-e.md) and manual UI checks stay linked. This is a planning reorganization only. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## E1 — complete historical processing software delivery
+
+[345 passing checks](evaluations/news-historical-e1-20261022/README.md) · [Aggregate evidence](evaluations/news-historical-e1-20261022/summary.json) · [Current operator guide](guides/historical-news-preparation.md#e1--complete-controlled-historical-processing). Exact-target policy, constrained shared worker, source/date interpretation and existing placement-preview handoff are complete locally. E0 remains unchanged. No cloud processing, September inference, flood publication or UI changes occurred. Next: Phase 1 integration, followed by Phase 2 hosted qualification and demonstration (legacy E2–E6 references below are earlier checkpoints). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## E1.2 — historical operator command verified locally
+
+[227-check verification](evaluations/news-historical-command-e12-20261022/README.md) · [Aggregate](evaluations/news-historical-command-e12-20261022/summary.json) · [Operator command guide](guides/historical-news-preparation.md#e12--manifest-bound-preflight-and-disposable-processing) · [Next E1 task](task_plan.md#e1--connect-controlled-historical-processing). Frozen-package preflight is database-enforced read-only; processing uses exact captures/runs on disposable storage only and preserves failures/leases/completed evidence. E0's real package authenticates unchanged; no real September inference, cloud access, activation or UI change occurred. The cloud-target policy and remaining E1–E6 gates are open. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## E1.1 — maintenance correction verified locally
+
+[82-check verification](evaluations/news-maintenance-e11-20261022/README.md) · [Aggregate](evaluations/news-maintenance-e11-20261022/summary.json) · [Next E1 task](task_plan.md#e1--connect-controlled-historical-processing). Invalid auditor settings no longer block independent due-case expiry; the original configuration error remains visible and scheduler maintenance counts/errors remain separate. Expiry OFF preserves actual fixture zones and history. No frontend/cloud setting change or deployment; next is the manifest-bound historical command. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## E0 — September inputs prepared
+
+[Verified preparation and 27 checks](evaluations/news-historical-e0-20261021/README.md) · [Aggregate evidence](evaluations/news-historical-e0-20261021/summary.json) · [Operator guide](guides/historical-news-preparation.md) · [Completed E0 checklist](task_plan.md#e0--prepare-and-freeze-real-article-inputs). The private manifest binds two exact saved article versions, two native captures, five existing history references and one stable demonstration session. Repeated read-only execution verifies the same package. Quirino/Guazon is primary, Gov. Pascual backup; both still need independent neural/source/geometry acceptance. Publication provenance gaps stay explicit. No inference, cloud write or activation occurred. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Historical presentation and Phase E — detailed plan
+
+**Corrected presentation target:** selected September articles must generate visible active examples on **both public map and Spatial Operations**, with original dates and historical-demonstration labels; other outputs remain historical. The detailed plan includes demo activation/deactivation-to-history and repeat-safe original/demo identities. This supersedes the earlier archive-only interpretation; no example has been activated by these documentation changes.
+
+**September reuse recheck:** [existing cloud article/run/history identities and text comparison](evaluations/news-historical-readiness-20261021/README.md#7-september-record-reuse-and-redundancy-recheck) confirm these articles and ended zones already exist. E0 verifies/reuses them; E2 must match existing incidents before any insertion. A new neural extraction record must not become a duplicate flood event.
+
+[Two-phase delivery checklist](task_plan.md#october-25-presentation--detailed-e0e6-delivery-plan) · [Technical blueprint and acceptance matrix](plans/historical-news-demonstration-phase-e.md) · [Planning milestone](progress.md#historical-presentation-and-phase-e--detailed-delivery-plan-documented). The plan targets the existing hosted system with authenticated saved articles, reused NER/OSM/NOAH services, selected active demonstration examples plus historical persistence, explicit date/demo/assumption semantics, Phase E interface integration and qualified cloud rehearsal. It selects no database reset for this delivery. E0/E1 and Phase 1 are verified locally; Phase 2 remains pending. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Historical news presentation — readiness review
+
+[Review, 54 component checks, spatial assets and read-only cloud findings](evaluations/news-historical-readiness-20261021/README.md) · [Agreed requirements and next planning task](task_plan.md#october-25-presentation--review-complete-detailed-implementation-plan-next) · [Completed-work checkpoint](progress.md#historical-news-demonstration--readiness-review-complete). Existing captured articles and OSM/NOAH services are the selected path to historical results on the existing hosted system. Detailed import/reset/date semantics and Phase E/cloud acceptance remain unfinished; the Phase D maintenance finding is subsequently fixed locally in E1.1, with cloud release still pending. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Current spatial/history delivery checkpoint
 
@@ -885,6 +1029,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
+- [Historical presentation and Phase E delivery](plans/historical-news-demonstration-phase-e.md): E0–E6 input/processing/history/UI/cloud/rehearsal gates, existing-service reuse, dataset lineage, no-reset scope and truthful occurrence/closure analytics for October 25.
+
 - [spaCy NER research through production operation](plans/lanes-ner-training-plan.md) — shared-fact research, silver annotations, local model qualification/integration, proposed acceptance contract, cloud packaging/deployment/rollback, monitoring and model maintenance; preserves weather/experimental scope.
 
 - [Additive LANES MCP review pilot](plans/lanes-mcp-chatgpt-review.md) — preservation contract, isolated gateway, authenticated reads, strict previews and later gated handoff.
@@ -914,6 +1060,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Historical news presentation readiness review — October 21](evaluations/news-historical-readiness-20261021/README.md): completed conversation/code/cloud inspection, 54 component passes and spatial-asset checks; historical persistence, timestamp/analytics semantics, cleanup scope and cloud/Phase E delivery remain open.
 
 - [Desktop history and dataset gap completion](evaluations/flood-ner-desktop-history-gap-completion-20261017/README.md) — reconciled desktop inventory, three qualified validation additions, isolated test outcome and remaining readiness limits.
 - [Targeted test collection and desktop history handoff](evaluations/flood-ner-targeted-test-history-handoff-20261017/README.md) — isolated saved-capture review, explicit collection-budget failure, unchanged development candidates and a tested metadata-only desktop inventory.

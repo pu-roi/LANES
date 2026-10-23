@@ -129,7 +129,8 @@ def get_event_metrics(
         "active_zone_count": active_zone_count,
         "location_count": db.query(models.FloodEventLocation.id).filter(models.FloodEventLocation.event_id == event.id).count(),
     }
-    return _event_metrics(event, as_of, counts)
+    from app.services.news_history_evidence import event_projections, project_values
+    return project_values(_event_metrics(event, as_of, counts), event_projections(db, [event.id]).get(event.id))
 
 
 def _event_metrics(event: models.FloodEvent, as_of: datetime, counts: dict[str, int]) -> dict[str, Any]:
@@ -163,6 +164,7 @@ def build_flood_event_history_query(
     road: Optional[str] = None,
     search: Optional[str] = None,
     multiple_places: bool = False,
+    dataset_id: Optional[str] = None,
 ) -> Any:
     """Build one authorized-event query for history, planning, and exports.
 
@@ -180,6 +182,21 @@ def build_flood_event_history_query(
         raise ValueError("Invalid Flood Event severity") from exc
 
     query = db.query(models.FloodEvent)
+    from app.services.news_source_repair import superseded_event
+    query = query.filter(~superseded_event())
+    from app.services.news_gma_active_outputs import active_only_event
+    query = query.filter(~active_only_event())
+    from app.services.historical_news_metadata import DATASET, Timeline, ENTRY, occurrence_day, metadata_field
+    if dataset_id:
+        import re
+        if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,99}', dataset_id):
+            raise ValueError('Unknown historical dataset')
+        if dataset_id != DATASET and not db.query(Timeline.id).filter(Timeline.entry_type == ENTRY,
+                Timeline.snapshot_json['schema_version'].as_string() == 'historical-import-v1',
+                Timeline.snapshot_json['dataset_id'].as_string() == dataset_id).first():
+            raise ValueError('Unknown historical dataset')
+        query = query.filter(db.query(Timeline.id).filter(Timeline.event_id == models.FloodEvent.id,
+            Timeline.entry_type == ENTRY, Timeline.snapshot_json['dataset_id'].as_string() == dataset_id).exists())
     if multiple_places:
         place_count = db.query(func.count(models.FloodEventLocation.id)).filter(
             models.FloodEventLocation.event_id == models.FloodEvent.id,
@@ -191,9 +208,9 @@ def build_flood_event_history_query(
     if severity_value:
         query = query.filter(models.FloodEvent.peak_severity == severity_value)
     if date_from:
-        query = query.filter(models.FloodEvent.verified_at >= ensure_utc(date_from))
+        query = query.filter(occurrence_day() >= date_from.date())
     if date_to:
-        query = query.filter(models.FloodEvent.verified_at <= ensure_utc(date_to))
+        query = query.filter(occurrence_day() <= date_to.date())
 
     barangay_term = barangay.strip() if barangay else ""
     road_term = road.strip() if road else ""
@@ -244,9 +261,8 @@ def flood_history_records(db: Session, events: list[models.FloodEvent], *, summa
         return []
     ids = [event.id for event in events]
     locations: dict[int, list[Any]] = defaultdict(list)
-    for location in db.query(models.FloodEventLocation).filter(models.FloodEventLocation.event_id.in_(ids)).order_by(
-            models.FloodEventLocation.location_type, models.FloodEventLocation.display_name):
-        locations[location.event_id].append(location)
+    from app.services.news_history_evidence import event_projections, project_values
+    projections = event_projections(db, ids, locations=locations)
     zones: dict[int, list[Any]] = defaultdict(list)
     zone_query = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.event_id.in_(ids)).order_by(
         models.FloodAvoidanceZone.created_at.asc(), models.FloodAvoidanceZone.id.asc())
@@ -294,7 +310,7 @@ def flood_history_records(db: Session, events: list[models.FloodEvent], *, summa
                 event.id, event.peak_severity, event_zones)],
             "zones": serialized_zones,
         })
-    return records
+    return [project_values(row, projections.get(row["id"])) for row in records]
 
 
 def _event_report_counts(db: Session, event_ids: list[int]) -> dict[int, int]:
@@ -339,11 +355,17 @@ def get_flood_event_planning_analytics(
     Returned report numbers are an explicitly separate corroboration/confidence
     signal.  Rejected and deleted reports have no place in this aggregation.
     """
+    from app.services.historical_news_metadata import event_metadata
+    historical = event_metadata(db, [e.id for e in events])
+    demo_count = sum(m.is_demo for m in historical.values())
+    events = [e for e in events if e.id not in historical or not historical[e.id].is_demo]
     event_ids = [event.id for event in events]
     report_counts = _event_report_counts(db, event_ids)
     locations_by_event = _event_locations(db, event_ids)
     severity_counts = Counter(event.peak_severity.value for event in events)
-    daily_counts = Counter(event.verified_at.date().isoformat() for event in events)
+    from app.services.news_history_evidence import event_projections
+    projections = event_projections(db, event_ids)
+    daily_counts = Counter(projections[event.id]["occurrence_date"] or "Unknown" if projections[event.id]["news_timing"] else event.verified_at.date().isoformat() for event in events)
     verification_pattern = Counter(
         (
             _as_manila_time(event.verified_at).weekday(),
@@ -356,7 +378,7 @@ def get_flood_event_planning_analytics(
     duration_minutes: list[int] = []
 
     for event in events:
-        if event.status == models.FloodEventStatus.ENDED and event.ended_at:
+        if not projections[event.id]["news_timing"] and event.status == models.FloodEventStatus.ENDED and event.ended_at:
             duration_minutes.append(max(0, int((ensure_utc(event.ended_at) - ensure_utc(event.verified_at)).total_seconds() // 60)))
         # Each normalized place is only counted once per event even if the
         # event gathered multiple corroborating reports from that place.
@@ -410,6 +432,11 @@ def get_flood_event_planning_analytics(
             report_day_counts[str(report_day)] += count
     ended_count = sum(event.status == models.FloodEventStatus.ENDED for event in events)
     return {
+        "demonstration_instances": demo_count,
+        "historical_intervals": {
+            "assumed_two_hour_events": sum(m.closure_basis == 'assumed_two_hours' for m in historical.values() if not m.is_demo),
+            "unknown_endpoints": sum(e.ended_at is None for e in events if e.id in historical),
+        },
         "total_events": len(events),
         "ended_events": ended_count,
         "active_events": len(events) - ended_count,
@@ -449,7 +476,8 @@ def get_flood_event_planning_analytics(
             "flood_events": "Distinct verified incidents. Repeated reports for one incident count once.",
             "supporting_reports": "Approved, non-deleted reports linked to the selected Flood Events; a confidence signal, not an event count.",
             "peak_verified_severity": "The highest verified severity recorded for each Flood Event.",
-            "official_duration": "Time from event verification until the final active zone ended. Active events are excluded from duration averages.",
+            "official_duration": "Time from operational verification until the final active zone ended. News administrative intervals, imported assumptions and active events are excluded.",
+            "historical_occurrence": "News-origin events use supported source occurrence dates; unknown source dates remain unknown. Demonstration instances do not add real flood occurrences.",
             "verification_pattern": "Verified Flood Events by Asia/Manila day and hour. This shows verification timing, not when floodwater first began.",
         },
     }
@@ -463,11 +491,21 @@ def serialize_flood_event_planning_records(
     event_ids = [event.id for event in events]
     report_counts = _event_report_counts(db, event_ids)
     locations_by_event = _event_locations(db, event_ids)
+    from app.services.historical_news_metadata import event_metadata
+    historical = event_metadata(db, event_ids)
+    from app.services.news_history_evidence import event_projections
+    projections = event_projections(db, event_ids)
     rows: list[dict[str, Any]] = []
     for event in events:
         locations = locations_by_event.get(event.id, [])
         rows.append({
             "event_id": event.id,
+            "historical": historical[event.id].model_dump(mode="json") if event.id in historical else None,
+            "origin": projections[event.id]["origin"],
+            "news_article_count": projections[event.id]["news_article_count"],
+            "occurrence_date": projections[event.id]["occurrence_date"] if projections[event.id]["news_timing"] else event.verified_at.date().isoformat(),
+            "observation_precision": projections[event.id]["observation_precision"],
+            "closure_basis": projections[event.id]["closure_basis"],
             "status": event.status.value,
             "first_reported_at": event.first_reported_at,
             "verified_at": event.verified_at,
@@ -476,7 +514,7 @@ def serialize_flood_event_planning_records(
             "peak_depth_label": event.peak_depth,
             "official_duration_minutes": (
                 max(0, int((event.ended_at - event.verified_at).total_seconds() // 60))
-                if event.status == models.FloodEventStatus.ENDED and event.ended_at else None
+                if not projections[event.id]["news_timing"] and event.status == models.FloodEventStatus.ENDED and event.ended_at else None
             ),
             "approved_supporting_report_count": report_counts.get(event.id, 0),
             "barangays": "; ".join(location.display_name for location in locations if location.location_type == models.FloodEventLocationType.BARANGAY),
@@ -757,6 +795,9 @@ def deactivate_zone_and_end_event_if_final(
         return zone
     try:
         zone.is_active = False
+        if zone.event_id:
+            from app.services.historical_news_metadata import record_demo_deactivation
+            record_demo_deactivation(db, zone.event_id, zone.id, occurred_at)
         event = zone.flood_event
         if event:
             remaining = db.query(models.FloodAvoidanceZone.id).filter(

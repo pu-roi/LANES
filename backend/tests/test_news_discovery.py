@@ -18,6 +18,7 @@ from app.core.database import get_db
 from app.main import app
 from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint, NewsArticleVersion, NewsExtractionRun
 from app.models.news_telemetry import NewsDiscoveryRun, NewsDiscoveryFeedRun, NewsFallbackLookup, NewsFallbackLookupLead
+from app.models.setting import SystemSetting
 
 TELEMETRY_TABLES = [NewsDiscoveryRun.__table__, NewsDiscoveryFeedRun.__table__, NewsFallbackLookup.__table__, NewsFallbackLookupLead.__table__]
 from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_metro_manila_flood, likely_pasig_flood
@@ -743,7 +744,7 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    tables = TELEMETRY_TABLES + [NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    tables = TELEMETRY_TABLES + [SystemSetting.__table__, NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
     NewsArticle.metadata.create_all(engine, tables=tables)
 
     def test_db():

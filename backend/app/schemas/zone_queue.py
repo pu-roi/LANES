@@ -11,6 +11,7 @@ ZoneSource = Literal["all", "user_reports", "news", "official", "other"]
 
 
 class ZoneQueueItem(BaseModel):
+    historical: dict | None = None
     zone_id: int
     member_count: int
     location: str

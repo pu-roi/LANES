@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 import platform
+import os
 import signal
 import threading
 import time
@@ -70,6 +71,7 @@ class NativeProcessingSummary:
     stop_reason: str='limit_reached'
     error_code: str | None=None
     runs: list[dict]=field(default_factory=list)
+    resource_snapshots: list[dict]=field(default_factory=list)
 
 
 @contextmanager
@@ -87,30 +89,58 @@ async def process_native_saved_news(factory: Callable[[],Session], *, load_asset
         environment: str, database_url: str, limit: int=50, article_id: int | None=None, sources: tuple | None=None,
         runtime_factory: Callable[[TrustedAssets],ModelSession] | None=None,
         clock: Callable[[],datetime]=utc_now, monotonic: Callable[[],float]=time.monotonic,
-        invocation_deadline: float | None=None, prepare_readers: bool=False) -> NativeProcessingSummary:
+        invocation_deadline: float | None=None, prepare_readers: bool=False,
+        run_ids: tuple[int,...] | None=None, historical_authorization: object | None=None) -> NativeProcessingSummary:
     started=monotonic();end=started+JOB_SECONDS
     if invocation_deadline is not None:
         from math import isfinite
         if not isfinite(invocation_deadline):raise NerEvidenceError('ner_configuration_invalid')
         end=min(end,invocation_deadline)
-    require_local_target(environment,database_url)
+    if historical_authorization is None:
+        require_local_target(environment,database_url)
+    else:
+        from app.services.news_historical_policy import HistoricalAuthorization
+        from app.services.news_three_article_pilot import PilotAuthority
+        if (type(historical_authorization) not in (HistoricalAuthorization, PilotAuthority) or run_ids is None
+                or article_id is not None or prepare_readers):
+            raise NerEvidenceError('ner_configuration_invalid')
     if not 1<=limit<=200 or (article_id is not None and article_id<=0):raise NerEvidenceError('ner_configuration_invalid')
+    if run_ids is not None and (not isinstance(run_ids,tuple) or len(run_ids)>limit
+            or any(type(i) is not int or i<=0 for i in run_ids) or len(set(run_ids))!=len(run_ids) or article_id is not None):
+        raise NerEvidenceError('ner_configuration_invalid')
     summary=NativeProcessingSummary();runtime=None;cancelled=False
+    def resource_check() -> None:
+        if os.environ.get('LANES_HISTORY_RESOURCE_PROFILE') == 'cloud-run-v1':
+            if historical_authorization is None or historical_authorization.policy.get('resource_profile') != 'cloud-run-v1':
+                raise NerEvidenceError('ner_configuration_invalid')
+            from app.services.news_history_resources import checkpoint
+            try:
+                summary.resource_snapshots.append(checkpoint())
+            except (OSError, ValueError) as exc:
+                raise NerEvidenceError('ner_configuration_invalid') from exc
     if end-started<ARTICLE_SECONDS:
         summary.stop_reason='budget_exhausted'
         return summary
     try:
+        resource_check()
         with deadline(min(60,end-monotonic())):
             trusted=load_assets();trusted.validate()
         summary.pipeline_version=trusted.pipeline_version
+        if historical_authorization is not None and trusted.manifest != historical_authorization.trusted.manifest:
+            raise NerEvidenceError('ner_configuration_invalid')
         # Verify the actual connection, not just a supplied URL, before writes.
         with transaction(factory) as db:
+            if historical_authorization is not None:
+                historical_authorization.validate_session(db, run_ids, sources)
             if db.scalar(text('SELECT current_database()'))!=make_url(database_url).database:
                 raise NerEvidenceError('ner_configuration_invalid')
-            if not read_configuration(db).news_processing_enabled:
+            from app.services.news_three_article_pilot import PilotAuthority
+            if not read_configuration(db).news_processing_enabled and type(historical_authorization) is not PilotAuthority:
                 summary.stop_reason='paused';return summary
             selected=tuple(s.id for s in selected_news_sources(db,sources))
-            if article_id is None:
+            if run_ids is not None:
+                pass  # An explicit capture set never enters the mutable-article handoff.
+            elif article_id is None:
                 summary.captured=capture_pending_inputs(db,limit,selected,mode='ner_rules_v1',pipeline_version=trusted.pipeline_version)
             else:
                 from .capture import capture_native_pending_inputs
@@ -120,13 +150,16 @@ async def process_native_saved_news(factory: Callable[[],Session], *, load_asset
                 summary.stop_reason='budget_exhausted';break
             operation=monotonic();work_end=operation+WORK_SECONDS
             with transaction(factory) as db:
-                if not read_configuration(db).news_processing_enabled:
+                if historical_authorization is not None:
+                    historical_authorization.validate_session(db, run_ids, sources)
+                if not read_configuration(db).news_processing_enabled and type(historical_authorization) is not PilotAuthority:
                     summary.stop_reason='paused';break
                 current=tuple(s.id for s in selected_news_sources(db,sources))
                 if current!=selected:
                     summary.stop_reason='sources_changed';break
+                selection = {'run_ids':run_ids, 'pending_only':True} if run_ids is not None else {}
                 claim=claim_due_run(db,clock(),article_id=article_id,source_ids=current,
-                    mode='ner_rules_v1',pipeline_version=trusted.pipeline_version)
+                    mode='ner_rules_v1',pipeline_version=trusted.pipeline_version, **selection)
             if claim is None:
                 summary.stop_reason='no_work';break
             if claim.exhausted:
@@ -142,17 +175,23 @@ async def process_native_saved_news(factory: Callable[[],Session], *, load_asset
                     request=context.source().runtime_request(claim.input_fingerprint)
                     trusted.validate()
                 if runtime is None:
+                    resource_check()
                     runtime=(runtime_factory(trusted) if runtime_factory else ModelSession(trusted.manifest['model']['bundle_sha256'],trusted._code))
                     await asyncio.wait_for(runtime.start(),timeout=min(60,max(.001,work_end-monotonic())))
                 # The runtime owns its timer while validating neural output.
                 inference=await asyncio.wait_for(runtime.request(request,timeout=min(60,max(.001,work_end-monotonic()))),
                                                  timeout=max(.001,work_end-monotonic()))
                 with deadline(work_end-monotonic()):
+                    resource_check()
                     prepared=build_native_result(context,inference,trusted,extracted_at=clock())
+                    if historical_authorization is not None:
+                        from .read_projection import build_read_projection
+                        prepared.read_projection=build_read_projection(context.source(),prepared,trusted.catalog)
                     if prepare_readers:
                         from .enrichment import enrich_native_result
                         prepared=enrich_native_result(context,prepared,trusted)
                     result=prepared.model_dump(mode='json',by_alias=True)
+                    resource_check()
             except NerEvidenceError as exc:
                 code=exc.code;stop=code!='ner_input_binding_invalid'
             except (OperationDeadline,asyncio.TimeoutError):
@@ -171,6 +210,8 @@ async def process_native_saved_news(factory: Callable[[],Session], *, load_asset
                 except (Exception,asyncio.CancelledError):summary.error_code='ner_runtime_cleanup_failed'
             # Cancellation/error is persisted once, never retried in this session.
             with transaction(factory,min(TRANSACTION_SECONDS,operation+ARTICLE_SECONDS-monotonic())) as db:
+                if historical_authorization is not None:
+                    historical_authorization.validate_session(db, run_ids, sources)
                 owned=finish_owned_run(db,claim,clock(),result=result,error_code=code,retryable=retryable)
             status='lease_lost' if not owned else 'retry_wait' if code and retryable and claim.attempt_count<MAX_ATTEMPTS else 'failed' if code else 'completed'
             setattr(summary,status,getattr(summary,status)+1)
@@ -187,5 +228,9 @@ async def process_native_saved_news(factory: Callable[[],Session], *, load_asset
             try:await runtime.close()
             except (Exception,asyncio.CancelledError):
                 summary.error_code='ner_runtime_cleanup_failed';summary.stop_reason='cleanup_failed'
+        try:
+            resource_check()
+        except NerEvidenceError:
+            summary.error_code='historical_resource_envelope_unqualified';summary.stop_reason='resource_failed'
     if cancelled:raise asyncio.CancelledError()
     return summary

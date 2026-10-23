@@ -1,0 +1,130 @@
+{
+  "contract": "scoped-quote-options-v3",
+  "body_sha256": "f5ff7d13e255ed82ab9c024bcd1aae02fee4ce5806c4a7411bc818e2f58ed763",
+  "results": [
+    {
+      "target_id": "n4",
+      "verdict": "unsupported",
+      "city": null,
+      "barangay": null,
+      "place_evidence": [],
+      "status": "unclear",
+      "historical": false,
+      "contradictory": false,
+      "status_evidence": [],
+      "time_role": "unknown",
+      "date_text": null,
+      "clock_text": null,
+      "contemporaneous": false,
+      "time_evidence": [],
+      "depth_text": null,
+      "depth_scope": "unknown",
+      "depth_evidence": [],
+      "access": "unknown",
+      "access_evidence": [],
+      "road_section": null,
+      "section_evidence": []
+    },
+    {
+      "target_id": "n5",
+      "verdict": "unsupported",
+      "city": null,
+      "barangay": null,
+      "place_evidence": [],
+      "status": "unclear",
+      "historical": false,
+      "contradictory": false,
+      "status_evidence": [],
+      "time_role": "unknown",
+      "date_text": null,
+      "clock_text": null,
+      "contemporaneous": false,
+      "time_evidence": [],
+      "depth_text": null,
+      "depth_scope": "unknown",
+      "depth_evidence": [],
+      "access": "unknown",
+      "access_evidence": [],
+      "road_section": null,
+      "section_evidence": []
+    },
+    {
+      "target_id": "n6",
+      "verdict": "observed",
+      "city": "Malabon City",
+      "barangay": "Brgy San Agustin",
+      "place_evidence": [
+        7,
+        8,
+        9
+      ],
+      "status": "active",
+      "historical": false,
+      "contradictory": false,
+      "status_evidence": [
+        7,
+        9
+      ],
+      "time_role": "observation",
+      "date_text": "September 9, 2026",
+      "clock_text": "2:47 p.m.",
+      "contemporaneous": true,
+      "time_evidence": [
+        0,
+        9
+      ],
+      "depth_text": "Gutter deep",
+      "depth_scope": "individual",
+      "depth_evidence": [
+        9
+      ],
+      "access": "passable_all",
+      "access_evidence": [
+        9
+      ],
+      "road_section": "Rizal Ave Extn",
+      "section_evidence": [
+        9
+      ]
+    },
+    {
+      "target_id": "n7",
+      "verdict": "observed",
+      "city": "Malabon City",
+      "barangay": "Brgy San Agustin",
+      "place_evidence": [
+        7,
+        8,
+        9
+      ],
+      "status": "active",
+      "historical": false,
+      "contradictory": false,
+      "status_evidence": [
+        7,
+        9
+      ],
+      "time_role": "observation",
+      "date_text": "September 9, 2026",
+      "clock_text": "2:47 p.m.",
+      "contemporaneous": true,
+      "time_evidence": [
+        0,
+        9
+      ],
+      "depth_text": "Gutter deep",
+      "depth_scope": "individual",
+      "depth_evidence": [
+        9
+      ],
+      "access": "passable_all",
+      "access_evidence": [
+        9
+      ],
+      "road_section": "Rizal Ave Extn",
+      "section_evidence": [
+        9
+      ]
+    }
+  ]
+}

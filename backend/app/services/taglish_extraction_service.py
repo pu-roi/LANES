@@ -1748,6 +1748,11 @@ def apply_shared_update_times(claims: list[ExtractedClaim], body: str) -> None:
             continue
         if anchor is None or not claim.flood_mentioned or claim.condition not in {"active", "rising"}:
             continue
+        if claim.place_char_start < anchor.evidence_sentence_offset[1]:
+            # Clause extraction already owns facts within this sentence. A
+            # narrative-continuation anchor cannot supply a neighbour's clock.
+            anchor = None
+            continue
         gap = body[anchor.evidence_sentence_offset[1]:claim.place_char_start]
         if len(gap) > 2000 or boundary.search(gap) or extract_event_time_from_text(gap)[0]:
             anchor = None
@@ -2050,6 +2055,7 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
         if any(c.is_negated or c.is_forecast or c.is_historical for c in claims):
             section_evidence_start = None
         for claim in claims:
+            needs_flood_scope = not has_flood_observation(claim.evidence_sentence)
             if (section_list_mode and is_list_entry and section_context_start is not None
                     and claim.place_type in {"street", "landmark"}):
                 # Retain contiguous original headings with inherited facts;
@@ -2077,7 +2083,7 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
             if (section_list_mode and section_flood_reported and is_list_entry
                     and section_evidence_start is not None and claim.flood_mentioned
                     and not (claim.is_negated or claim.is_forecast or claim.is_historical)
-                    and not has_flood_observation(claim.evidence_sentence)):
+                    and needs_flood_scope):
                 # Keep contiguous original text so list-level flooding evidence
                 # remains auditable without manufacturing a sentence or depth.
                 claim.evidence_sentence = text_to_process[section_evidence_start:sent_end]

@@ -44,6 +44,6 @@ export function NewsResults({ active, defaultSearch = "" }: { active: boolean; d
       </CardContent></Card>)}</div>}
       <Pagination page={query.data.page} totalPages={query.data.pages} disabled={query.isFetching} onPageChange={(page) => setFilters((current) => ({ ...current, page }))} />
     </>}
-    {selected && <NewsResultDialog key={selected.key} runId={selected.run_id} claimIndex={selected.claim_index} onClose={closeDetail} />}
+    {selected && <NewsResultDialog key={selected.key} runId={selected.run_id} claimIndex={selected.claim_index} groupId={selected.group_id} onClose={closeDetail} />}
   </section>;
 }

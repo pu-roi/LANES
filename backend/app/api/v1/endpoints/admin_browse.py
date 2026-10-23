@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 
 def filters(status_filter: str = "all", severity: str | None = None, date_from: datetime | None = None,
         date_to: datetime | None = None, barangay: str | None = None, road: str | None = None,
-        search: str | None = None, multiple_places: bool = False) -> dict[str, Any]:
+        search: str | None = None, multiple_places: bool = False, dataset_id: str | None = None) -> dict[str, Any]:
     return dict(status_filter=status_filter, severity=severity, date_from=date_from, date_to=date_to,
-        barangay=barangay, road=road, search=search, multiple_places=multiple_places)
+        barangay=barangay, road=road, search=search, multiple_places=multiple_places, dataset_id=dataset_id)
 
 
 def read(call: Any) -> Any:
@@ -59,14 +59,14 @@ def historical_map(bbox: str | None = None, zoom: float = Query(12, ge=0, le=24)
 
 
 @router.get("/flood-events/{event_id}/inspection", response_model=HistoryInspection)
-def overview(event_id: int, db: Session = Depends(get_db)) -> dict[str, Any]:
-    return read(lambda: history_overview(db, event_id))
+def overview(event_id: int, dataset_id: str | None = None, db: Session = Depends(get_db)) -> dict[str, Any]:
+    return read(lambda: history_overview(db, event_id, dataset_id))
 
 
 @router.get("/flood-events/{event_id}/inspection/{collection}", response_model=InspectionPage)
-def collection_page(event_id: int, collection: Literal["zones", "reports", "timeline", "locations"], page: int = Query(1, ge=1),
-        db: Session = Depends(get_db)) -> InspectionPage:
-    return read(lambda: history_collection(db, event_id, collection, page))
+def collection_page(event_id: int, collection: Literal["zones", "reports", "timeline", "locations", "news_sources"], page: int = Query(1, ge=1),
+        dataset_id: str | None = None, db: Session = Depends(get_db)) -> InspectionPage:
+    return read(lambda: history_collection(db, event_id, collection, page, dataset_id))
 
 
 @router.get("/zones/{zone_id}/contributors", response_model=InspectionPage)

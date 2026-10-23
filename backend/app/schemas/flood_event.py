@@ -1,3 +1,4 @@
+from app.schemas.historical_news import HistoricalNewsMetadata
 from datetime import datetime
 from typing import Any, Literal, Optional
 
@@ -90,6 +91,15 @@ class FloodEventTimelineEntryResponse(BaseModel):
 
 
 class FloodEventResponse(BaseModel):
+    origin: Literal['news', 'user', 'mixed', 'unknown'] = 'unknown'
+    news_article_count: int = 0
+    news_evidence_count: int = 0
+    occurrence_date: str | None = None
+    observed_at: str | None = None
+    observation_precision: Literal['unknown', 'date', 'instant'] = 'unknown'
+    closure_basis: str | None = None
+    historical: HistoricalNewsMetadata | None = None
+    duration_basis: str | None = None
     id: int
     status: FloodEventStatus
     first_reported_at: Optional[datetime] = None

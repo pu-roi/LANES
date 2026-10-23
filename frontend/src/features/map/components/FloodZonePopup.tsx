@@ -1,3 +1,4 @@
+import type { HistoricalNewsMetadata } from "@/features/news/historicalNewsTypes";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { format } from "date-fns";
 import { parseUtcDate } from "@/lib/utils";
@@ -35,6 +36,7 @@ interface FloodZoneProperties {
   hidden_hazards?: string;
   contributors_json?: string;
   news_json?: string;
+  historical_json?: string;
   is_pending?: boolean;
 }
 
@@ -105,6 +107,8 @@ function ReportDescription({ text }: { text: string }) {
 
 export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onToggleExpand, compact = false, drawer = false, modal = false, onClose, onUpdate, placementPreview }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  let historical: HistoricalNewsMetadata | null = null;
+  try { historical = JSON.parse(properties.historical_json || "null"); } catch { /* Map property is optional on legacy cached features. */ }
 
   const {
     severity = "medium",
@@ -257,7 +261,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
         {/* Bottom Row: Timestamp */}
         <div className="flex items-center gap-1.5 text-xs text-white/95 font-medium tracking-wide">
           <Clock className="w-3.5 h-3.5 opacity-85 shrink-0" />
-          <span>Reported {reportedText}</span>
+          <span>{historical ? `Source observation ${historical.occurrence_date ?? "date unknown"}` : `Reported ${reportedText}`}</span>
         </div>
       </div>
 

@@ -14,6 +14,9 @@ def get_public_stats(db: Session) -> PublicStatsResponse:
     # Count zones once, including official zones without a submitted report and
     # zones supported by multiple reports. Reuse the map's expiry/configuration clock.
     zones = get_active_avoidance_zones(db)
+    from app.services.historical_news_metadata import event_metadata
+    historical = event_metadata(db, [zone.event_id for zone in zones if zone.event_id])
+    zones = [zone for zone in zones if zone.event_id not in historical or not historical[zone.event_id].is_demo]
     today = datetime.now(timezone.utc).date()
     return PublicStatsResponse(
         # Active map zones created on today's UTC date, counted once per zone.

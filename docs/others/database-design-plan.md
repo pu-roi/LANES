@@ -1,6 +1,51 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 20, 2026, 10:25 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Connected-road active-only persistence — existing schema
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Events/zones **77–79**, **7 locations** and **6 timeline entries** link correction 388 to versioned road placement and internal `active_demo` lineage. No historical counterpart, citizen report, extraction run, claim evaluation or publication decision was created. Source nodes, grade/scenario evidence, coordinate-hint origin and shared-junction proofs use existing timeline JSON. Pre-existing rows, event/zone 76 and pending reports 44/45 remain exact. Migration head `f1a9c7e2b604`, triggers and foreign keys are unchanged; insertion sequences advance normally. No models, columns, migrations or dependencies were added. [Scope/recovery](../evaluations/gma-connected-road-20261023.md).
+
+
+## Scoped incorrect GMA chain deletion and active-only metadata — existing schema
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The user's later deletion choice supersedes database retention of the incorrect capture chain described below. Fresh backup/restored rehearsal preceded exact deletion of **62 rows**, including 71–75 event/zone pairs, their location/timeline rows, old 106–110 claims/sources and 150–159 evaluations, old extraction runs and versions 137/574. Corrected 140/569/388, all clean-capture history and every unrelated row remain exact. Only the finalized-evaluation/source deletion guards were temporarily disabled and restored inside the transaction; foreign keys, schema and sequence values remain unchanged. Repeat does not write.
+
+The active-only output mode reuses existing event/zone/location/timeline JSON metadata with disposition `active_demo`, a distinct dataset/session and direct run-388 lineage. It does not require an ended historical parent or new tables/columns/models/migrations. All three qualified outputs would commit atomically and remain excluded from real history/statistics/routing. The live preview is unresolved, so no such outputs were inserted. [Exact counts and receipts](../evaluations/gma-active-cleanup-20261023.md).
+
+## Append-only clean-source supersession — existing schema
+
+The October 23 GMA source repair adds no table, column, model, index or migration. Existing `flood_event_timeline_entries` carries `entry_type=news_source_superseded` with exact versioned source/run lineage; current history readers exclude the marker while retaining old event/zone fields and geometry. Two new claim cases/sources and unresolved evaluations bind completed correction 384. Raw 382, failed 383 and completed 384 append processing evidence. No report, account or community record is modified, and no trigger/FK protection is disabled. [Counts and recovery](../evaluations/gma-source-correction-20261023.md).
+
+## Authorized data-only flood reset — no schema change
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The approved October 22 reset emptied flood events/zones/report/survey/moderation/location/timeline and news extraction/claim/evaluation/decision/link tables, plus matching report-status notifications. Retained article/version/feed tables, account/community data and reference tables; 34 nullable community-post report FKs were set to null to prevent `ON DELETE CASCADE` removing posts. Actual FK definitions, validation, trigger states, migration head and sequence values are unchanged. Four existing deletion-protection triggers were temporarily disabled and restored inside the tested atomic transaction; no foreign-key trigger was disabled. [Counts, restored-backup rehearsal and acceptance](../evaluations/flood-data-reset-20261022/README.md).
+
+## Current shared Part 2A database state
+
+The explicitly approved existing migration head `f1a9c7e2b604` is now applied on Cloud SQL through controlled execution `lanes-migration-ptqw8`; fresh/repeated disposable upgrades passed first. This execution adds no SQLAlchemy model, table, column, index or Alembic revision. Earlier predecessor audits below retain their original dates and do not describe current schema state.
+
+Registration inserted/reused exact canonical article/version identities for 99 eligible retained training captures, preserving existing bodies and review state. Frozen inputs select 111 full bodies including 12 saved articles. Processing uses existing news version/run, case/source/evaluation records. Qualified archive writes are limited to existing event, inactive zone, location and timeline records; exact ended citizen matches append news timeline evidence only. No citizen reports or live publication decisions are created. Original report/event/zone fingerprints and atomic append-only repeat checks protect existing data. [Current execution](../evaluations/news-history-shared-execution-20261022/README.md).
+
+## Part 2A — retained evidence projections and general archive endpoints
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). No table, SQLAlchemy model, index or migration is added. Retained publication zone links resolve their exact decision claim_source_id, extraction run and immutable input version. Native archive evidence follows historical_import run/group references. Article counts and origin/date fields are response projections; citizen FloodReport rows are not manufactured for news evidence.
+
+Additive historical-import-v1 JSON retains source version/date provenance and condition. New exact-time archives may use labeled assumed_two_hours; new date-only archives may use assumed_source_day_end (next-day 00:00 Asia/Manila), retaining null first_reported_at and null simulated_interval_minutes. Non-null assumed endpoints satisfy the existing ordinary ended-event requirement; no additional unknown-closure migration is needed. Existing archive endpoints/lifecycles remain unchanged. Actual import/deactivation timestamps remain administrative; assumed/admin intervals are excluded from observed-duration analytics. Registration uses existing article/version uniqueness and ON CONFLICT DO NOTHING; archive observation/session advisory locks retain atomic repeats/concurrency.
+
+[Local verification and shared execution blockers](../evaluations/news-history-part2a-20261022/README.md). The remote native-storage predecessor is unchanged; approved earlier migration availability does not mean it was applied remotely.
+
+## Current remote September dependency check — read-only October 22
+
+[Inspection and exact dependency scope](../evaluations/september-database-reuse-20261022/README.md) confirm the remote database is still at `d7e4b9a21c60`. The locally approved native-mode and unknown-archive-endpoint migrations remain unapplied there. Existing September article/run/publication/event/zone relationships retain enabled immutable publication triggers and restricted deletion references. Six linked event/zone pairs are ended/inactive; no native run or `historical_import` entry exists. No schema, trigger, data, account or setting change occurred. Original history can be retained while separately qualified native/active-instance evidence is added under Part 2B.
+
+## Phase 1 — approved unknown historical endpoint exception
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The user approved migration `f1a9c7e2b604` after the date-only fixture exposed the ordinary ended-event timestamp requirement. It follows native-mode revision `e8a6f1c2d903`. No tables, columns, dependencies or SQLAlchemy models change.
+
+`flood_events` keeps the immediate active/end consistency check. Deferred constraint triggers on event and timeline writes require an end timestamp for an ended event unless its retained `historical_import` timeline JSON identifies version `historical-import-v1`, the selected September dataset, `historical_archive`, unknown closure, supported instant/date/unknown start precision and valid observation/session identities. Event rows are locked while checking; deleting or changing the qualifying lineage is also checked at commit. Saving the archive and its evidence is atomic. Application schemas validate the full metadata before writing or presenting it.
+
+The exemption does not permit unknown endpoints for ordinary events or active demos. No closure timestamps are backfilled. Downgrade refuses databases containing an ended event with an unknown endpoint; operators must preserve truthful evidence rather than fabricate an end time to force downgrade. The existing native-mode migration tests remain pinned to their own revision; the new migration has separate archive/ordinary-event, retained-lineage and round-trip checks on disposable PostGIS. Shared/cloud migration remains Phase 2.
 
 ## C3a native capture/queue — unchanged schema
 

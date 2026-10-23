@@ -1,3 +1,4 @@
+import type { HistoricalNewsMetadata } from "@/features/news/historicalNewsTypes";
 import { apiClient } from "@/lib/apiClient";
 import type { AvoidanceZone } from "./adminApi";
 import { getReportForSpatialReview } from "./adminApi";
@@ -23,6 +24,7 @@ export const contributorDetailQuery = (id: number | null) => queryOptions({
 export type ZoneSource = "all" | "user_reports" | "news" | "official" | "other";
 export interface ZoneQueueFilters { source: ZoneSource; q: string; city: string; barangay: string; severity: string }
 export interface ZoneQueueItem {
+  historical?: HistoricalNewsMetadata | null;
   zone_id: number; member_count: number; location: string; area_summary: string; sources: string[];
   severity_levels: string[]; depth_levels: string[]; evidence: string; queued_at: string; group_reason: string;
   bounds?: [number, number, number, number] | null;

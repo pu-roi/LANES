@@ -25,10 +25,11 @@ def browse_news_collection(db: Session, *, page: int, page_size: int, search: st
                            retrieval: BodyStatus | None = None) -> NewsCollectionPage:
     if processing_context is not None:
         from app.services.news_ner_durable.readers import validate_read_context
+        from app.services.news_native_read_context import reader_pipeline_selection
         validate_read_context(db,processing_context)
     rows, total, actual_page, counts, publishers, retrieval_counts = list_collection(db, page=page, page_size=page_size,
         search=search, publisher=publisher, status=status, retrieval=retrieval,
-        pipeline_version=processing_context.pipeline_version if processing_context is not None else None)
+        pipeline_version=reader_pipeline_selection(processing_context) if processing_context is not None else None)
     labels = publisher_labels()
     items = []
     for article, body, processing, run_id, state, locations, questionable in rows:

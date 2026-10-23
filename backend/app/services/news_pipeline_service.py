@@ -35,19 +35,39 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
     """
     if native_context is not None:
         from app.services.news_ner_durable.pipeline import run_native_news_pipeline
+        from app.services.news_ner_durable.gemini_resolution import GeminiResolver
+        # Native source-rule operation remains credential-free. Paid verification
+        # must be explicitly requested by the caller (or the dedicated CLI).
+        resolver_config = auditor.config if auditor is not None else None
+        if resolver_config is not None and resolver_config.provider not in (None,'source_rules','gemini'):
+            from app.services.news_claim_auditor import AuditorConfigurationError
+            raise AuditorConfigurationError('native_auditor_provider_unsupported')
+        resolver = GeminiResolver(resolver_config) if resolver_config is not None and resolver_config.provider == 'gemini' else None
         if sources is None:
             from app.services.news_sources import load_news_sources
             sources=load_news_sources()
         return await run_native_news_pipeline(session_factory,load_assets=lambda:native_context.trusted,
             environment=native_context.environment,database_url=native_context.database_url,sources=sources,
-            client=native_client,limit=limit,clock=clock,on_stage=on_stage,runtime_factory=runtime_factory)
-    from app.services.news_publication_service import process_news_publications
+            client=native_client,limit=limit,clock=clock,on_stage=on_stage,runtime_factory=runtime_factory,resolver=resolver)
+    from app.services.news_publication_service import process_news_publications, process_news_expiry, PublicationSummary
     if not 1 <= limit <= 200 or seed_cursor < 0 or footprint_cursor < 0:
         raise ValueError("Invalid pipeline batch")
     from app.services.news_claim_auditor import AuditorConfigurationError
-    auditor = auditor or NewsClaimAuditor()
-    if getattr(auditor, 'config', None) and auditor.config.error_code():
-        raise AuditorConfigurationError(auditor.config.error_code())
+    try:
+        auditor = auditor or NewsClaimAuditor()
+        if getattr(auditor, 'config', None) and auditor.config.error_code():
+            raise AuditorConfigurationError(auditor.config.error_code())
+    except AuditorConfigurationError as exc:
+        # No policy can be authenticated here. Only maintain existing deadlines;
+        # do not process even saved clearance evidence through an invented policy.
+        from sqlalchemy.exc import SQLAlchemyError
+        try:
+            maintenance = process_news_expiry(session_factory, limit=limit, clock=clock)
+        except Exception as failure:
+            code = "maintenance_storage_unavailable" if isinstance(failure, SQLAlchemyError) else "maintenance_failed"
+            maintenance = PublicationSummary(skipped=[{"reason_code": code}])
+        exc.maintenance_summary = maintenance
+        raise
     maintenance_sources = sources
     config, sources = runtime_configuration(session_factory, sources)
     policy = evaluation_policy(auditor, config, publication_admission_at=publication_admission_at)
@@ -88,7 +108,7 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
 
 def pipeline_has_failures(result: dict) -> bool:
     """Operational fallback without a configured catalog is normal, errors are not."""
-    for stage in ("extraction", "seed", "evaluation", "publication", "footprints"):
+    for stage in ("extraction", "resolution", "seed", "evaluation", "publication", "footprints"):
         value = result.get(stage, {})
         if value.get("error_code"):
             return True

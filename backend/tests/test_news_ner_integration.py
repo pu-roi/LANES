@@ -51,7 +51,7 @@ def c3b_db():
     try:
         with engine.connect() as db:
             assert db.scalar(text('SELECT current_database()'))==name
-            assert db.scalar(text('SELECT version_num FROM alembic_version'))=='e8a6f1c2d903'
+            assert db.scalar(text('SELECT version_num FROM alembic_version'))=='f1a9c7e2b604'
         yield sessionmaker(bind=engine)
     finally:
         engine.dispose()

@@ -1,6 +1,21 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Latest News Intelligence / placement checkpoint:** Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. This is a versioned opt-in extension of the existing news module; ordinary scheduled placement retains its prior gates. [Connected-road rollout](evaluations/gma-connected-road-20261023.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+
+## Earlier v27 news-data correction checkpoint
+
+The existing News Intelligence module uses correction **388** for three source-supported GMA observations from original 140/native 569. The user-authorized incorrect capture chain, including five old event/zone pairs 71–75, has been removed after private backup/rehearsal; every unrelated row and manual event/zone 76 is preserved. API/worker **v27** supports separately authorized active-only presentation output without historical counterparts, with history/statistics/routing exclusions. The real spatial preview remains unresolved for all three locations, so **no active GMA polygon exists**. No UI, public response shape, schema, model or dependency change. [Current verification, blockers and recovery](evaluations/gma-active-cleanup-20261023.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Earlier integration checkpoint — retained News Intelligence and unified history
+
+Part 2A's manually invoked archive worker and saved readers are deployed and verified. Actual extraction completed for 111 full articles; 33 publisher-unresolved training sources remain recorded. All 56 batches repeated without new inference/records. No new archive qualified: 629 unresolved group receipts remain truthful evidence rather than invented events. Existing 56 event/zone records and all citizen records remain unchanged.
+
+News Intelligence selects the newest selected native attempt in every state, retains older runs and legacy-only articles, and uses SQL-owned filters/counts/pagination. Historical read projections persist for unresolved/zero-zone outputs. Matching API and existing frontend artifacts pass hosted desktop/mobile cards, full source/native evidence, history maps, analytics and exports; no UI source was changed. Manual seed execution is disabled. The original query-opened article close issue is documented; Part 2B/live activation remain separate. [Final evidence](evaluations/news-history-shared-execution-20261022/README.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Earlier checkpoints below are historical.**
 
 ## Current integration — C3a local runtime/queue pass
 

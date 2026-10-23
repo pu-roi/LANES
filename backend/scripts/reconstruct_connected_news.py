@@ -55,8 +55,8 @@ def reconstruction_client(scenario: str, selected: tuple, requests: list[str]) -
     captured = path.read_bytes()
     # The preserved publisher index text has no archived HTML. This is the same
     # escaped wrapper used by the existing timeline replay; facts stay intact.
-    content = captured if scenario == "september24" else ("<article>" + "".join(
-        "<p>" + escape(line) + "</p>" for line in captured.decode("utf-8").splitlines()) + "</article>").encode()
+    content = captured if scenario == "september24" else ('<article><div class="story_main">' + "".join(
+        "<p>" + escape(line) + "</p>" for line in captured.decode("utf-8").splitlines()) + "</div></article>").encode()
     from scripts.replay_september24_pipeline import feed
     render_feed = feed if scenario == "september24" else capture_tools.reconstructed_feed
     feeds = {feed_url: render_feed((spec,)) for source in selected for feed_url in source.feed_urls}

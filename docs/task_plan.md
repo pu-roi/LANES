@@ -1,6 +1,526 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 21, 2026, 09:23 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current state — three connected-road GMA active locations saved
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. [Evidence and recovery](evaluations/gma-connected-road-20261023.md).
+
+- [x] Implement versioned connected-road and active-only contracts; preserve earlier behavior and verify original saved correction/assets without inference or provider calls.
+- [x] Qualify 5 Rizal ways, 7 F. Sevilla ways including both authenticated one-way arms, and 3 reviewed ground-level underloop links beneath the elevated Marcos bridge.
+- [x] Retain NOAH 5-/25-/100-year class evidence, dry gaps, holes, exact source centerlines, the existing 25-metre margin and geometry limits; permit only authenticated selected-road junction overlaps.
+- [x] Rehearse actual geometry on restored PostGIS; verify all-three atomic apply, stale preview rejection, late-failure rollback, concurrent/idempotent reuse and permanent manual-deactivation respect.
+- [x] Apply cloud preview `0da463100dbbaac8dc4cff16820a8d5b7c1d9a5cb6a3fead42f621168b4d70c2`: 3 events, 3 polygons, 7 locations, 6 timeline entries. Repeated v28/v30 commands reuse the same set.
+- [x] Prevent conventional gauge numbers from filling unknown measured depth during service projection and FastAPI response revalidation; keep ordinary gauge behavior unchanged.
+- [x] Pass 157 targeted regressions and seven offline Linux contracts, protected HTTP canary and actual-result restored-copy checks. Three optional fresh-DB fixture tests were skipped in this run; equivalent actual-geometry preservation/history/deactivation checks passed on the restored database.
+- [x] Verify hosted desktop/mobile three cards, source/details/scrolling, Active Zones, public-map focus/popups and history exclusion. Localhost desktop/mobile map checks also pass; stop for user review.
+- [x] Preserve original rows including pending reports 44/45, event/zone 76 and corrected processing history; keep ledger stopped at 42 / US$0.7524937, automation paused, expiry OFF and old seed disabled.
+- [x] Complete localhost desktop/mobile map evidence and final documentation receipt; stop for user review.
+- [ ] Tribune 25 and Philstar 274 remain outside this GMA-only rollout.
+
+
+## Earlier v27 checkpoint — incorrect GMA chain removed; plotting blocked
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Cleanup, actual spatial blockers and release evidence](evaluations/gma-active-cleanup-20261023.md). API/worker **v27** preserves correction **388** and its three accurate News Intelligence observations. The user selected **active-only presentation outputs**, without genuine historical counterparts. That activation is **not complete**: all three locations remain unresolved in the real cloud preview, so none was activated.
+
+- [x] Back up and rehearse exact cleanup, including rollback/tampering/preservation checks; atomically delete only old events/zones 71–75 and their incorrect capture/run/claim chain: **62 rows**. Repeat is a no-op. Corrected 140/569/388 and unrelated event/zone 76 remain exact.
+- [x] Implement separately authorized zero-provider active-only preview/apply, all-three atomic gating, geometry/overlap checks, direct source lineage, history/statistics/routing exclusion and deactivation-safe reuse. Deploy v27 after protected acceptance; defaults remain read-only.
+- [x] Verify 126 regressions, 62 disposable-PostGIS checks, seven Linux contracts, actual saved-source preview and synthetic disposable-only persistence/deactivation/reuse. Hosted/local desktop/mobile three-card evidence and scrolling pass.
+- [x] Keep ledger stopped at **42 / US$0.7524937**, including unchanged storage generation; no NER, Gemini or counting calls. Preserve every unrelated row, trigger/FK/sequence state, paused automation, expiry OFF and disabled old seed.
+- [ ] Resolve Rizal/San Agustin's **COD-versus-OSM city containment mismatch** using authenticated consistent boundary coverage.
+- [ ] Qualify the exact **Tañong/Bayan F. Sevilla** section and the actual **ground-level Marcos underloop**, including unnamed-road/grade evidence. Preserve the raw LANDMARK label and unknown administrative roles.
+- [ ] Only after **all three** qualify, freeze/review the complete geometry preview and issue separate apply authority. No cloud apply authority exists at this checkpoint; active zones remain empty and history contains only unrelated event 76.
+- [ ] Tribune 25 and Philstar 274 remain outside this GMA-only continuation.
+
+## Earlier checkpoint — three GMA observations accepted and visible
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verified GMA completion](evaluations/gma-three-location-completion-20261023.md). Completed correction **388** serves Rizal Ave Extn, **Tañong F. Sevilla Blvd. (Bayan)** and Marcos Highway Underloop from source **140/native 569/NER 382**. All show gutter-deep flooding at **September 9, 2026, 2:47 PM**, passable to all vehicle types, with no invented measured depth. F. Sevilla preserves its exact Tañong section and unknown canonical barangay. San Agustin is retained as road context, not a duplicate card.
+
+- [x] Implement v4 inline-locality ownership, strict cached adoption and bounded one-request accounting; preserve v2/v3 and all prior evidence.
+- [x] Make exactly one new Gemini request and one countTokens call; retain failed 387 from the overly strict administrative-role gate. Correct that final gate to require the exact reported section/city while preserving unknown role; all ordinary source checks remain strict.
+- [x] Adopt all three retained responses in a new zero-provider finalization authority; save completed 388, repeat with zero requests/new rows, and replay twice offline. No additional provider/count calls or NER inference followed.
+- [x] Verify 234 regression tests, 29 PostGIS tests, existing fresh/repeated migrations, seven Linux contracts and actual retained-response disposable persistence/reuse.
+- [x] Promote API/manual worker **v26** after protected canary; update private local readers. Hosted/local desktop/mobile three-card summaries, evidence and scrolling pass; no frontend/UI/schema/dependency/model changes.
+- [x] Preserve original sources/runs, accounts/posts/reports/moderation/evaluations/supersession markers and all event/zone fields. Independent admin event/zone 76 was created/deactivated during work and preserved; no GMA geometry/history writes occurred.
+- [x] Keep ledger **stopped at 42 attempts / US$0.7524937 effective commitment**, unchanged US$1 cap; news paused, expiry OFF, old seed disabled, LANES key 2 and personal key unused.
+- [ ] Separately review GMA OSM/NOAH plotting and Flood History qualification, Tribune 25, Philstar 274 and active presentation instances. The three-location News Intelligence task is complete; the three-article/plotting pilot is not.
+
+
+## Earlier stopped checkpoint — v3 city-heading repair deployed
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Cloud result and retained diagnosis](evaluations/gma-city-heading-20261023.md). Plain-list city context is repaired; immutable NER 382/source 140/native 569 are reused. **The three-card rollout is incomplete.** Two real Gemini requests passed reference validation, but batch two proposed Brgy San Agustin as an additional observation alongside Rizal Avenue. The required-target gate stopped before batch three. New correction 386 is failed; API v23 and its two run-384 cards remain serving. No events, polygons, active instances or accepted correction were added.
+
+- [x] Implement versioned v3 layout/handoff, older-parent compatibility grant, restricted count/resolve commands and immutable budget extension; preserve v2 and original evidence.
+- [x] Verify 209 regression tests, the 13-case v3 suite including the new retained failure, 29 PostGIS tests, fresh/repeated existing migrations, seven Linux contracts and frozen disposable persistence/reuse.
+- [x] Deploy worker v24 and no-traffic API canary; count all three requests and reserve the full schedule within US$1. Retain two real responses and replay their exact outcome twice offline. No automatic retry/fallback/third dispatch.
+- [x] Verify only failed run 386 was added; all prior records preserved. Hosted/local desktop/mobile retain two cards, working source/details/scrolling and empty current history/active maps. Automation paused, expiry OFF, old seed disabled.
+- [ ] Resolve inline-locality versus independent-observation handling from the retained n7 response before a separately reviewed continuation. Do not promote v24 or resume paid processing under the failed grant. Ledger: **stopped, 41 attempts / US$0.748841 effective commitment**, unchanged US$1 cap.
+- [ ] Three accepted locations, polygon qualification, Tribune 25, Philstar 274 and active presentation instances remain pending review.
+
+
+## Earlier accepted state — clean GMA correction saved; replacement plotting unresolved
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verified source correction and reconciliation](evaluations/gma-source-correction-20261023.md). Raw 382 and correction 384 use original source 140/native 569. **Two source-validated gutter-deep observations at September 9, 2:47 PM are visible. Five superseded history events/polygons (71–75) are retained as evidence but excluded from current history/maps/analytics/exports. No replacement polygon qualifies.** F. Sevilla lacks a required city citation; Rizal Avenue needs a valid San Agustin boundary; Marcos Highway remains LANDMARK/no_reported_road. Do not substitute arbitrary geometry.
+
+- [x] Authenticate current publisher capture and other selected sources; recoverable cloud backup; actual clean NER and bounded full-article correction; append-only withdrawal and unresolved evaluations; protected/cloud/local desktop/mobile verification; offline replay and repeat-zero-call/write checks.
+- [x] Deploy canonical request serialization and generation-protected accounting without resetting history; API/manual worker v23; no frontend/schema/dependency/model changes. Keep automation paused, expiry OFF, old seed disabled and LANES key version 2.
+- [ ] Resolve the three remaining source/placement blockers before claiming GMA mapping complete. Tribune 25, Philstar 274 and active instances remain pending. Ledger is stopped at **39 attempts / US$0.7418188 effective commitment**, unchanged US$1 cap.
+
+Earlier milestones below are historical checkpoints. Their five old polygons are now withdrawn, not current accepted source geometry.
+
+## Previous checkpoint — clean-source review before reprocessing
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Root cause, deployed repair and evidence](evaluations/news-source-review-20261023.md). The pilot reused indexed version 137/native 574 even though clean publisher versions 140/569 already existed. The current source body matches the live publisher; the five prior observations/events remain unchanged and require source reprocessing/review. API v20, frontend October 23 build 002 and the manual v21 source guard are deployed; desktop/mobile readers and scrolling pass. **No new NER/Gemini/count calls or database writes.** Keep the 36-attempt ledger stopped at US$0.7314696, automation paused and expiry OFF. Do not resume old input authorities, Tribune/Philstar or activation. The next processing plan must freeze the clean source and explicitly reconcile the older derived records.
+
+## Superseded checkpoint — five GMA historical incidents imported
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Shared-depth archive release and verified results](evaluations/three-article-cloud-pilot-20261022/gma-shared-history.md). **Five ended events (71–75) and five inactive estimated road polygons are saved**, with September 9, 2026, 8:55 AM observations and explicitly assumed 10:55 AM endpoints. News Intelligence retains its five run-380 observations. Shared source severity is high; individual depth/passability are not invented. The earlier five unresolved evaluations remain immutable; five new evaluations record acceptance.
+
+- [x] Add a separately authorized, five-group historical-only policy with source/scope proofs, exact gauge mapping and unchanged operational gates. Reuse run 380 without inference, Gemini or countTokens calls.
+- [x] Verify 42 policy/activation tests, regression and reader suites, two disposable PostGIS runs, atomic rollback/concurrency/repeat behavior and seven frozen/deployed worker contracts.
+- [x] Deploy manual worker v18 only; retain serving API v17, model/pipeline identities, schema, private source material and original processing history. Freeze source/release/preview authorities and immutable receipts.
+- [x] Apply five archives atomically; repeat with zero new writes/calls. Verify 58 hosted and 61 local API checks plus actual desktop/mobile cards, evidence, scrolling, historical maps, filters, analytics and exports.
+- [x] Confirm preserved account/post/report/moderation/source records, original audit rows and schema protections. Separately retain/document concurrent normal logins and visitor activity. Ledger generation/content is unchanged: stopped at 36 attempts / US$0.7314696 commitment; news paused, expiry OFF, old seed unchanged.
+- [x] Superseded October 23: the five old incidents/corridors are withdrawn from current history after clean-source comparison; their evidence remains immutable. See current state above.
+- [ ] Separately plan Tribune 25, Philstar 274 and active presentation instances; no processing/activation authority is extended here. No remaining provider attempt slots are authorized under the consumed pilot grant.
+
+Earlier dated checkpoints below retain their original outcomes.
+
+
+## Previous review stop — GMA correction visible; historical outputs unresolved
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verified GMA population and reader fix](evaluations/three-article-cloud-pilot-20261022/gma-population.md). **Run 380 is completed and five corrected Flooded Areas cards are live**, all September 9, 8:55 AM. All 51 targets have outcomes (5 accepted / 21 unresolved / 25 unsupported). Five archive evaluations are saved unresolved; **no historical events/polygons qualified** because the current writer requires individual depth while source measurements are shared. Final geometry is not established. Tribune, Philstar and activation remain pending user review.
+
+- [x] Implement exact scoped continuation, 36-attempt ledger extension under US$1, old-evidence preservation, complete count/schedule bound and one cached adoption.
+- [x] Qualify 247 regression tests, seven Linux/cloud contracts; deploy matching API/worker. Complete 12 new requests and stop at 36 attempts/US$0.7314696 effective commitment (US$0.0588022 new usage estimate).
+- [x] Save complete correction and five unresolved archive outcomes atomically; prove correction/archive reuse with zero additional calls/records; replay all bundles twice offline.
+- [x] Patch corrected-group Info HTTP 422; 28 reader tests pass. Verify all five details, desktop/mobile scrolling/source, list/count/filter/pagination, history/map/analytics/export empty states and protected-record/configuration preservation. Document concurrent visitor-statistics drift.
+- [x] Restore local Cloud SQL native reader and stable local login key through ignored overrides; direct/proxied local APIs show five run-380 observations without database writes. [Local setup](guides/news-gemini-runtime.md#local-vs-code-tasks--display-the-same-saved-cloud-sql-results).
+- [ ] User review; decide a truthful shared-depth historical archive policy and independently qualify bounded geometry before mapped history. Review remaining source/locality issues from retained responses without paid retries. No Tribune/Philstar or active-zone execution yet.
+
+## Current cloud result — repaired GMA batch accepted; stopped for review
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verified single-batch cloud gate](evaluations/three-article-cloud-pilot-20261022/scoped-cloud-gate.md). Exactly one token-count call and one generation processed GMA n12–n15 from parent 375. Don Jose/Palali observations pass with September 9, 8:55 AM evidence and shared depth; repeated barangay headings remain context. Two offline replays pass. **No application rows were written**: Flooded Areas, history and Active Zones remain unpopulated.
+
+- [x] Add separate source/release/ledger-bound count/gate authorities and immutable retention; preserve V1 commands, raw NER, failed runs and all old receipts.
+- [x] Fix the editorial-prefix false ROAD ownership case under scoped validation, preserve genuine road ownership and configured-source eligibility; qualify 231 tests and seven Linux/cloud worker contracts.
+- [x] Deploy only manual worker v14, retain API v11, count the exact request and send once under US$1. Stop ledger at 24 attempts/US$0.6726674 effective commitment; new usage estimate US$0.005293, not an invoice.
+- [x] Reproduce acceptance twice offline; confirm exact database/API/settings/protection fingerprints and leave automation paused, expiry OFF, old seed disabled, default preflight and general execution disabled.
+- [ ] Plan full GMA correction and qualified ended/inactive history with fresh complete cost/attempt bounds and matching readers; adopt compatible accepted evidence without paying again. Stop for user review before Tribune/Philstar or activation.
+
+## Current implementation — scoped Gemini contract qualified locally; cloud acceptance pending
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Implementation and qualification record](evaluations/three-article-cloud-pilot-20261022/scoped-evidence-repair.md). The opt-in V2 contract adds exact occurrence/heading guidance, distinct field roles, aggregate semantic diagnostics and explicit row-level unresolved outcomes. Accepted rows still pass the strict canonical validator; invalid references/structure and infrastructure/accounting failures remain hard stops. Thinking-token transport and failed-request usage reporting are repaired. V1 identities/behavior remain the default.
+
+- [x] Implement V2 backend, immutable row-outcome receipts, exact-request offline semantic replay and saved projection recomputation without UI/schema/model/dependency changes.
+- [x] Preserve original GMA source/failed response and all old release/manifests; verify old replies cannot be silently adopted under V2.
+- [x] Pass 197 stable regression tests, including disposable PostGIS, and seven frozen Linux worker contracts plus unchanged GMA failure/layout/replay checks.
+- [x] Validate the explicitly authorized V2 row-level policy for one real diagnostic batch; full-article acceptance remains pending.
+- [ ] Count/review changed requests, complete cumulative budget and attempt bounds, freeze new authorities and matching API/worker artifacts before any paid continuation. No ledger resumption, cloud deployment or seeding in this phase.
+
+The last verified cloud state is unchanged by this work: v11 serving, failed 379, stopped 23-attempt ledger/US$0.6673744 effective commitment, no accepted flood output. GMA acceptance, Tribune/Philstar and active-zone creation remain pending.
+
+## Current investigation — scope-aware evidence repair before further GMA calls
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verified source-evidence diagnosis and repair design](research/gemini-evidence-validation-20261023.md). Offline replay of the unchanged failed response confirms original status/place/ownership errors and **four additional missing-date citations** hidden by early exceptions. A software-only counterexample also confirms that `thinking_tokens: 0` is returned by the response reader but rejected by final transport validation. Full article preservation alone does not ensure correct per-field citations. Documentation/community research is complete; no production implementation or further dispatch occurred.
+
+- [x] Research current Google guarantees/tool support and firsthand community reports, including the resolved historical Search/JSON issue; distinguish relevant evidence from old SDK workarounds.
+- [x] Reproduce all target/time failures and optional-thinking metadata mismatch in deployed v11 Docker with networking disabled; original bundle unchanged, zero provider/DB/inference calls.
+- [x] Implement the opt-in V2 contract locally with exact occurrence bindings, conservative heading/context guidance, aggregate semantic diagnostics and compatible usage handling; see the newer qualification record above.
+- [ ] Explicitly include row-level unresolved processing in the next acceptance plan if adopted; do not silently replace the existing whole-article rejection policy.
+- [ ] Qualify source-format/ownership/date/clearance/negative regressions offline, then re-freeze/count/review the cumulative budget and remaining attempt bound before live continuation. Keep Search/Maps disabled unless their separate evidence, cost and presentation requirements are handled. No UI/schema/training changes.
+
+The last verified cloud checkpoint below remains operative: failed 379, stopped 23-attempt ledger, US$0.6673744 effective commitment, no accepted flood events/zones. This research did not change those resources.
+
+## Last verified cloud checkpoint — budget repair deployed; GMA stopped on source semantics
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The US$1 cap remains. V2 accounting preserves all original 20 attempts and settles only the reviewed retained evidence; countTokens bounds the full four-target schedule at **US$0.9466039**. Matching worker/API **v11** are deployed. The compatibility batch and one subsequent batch pass; the next HTTP-200 response fails source semantics, so **run 379 fails and seeding remains incomplete**. Ledger stopped at **23 attempts / US$0.6673744 effective commitment**, not an invoice. [Release, exact evidence, accounting and pending gates](evaluations/three-article-cloud-pilot-20261022/budget-review.md). Earlier checkpoints retain historical scope; their maximum-only cost estimates are superseded by reviewed V2 accounting.
+
+- [x] Preserve original ledger/attempts, implement immutable settlements, count all 13 exact requests, fit the complete schedule, and retain usage before fact validation. No cap increase or history reset.
+- [x] Pass 161-test regression, expanded 18-test accounting checks, seven image/cloud contracts, frozen wire/cache checks and fresh disposable backup restoration.
+- [x] Make one zero-SQL-write compatibility request; replay twice offline. Adopt both cached responses, continue serially, stop on the next semantic failure and retain every response/usage receipt.
+- [x] Pass protected canary/serving and desktop/mobile article/history/scroll/empty-map/export checks; confirm original runs 375/376/378 and all preserved records unchanged. Only new failed extraction 379 is added.
+- [ ] Repair and qualify missing flood-status citations, omitted street-place evidence and cross-road source ownership offline; freeze a new reviewed continuation/accounting schedule before further dispatch.
+- [ ] Complete GMA News Intelligence and qualified ended/inactive history; verify populated views and complete-command idempotence, then stop for user review. Tribune, Philstar and activation remain pending. News paused, expiry OFF, old seed disabled and LANES key 2 retained.
+
+## Previous checkpoint — GMA-only continuation stopped at provider HTTP 400
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The separately approved GMA-first stage is **incomplete**. Matching v9 worker/API readers are deployed and pass 151 local tests, seven image/cloud contracts and protected canary/serving checks. Cached first-batch adoption succeeds without fees; the first new eight-target request returns a retained generic HTTP 400 before article correction. Failed run 378 is visible; no events/zones or other article processing. [Execution, bounded investigation and exact next gates](evaluations/three-article-cloud-pilot-20261022/gma-review.md).
+
+- [x] Authenticate old NER 375 against its original release offline; preserve failed 376, original inputs, strict evidence/source checks and exact hash-bound cache reuse.
+- [x] Add per-batch semantic validation and a separate archive-only authority/writer; disposable PostGIS proves ended/inactive/idempotent output without activation. Freeze matching release, restore a fresh backup, pass cloud read-only acceptance and promote matching readers.
+- [x] Resume the existing ledger once, adopt cached four-target response, send exactly one new eight-target request and stop on HTTP 400. Retain/replay response twice offline; do not retry. Ledger: 20 attempts / US$0.7731994 conservative reservations; unchanged US$1 cap, actual charges unconfirmed.
+- [x] Verify hosted desktop/mobile failed history and scrolling, original Collection, flood empty states, analytics/exports; original rows 375/376 and all other table fingerprints/protections unchanged. Only new failed extraction/sequence added. News paused, expiry OFF, old seed unchanged, key version 2.
+- [ ] Qualify a cause-specific compatible request contract and re-plan cumulative spending before further dispatch. Schema branching from four to eight is a hypothesis, not proven by the generic error. Four-target completion now projects US$1.2783400 and exceeds current authority; no cap increase is approved.
+- [ ] Accept the full GMA correction; preview/apply ended history with inactive polygons; verify populated hosted views and repeat reuse. Then stop for user review before Tribune, Philstar or activation.
+
+Earlier checkpoints below retain their original dated scope.
+
+## Current checkpoint — repaired single GMA cloud batch accepted; stopped as authorized
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). **One repaired four-target GMA request passes HTTP 200 and strict evidence-reference validation**, with immutable response retention and two passing network-disabled replays. This is one-batch acceptance only; full-article facts, spatial output and seeding remain unaccepted. [Release, execution, budget and preservation](evaluations/three-article-cloud-pilot-20261022/quote-contract-cloud.md).
+
+- [x] Add a separate V2 authority/diagnostic bound to the reviewed payload, original run 375/version 574, exact parent/source/release/database hashes and one request/zero SQL writes; preserve V1 and failed run 376.
+- [x] Pass 127 tests, seven frozen-image contracts, cloud software/storage checks and exact read-only parent/input preflight. Deploy worker only at 1 CPU/3 GiB/600 seconds/zero retries; keep API v5 unchanged.
+- [x] Make exactly one request, retain before validation, replay twice offline and stop. Preserve previous 18 attempts; final ledger has 19 attempts/US$0.7306760 conservative reservations under unchanged US$1 cap, actual billing unconfirmed.
+- [x] Verify all protected/other table fingerprints, rows 375/376 and schema protections unchanged. Record the sole concurrent visitor-table heartbeat, supported by public `/visits` request logs; do not claim blanket database equality or reset that record. News paused, expiry OFF, old seed unchanged, personal key unused.
+- [ ] Plan the full GMA continuation and fresh cumulative spending estimate, including how to reuse immutable NER/evidence under the new release without weakening identity checks. No further request is authorized by this single-batch milestone.
+- [ ] After separately accepted full GMA correction, qualify spatial/paired outputs and hosted views before Tribune 25 and Philstar 274. No article correction, flood event or polygon was saved by this phase.
+
+The planned one-batch milestone is complete. All three-article seeding remains pending; earlier checkpoints below preserve their dated scope.
+
+## Current checkpoint — cause-specific quote-ID repair passes offline
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Added explicit offset/index instructions and article-specific integer enums for all six evidence fields, retaining strict canonical/source validation and the compact schema's removal of nested array length bounds. **114 local tests and seven network-disabled Linux contracts pass.** The unchanged retained response still fails; all nine offending values are excluded by the new schema. [Repair, candidate hash, cost and remaining gates](evaluations/three-article-cloud-pilot-20261022/evidence-contract.md).
+
+- [x] Implement and qualify the cause-specific request contract offline, including unchanged full-article/proposal inputs, strict failure replay and a distinct processing identity.
+- [ ] Freeze/build/deploy a matching manual worker release and authorities; pass cloud read-only/software/storage checks while preserving serving API and old runs.
+- [ ] Review the new request estimate (US$0.0420974 for the frozen first-batch candidate) and cumulative remaining-article cost before explicitly resuming paid execution. Ledger remains stopped at the last verified 18 attempts/US$0.6885786 reservations; no dispatch or reset in this follow-up.
+- [ ] Finish GMA correction/spatial/hosted acceptance, then Tribune and Philstar with separate history and active presentation outputs. All article seeding remains pending.
+
+No user credential/input change is needed for this prerequisite. No cloud deployment, database access or provider call occurred in this follow-up. Earlier checkpoints retain their dated scope.
+
+## Current checkpoint — retention repaired; single GMA diagnostic identifies invalid offsets
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Private immutable response retention, immediate per-batch evidence diagnostics and pinned network-free replay are deployed to the manual worker. **One exact four-target GMA batch returns HTTP 200 but fails nine evidence fields: references 318/327/347 exceed quote range 0–58.** Those values match source-character positions, indicating offset/index confusion. The response is retained and the same rejection reproduces twice with networking disabled. [Exact targets, release, tests, spending and preservation](evaluations/three-article-cloud-pilot-20261022/evidence-retention.md).
+
+- [x] Qualify strict retention/replay/fail-fast behavior: 91 local tests, seven image/cloud contracts, real private-storage immutability and zero-provider replay checks.
+- [x] Freeze/deploy worker only with unchanged trained assets, 1 CPU/3 GiB/600 seconds/zero retries, default read-only and general provider execution disabled. Keep serving API v5 unchanged.
+- [x] Reconstruct the original first batch from saved run 375 without NER; preserve the exact payload/settings and explicitly resume only one diagnostic under the existing US$1 ledger.
+- [x] Retain and inspect one real response; replay twice offline; stop with all previous 17 attempts unchanged and 18 cumulative attempts/US$0.6885786 conservative reservations. Verify every database fingerprint, runs 375/376, protections and paused settings unchanged.
+- [ ] Design and qualify a cause-specific request-contract repair against the retained response without translating guessed evidence or weakening semantic/source checks. No further provider dispatch is authorized by this diagnostic.
+- [ ] Explicitly resume full GMA correction only after that repair and budget review; then qualify spatial/paired outputs and hosted acceptance before Tribune/Philstar. All three-article seeding and article acceptance remain pending; zero flood records were written.
+
+News remains paused, expiry OFF, old seed disabled, personal key unused and the budget ledger stopped. Earlier checkpoints retain their dated scope; the original run 376 response is unavailable and its exact historical bad reference remains unproved.
+
+## Current checkpoint — pilot started; GMA correction stopped at evidence validation
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Fresh cloud preflight and protected fingerprints pass. Philstar is registered as article 274/source version 573; all three inputs and separate permissions are frozen against accepted API/worker v5. **Actual GMA NER run 375 completes with 51 mentions. All 13 Gemini requests complete, but correction run 376 fails `native_resolution_evidence_invalid`.** The first-article gate stops Tribune/Philstar and all flood output stages. [Execution, diagnostics, spending and preservation](evaluations/three-article-cloud-pilot-20261022/pilot-execution.md).
+
+- [x] Recheck target/release/key/resources/paused configuration; retain fresh baseline and recovery references; register only the missing Philstar source and freeze exact inputs/authorities.
+- [x] Resume the same spending ledger explicitly, estimate GMA's full request sequence offline, run actual NER/Gemini and retain the failed outcome without retry or fabricated data.
+- [x] Prove completed NER reuse with zero extra inference/records; verify selected failed correction/history, desktop/mobile evidence scrolling and empty flood views. Existing article/version rows, accounts/community and schema protections are unchanged.
+- [ ] Preserve bounded private per-batch provider results and precise evidence-index diagnostics before any paid correction retry. The current failed receipt distinguishes neither duplicate nor out-of-range indices and retains no correction payload for replay. Repair and qualify that gap without weakening source validation.
+- [ ] Inspect the failed evidence and explicitly resume only the accepted repaired GMA stage within remaining reservation capacity; no automatic retries, model fallback or budget reset. Ledger is stopped: 17 attempts, US$0.6481486 conservatively reserved, actual billing unconfirmed.
+- [ ] Accept GMA's corrected/spatial/hosted outputs before Tribune and Philstar; then complete paired history/active instances, populated maps/analytics/exports and idempotence checks. **Pilot completion criteria remain unmet; zero flood events/zones were created.**
+
+News automation remains paused, both expiry switches OFF, old seed disabled and personal version 3 unused. Earlier checkpoints below retain their historical scope.
+
+## Current checkpoint — real Gemini acceptance passes; matching API promoted
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Controlled schema-only comparison isolates the HTTP 400 compatibility failure to response-schema array constraints. The repaired compact schema binds the exact batch IDs/count and retains strict local evidence validation. **Real cloud execution `lanes-news-verified-65rcn` passes HTTP 200, corrected quoted-time acceptance and saved-result recomputation.** Matching `lanes-api-gemini-fix-20261022-v5` now serves 100%, with protected canary/serving checks and unchanged complete database fingerprints. [Repair, limits, release and spending evidence](evaluations/three-article-cloud-pilot-20261022/provider-repair.md).
+
+- [x] Preserve bounded redacted provider explanations, reproduce the exact failed payload and retain all earlier attempts without an automatic retry loop.
+- [x] Compare only schema array bounds, repair exact-target admission, pass 50 focused tests and seven local/cloud contracts, then pass one real-provider backend acceptance request.
+- [x] Promote matching API/readers after protected acceptance; retain secret version 2, resources, all database records and schema protections. Keep news paused, expiry OFF and old seed disabled.
+- [ ] Resume the inspected three-article stage explicitly within the same US$1 ledger (US$0.1225868 conservatively reserved across four preserved attempts, actual total billing unconfirmed); freeze authorities against the new application/resolver identities.
+- [ ] Register the missing capture, freeze exact version IDs and process GMA first, then Tribune and Philstar with per-article hosted acceptance, spatial previews and atomic historical/active outputs.
+- [ ] Verify populated desktop/mobile cards/evidence/maps, analytics/exports and repeat execution without extra inference/provider calls or duplicate evidence. No articles have been processed or seeded by this repair.
+
+The previous checkpoints below retain their historical scope. Successful fictional-provider acceptance does not establish real-article NER accuracy or geometry eligibility.
+
+## Current checkpoint — three-article pilot staged; funded provider request rejected
+
+The user approved the combined Part 2A/2B pilot and funded the original LANES-account key (secret version 2). Exactly GMA source version 137, Tribune source version 568 and the additional original Philstar 4:30 PM capture are frozen. Restricted manual authorities, durable spending reservation, paired archive/active output and compatible readers are implemented; 21 focused and 73 regression checks pass on disposable PostGIS. The staged cloud worker passes read-only preflight and all seven software contracts. **One funded provider request (`lanes-news-verified-bjlbv`) returned HTTP 400 / `INVALID_ARGUMENT`; the pilot stopped without retry, article registration/processing, flood writes or API promotion.** The ledger retains its US$0.0306548 maximum reservation; actual charge is unconfirmed. [Current evidence and remaining gates](evaluations/three-article-cloud-pilot-20261022/README.md).
+
+- [x] Freeze the three full original captures, publication evidence and exact body hashes without replacing retained bodies.
+- [x] Implement/test manual processing while news remains paused; separate active authority, all qualified locations, paired incident/session identity and US$1 cumulative news spending guard.
+- [x] Stage matching cloud worker; verify configured reader descriptor, seven cloud software contracts and fresh/repeated existing-head migrations. Retain the first software-only descriptor packaging failure and its corrected release.
+- [x] Make one real funded LANES-key request and stop on provider HTTP 400 / `INVALID_ARGUMENT` without retry. Keep ledger stopped, provider execution disabled and API serving revision unchanged.
+- [ ] Investigate the rejected request before a separately controlled diagnostic/resume, retaining the same spending evidence. Successful provider qualification remains unproved.
+- [x] Investigate without generation calls: reconstruct the exact failed request offline, verify documented model limits/endpoint, and read key metadata/funded billing linkage. [Findings](evaluations/three-article-cloud-pilot-20261022/provider-investigation.md). Upstream cause remains unconfirmed because the current error adapter discarded message/details; schema complexity is a hypothesis only.
+- [ ] Recover a sanitized provider rejection from existing logs, or arrange one separately controlled diagnostic invocation after improving error capture. Do not change model/schema/output settings without cause-specific evidence.
+- [ ] After provider acceptance, qualify/promote matching API readers, register the third source, freeze IDs and process GMA first, then Tribune and Philstar with per-article acceptance.
+- [ ] Verify hosted populated desktop/mobile readers/maps/analytics/exports and repeated zero-extra-call execution; preserve unrelated records and leave accepted active instances for manual deactivation.
+
+Keep all news automation paused, the old historical seed disabled, both expiry switches OFF and personal version 3 unused. No UI or database schema changes.
+
+## Current checkpoint — personal-key replacement withdrawn; retain LANES key
+
+Latest user decision, October 22 at 8:38 PM Asia/Manila: continue using the LANES Gmail account and its existing version-2 credential. Live read-only inspection confirms all three consumers still use version 2, which remains enabled. Personal version 3 is stored but unused; do not resume its activation. Neither version was deleted by this decision. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). User approved all-feature cloud key replacement, news-first/weather-second acceptance, no automatic retries and API promotion only after both pass.
+
+- [x] Store the supplied credential as `lanes-gemini-api-key` version 3 and verify contents in memory without writing plaintext to source/receipts.
+- [x] Temporarily pin both news workers to version 3 and execute one bounded real news check: `lanes-news-verified-5bnpz`, HTTP 400, no retry or database write. Preserve the failure; do not treat status alone as proof of an invalid key or billing success.
+- [x] Stop before weather/canary/promotion and restore worker bindings to version 2. Verify API/discovery/manual verification all use version 2, old secret remains enabled, and models/images/resources/defaults/schedulers/database fingerprints are preserved. Both expiry switches stay OFF and news stays paused. [Attempt and recovery](evaluations/gemini-key-rotation-20261022/README.md).
+- [ ] Continue successful provider qualification using the retained LANES-account credential after its access/billing is ready; personal-key rollout is withdrawn. No article seeding is authorized by this credential operation; the US$1 news-pilot allowance is retained and website weather spending is separate.
+
+## Current checkpoint — cloud correction bridge deployed; provider acceptance blocked
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The user authorized the matching Google Cloud release and one bounded real Gemini request with the existing key. No article seeding or automation restart was executed.
+
+- [x] Freeze matching application/assets/reader identities; deploy `lanes-news-verified` as an unscheduled Linux amd64 one-CPU/3-GiB manual worker, 600 seconds, zero retries and default read-only preflight. Keep general provider execution disabled and writes authority-bound.
+- [x] Pass 60 current local tests, seven network-disabled/cloud software contract checks, protected canary/promoted API reads and hosted desktop/mobile empty-state, analytics/export and spatial checks. API `lanes-api-gemini-20261022-v4` serves 100% of backend traffic; no frontend artifact or UI edit.
+- [x] Attempt exactly one real provider request from Cloud Run. Record HTTP 402 and stop without retrying or writing to the database. This is a recorded blocker, not successful model qualification.
+- [x] Confirm all database row fingerprints, constraints/triggers/sequences and the existing key binding unchanged. Preserve 174 articles/224 versions, 37 community posts and eight accounts; flood outputs stay empty. News flags/scheduler stay paused, old worker/disabled seed specs unchanged. [Release and remaining acceptance](evaluations/ner-gemini-cloud-release-20261022/README.md).
+- [ ] Resolve provider payment/model access and pass successful bounded real structured-output acceptance. Then plan/select the three complete articles, create fresh raw NER runs and qualify corrected News Intelligence plus historical/active demonstration admission. Funding alone does not establish acceptance; do not reuse deleted run IDs or old authorities.
+
+## Current checkpoint — flood data cleared; corrected processing not yet resumed
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The user approved the exact destructive cleanup, preserving original articles/accounts/community posts. This supersedes earlier flood-row preservation for this operation only.
+
+- [x] Capture verified private full backups and rehearse restoration, rollback, target/snapshot rejection, preservation and repeated execution on owned disposable PostGIS.
+- [x] Pause news/expiry writers, restrict API ingress temporarily, detach 34 community-post links and clear the approved flood/news-output tables plus 21 report notifications atomically.
+- [x] Verify all preserved row fingerprints and unchanged constraints/triggers/sequences; pass 12 guard tests plus hosted desktop/mobile/API/map/analytics/export/SSE checks. Restore public API access and zone-expiry scheduling.
+- [x] Retain 174 articles/224 versions, all 37 community posts and eight accounts. Keep news collection/processing/publication false, its scheduler paused and the historical worker disabled. [Execution and recovery](evaluations/flood-data-reset-20261022/README.md).
+- [ ] Complete successful real Gemini acceptance and fresh selected NER/correction/archive verification before resuming automation. Corrected readers/manual worker are now deployed under the current checkpoint above; HTTP 402 blocks provider success. Do not reuse deleted live run IDs or old Part 2A execution authorities.
+
+## News Intelligence follow-up — detail scrolling and observation time
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The user authorized the narrow scrolling repair; existing content, labels and styling remain unchanged.
+
+- [x] Remove the nested scroll trap from News Flood Details: flow evidence uses the dialog scroll area; fixed Source Article/history panes keep independent scrolling. Add desktop wheel/mobile touch regression coverage with fictional API responses. Local patch; hosted release remains pending.
+- [x] Trace the native NER-to-LLM handoff and missing-time stages read-only. Two retained runs have 29 projected claims without assigned time facts despite retained clock expressions. Native evaluation is source-rule-only; legacy audit rejects changed candidate values, pre-dispatch gates reject missing times, native-only groups have no scalar binding, publication expects deterministic native evidence, and readers display original extraction. Pure/mocked checks and clock probes confirm these constraints. [Investigation](others/bug-log.md#news-intelligence--observation-time-missing-from-article-results).
+- [x] Implement the evidence-linked NER → Gemini correction handoff using the existing `GEMINI_API_KEY`: full original article/native facts, strict per-target JSON, backend source validation, immutable parent NER run and a separate corrected run on the same article version. Existing starting-time field supports the agreed contemporaneous publication fallback with internal JSON basis; no new database schema or UI. Explicit manual processing leaves scheduled RSS unchanged. 297 distinct local/mocked checks pass, including disposable PostGIS, mixed readers, failure/retry/concurrency and repeat execution. [Acceptance](evaluations/ner-gemini-verification-20261022/README.md) · [Implementation](plans/ner-gemini-verification.md) · [Operator guide](guides/ner-gemini-verification.md).
+- [ ] Identify/replay the screenshot's exact 4:34 PM source and verify a successful real correction after the HTTP 402 restriction is resolved. Matching cloud/reader artifacts and empty hosted interfaces now pass; populated corrected results remain unverified. Historical seed remains disabled and retained articles have not been reprocessed.
+
+## Current checkpoint — Part 2A execution complete; Part 2B remains separate
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The user explicitly approved the full Part 2A execution plan. This supersedes the earlier integration-approval checkpoint below for this manual archive worker; scheduled RSS remains unchanged. [Shared execution evidence](evaluations/news-history-shared-execution-20261022/README.md).
+
+- [x] Implement exact-target/input/application/model/spatial authority, archive-only shared execution, mixed native/legacy saved readers, protected-row fingerprints and conservative ended citizen-event evidence matching.
+- [x] Verify disposable PostGIS fresh/repeated upgrades through the already approved `f1a9c7e2b604`; introduce no new model, migration or dependency.
+- [x] Freeze 12 saved full bodies and 132 complete training sources: 99 training captures are publisher-eligible, 33 retain unresolved publisher outcomes; 111 selected bodies form 56 batches of at most two articles. Preserve original September inputs.
+- [x] Apply the existing approved migration on Cloud SQL; register/repeat the same 99 captures without replacing existing article bodies or review state.
+- [x] Deploy the separate unscheduled 1 CPU/3 GiB/600-second/zero-retry historical worker and matching API readers. Canary checks passed; API revision `lanes-api-history2a-20261022-v3` serves traffic. Existing frontend source was released for native detail-reader compatibility; hosted desktop/mobile checks pass without UI source edits.
+- [x] Finish all 56 batches / 111 full articles. Record 96 articles with unresolved groups and 15 with no groups; all 629 group receipts remain unresolved. No new archive/polygon/evidence attachment qualified. Retain 33 publisher-unresolved training sources.
+- [x] Repeat all 56 batches with zero new inference or duplicate records. Final original-row fingerprints and hosted filters/counts/pagination/source/history/map/analytics/export checks pass. Freeze receipts and disable further manual seed execution; retain evidence.
+
+**Part 2A execution is complete with unresolved outcomes and zero qualifying new archives.** Existing history remains intact. The query-opened article close action is logged as an existing UI limitation; no UI edit was made. Part 2B/live activation remain separate. Earlier approval-limited evidence below retains its original checkpoint.
+
+## Retained prerequisite — isolated NER deployment and test
+
+The user selected a separate unscheduled `lanes-ner-check` Cloud Run job. The presented local files/checks, cloud upload/account/job creation, and one execution/documentation update received separate approvals. Explain proposed edits simply and obtain approval before additional edits or cloud changes. The isolated cloud NER qualification is now passed. Checkbox entries retain their original checkpoints and approval boundaries; production integration/cleanup remain open. This does not complete cloud seeding or add a presentation phase. [Evidence](evaluations/ner-cloud-check-20261022/README.md) · [Operator guide](guides/ner-cloud-check.md).
+
+- [x] Prepare the separate inference-only container, frozen local controller/probe, focused tests and instructions without modifying the backend deployment pipeline or original model/runtime.
+- [x] Build/preflight locally and make one separately claimed model attempt. 75 tests pass; all 355 graph/provenance results, 352 retained prediction records and 53 reviewed mentions match. One CPU/three-GiB peak is 1,877.5 MiB; loaded-model shutdown passes. Preserve all 418 predecessor files and remove only stopped owned local containers after verification.
+- [x] Obtain approval and upload the exact image; create the dedicated unscheduled account/job and pin its actual registry digest. Actual one CPU, three GiB, one task/parallelism one, 600-second timeout, retries zero and absence of application roles, secrets and database bindings are verified. Initial service-account visibility propagation resolved before successful creation without extra IAM grants.
+- [x] Investigate the unlocalized startup failure in the approved three tooling/test files. The separate diagnostic revision passes 83 tests and three controlled container cases without model inference. Preserve old source snapshots/claims/images; keep strict full-test checks, model/runtime and deployed job unchanged.
+- [x] With explicit approval, upload the diagnostic image, update only the unscheduled test job to `--diagnostic-only`, verify its index/platform digest and settings, and execute one diagnostic task. `lanes-ner-check-wpsmc` succeeds as diagnostic collection only: cgroup-v1 files are exposed, root `cpu.max` is missing, and the PID-1 probe triggers `parent_guard_failed`. Configured CPU is 1, measured quota 80,600/100,000 (0.806 CPU); memory limit is exactly 3 GiB and zero swap is not established. No model session or automatic retry. Preserve all evidence; compatibility/supervision edits and a further cloud execution require approval.
+- [x] Implement the separately approved local startup correction in the five presented code files. The image supplies its own Linux supervisor (signal forwarding, bounded forced shutdown, child reaping); the probe reads cgroup-v1/v2, preserves large numeric evidence and collects bounded host swap facts. **103 tests / nine Linux container cases pass**, with no new inference/cloud/database access. Preserve exact one-CPU/no-swap acceptance: the observed cloud 0.806 quota and unbounded combined swap limit are not silently accepted. Final image/package/evidence are [indexed here](evaluations/ner-cloud-check-20261022/README.md#local-startup-correction--verified-checkpoint-before-cloud-upload). Thirteen stopped owned local containers removed after inspection; images retained.
+- [x] With separate approval, upload/update the corrected diagnostic image, verify its actual settings and execute once (`lanes-ner-check-b4b8m`). Supervision and unchanged seccomp/network-denial/parent-death checks pass on Cloud Run; memory limit is exactly 3 GiB. Actual CPU quota is now 104,300/100,000 (1.043), while configured CPU remains 1; host swap devices/total/free are zero but an enforced zero-swap cgroup limit is not proved. Strict resource checks reject the mismatch. No model loading or retry.
+- [x] With explicit criteria/file approval, add frozen `cloud-run-v1` beside `local-strict-v1` in the three proposed tooling/test files. Independently verify saved job/execution configuration remains 1 CPU/3 GiB; record finite positive actual quota and source-labeled zero-swap evidence at all 358 resource checkpoints. Preserve original model/runtime/isolation, memory/headroom, timing limits and all prediction oracles. **150 tests / 12 local Linux cases pass**, no inference/cloud/database operation during this revision. Image inventory matches frozen context; 14 stopped owned containers removed after inspection. [Identity and evidence](evaluations/ner-cloud-check-20261022/README.md#approved-cloud-resource-profile--verified-locally).
+- [x] With separate approval, upload the exact cloud-profile image, update only the unscheduled test job and clear diagnostic-only args, verify actual index/platform/configuration, and execute one full frozen NER workload (`lanes-ner-check-nbpmz`). **Passed:** 355 graph/provenance hashes, 352 retained prediction records, 53 reviewed mentions, all 358 resource snapshots, unchanged isolation and clean shutdown. Peak 2,067.3 MiB below 2,688; cold 4.9637 s, session 30.7342 s, cleanup 0.1835 s, zero retries. Actual job settings/IAM/schedule/ordinary-worker isolation independently verified. [Cloud acceptance](evaluations/ner-cloud-check-20261022/README.md#cloud-acceptance--full-frozen-workload-passed). No Cloud SQL access or seeding.
+- [x] Review actual cloud configuration, obtain execution approval and verify the full frozen cloud workload, hashes, approved resource profile, isolation and clean shutdown. **Cloud qualification passed under explicitly approved `cloud-run-v1`; original strict failures below remain preserved.** **One approved execution (`lanes-ner-check-m6bf8`) failed preflight with `FileNotFoundError`, task attempt zero/exit one; no successful preflight/model-ready/results.** The original missing path was unreported; the separately approved diagnostic now confirms the required root cgroup-v2 CPU file is absent and the PID-1 parent guard also fails. Independent verification rejects the original incomplete output. Preserve both attempts; diagnostic collection and the approved local startup correction are complete, while cloud startup verification of that correction has passed, while resource-profile review and another model attempt require approval. Local success does not establish Cloud Run compatibility; no automatic retry or weakened checks.
+- [x] After cloud acceptance, obtain the user's full Part 2A execution approval and qualify/deploy the separate manual historical worker plus matching readers; ordinary scheduled NER integration remains separate. Earlier gate wording: Existing scheduled RSS, API traffic, Valhalla, Cloud SQL and UI remain unchanged during this check.
+- [ ] Preserve evidence, then obtain approval to remove temporary unused cloud testing resources after successful verification/handoff. Retain automated tests and documentation.
+
+## Priority correction — article capture before continuing Phase 2
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verification and source-version review](evaluations/news-publisher-body-capture-20261022/README.md).
+
+- [x] Fix automatic GMA reporting-body capture, retain source dates/list structure and visible retrieval failures, and verify unchanged September 24 content (245 distinct capture/native passes plus 13 subtests).
+- [x] Prepare article 47's original-publisher 3:09 PM replacement and rules-only preview, retaining morning version 137 and ended history; inspect the current target read-only.
+- [x] Apply the explicitly approved one-article correction as version 140/completed rules-only run 140 and verify the saved article/result readers. Retain old version 137/runs 137 and 139, ended history and the frozen E0 package. No publication, activation or native inference.
+- [x] Resolve the two pre-existing September 9 extraction checks: retain the scoped flood-list evidence marker and prevent narrative time continuation from leaking a neighbour road clock into an independent clause. All 150 extraction/replay checks pass; saved extraction is unchanged. [Part 2A verification](evaluations/news-history-part2a-20261022/README.md).
+
+The completed Phase 1 fixture checkpoint below is retained. The user approved this one source/extraction write separately; no Phase 2 seeding, active-zone execution or deployment was performed. Before Part 2B, reconcile the newly selected GMA version 140 with a separately pinned source/match map; do not overwrite the old package or reuse morning Quezon City geometry for the later Malabon/Marikina report.
+
+<a id="october-25-presentation--detailed-e0e6-delivery-plan"></a>
+
+## October 25 presentation — two-phase delivery plan
+
+**Phase 2 is now split into two ordered parts:** [2A — seed Flood History, including NER training articles](#part-2a--seed-flood-history-including-ner-training-articles), then [2B — September articles for active flood zones](#part-2b--september-articles-for-active-flood-zones). This is the user-selected execution order. Part 2A implementation/inventory is locally verified; shared seed execution and Part 2B remain unexecuted.
+
+**Active/history intent clarified (October 22):** the selected September articles are intended to generate active flood-zone examples on the public map and Spatial Operations. They already have ended/inactive history; repeating a September archive import alone does not meet this goal. Other existing saved articles must also be evaluated for supported Flood History observations across dates. Preserve the separate active/history paths, original source dates and existing UI. The current database still has its original September history because real active-output execution has not occurred. The sealed E0 package remains unchanged. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Latest user correction (October 22):** remove the visible “Historical demonstration” label and added badge/modal presentation. Preserve the established design. Internal dataset/session/lineage and routing/count eligibility remain available; source dates stay truthful. This supersedes earlier visible-label requirements below and in the original blueprint. Future tasks preserve existing design unless explicitly requested otherwise. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Unified history amendment:** the user also removed the historical-dataset dropdown. Flood Events and Analytics retain one history view with their existing filters; dataset/session tracking remains internal. Old `dataset_id` links are normalized without hiding records or losing `event_id`. This supersedes the earlier selector requirement. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Status: E0/E1 groundwork is retained; all eight Phase 1 tasks pass local fixture verification. Phase 2 saved-article history processing, deployment and real-data rehearsal remain open.** Owner of every task below: [@roicambe](https://github.com/roicambe) (Roi Cambe). Presentation: **Sunday, October 25, 2026**. [Technical blueprint and acceptance matrix](plans/historical-news-demonstration-phase-e.md) · [Completed readiness review](evaluations/news-historical-readiness-20261021/README.md) · [E0 delivery evidence](evaluations/news-historical-e0-20261021/README.md) · [E1.1 verification](evaluations/news-maintenance-e11-20261022/README.md).
+
+**Delivery goal, corrected by the user:** use actual NER/flood-fact extraction and existing OSM/NOAH services for two concrete paths: **selected September articles → active zones on the public map/Spatial Operations**, and **existing saved articles → supported observations in Flood History & Analytics on navlanes.live**. The earlier archive-only interpretation was incorrect. Selected examples must demonstrate the active-to-deactivated lifecycle, not merely display historical polygons. Preserve September source dates and the existing badge/modal design. Per the latest user correction, do not render the historical-demonstration label. Show predictions, labeled repairs, depth/time/status/access facts, source evidence, generated geometry and unresolved outcomes. Preserve completed A–D milestones. Prioritize the full demonstration workflow; cosmetic cleanup follows it.
+
+**Two required output paths:** `historical_archive` reuses/persists inactive history; `active_demo` is an explicitly selected, source-linked demonstration instance produced by the same services and shown on both active maps. Existing deactivated historical events remain unchanged. Demonstration instances are identified separately from real flood occurrences, are repeat-safe, and must not inflate real occurrence/duration analytics. Deactivating a demonstration through Spatial Operations retains its evidence/geometry in history. This correction authorizes planning the visible examples; no records are activated by this document.
+
+**Database approach:** existing September history does not prevent a separate active-zone instance linked to the same source article. The current plan preserves those historical records rather than reopening ended events. A Cloud SQL reset was the user’s earlier proposed approach; no reset has been executed. Retain existing records, accounts, settings, article versions and immutable evidence. Retain `capstone-september-2026-v1` as internal processing provenance; the history UI remains unified, with no dataset selector. Reruns must not duplicate observations or active instances. No database wipe or backup is included in this delivery. SQLAlchemy models remain unchanged. The user additionally approved narrow migration `f1a9c7e2b604`, preserving ordinary ended-event requirements while allowing retained unknown-endpoint historical archives; it is verified only on disposable PostGIS. Any further schema change still requires a concrete proposal before editing. Planning/documentation does not execute cloud writes or deploy a release.
+
+**Two phases only:** Phase 1 connects and fixes the existing services and screens; Phase 2 generates the selected September active zones, fills supported existing-article history, deploys matching components and proves both paths. Older E0–E6 identifiers remain only as references in completed records and technical evidence. They are not six additional phases to repeat.
+
+- [x] Simplify the presentation plan into two concrete work lists, retaining completed work and evidence.
+- [x] Retain the [manual UI checklist](#manual-ui-testing--what-you-should-see). Its actual website checks remain unperformed.
+
+<details>
+<summary>Completed groundwork — retained E0/E1 records; do not repeat</summary>
+
+#### E0 — Prepare and freeze real article inputs
+
+**Completed October 21: preparation only.** [Operator guide](guides/historical-news-preparation.md). Private package: `data/news-historical-e0-20261021/package`; dataset `capstone-september-2026-v1`, stable session `ee30c69d-32cd-555f-bb90-26899cb74810`. Two exact native captures, five inactive history references, 27 checks and a successful repeat verification. No inference, database mutation, activation or deployment.
+
+- [x] Select the existing September 9 GMA and September 24 Tribune captures; authenticate unchanged body hashes, publisher/URL/publication metadata and capture provenance. Original feed wording is not bound to either saved body: preserve `legacy_unknown`, null raw evidence and unknown timezone; saved normalized publication dates do not manufacture original feed proof.
+- [x] Recheck matching cloud articles, versions, extraction modes and linked historical cases/events/zones read-only. Tribune article 25 has version 66 and ended/inactive principal zones/events 59–60; GMA article 47 has version 137 and ended/inactive zones/events 61–63. Their linked runs are `rules_only`; all 120 inspected cloud runs remain legacy. No articles or history need to be seeded again merely to make them exist. [Recheck evidence](evaluations/news-historical-readiness-20261021/README.md#7-september-record-reuse-and-redundancy-recheck).
+- [x] Freeze the exact existing input versions and an existing-event/zone match map before processing. Tribune saved text matches its local capture exactly. GMA cloud/local text differs in whitespace (1,970 versus 1,990 characters) with the same words; preserve the selected immutable text/offset binding rather than treating the two hashes as interchangeable. Reuse article IDs 25/47; no duplicate article/version was created.
+- [x] Freeze the private manifest, inventory and native-format input captures, including source/native fingerprints, exact text hashes, authenticated model/runtime/spatial identities and two-input workload. No RSS collection, retraining or validation/holdout access occurred.
+- [x] Assign Quirino/Guazon (59) as primary `active_demo` candidate, Gov. Pascual (60) as independently qualified backup, and GMA references 61–63 as `historical_archive`. Bind a stable demonstration session. These are selections, not accepted neural observations or activation authorization; their source/NER/geometry checks remain E1–E2 gates.
+- [x] Inspect the retained legacy results and authenticated C3b input cache without inference. Neither exact saved September input occurs in that cache, so no earlier neural output is accepted as proof. Store legacy claim/evidence/geometry hashes as history references; no polygon is copied into a new output.
+
+**Gate E0 passed:** independently authenticated, repeatable input manifest and exact native captures are saved. Neural/source/geometry eligibility is explicitly `not_evaluated`; E0 completion does not establish positive-example acceptance. E1–E2 must qualify each selected candidate using actual processing and existing geometry services. A failure stays visible and cannot be replaced by a legacy polygon.
+
+#### E1 — Connect controlled historical processing
+
+- [x] E1.1: fix and regression-test the Phase D ordering defect. Invalid auditor configuration now runs only shared independent expiry maintenance before rethrowing its original bounded error; scheduler counts/errors remain separate and the cycle stays unsuccessful. Automatic expiry off preserves cases/zones. **82 checks pass**, including disposable PostGIS lifecycle/monitoring and valid clearance regressions. [Verification](evaluations/news-maintenance-e11-20261022/README.md). Local only; no deployment or new UI/zones.
+- [x] E1.2: add `scripts.run_news_historical_processing` with read-only preflight, explicit disposable-only processing, frozen E0 manifest/hash, current asset pins, confirmed database and private execution/attempt receipts. Exact native-run selection reuses the existing worker and preserves completed/failed/retry/leased evidence without general capture or unrelated queue claims. **227 checks pass** with fictional inputs/runtime and disposable PostGIS; the real E0 package authenticates without database access/inference. [Verification](evaluations/news-historical-command-e12-20261022/README.md) · [Operator guide](guides/historical-news-preparation.md#e12--manifest-bound-preflight-and-disposable-processing). No cloud process, real September inference, activation or UI change.
+- [x] Introduce an explicit historical execution-target policy for the configured cloud database and authenticated assets. Preserve disposable-test restrictions, leases/ownership, resource limits and subprocess isolation; do not turn a test-only guard into an unrestricted production bypass.
+- [x] Reuse the actual model, qualified location repairs/grouping, deterministic source consistency and existing placement services. Permit old evidence only through the explicit archive or selected demonstration context; retain source/text binding, affirmative flood evidence, depth/access, locality, ambiguity, geometry and asset checks. Preserve ordinary current-event admission and never silently present September evidence as newly observed flooding.
+- [x] Version historical date normalization separately from the frozen neural/rule outputs. Bind supported dates/times to exact source evidence; preserve date-only/unknown precision, unsupported targets and native-only collective groups without invented individual claims.
+
+**Gate E1 passed locally — complete software delivery:** all remaining target-policy/source/date tasks were delivered together with **345 passing checks**. [Verification](evaluations/news-historical-e1-20261022/README.md). The default stays disposable-only; origin processing requires a hash-pinned exact-target policy. Separate historical interpretation/preview receipts preserve native evidence and unknown precision. No real September inference or cloud processing occurred; actual geometry/persistence is now part of Phase 1 below; cloud qualification/execution is part of Phase 2. Reading saved views cannot collect, infer, publish or mutate records.
+
+
+</details>
+
+<a id="e2--generate-geometry-for-historical-records-and-selected-active-demonstrations"></a>
+<a id="e3--complete-the-existing-news-intelligence-interface"></a>
+<a id="e4--show-active-examples-and-historical-results-in-the-existing-interfaces"></a>
+
+### Phase 1 — Connect the existing system
+
+**Completed locally:** authenticated saved extraction now connects to the existing plotting, saving and display paths. [434 backend checks, 45 desktop/mobile project checks and final build evidence](evaluations/news-historical-phase1-20261022/README.md). Three browser cases are intentionally skipped; all 12 final changed-workflow/offline checks pass. Reuse the completed E0/E1 implementation and the current model, OSM/UP NOAH services, database tables and screens. The [technical blueprint](plans/historical-news-demonstration-phase-e.md) retains implementation details.
+
+- [x] **Connect extraction to automatic plotting.** Pass authenticated saved NER/flood facts through the existing road-resolution, NOAH-intersection and estimated-corridor services. Preserve source text/offsets, depth/access/time/locality and geometry checks; unsupported or ambiguous results stay visible.
+- [x] **Fix integration bugs.** Correct failures found in extraction-to-placement, coordinate/locality resolution, polygon generation and saved-result reading. Reuse the existing plotting engine. Preserve original predictions, labeled repairs and unknown/date-only facts.
+- [x] **Update database saving.** Reuse matching history; insert only missing historical observations. Save selected active instances with distinct internal source/session identity and complete evidence, preserving the existing presentation without demonstration labels. Make reruns/concurrent work repeat-safe. Preserve original history and truthful dates; retain the blueprint's closure/schema rules.
+- [x] **Update News Intelligence details.** Show saved native/legacy output, original NER mentions, labeled repairs, extracted depth/time/status/access, grouped/unresolved facts and source evidence in the existing page. Preserve filters, pagination, open details and usable error/Retry behavior. Reading the page must not collect, infer or publish.
+- [x] **Update both active maps.** Return and display the explicitly selected active September example on the public map and Spatial Operations with original source dates using the established presentation, without the removed demonstration label. Keep its identity distinct from ordinary current floods; exclude demo geometry from normal routing.
+- [x] **Update Flood History & Analytics.** Reuse existing maps/heatmaps/details and the existing unified history filters across counts, dates, pagination, inspection and exports. Keep dataset/session metadata internal; do not display a dataset selector. Use supported source occurrence dates; distinguish import/verification dates, assumed intervals and unknown values. Exclude demo instances from real-occurrence counts and assumed closures from observed-duration statistics.
+- [x] **Connect normal deactivation to retained history.** Use the existing authenticated Spatial Operations action. Successful deactivation removes the example from both active maps and retains its geometry, evidence, internal lineage and actual action time in history; preserve the original September historical record.
+- [x] **Verify the connected application locally.** Check exact-source handling, source suppression, positive/unresolved geometry, identity/repeats/concurrency/rollback, reader parity, normal routing preservation and desktop/mobile behavior using isolated fixtures. Record local fixture evidence separately from actual September acceptance.
+
+**Phase 1 done when:** the connected backend and existing screens pass local integration checks and support article → saved predictions/facts → eligible demo/archive output → deactivation → history. This does not establish actual September model or cloud success; those are required in Phase 2.
+
+**Follow-up polish after the core workflow works:** renaming Collection status/Pipeline and removing normal Refresh buttons remain unchecked original interface requirements. They do not block the first working presentation walkthrough. Retain current saved-data refresh and visible errors until replacement behavior is verified. Broader interface completion can be tracked in the original Phase E checklist below.
+
+<a id="e5--qualify-and-release-matching-cloud-components"></a>
+<a id="e6--rehearse-verify-and-freeze-the-presentation"></a>
+
+### Phase 2 — Deploy and demonstrate
+
+**September cleanup inspection:** [October 22 read-only Cloud SQL findings](evaluations/september-database-reuse-20261022/README.md) confirm six ended/inactive event/zone pairs and unchanged frozen sources. Recommendation: retain them; deleting the referenced IDs would invalidate E0 and is not needed for separately qualified native processing/active instances. No cleanup has been executed or selected by this inspection.
+
+**Execution order: Part 2A first, then Part 2B.** Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Phase 1 remains complete locally. Both parts below remain open. Target: ready and rehearsed October 24; defense Sunday, October 25, 2026. Dates do not mark acceptance passed.
+
+#### Part 2A — Seed Flood History, including NER training articles
+
+**Goal:** populate the existing unified Flood Events/Analytics history from supported observations in existing saved articles **and the original articles used to train the NER**. These are historical records, not active-map outputs. Preserve existing incidents and append evidence where an incident already exists.
+
+- [x] **Inventory saved sources and NER training articles.** Read saved article/version/run/history identities and the original training-article source/provenance inventory. Reconcile overlaps and identify training sources not yet saved in the application. Use complete original article captures where available; training passages/windows are not independent articles or separate Flood Events. Training-source inclusion does not authorize validation/holdout data or new retrieval/retraining.
+- [x] **Restore complete retained news event inspection and date semantics.** Resolve exact original legacy/native evidence, separate article counts from citizen Reports, retain inactive/expired sources and exclude administrative intervals from observed durations. Existing View Event layout, unified map/list, cached errors/Retry and article inspection pass desktop/mobile checks including 320 px. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Evidence](evaluations/news-history-part2a-20261022/README.md).
+
+**Retained local checkpoint before the approved shared release (superseded by current completion above):** 374 backend passes; 19 desktop/mobile passes with one intentional desktop skip; TypeScript, focused lint and production build pass. Read-only Cloud SQL inspection confirms six original news events. The inventory covers 12 saved full-body inputs and 132 complete training sources: 99 publisher-selected registration candidates, 33 explicit unresolved publisher outcomes. These are not NER/NCR/geometry acceptance counts. Private `saved-package-v3` freezes the twelve saved inputs (article 47 uses version 140 for future processing); the original September E0 package is verified unchanged. Shared processing preflight is blocked by native storage/migration and Linux/runtime/authority qualification. No shared seed rows or active zones were added. At that retained checkpoint, Part 2A remained open; the current completed execution is recorded above.
+
+- [x] **Freeze the archive seed batches and match map.** Bind each selected original body, URL/publisher, source-supported occurrence date/precision, input hash, available compatible extraction and existing incident/zone links. Record training membership as internal provenance. Reuse source/article identities and match the same incident across articles before creating history. Missing original source/date/geometry support remains an explicit unresolved outcome.
+- [x] **Implement and locally qualify general archive seeding.** Extend the current two-input historical workflow through separately pinned bounded batches with read-only preflight and explicit archive-only apply. Remove the two-input/September general-import restriction, preserve frozen E0, retain source suppression and use the agreed labeled two-hour or next-day endpoint assumption for new supported archives. No new table/model/migration is required. Reuse authenticated completed runs where compatible; execute actual NER/fact extraction only where required. Reuse the existing source/OSM/NOAH services, immutable evidence and stable observation identities. Test duplicates across articles, repeats/concurrency, rollback, source suppression, date/closure precision and inactive-only output on disposable PostGIS. Seeded training sources are application data, not an unseen NER accuracy benchmark; annotations are not substituted for actual pipeline output.
+- [x] **Qualify and deploy the components required for seeding.** Pin target/model/spatial/application identities, qualify the historical Linux/one-CPU/3-GiB worker and deadlines/isolation, and test fresh/repeated approved migrations with legacy preservation. Qualify a separately pinned shared-output authority; Phase 1 apply remains disposable/local-only. Release the needed API/readers/worker and configure saved reads without changing scheduled RSS selection. Verify database-enforced read-only preflight and evidence-preserving rollback before shared apply.
+- [x] **Apply the qualified history seed batches.** Save missing application source captures with their provenance where necessary; process selected sources and reuse matching history. Insert inactive historical records only for genuinely missing supported observations; append lineage/evidence to confirmed existing incidents. Preserve original history, dates/geometry/lifecycle, current operational events, users/settings and unresolved outcomes. Do not activate historical seed zones or reset Cloud SQL.
+- [x] **Verify the seeded unified history.** Check original source dates, unknown precision, sourced/assumed/unknown endpoints, maps/heatmaps, cards, counts, inspection, pagination and exports on desktop/mobile. Repeat seeding and confirm no duplicate articles/incidents, changed unrelated records or new active-map zones. Record source/run/group/event/zone IDs and per-source outcomes; verify training-article deduplication and preserved extraction.
+
+**Actual Part 2A outcome:** 111 completed articles, 33 retained publisher-unresolved training sources, 629 unresolved group receipts, zero new events/zones/attachments; all 56 repeats reuse saved extraction. Existing 43 citizen reports/56 events/56 zones remain unchanged. Hosted parity: 55 native cards, 174 article/collection records, 56 history/export records. The manual worker is disabled; Part 2B stays open. [Final evidence](evaluations/news-history-shared-execution-20261022/README.md).
+
+**Part 2A done when:** every selected saved/training article group has a recorded outcome, eligible missing historical observations are saved inactive, matching incidents are reused, and the unified history/analytics/export views agree. Preserve the existing UI: no dataset dropdown or new presentation labels.
+
+#### Part 2B — September articles for active flood zones
+
+**Goal:** use the selected September 2026 flood articles to produce qualified **active zones on both the public map and Spatial Operations**, then demonstrate normal deactivation into retained history. Existing ended/inactive September records remain preserved; another archive-only import does not complete this part.
+
+- [ ] **Confirm the frozen September inputs and candidate selection.** Retain the sealed E0 package and stable session. Reconcile original history and any Part 2A source overlap so no article or historical incident is seeded again. Quirino/Guazon remains the primary selected candidate and Gov. Pascual the independently qualified backup. Confirm supported source dates and original-history references.
+- [ ] **Generate and save the selected active September output.** Reuse compatible authenticated completed extraction or run the actual model where needed; retain original neural mentions, repairs, facts, source checks and generated OSM/NOAH geometry. Use separately authorized active-instance output on the qualified target. Create the selected source-linked active lifecycle instance without reopening an ended historical event or copying an old polygon as new extraction proof. Preserve unresolved reasons if a candidate cannot qualify.
+- [ ] **Verify visibility and the existing presentation.** Reuse the release qualified in Part 2A and deploy only any remaining matching components. Confirm the same source-dated polygon, depth/access/evidence and original article/run references on both active maps, desktop and mobile. Preserve the existing badge/modal design and omit the removed demonstration label/dataset selector. Keep internal instance lineage and server-authored routing/count exclusions.
+- [ ] **Deactivate and verify retained history and repeat safety.** Use the normal authenticated Spatial Operations action. Confirm removal from both active maps and retained geometry, evidence, source dates and actual action timestamps in Flood Events. Preserve the original September archive. Repeat the same session and verify no duplicate instances, extra completed-run inference, reactivation or additional real-occurrence/duration counts. Investigate demonstrated auth/publisher/map errors and rerun affected checks.
+- [ ] **Record and freeze the successful walkthrough.** Capture the actual article → predictions/facts → active maps → deactivation → history flow on desktop/mobile. Retain release/asset/target identities, receipts, links and unresolved limitations so the presentation can use verified saved results without requiring a new fetch or inference during the walkthrough.
+
+**Part 2B done when:** at least one selected real September input has actual extraction/source/geometry evidence, produces its qualified active zone on both maps, and normal deactivation retains it in history. Reruns and hosted desktop/mobile checks pass; copied old polygons, reopened ended events or fictional outputs do not satisfy this requirement.
+
+**Phase 2 done when:** both Part 2A historical seeding (including NER training articles) and Part 2B September active-zone execution pass their recorded acceptance checks.
+
+### Manual UI testing — what you should see
+
+Owner/tester: [@roicambe](https://github.com/roicambe) (Roi Cambe). **UI checks only:** use the website, inspect what it displays and use its normal controls. No terminal commands, database inspection, model execution or backend testing is required for this checklist. Leave a box unchecked until you have personally verified its visible result; recording this list does not mean any check has passed.
+
+**When to test:** completed E0/E1 groundwork created no hosted predictions or active zones. Phase 1 connects the screens and workflow; test on **navlanes.live during Phase 2, after matching components and prepared examples are available**. Otherwise record “not ready.” Use desktop and mobile for every applicable check. Label-renaming and Refresh-removal checks are follow-up polish; test them when delivered and keep them separate from required demonstration acceptance.
+
+**Completed-groundwork UI expectation:** the completed local maintenance, target-policy, historical interpretation and operator-command work adds no frontend control, prediction or active demonstration zone. They do not enable expiry or change the cloud setting. E1 has not run real September inference or cloud processing. There is no new interface-specific manual check for these tasks; the planned map/evidence checks below still await their implementation and release.
+
+<details>
+<summary>Open the manual website checklist — all checks still pending</summary>
+
+#### UI-0 — Baseline you can inspect now
+
+- [ ] Open the public map and admin Spatial Operations. **Expected:** E0 itself has added no new active example or historical-demonstration label. Existing inactive September zones are not expected to become active just because their inputs were prepared. Other live records, if any, are separate from E0.
+- [ ] Open Flood History & Analytics, find the existing September records using the available search/date controls, open their details and use the map handoff. **Expected:** the retained Quirino/Guazon, Gov. Pascual and GMA examples can be inspected with their saved historical geometry/evidence; they remain inactive/ended. Record any example you cannot find. These are existing legacy examples, not proof of newly completed NER processing.
+- [ ] Open the saved Tribune and GMA article details in News Intelligence. **Expected:** existing source details/history remain available; E0 has not added a new neural processing result or a new demonstration button. The new labels, dataset selector and evidence views below are still pending.
+
+#### UI-1 — News Intelligence (after Phase 1 changes and saved results are available)
+
+- [ ] **Follow-up polish, when implemented:** open News Intelligence. **Expected:** “Articles & processing” replaces “Collection status,” and “Processing health” replaces “Pipeline.” Processing, source availability and retrieval problems are understandable as separate visible states; saved/seen and retry counts have explanatory labels.
+- [ ] Open each prepared September article's saved extraction details. **Expected:** original NER location predictions, separately labeled location repairs, grouped extracted flood information and unassigned/unresolved facts are visible in the existing details flow. Location, depth, time, condition and access information stay distinct; unknown values remain explicit. Depth/time rules are not presented as learned location predictions.
+- [ ] Follow the displayed source link and compare visible supporting article text with the selected result. **Expected:** publisher/article identity and September dates are clear; unavailable original publication proof or unresolved times are not presented as verified facts. A publisher refusing to load is visible and recorded, rather than counted as successful access.
+- [ ] Inspect an older legacy result and an available unsupported/failed or zero-zone result. **Expected:** legacy output is identifiable, saved evidence remains inspectable, and an explanation is visible where no zone can be generated. A successful extraction does not misleadingly imply successful plotting.
+- [ ] **Follow-up polish, when implemented:** leave a filtered/paged list and an article detail open while a saved status update becomes available. **Expected:** automatic updates appear without a normal Refresh button; filters, page, focus and open details stay in place. If no saved update is available, leave this check pending.
+- [ ] Temporarily disconnect the browser's network while viewing loaded results, then reconnect and use Retry. **Expected:** existing content remains visible with a stale/error message; Retry recovers it without losing your browsing state. Do not run collection or processing to test this screen.
+
+#### UI-2 — Selected September examples on both active maps (Phase 2)
+
+**Test the example that actually qualified:** Quirino/Guazon is first choice; Gov. Pascual is a backup requiring its own qualification. Do not expect both to be active automatically. If neither qualifies, record the visible outcome and leave successful-plotting acceptance open.
+
+- [ ] Open the public map, locate the selected active example and tap/click its polygon. **Expected:** a flood-zone polygon is visible at the supported location, with original September source dates in its existing details layout. The removed demonstration label and added notice must not appear; internal lineage remains separate.
+- [ ] Open Spatial Operations → active zones and select the same example. **Expected:** its card, polygon, location/section, depth, passability and description agree with the public view wherever those fields are shown. Both views identify the same demonstration, including when it appears in a group/member view.
+- [ ] Open the example's details/source/extraction handoff. **Expected:** the original article and saved processing evidence can be reached, and estimated geometry/NOAH susceptibility is described accurately rather than claimed as field-measured inundation. Missing facts stay unknown.
+- [ ] Reload both pages normally and revisit them on mobile. **Expected:** the prepared active example and its supported source date remain visible without changing your device date/time or searching for a fresh news article. Existing September source history remains separate from the active demonstration lifecycle.
+
+#### UI-3 — Flood History & Analytics (Phase 2)
+
+- [ ] Open Flood Events and Analytics. **Expected:** no Historical dataset dropdown is present. Existing status/date/location filters apply consistently to cards, maps/heatmaps, counts, details and exports. Older dataset links retain event inspection while returning to unified history.
+- [ ] Select supported September occurrence dates and inspect the historical map/cards. **Expected:** the relevant archived examples appear in September, not under the day they were imported. Source occurrence, verification/import and demonstration action dates have distinct labels; unknown dates are explicit.
+- [ ] Open an archived example, inspect its depth/description/evidence and focus its zone on the map. **Expected:** the correct retained polygon and source/extraction references are accessible. Archive-only examples stay off the active maps.
+- [ ] Where prepared data supports them, inspect sourced, assumed and unknown closure cases. **Expected:** assumed intervals say they are assumed/simulated; unknown endpoints stay unknown. Analytics visibly separates simulated intervals and demonstration instances from real-event/observed-duration totals.
+- [ ] Change search/date/dataset filters, move through available pages, open details and return. Download an available export. **Expected:** selection and navigation remain coherent; exported visible fields/selection agree with the screen, and existing historical examples have not appeared as extra real incidents merely because they were reprocessed. If there is only one page or no export yet, mark that part not ready.
+
+#### UI-4 — Deactivation and presentation rehearsal (Phase 2)
+
+- [ ] With the selected demonstration visible on both active maps, use its normal admin deactivation action in Spatial Operations. **Expected:** a clear success or failure is shown. On success, it disappears from both active maps after their normal update; a failed action must not be displayed as successful.
+- [ ] Find that deactivated demonstration in Flood History & Analytics and open its details/map. **Expected:** its geometry, source/extraction evidence and internal dataset/session lineage remain available, with the actual demonstration deactivation time separate from September source dates. The original historical record is preserved.
+- [ ] If the operator repeats the same prepared session before/after rehearsal, revisit the lists/maps and compare them with your earlier screenshots. **Expected:** no extra duplicate demo cards/polygons or real-flood counts appear. This checks the visible result only; you do not need to run the processing command.
+- [ ] Repeat the walkthrough on desktop and mobile: article → saved predictions/extracted facts → active public map → Spatial Operations → deactivate → retained history. **Expected:** dialogs, labels, popups, paging and buttons fit the screen; no horizontal overflow hides actions, touch controls work, and desktop keyboard focus remains usable.
+- [ ] Save screenshots or a short recording of the actual successful walkthrough, including both active maps before deactivation and retained history afterward. **Expected:** presentation evidence shows the supported September source dates and saved results using the existing design; it does not depend on a live flooding event or a new article fetch.
+
+**Manual result recording:** for each check, note Pass / Fail / Not ready, desktop/mobile, environment/page link, date/time and a screenshot or short description of any mismatch. Keep these checks separate from the engineering acceptance items below. Currently **none of these manual UI checks is marked passed**, and E0 alone is not expected to produce any of the later interface changes.
+
+</details>
+
+### Required acceptance coverage and task status
+
+- [ ] Extraction/source checks: exact text bindings/offsets, original mentions, labeled repairs, time roles/precision, depth/access qualifiers, native-only groups, negation/forecast/clearance and malformed/tampered results.
+- [ ] Geometry checks: real positive placement, ambiguous/missing-locality/asset rejection, retained NOAH gaps and existing corridor policy/provenance.
+- [ ] Persistence checks: complete evidence relationships; archive-only inactive insertion versus explicit active-demo activation; transaction rollback; duplicate/concurrent/retry handling; original-versus-demo ownership; deactivation-to-history lifecycle and unchanged unrelated data/routing.
+- [ ] History/analytics checks: source dates versus verification dates, date-only/unknown cases, sourced/assumed/unknown closure, separate simulated duration, and card/map/filter/pagination/export parity.
+- [ ] UI checks: native/legacy output, articles without cards, errors/Retry/stale content, automatic refresh, focus/keyboard/touch and desktop/mobile overflow.
+- [ ] Cloud checks: approved migration compatibility, actual model/isolation/resource qualification, protected saved-data GETs, exact deployed identities and cleanup.
+
+**Current task status:** all eight Phase 1 tasks are complete locally: 434 distinct backend checks, 45 distinct desktop/mobile project checks, TypeScript, focused lint and production build pass. Three browser cases are intentional skips. [Indexed evidence](evaluations/news-historical-phase1-20261022/README.md). E0/E1 is preserved. Phase 2 deployment, shared-output qualification, actual September execution and hosted manual checks remain open. No hosted manual checkbox is passed by these fictional fixture checks.
+
+## October 25 presentation — review complete; detailed implementation plan next
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Presentation: **Sunday, October 25, 2026**. This retained section records the earlier review checkpoint; the two-phase plan above now supplies the next-step decisions. [Review and verification](evaluations/news-historical-readiness-20261021/README.md) · [Completed-work summary](progress.md#historical-news-demonstration--readiness-review-complete) · [Detailed blueprint](plans/historical-news-demonstration-phase-e.md).
+
+- [x] Read both referenced chats, reconcile V46 and Phases A–D with the current implementation/evidence, and confirm Phase E remains unimplemented. The separate Phase D audit-configuration/maintenance regression was open at that review; it is now fixed locally in E1.1.
+- [x] Inspect the deployed services and remote Cloud SQL database read-only: cloud extraction remains legacy, migration/resource prerequisites remain outstanding, and saved October articles are not proof of October observed flooding.
+- [x] Trace existing location/fact extraction, bounded OSM resolution, exact NOAH intersections, estimated corridor generation, publication, event/zone persistence and historical map reads. Confirm the existing geometry engine must be reused.
+- [x] Verify 54 existing placement/estimated-road checks with database connections prohibited; verify bundled OSM/NOAH/qualified-barangay/Pasig assets without database access or neural inference. This is component verification, not historical import or cloud end-to-end acceptance.
+- [x] Confirm automatic expiry is off but all 56 inspected saved zones are inactive; both deployed public active-zone endpoints return an empty list. September zones 59–63 retain valid geometry and ended event records.
+- [x] Identify historical-import gaps: current activation writes active records and enforces freshness; NER/read-context cloud selection remains gated; history filters/charts use verification timestamps; unsupported observation/end times must retain explicit provenance.
+- [x] Prepare and document the detailed historical-processing and Phase E delivery plan, including the no-reset delivery decision, evidence/date semantics, cloud prerequisites, acceptance cases and presentation rehearsal. No cleanup, seeding, schema changes or deployment occurs in this documentation step.
+
+**Agreed requirements to carry into that plan:**
+
+- Use **navlanes.live and the existing Google Cloud services/database**. A separate hosted demo environment is not the selected target. Reuse already collected real article bodies; presentation processing starts with NER/extraction, without fetching new RSS/articles or retraining. Normal future RSS operation remains part of the product.
+- Run the actual extraction and existing OSM/NOAH geometry services, fix verified defects along that path, and retain the complete event/zone content, source links, descriptions, depths, geometry, predictions, labeled rule repairs, uncertainty and timeline relationships. Do not seed canned outputs as proof of processing.
+- **Corrected active-example requirement:** selected September examples must actually appear on the public map and Spatial Operations during the presentation, using real extraction/geometry and visible historical-demonstration labels. Other outputs remain historical. Selected demo instances follow deactivation-to-history while preserving source dates and original inactive records; they are not newly observed real floods or extra real-event counts. No system-clock change is required.
+- The complete extractor returns location, depth, time, condition and access information. The retained learned v19 classes are location labels; the other extraction/association stages remain rules. Keep that attribution accurate in the interface and presentation.
+- The user permits assumed closure times where no end time was reported. The detailed plan selects a visibly labeled two-hour simulated administrative closure only with a supported exact observation instant; otherwise the end time remains unknown. Keep simulated duration separate from observed-duration statistics and source observation/publication dates unchanged.
+- The user identifies cloud records as testing data and **does not require a backup before reset**. The detailed plan selects **no reset for this delivery**: retain accounts, settings, source inputs and unrelated/immutable history, and use a filtered, idempotent imported dataset for the presentation. No database wipe or backup is included.
+- Existing Phase E shared-component, saved-data refresh, NER evidence and mobile/desktop requirements remain open. Phase F 403 diagnosis, source-time limitations, cloud migration/resources/asset delivery and release verification remain open; do not mark them complete because this review passed.
 
 ## Documentation and roi-branch handoff
 
@@ -104,7 +624,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verification repor
 - [x] Verify backend/migrations/News Intelligence preservation, isolated lockfile installation, optional environment loading, TypeScript and targeted lint. Browser checks: 41 pass, three desktop mobile-only skips, zero failures.
 - [x] Update progress, system documentation, dependency notes, bug log and indexed verification evidence; retain a local merge commit.
 
-The independent pre-existing Phase D auditor-configuration/maintenance finding remains open and outside this frontend integration. **Next frontend milestone remains Phase E** in the roadmap below; this merge does not implement its NER presentation work. No push, deployment, shared migration, worker launch or production activation.
+The independent Phase D auditor-configuration/maintenance finding was outside that frontend integration; it is subsequently fixed locally in [E1.1](evaluations/news-maintenance-e11-20261022/README.md). **Next frontend milestone remains Phase E** in the roadmap below; this merge does not implement its NER presentation work. No push, deployment, shared migration, worker launch or production activation.
 
 ## Documentation handoff — October 21, 2026
 
@@ -112,9 +632,9 @@ The independent pre-existing Phase D auditor-configuration/maintenance finding r
 
 ## Current milestone: RSS-to-NER integration and News Intelligence
 
-**Status: Phase A, local Phase B, schema prerequisites, controlled local Phase C acceptance and backend Phase D are complete.** The objective remains automatic RSS-to-NER processing and saved results in the existing `/admin/news` interface. C3b connects RSS admission/corrections, original feed provenance, native readers and downstream gates in the guarded disposable-local pipeline. **754 distinct tests pass**, with one real ten-input run matching 4,483 spans/all 53 reviewed predictions; peak 2,492.09 MiB. [C3b report](evaluations/rss-ner-rss-integration-20261021/README.md). Eight inputs enter through mocked RSS; two short pre-existing capture controls correctly fail RSS admission and exercise processing separately. The frontend and scheduled production activation have not shipped.
+**Status: Phase A, local Phase B, schema prerequisites and controlled local Phase C acceptance are complete; Phase D monitoring contracts and the local E1.1 maintenance correction are verified.** The objective remains automatic RSS-to-NER processing and saved results in the existing `/admin/news` interface. C3b connects RSS admission/corrections, original feed provenance, native readers and downstream gates in the guarded disposable-local pipeline. **754 distinct tests pass**, with one real ten-input run matching 4,483 spans/all 53 reviewed predictions; peak 2,492.09 MiB. [C3b report](evaluations/rss-ner-rss-integration-20261021/README.md). Eight inputs enter through mocked RSS; two short pre-existing capture controls correctly fail RSS admission and exercise processing separately. The frontend and scheduled production activation have not shipped. The historical presentation requirements and detailed E0–E6 implementation plan are recorded above; E0 preparation, E1.1 and E1.2 are complete locally; remaining historical/cloud qualification and release gates are open.
 
-**Backend Phase D passes locally:** 608 distinct checks (21 new), independent retrieval/source-health contracts, safe configuration errors and ten-attempt history. [Report and cloud retry disposition](evaluations/rss-ner-monitoring-20261021/README.md). Original collection diagnostics for the dated retry were not retained; no underlying publisher recovery is claimed. **Next action: Phase E**, integrating the existing shared-component interface and all deferred visible monitoring corrections. Phase F investigates 403s last. Shared migration, qualified cloud resources, production selection/deployment and actual Cloud Run verification remain release gates. Local acceptance does not qualify the unchanged last-inspected one-GiB cloud job; historical runtime failures remain valid.
+**Backend Phase D monitoring acceptance passes locally:** 608 distinct checks (21 new), independent retrieval/source-health contracts, safe configuration errors and ten-attempt history. [Report and cloud retry disposition](evaluations/rss-ner-monitoring-20261021/README.md). The later review found invalid auditor configuration can prevent independent publication/expiry maintenance; that correction now passes 82 checks locally in [E1.1](evaluations/news-maintenance-e11-20261022/README.md), with cloud release still pending. Original collection diagnostics for the dated retry were not retained; no underlying publisher recovery is claimed. **Next implementation action: the explicit historical execution-target policy in E1**, followed by remaining date/source/geometry and E1–E6 gates. E0, E1.1 and E1.2 are complete locally; cloud processing and real September inference have not run. Phase F investigates 403s last. Shared migration, qualified cloud resources, production selection/deployment and actual Cloud Run verification remain release gates. Local acceptance does not qualify the unchanged last-inspected one-GiB cloud job; historical runtime failures remain valid.
 
 Completed prerequisite evidence: [C3a CLI startup fix](evaluations/rss-ner-cli-bootstrap-20261020/README.md), [C3a runtime/queue](evaluations/rss-ner-native-worker-20261020/README.md), [C2 projection/source checking](evaluations/rss-ner-native-projection-20261020/README.md), [C1 method/history](evaluations/rss-ner-method-boundary-20261020/README.md), [schema](evaluations/rss-ner-mode-schema-20261020/README.md), [local 3-GiB runtime](evaluations/rss-ner-runtime-phase-b-3g-20261020/README.md), [Phase A contract](plans/rss-ner-integration-contract.md). V46 remains a completed backend-preview milestone; its earlier preview-only next-step description is historical.
 
@@ -220,10 +740,13 @@ This passes the approved **local** resource/runtime gate only. The previously in
 - [x] Retain ten bounded completed attempts and stage/retry metadata in existing runtime JSON. Preserve failed attempts after successful retries, truthful collection success times and interruption/failure outcomes.
 - [x] Reconcile the dated cloud execution at attempt level. **Original collection reason remains unavailable in retained logs**; document that disposition instead of claiming recovery or a bug-free workflow.
 - [x] Verify 608 distinct tests (21 new) and 788 cached inputs / 407 saved graphs without neural inference. Unchanged migrations reach head in owned PostGIS; prior receipt hashes match and owned resources are stopped. [Report](evaluations/rss-ner-monitoring-20261021/README.md).
+- [x] Correct and verify the subsequently reviewed ordering regression where invalid auditor configuration prevented independent expiry maintenance. E1.1 preserves the original error, reports maintenance separately and respects expiry OFF; 82 targeted/disposable PostGIS checks pass. [Local fix](evaluations/news-maintenance-e11-20261022/README.md). Cloud release remains pending.
 
-**Gate D backend: passed locally.** Presentation is not shipped; its accepted corrections remain explicit Phase E tasks. No cloud settings, production migration/activation, model/rule or resource qualification changes. Detailed 403 diagnosis remains Phase F.
+**Gate D monitoring contracts: passed locally; the later maintenance regression remains open.** Presentation is not shipped; its accepted corrections remain explicit Phase E tasks. No cloud settings, production migration/activation, model/rule or resource qualification changes. Detailed 403 diagnosis remains Phase F.
 
 ### Phase E — Integrate the existing News Intelligence interface
+
+**October 21 handoff:** implementation has not started. Reusing captured articles for interface testing was already agreed; the expanded real-article-to-historical-event demonstration is now specified in the detailed E0–E6 plan and linked blueprint at the top of this file. No new importer, cleanup, simulated-time policy or deployed behavior is delivered by this note.
 
 **Deferred Phase D presentation — use the completed backend contracts**
 

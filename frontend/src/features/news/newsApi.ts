@@ -83,19 +83,20 @@ export interface NewsRun {
   id: number;
   article_version_id: number;
   pipeline_version: string;
-  mode: "rules_only";
+  mode: "rules_only" | "ner_rules_v1";
   status: Exclude<ProcessingStatus, "not_recorded">;
   attempt_count: number;
   next_attempt_at: string | null;
   started_at: string | null;
   completed_at: string | null;
   error_code: string | null;
-  result: NewsExtraction | null;
+  result: NewsExtraction | NativeExtraction | null;
   created_at: string;
   updated_at: string;
 }
 
 export interface NewsArticleDetail {
+  historical_outputs?: Record<number, HistoricalOutput[]>;
   article: Omit<CapturedInput, "publisher"> & {
     id: number;
     publisher_source_id: string;
@@ -145,7 +146,10 @@ export function getNewsArticle(id: number, signal?: AbortSignal) {
 export interface NewsResultItem {
   key: string;
   run_id: number;
-  claim_index: number;
+  claim_index: number | null;
+  group_id?: string;
+  result_kind?: "legacy_claim" | "ner_group";
+  processing_method?: "rules_only" | "ner_rules_v1";
   article_id: number;
   article_version_id: number;
   title: string;
@@ -180,6 +184,16 @@ export interface NewsResultFilters {
 }
 
 export interface NewsResultDetail {
+  supporting_passages?: string[];
+  depth_scope?: "shared" | "individual" | "unknown";
+  source_review?: {
+    state: "matching_capture" | "different_capture" | "current_unavailable";
+    current_input: CapturedInput | null;
+    current_fetched_at: string | null;
+    selected_captured_at: string;
+  } | null;
+  result?: NativeExtraction;
+  historical_outputs?: HistoricalOutput[];
   item: NewsResultItem;
   claim: NewsClaim;
   captured_input: CapturedInput;
@@ -202,8 +216,9 @@ export function getNewsResults(filters: NewsResultFilters, signal?: AbortSignal)
   });
 }
 
-export function getNewsResult(runId: number, claimIndex: number, signal?: AbortSignal) {
-  return apiClient.get<NewsResultDetail>(`/admin/news/results/${runId}/${claimIndex}`, { signal }).then((data) => {
+export function getNewsResult(runId: number, claimIndex: number | null, signal?: AbortSignal, groupId?: string) {
+  const identity = groupId ? `${runId}/groups/${encodeURIComponent(groupId)}` : `${runId}/${claimIndex}`;
+  return apiClient.get<NewsResultDetail>(`/admin/news/results/${identity}`, { signal }).then((data) => {
     if (!data.item.summary) throw new Error("Update the backend to load flood details.");
     return data;
   });
@@ -385,3 +400,17 @@ export function getNewsAutomation(signal?: AbortSignal) {
     return data;
   });
 }
+
+export interface NativeMention { id: string; text: string; label: string; start: number; end: number }
+export interface NativeFact { id: string; kind: string; value: string; temporal_role?: string; uncertainty?: string[]; evidence: { start: number; end: number; text: string }[] }
+export interface NativeExtraction extends NewsExtraction {
+  source?: { publication_timezone_known: boolean; published_at: string | null };
+  processing_method: "ner_rules_v1";
+  native: { neural_mentions: NativeMention[]; effective_mentions: NativeMention[]; proposals: unknown[]; abstentions: unknown[]; graph: { mentions: NativeMention[]; facts: NativeFact[] } };
+  projection: { groups: { group_id: string; scope: string; disposition: string; target_entity_ids: string[]; fact_ids: string[]; reasons: string[] }[]; fact_accounting: { fact_id: string; disposition: string }[] };
+}
+export interface HistoricalOutput {
+  group_id: string; outcome: string; disposition: string | null; reasons: string[]; event_id: number | null; zone_ids: number[];
+  interpretation: { time: { occurrence_date: string | null; observed_at: string | null; precision: string } };
+}
+export const isNativeExtraction = (result: NewsExtraction | NativeExtraction | null): result is NativeExtraction => !!result && "processing_method" in result && result.processing_method === "ner_rules_v1";

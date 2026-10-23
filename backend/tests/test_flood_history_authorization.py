@@ -33,6 +33,8 @@ def test_flood_history_and_export_routes_reject_non_admin_and_guessed_ids() -> N
                 "/api/v1/admin/flood-events/analytics",
                 "/api/v1/admin/flood-events/export",
                 "/api/v1/admin/flood-events/999999/history-detail",
+                "/api/v1/admin/flood-events/999999/inspection",
+                "/api/v1/admin/flood-events/999999/inspection/news_sources",
             ):
                 response = client.get(path)
                 assert response.status_code == status.HTTP_403_FORBIDDEN

@@ -55,6 +55,10 @@ def zone_facts(row: dict[str, Any], *, projected: bool, road_normalizer: Any = n
                geometry_reader: Any = metric_geometry) -> dict[str, Any]:
     reports = row["reports"]
     news = row["news"]
+    historical = row.get("historical")
+    if historical:
+        news = [*news, {"claim": {name: historical.get(name) for name in ('canonical_road', 'canonical_city', 'canonical_barangay')},
+            "snapshot": {"public": {"evidence_excerpt": historical["source_excerpt"]}}}]
     locations = [(report["human_readable_location"], report["city"], report["barangay"]) for report in reports]
     locations += [(item["claim"].get("canonical_road"), item["claim"].get("canonical_city"),
                    item["claim"].get("canonical_barangay")) for item in news]
@@ -66,6 +70,7 @@ def zone_facts(row: dict[str, Any], *, projected: bool, road_normalizer: Any = n
     override = getattr(row["severity_override"], "value", row["severity_override"])
     severity = str(override) if override else next((level for level in reversed(SEVERITIES) if level in level_values), "medium")
     depth = row["depth_override"] or next((report["depth"] for report in reports if report["depth"]), None)
+    depth = row.get('reported_depth', depth)
     source = "user_reports" if any(str(getattr(report["source"], "value", report["source"])) == "direct_user" for report in reports) else (
         "news" if news else "official" if row["curated_by_admin_id"] is not None else "other")
     public = next(((item["snapshot"].get("public") or {}) for item in news), {})
@@ -87,6 +92,12 @@ def zone_facts(row: dict[str, Any], *, projected: bool, road_normalizer: Any = n
 
 
 def related_zones(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    if bool(a.get("historical")) != bool(b.get("historical")):
+        return False
+    if a.get('historical') and a['historical'].get('observation_key') != (b.get('historical') or {}).get('observation_key'):
+        return False
+    if a.get("historical") and a["historical"].get("disposition") != (b.get("historical") or {}).get("disposition"):
+        return False
     if not a["road_city"] or a["road_city"] != b["road_city"]:
         return False
     if a["group_geometry"] is None or b["group_geometry"] is None:
@@ -207,7 +218,7 @@ def browse_zone_queue(db: Session, *, active_only: bool = True, source: ZoneSour
 
     groups = [group for group in groups if any(matches(row) for row in group)]
     actual, pages, selected = paginate(len(groups), page, page_size)
-    items = [ZoneQueueItem(zone_id=group[0]["id"], member_count=len(group), location=summary([row["location"] for row in group]),
+    items = [ZoneQueueItem(historical=group[0].get("historical"), zone_id=group[0]["id"], member_count=len(group), location=summary([row["location"] for row in group]),
         area_summary=summary([row["area"] for row in group]), sources=names([row["source"] for row in group]),
         severity_levels=[level for level in SEVERITIES if any(row["severity"] == level for row in group)],
         depth_levels=names([row["depth"] for row in group]), evidence=group[0]["evidence"],

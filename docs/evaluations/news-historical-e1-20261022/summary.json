@@ -1,0 +1,66 @@
+{
+  "schema": "lanes-historical-e1-verification-v1",
+  "status": "passed_locally_disposable_only",
+  "tests_passed": 345,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "suite_counts": {
+    "tests.test_news_estimated_road": 11,
+    "tests.test_news_expiry_maintenance": 9,
+    "tests.test_news_historical_e1": 34,
+    "tests.test_news_historical_e1_postgres": 5,
+    "tests.test_news_historical_preparation": 27,
+    "tests.test_news_historical_processing": 31,
+    "tests.test_news_historical_processing_postgres": 14,
+    "tests.test_news_ner_durable": 84,
+    "tests.test_news_ner_pipeline_cli": 6,
+    "tests.test_news_ner_processing": 19,
+    "tests.test_news_ner_processing_cli": 16,
+    "tests.test_news_pipeline": 17,
+    "tests.test_news_placement_preview": 25,
+    "tests.test_news_processing_postgres": 4,
+    "tests.test_news_road_placement": 43
+  },
+  "test_xml_sha256": "eba676ad2d1787e5f56cbc5db14c5d8d9c7ce12db1e9983db884a3fad5f12b4e",
+  "source_sha256": {
+    "backend/app/services/news_historical_policy.py": "d387d95e5e1dd1b0f5914434dbe9a11bf3abce60a1510ef083c56adfcb3287d3",
+    "backend/app/services/news_historical_interpretation.py": "2c89379f26e087b1ab3752921b6a547ccab25246d61ac0abcbd68caf22af1ed5",
+    "backend/app/services/news_historical_processing.py": "2bf8d32624e26723b76eba1646f0e3f97ddae86ffc6cafa8eb054abd9bf14cfe",
+    "backend/app/services/news_ner_durable/processing.py": "6251f44e411fedce303f87447c1e05672e3a2f9389032f94dff0e34dd8c52151",
+    "backend/scripts/run_news_historical_processing.py": "78d2aa8ff26a0a199cd0ed07b54dd46052baadf8f519532c8ea73a03b75cf5e6",
+    "backend/tests/historical_processing_fixtures.py": "a5f60c9151ad8f82a0bd4da65cf607c4562a52c21e928a07cd2b0dabdb135f9e",
+    "backend/tests/test_news_historical_e1.py": "d6b89c97393b3d0bb6225ce256c170651a971bd5b3228dccf368b657cb181711",
+    "backend/tests/test_news_historical_e1_postgres.py": "e9d94689c6cd2febba2fa853cb8f7dc9cc65bc1a2af841730de94662afad0eb4"
+  },
+  "actual_e0_authentication": {
+    "status": "authenticated_without_database_or_inference",
+    "inputs": 2,
+    "parent_manifest_sha256": "0beb452c80dd0a805bada20dffd6c92dfdee3cd99e1951bf5eaf0862ce9f8439",
+    "demonstration_session_id": "ee30c69d-32cd-555f-bb90-26899cb74810",
+    "current_assets_sha256": "27a379f39744ca828f82bdbfd034c596e13491326357c003a39a92b8148fe31f",
+    "changed_asset_families": [
+      "projection",
+      "source_check"
+    ],
+    "database_connections": 0,
+    "neural_sessions": 0
+  },
+  "cleanup": {
+    "owned_databases_removed": 2,
+    "case_databases_remaining": 0,
+    "cloud_access": false
+  },
+  "read_only_preflight_verified": true,
+  "pinned_origin_path_tested_on_disposable_only": true,
+  "ordinary_worker_guard_preserved": true,
+  "date_precision_and_source_checks_verified": true,
+  "e0_package_files_preserved": 5,
+  "e11_service_files_preserved": 3,
+  "real_neural_inference_calls": 0,
+  "cloud_access": false,
+  "new_flood_records": 0,
+  "frontend_changes": false,
+  "new_dependencies": 0,
+  "schema_changes": 0,
+  "deployments": 0
+}

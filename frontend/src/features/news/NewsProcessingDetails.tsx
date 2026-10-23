@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { Button, RecordTimeline, Skeleton } from "@/shared/ui";
 import { getNewsArticle, type NewsArticleDetail, type NewsRun } from "./newsApi";
+import { NativeExtractionEvidence } from "./NativeExtractionEvidence";
+import { isNativeExtraction } from "./newsApi";
 import { newsDate, processingLabels } from "./newsPresentation";
 
 export function NewsProcessingDetails({ articleId, currentRunId, presentation = "disclosure", onInspectRun }: { articleId: number; currentRunId?: number; presentation?: "disclosure" | "panel"; onInspectRun?: (runId: number, opener: HTMLButtonElement) => void }) {
@@ -30,6 +32,7 @@ export function NewsProcessingDetails({ articleId, currentRunId, presentation = 
 
 function ExtractionRecord({ run, data, isCurrent }: { run: NewsRun; data: NewsArticleDetail; isCurrent: boolean }) {
   const version = data.versions.find((item) => item.id === run.article_version_id);
+  if (isNativeExtraction(run.result)) return <NativeExtractionEvidence result={run.result} outputs={data.historical_outputs?.[run.id]} />;
   return <div className="mt-4 space-y-3 text-xs text-slate-600">
     {run.error_code && <p role="alert" className="break-words text-red-800">Processing failed: {run.error_code}</p>}
     {run.result?.is_metadata_only && <p className="text-amber-800">Only article metadata was processed.</p>}

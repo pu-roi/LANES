@@ -1,3 +1,4 @@
+import type { HistoricalNewsMetadata } from "@/features/news/historicalNewsTypes";
 import { apiClient } from "@/lib/apiClient";
 import type { PublicNewsAlert } from "@/features/news/publicNewsApi";
 
@@ -186,7 +187,7 @@ export async function createOfficialZone(payload: any, mediaFiles: File[] = []):
   return apiClient.request<AvoidanceZone>("/admin/zones", {
     method: "POST",
     body: formData,
-    // Do NOT set Content-Type — browser sets it with the correct boundary for multipart
+    // Do NOT set Content-Type â€” browser sets it with the correct boundary for multipart
   });
 }
 
@@ -226,6 +227,8 @@ export interface ZoneContributor {
 }
 
 export interface AvoidanceZone {
+  affects_routing?: boolean;
+  historical?: HistoricalNewsMetadata | null;
   contributor_count?: number;
   id: number;
   report_id: number;
@@ -631,6 +634,7 @@ export interface MergeConflict {
   field: "severity" | "depth" | "direction" | "passable_vehicles" | string;
   message: string;
   suggested_value: unknown;
+  conflict_type?: "discrepancy" | "receding_trend" | string;
 }
 
 export async function getZone(zoneId: number): Promise<AvoidanceZone> {
@@ -724,8 +728,9 @@ export interface MergeReportsResponse {
  * Fetch intelligent merge candidates for a pending report.
  * Evaluates OSM way_id, corridor overlap, Decision #16 carriageways, and conflicts.
  */
-export async function getMergeCandidates(reportId: number): Promise<MergeCandidatesListResponse> {
-  return apiClient.get<MergeCandidatesListResponse>(`/admin/reports/merge-candidates?report_id=${reportId}`);
+export async function getMergeCandidates(reportId: number, extraReportIds?: number[]): Promise<MergeCandidatesListResponse> {
+  const query = extraReportIds && extraReportIds.length ? `&extra_report_ids=${extraReportIds.join(",")}` : "";
+  return apiClient.get<MergeCandidatesListResponse>(`/admin/reports/merge-candidates?report_id=${reportId}${query}`);
 }
 
 /**

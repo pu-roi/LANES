@@ -1,0 +1,105 @@
+{
+  "schema_version": "phase1-local-verification-v1",
+  "verified_at": "2026-10-22T02:41:46.251167+08:00",
+  "branch": "roi-branch",
+  "backend_distinct_passed": 434,
+  "backend_batches": [
+    {
+      "receipt": "final-backend.xml",
+      "passed": 365,
+      "sha256": "609f5203911d6de71da3f1cc0eea34a7e99ac822eb3c15d79d73d208928b3d12"
+    },
+    {
+      "receipt": "publication-routing-history.xml",
+      "passed": 68,
+      "sha256": "a0b535bbf42eb5c248819d54aabf798266f32c80aae3defe120c18484b3fd41c"
+    },
+    {
+      "receipt": "final-endpoint-history.xml",
+      "passed": 19,
+      "sha256": "e700557d375bd70fb210d2296252444b9ad243c734be7bd4813aa96f93491150"
+    },
+    {
+      "receipt": "final-preflight.xml",
+      "passed": 52,
+      "sha256": "330f3a2b6ee6aa062280303d38b5fa10342c422b6c9ccfb51b1860e5e0b80f6b"
+    }
+  ],
+  "browser_distinct_project_checks_passed": 45,
+  "browser_intentional_skips": 3,
+  "browser_final_changed_workflow_and_offline_checks_passed": 12,
+  "browser_scope": "Fictional API transport against production build; independent PostGIS lifecycle/geometry checks.",
+  "typescript": "passed",
+  "focused_lint": "passed",
+  "legacy_lint_comparison": [
+    {
+      "path": "src/features/admin/adminApi.ts",
+      "baseline": 5,
+      "current": 5,
+      "new_signatures": []
+    },
+    {
+      "path": "src/features/map/components/FloodZonePopup.tsx",
+      "baseline": 0,
+      "current": 0,
+      "new_signatures": []
+    },
+    {
+      "path": "src/features/map/hooks/useFloodZonesLayer.ts",
+      "baseline": 13,
+      "current": 13,
+      "new_signatures": []
+    },
+    {
+      "path": "src/features/routing/routingApi.ts",
+      "baseline": 5,
+      "current": 4,
+      "new_signatures": []
+    }
+  ],
+  "production_build": "passed",
+  "approved_migration": "f1a9c7e2b604",
+  "e0_preservation": {
+    "unchanged": true,
+    "documents": 4,
+    "manifest_sha256": "0beb452c80dd0a805bada20dffd6c92dfdee3cd99e1951bf5eaf0862ce9f8439"
+  },
+  "database_cleanup": {
+    "owned_databases_removed": 3,
+    "case_databases_remaining": 0,
+    "cloud_access": false
+  },
+  "visible_demonstration_label": false,
+  "original_design_preserved": true,
+  "real_september_inference": false,
+  "shared_cloud_writes": false,
+  "deployment": false,
+  "commit_or_push": false,
+  "screenshots": [
+    "dataset-history-desktop.png",
+    "dataset-history-mobile.png",
+    "native-evidence-desktop.png",
+    "native-evidence-mobile.png",
+    "public-map-desktop.png",
+    "public-map-mobile.png",
+    "spatial-details-desktop.png",
+    "spatial-details-mobile.png"
+  ],
+  "unified_history_amendment": {
+    "verified_at": "2026-10-22T02:58:31.466880+08:00",
+    "dataset_selector_visible": false,
+    "hidden_page_dataset_filter": false,
+    "event_deep_links_retained": true,
+    "internal_dataset_lineage_retained": true,
+    "desktop_mobile_browser_passed": 7,
+    "intentional_desktop_mobile_only_skip": 1,
+    "typescript": "passed",
+    "focused_lint": "passed",
+    "source": "fictional browser fixtures on existing local development server",
+    "browser_log_sha256": "f1437162d4b2c1c38e58264168703d886d88f98238a63d7077249f2bde415de0",
+    "screenshots": [
+      "history-unified-desktop.png",
+      "history-unified-mobile.png"
+    ]
+  }
+}

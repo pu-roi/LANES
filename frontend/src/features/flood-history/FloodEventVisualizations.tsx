@@ -22,6 +22,7 @@ export function FloodEventVisualizations({ analytics }: { analytics: FloodEventP
   const highestBarangay = analytics.recurring_barangays[0];
   const highestRoad = analytics.frequently_affected_roads[0];
   return <>
+    {analytics.historical_intervals && <p className="text-sm text-slate-600">{analytics.historical_intervals.assumed_two_hour_events} assumed two-hour archive intervals; {analytics.historical_intervals.unknown_endpoints} unknown archival endpoints. These intervals are excluded from official-duration statistics.</p>}
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5"><Metric icon={BarChart3} label="Verified Flood Events" value={analytics.total_events} note={`${analytics.active_events} active; ${analytics.ended_events} ended`} /><Metric icon={Clock3} label="Ended Flood Events" value={analytics.ended_events} note="Complete official lifecycles" /><Metric icon={Timer} label="Average official duration" value={formatDuration(analytics.duration.average_minutes)} note="Ended events only" /><Metric icon={MapPin} label="Most recurring barangay" value={highestBarangay?.name ?? "—"} note={highestBarangay ? `${highestBarangay.event_count} distinct events` : "No location data"} /><Metric icon={Route} label="Most affected road" value={highestRoad?.name ?? "—"} note={highestRoad ? `${highestRoad.event_count} distinct events` : "No road data"} /></div>
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(20rem,0.8fr)]"><ChartCard icon={TrendingUp} title="Verified events over time" description="Distinct events and approved linked reports."><TrendChart data={trend} /></ChartCard><ChartCard icon={PieChartIcon} title="Peak verified severity" description="Highest severity reached, not exact depth."><SeverityDonut analytics={analytics} /></ChartCard></div>
     <div className="grid gap-4 xl:grid-cols-2"><ChartCard icon={Clock3} title="Official duration distribution" description="Time from verification through the final zone deactivation."><DurationChart analytics={analytics} /></ChartCard><ChartCard icon={CalendarDays} title="Verification timing pattern" description="Distinct Flood Events by Philippine verification day and hour."><VerificationHeatmap analytics={analytics} /></ChartCard></div>
@@ -67,7 +68,7 @@ function heatClass(value: number, max: number): string {
 function buildTrend(analytics: FloodEventPlanningAnalytics): Array<{ date: string; label: string; events: number; reports: number }> {
   const events = new Map(analytics.events_over_time.map((entry) => [entry.date, entry.event_count]));
   const reports = new Map(analytics.approved_reports_over_time.map((entry) => [entry.date, entry.report_count]));
-  return [...new Set([...events.keys(), ...reports.keys()])].sort().map((date) => ({ date, label: new Date(`${date}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" }), events: events.get(date) ?? 0, reports: reports.get(date) ?? 0 }));
+  return [...new Set([...events.keys(), ...reports.keys()])].sort().map((date) => ({ date, label: date === "Unknown" ? "Unknown date" : new Date(`${date}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" }), events: events.get(date) ?? 0, reports: reports.get(date) ?? 0 }));
 }
 
 function Metric({ icon: Icon, label, value, note }: { icon: LucideIcon; label: string; value: string | number; note: string }) {

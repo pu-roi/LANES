@@ -394,7 +394,8 @@ async def test_scheduler_cadence_publishers_overlap_pause_and_failure(settings_f
         settings.save_configuration(db, ConfigurationUpdate(revision=response.revision, settings=config), actor_id=actor_id)
     now[0] += timedelta(minutes=15)
     result = await tick()
-    assert result["stage_outcomes"] == {"processing": "paused", "publication": "paused"}
+    assert result["stage_outcomes"] == {stage: "paused" for stage in
+        ("collection", "processing", "extraction", "evaluation", "publication")}
     assert len(collected) == 3 and len(pipeline_calls) == 6  # Maintenance remains independent.
     with settings_factory() as db:
         assert settings.configuration_response(db, can_edit=True).runtime.stage_outcomes["collection"] == "paused"

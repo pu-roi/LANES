@@ -1,0 +1,55 @@
+{
+  "schema": "lanes-historical-e0-verification-v1",
+  "status": "prepared_not_processed",
+  "owner": "roicambe",
+  "dataset_id": "capstone-september-2026-v1",
+  "demonstration_session_id": "ee30c69d-32cd-555f-bb90-26899cb74810",
+  "manifest_sha256": "0beb452c80dd0a805bada20dffd6c92dfdee3cd99e1951bf5eaf0862ce9f8439",
+  "canonical_document_sha256": {
+    "inventory.json": "9d66899ced53497d7396e128d5903a7d045b75688e12f6344aa0a2bccda7f04d",
+    "manifest.json": "0beb452c80dd0a805bada20dffd6c92dfdee3cd99e1951bf5eaf0862ce9f8439",
+    "native-25.json": "40289d30657e6ba8f5629f0333dbdf52510471278257c0ddddae45c7c77771c2",
+    "native-47.json": "2baaa08a374279dfb9d5008cdc57c741d2992051f7a296f9237bf86762d38905"
+  },
+  "asset_manifest_sha256": "d8e78eaff5e274ff314dc890def6f91bbcac5439140f88618adc61ddced04d2f",
+  "preparation_code_sha256": "1c295f96a4f842e537156faa6517b5b4a6c43394e1352d41cc1b2fc1b5dcd0e3",
+  "prepared_inputs": 2,
+  "native_captures": 2,
+  "retained_history_references": 5,
+  "primary_zone_reference": 59,
+  "backup_zone_reference": 60,
+  "archive_zone_references": [
+    61,
+    62,
+    63
+  ],
+  "private_documents_authenticated": 5,
+  "independent_hash_offsets_session_code_verification": "passed",
+  "repeat_command_status": "existing_package_verified",
+  "targeted_tests_passed": 27,
+  "targeted_test_warnings": 3,
+  "new_document_links_checked": 53,
+  "database_inventory_read_only": true,
+  "inference_calls": 0,
+  "database_writes": 0,
+  "activations": 0,
+  "rss_fetches": 0,
+  "neural_source_geometry_eligibility": "pending_E1_E2",
+  "missing_body_bound_feed_publication_proof": 2,
+  "retained_workload_sha256": "d701b2a7de90b362c19ce8409fff785edcdf10c7455b216d00af3050a8f49ea1",
+  "retained_workload_matches": [
+    {
+      "article_id": 25,
+      "exact_matches": 0,
+      "whitespace_equivalent_matches": 0
+    },
+    {
+      "article_id": 47,
+      "exact_matches": 0,
+      "whitespace_equivalent_matches": 0
+    }
+  ],
+  "new_dependencies": 0,
+  "schema_changes": 0,
+  "deployments": 0
+}

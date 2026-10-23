@@ -11,8 +11,13 @@ from .contracts import RunEvidence
 
 
 def get_news_read_context() -> NativeCollectionContext | None:
-    """Release default stays legacy. Controlled tests explicitly override this dependency."""
-    return None
+    """Saved-read selection is independent from scheduled processing selection."""
+    from app.services.news_native_read_context import configured_native_read_context
+    try:
+        return configured_native_read_context()
+    except SavedRunReadError as exc:
+        from fastapi import HTTPException
+        raise HTTPException(503, 'Saved news reader configuration is unavailable. Please retry after configuration is restored.') from exc
 
 
 def validate_read_context(db, context: NativeCollectionContext) -> None:
@@ -49,13 +54,16 @@ def _native_item(row: dict, labels: dict[str, str]) -> NewsNativeResultItem:
         publisher=labels.get(row['publisher_source_id'],row['publisher_source_id']),summary=summary)
 
 
-def inspect_native(run: object, version: object) -> NewsNerResult:
-    if isinstance(run.result,dict) and run.result.get('read_projection') is None:
+def inspect_native(run: object, version: object, read_projection: dict | None = None) -> NewsNerResult:
+    if isinstance(run.result,dict) and run.result.get('read_projection') is None and read_projection is None:
         raise SavedRunReadError('news_native_result_consumer_not_ready')
     try:
         context = RunEvidence.from_records(run, version)
         source = context.source()
         result = parse_saved_result(run.mode, run.result)
+        if read_projection is not None and result.read_projection is None:
+            from app.schemas.news_ner_result import NativeReadProjection
+            result = result.model_copy(update={'read_projection': NativeReadProjection.model_validate(read_projection)})
         if (not isinstance(result, NewsNerResult) or result.read_projection is None
                 or result.source.article_version_id != version.id or result.article_id != version.article_id
                 or result.source.input_fingerprint != version.input_fingerprint
@@ -101,14 +109,28 @@ def read_native_group(db, run_id: int, group_id: str, labels: dict[str,str]) -> 
     if run is None or run.status!='completed' or run.mode!='ner_rules_v1':
         return None
     version=db.get(NewsArticleVersion,run.article_version_id)
-    result=inspect_native(run,version)
+    outputs = read_historical_outputs(db, run.id)
+    projection = next((o['read_projection'] for o in outputs if o.get('read_projection')), None)
+    result=inspect_native(run,version,projection)
     row=group_row(run,version,db.get(NewsArticle,version.article_id),result,group_id)
     group=next((g for g in result.projection['groups'] if g['group_id']==group_id),None)
     if row is None or group is None:
         return None
-    return NewsNativeGroupDetail(item=native_item(row,labels),group=group,result=result,
+    return NewsNativeGroupDetail(item=native_item(row,labels),group=group,result=result, claim=row['claim'], extraction_errors=result.errors,
         captured_input=version.input_snapshot,input_fingerprint=version.input_fingerprint,pipeline_version=run.pipeline_version,
-        lifecycle=read_native_lifecycle(db,run.id,row['claim_index']))
+        lifecycle=read_native_lifecycle(db,run.id,row['claim_index']), historical_outputs=read_historical_outputs(db, run.id, group_id))
+
+
+def read_historical_outputs(db: object, run_id: int, group_id: str | None = None) -> list[dict]:
+    from sqlalchemy import select
+    from app.models.news_publication import NewsClaimSource, NewsClaimEvaluation
+    query = select(NewsClaimEvaluation.result).join(NewsClaimSource).where(
+        NewsClaimSource.extraction_run_id == run_id, NewsClaimEvaluation.status == 'completed',
+        NewsClaimEvaluation.result['schema_version'].as_string() == 'historical-output-v1')
+    if group_id is not None:
+        query = query.where(NewsClaimEvaluation.result['group_id'].as_string() == group_id)
+    # Return saved qualification/evidence; no placement recomputation on this read.
+    return list(db.scalars(query.order_by(NewsClaimEvaluation.id)))
 
 
 def read_native_lifecycle(db, run_id: int, claim_index: int | None) -> NewsResultLifecycle:

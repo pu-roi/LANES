@@ -16,8 +16,8 @@ export function NewsReviewEvidence({ detail, active, selectedId, onSelect, onPre
 }) {
   const news = detail.news!;
   const query = useQuery({ queryKey: ["news-placement", news.item.run_id, news.item.claim_index],
-    queryFn: ({ signal }) => getPlacementPreview(news.item.run_id, news.item.claim_index, signal),
-    enabled: active, staleTime: 5 * 60_000, retry: false, refetchOnWindowFocus: false });
+    queryFn: ({ signal }) => { if (news.item.claim_index === null) throw new Error("Collective evidence has no individual placement request."); return getPlacementPreview(news.item.run_id, news.item.claim_index, signal); },
+    enabled: active && news.item.claim_index !== null, staleTime: 5 * 60_000, retry: false, refetchOnWindowFocus: false });
   useEffect(() => {
     onPreview(active && query.data ? { ...query.data, source: {
       title: news.captured_input.title, canonical_url: news.captured_input.canonical_url,

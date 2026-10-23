@@ -92,7 +92,7 @@ async def replay(scenario: str, output: Path) -> dict:
         if spec:
             if scenario == "september9" and spec.number == 2 and current < spec.updated_at:
                 body = early_path.read_text(encoding="utf-8")
-                content = ("<article>" + "".join("<p>" + escape(line) + "</p>" for line in body.splitlines()) + "</article>").encode()
+                content = ('<article><div class="story_main">' + "".join("<p>" + escape(line) + "</p>" for line in body.splitlines()) + "</div></article>").encode()
             else:
                 content = (captures / f"article-{spec.number}.html").read_bytes()
             return httpx.Response(200, content=content, headers={"content-type": "text/html; charset=utf-8"})

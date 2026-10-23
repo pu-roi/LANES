@@ -1199,14 +1199,45 @@ class PublicationSummary:
     skipped: list[dict] = field(default_factory=list)
 
 
+def process_news_expiry(session_factory: Callable[[], Session], *, limit: int = 50,
+                        clock: Callable[[], datetime] = utc_now) -> PublicationSummary:
+    """Expire existing due cases without constructing an auditor or admitting evidence."""
+    if not 1 <= limit <= 200:
+        raise ValueError("Invalid publication limit")
+    summary = PublicationSummary()
+    from app.services.local_news_scenario_service import sql_clock
+    expiry_clock = sql_clock(NewsClaimCase.id, "case", clock())
+    try:
+        with session_factory() as db:
+            cases = list(db.scalars(select(NewsClaimCase.id).join(NewsClaimDecision, NewsClaimDecision.case_id == NewsClaimCase.id)
+                .where(NewsClaimDecision.revision == NewsClaimCase.revision,
+                    NewsClaimDecision.public_state.in_(("active_alert", "active_zone")), NewsClaimDecision.expires_at <= expiry_clock)
+                .order_by(NewsClaimCase.id).limit(limit))) if read_configuration(db).automatic_expiry_enabled else []
+    except SQLAlchemyError:
+        summary.skipped.append({"reason_code": "maintenance_storage_unavailable"})
+        return summary
+    for case_id in cases:
+        try:
+            with session_factory() as db, db.begin():
+                # An operator can pause expiry after the due-case read.
+                if not read_configuration(db).automatic_expiry_enabled:
+                    break
+                expired = expire_case(db, case_id, now=clock()) is not None
+            if expired:
+                summary.expired += 1
+        except NewsPublicationError as exc:
+            summary.skipped.append({"case_id": case_id, "reason_code": exc.code})
+        except SQLAlchemyError:
+            summary.skipped.append({"case_id": case_id, "reason_code": "maintenance_storage_unavailable"})
+    return summary
+
+
 def process_news_publications(session_factory: Callable[[], Session], *, policy: EvaluationPolicy,
                               limit: int = 50, clock: Callable[[], datetime] = utc_now,
                               sources: tuple[NewsSource, ...] | None = None, maintenance_only: bool = False) -> PublicationSummary:
     if not 1 <= limit <= 200:
         raise ValueError("Invalid publication limit")
     summary = PublicationSummary()
-    from app.services.local_news_scenario_service import sql_clock
-    expiry_clock = sql_clock(NewsClaimCase.id, "case", clock())
     with session_factory() as db:
         maintenance_only = maintenance_only or not read_configuration(db).news_publication_enabled
         selected_ids = tuple(source.id for source in selected_news_sources(db, sources))
@@ -1253,19 +1284,7 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
             summary.skipped.append({"evaluation_id": evaluation_id, "reason_code": exc.code})
         except SQLAlchemyError:
             summary.skipped.append({"evaluation_id": evaluation_id, "reason_code": "publication_storage_unavailable"})
-    with session_factory() as db:
-        cases = list(db.scalars(select(NewsClaimCase.id).join(NewsClaimDecision, NewsClaimDecision.case_id == NewsClaimCase.id)
-            .where(NewsClaimDecision.revision == NewsClaimCase.revision,
-                NewsClaimDecision.public_state.in_(("active_alert", "active_zone")), NewsClaimDecision.expires_at <= expiry_clock)
-            .order_by(NewsClaimCase.id).limit(limit))) if read_configuration(db).automatic_expiry_enabled else []
-    for case_id in cases:
-        try:
-            with session_factory() as db, db.begin():
-                expired = expire_case(db, case_id, now=clock()) is not None
-            if expired:
-                summary.expired += 1
-        except NewsPublicationError as exc:
-            summary.skipped.append({"case_id": case_id, "reason_code": exc.code})
-        except SQLAlchemyError:
-            summary.skipped.append({"case_id": case_id, "reason_code": "maintenance_storage_unavailable"})
+    maintenance = process_news_expiry(session_factory, limit=limit, clock=clock)
+    summary.expired += maintenance.expired
+    summary.skipped.extend(maintenance.skipped)
     return summary

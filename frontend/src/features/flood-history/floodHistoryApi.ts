@@ -1,3 +1,4 @@
+import type { HistoricalNewsMetadata } from "@/features/news/historicalNewsTypes";
 import { apiClient } from "@/lib/apiClient";
 import type { FloodReport } from "@/features/admin/adminApi";
 
@@ -40,6 +41,15 @@ export interface FloodEventTimelineEntry {
 }
 
 export interface FloodEventRecord {
+  origin?: 'news' | 'user' | 'mixed' | 'unknown';
+  news_article_count?: number;
+  news_evidence_count?: number;
+  occurrence_date?: string | null;
+  observed_at?: string | null;
+  observation_precision?: 'unknown' | 'date' | 'instant';
+  closure_basis?: string | null;
+  duration_basis?: string | null;
+  historical?: HistoricalNewsMetadata | null;
   id: number;
   status: FloodEventStatus;
   first_reported_at: string | null;
@@ -47,7 +57,7 @@ export interface FloodEventRecord {
   ended_at: string | null;
   peak_severity: "low" | "medium" | "high" | "extreme";
   peak_depth: string | null;
-  duration_seconds?: number;
+  duration_seconds?: number | null;
   duration_minutes?: number | null;
   supporting_report_count?: number;
   reporter_count?: number;
@@ -73,6 +83,7 @@ export interface FloodEventHistoryPage {
 }
 
 export interface FloodHistoryFilters {
+  datasetId?: string;
   status: "all" | FloodEventStatus;
   severity: "" | FloodEventRecord["peak_severity"];
   dateFrom: string;
@@ -83,6 +94,8 @@ export interface FloodHistoryFilters {
 }
 
 export interface FloodEventPlanningAnalytics {
+  demonstration_instances?: number;
+  historical_intervals?: { assumed_two_hour_events: number; unknown_endpoints: number };
   total_events: number;
   ended_events: number;
   active_events: number;
@@ -100,6 +113,7 @@ export interface FloodEventPlanningAnalytics {
 export function historyParams(filters: FloodHistoryFilters, includeLimit = false): URLSearchParams {
   const params = new URLSearchParams({ status_filter: filters.status, limit: "250" });
   if (!includeLimit) params.delete("limit");
+  if (filters.datasetId) params.set("dataset_id", filters.datasetId);
   if (filters.severity) params.set("severity", filters.severity);
   if (filters.dateFrom) params.set("date_from", `${filters.dateFrom}T00:00:00`);
   if (filters.dateTo) params.set("date_to", `${filters.dateTo}T23:59:59`);
@@ -130,13 +144,24 @@ export async function getFloodEventHistoryPage(filters: FloodHistoryFilters, pag
   return result;
 }
 
-export async function getFloodEventHistoryDetail(eventId: number): Promise<FloodEventDetail> {
-  return apiClient.get<FloodEventDetail>(`/admin/flood-events/${eventId}/inspection`);
+export async function getFloodEventHistoryDetail(eventId: number, datasetId?: string): Promise<FloodEventDetail> {
+  return apiClient.get<FloodEventDetail>(`/admin/flood-events/${eventId}/inspection${datasetId ? `?dataset_id=${encodeURIComponent(datasetId)}` : ""}`);
 }
 
 export interface InspectionPage<T> { items: T[]; total: number; page: number; pages: number; page_size: number }
-export async function getHistoryCollection<T>(eventId: number, collection: "zones" | "reports" | "timeline" | "locations", page: number, signal?: AbortSignal) {
-  const result = await apiClient.get<InspectionPage<T>>(`/admin/flood-events/${eventId}/inspection/${collection}?page=${page}`, { signal });
+export interface EventNewsSource {
+  article_id: number; article_version_id: number; run_id: number; claim_index: number | null; group_id: string | null;
+  title: string | null; publisher: string | null; source_url: string | null; published_at: string | null;
+  published_date?: string | null;
+  excerpt: string | null; observed_at: string | null; occurrence_date: string | null; precision: string;
+  road: string | null; city: string | null; barangay: string | null;
+  depth_raw: string | null; depth_normalized: string | null; condition: string | null; passability: string | null;
+  extraction_mode: string; extraction_status: string; completed_at: string | null;
+  geometry_basis: string | null; geometry_provenance: Record<string, unknown> | null; closure_basis: string;
+}
+
+export async function getHistoryCollection<T>(eventId: number, collection: "zones" | "reports" | "timeline" | "locations" | "news_sources", page: number, signal?: AbortSignal, datasetId?: string) {
+  const result = await apiClient.get<InspectionPage<T>>(`/admin/flood-events/${eventId}/inspection/${collection}?page=${page}${datasetId ? `&dataset_id=${encodeURIComponent(datasetId)}` : ""}`, { signal });
   if (!Array.isArray(result.items)) throw new Error("Event evidence could not be loaded. Update the backend and retry.");
   return result;
 }
