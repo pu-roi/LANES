@@ -4,7 +4,7 @@ import math
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import Text, case, func, or_, select
+from sqlalchemy import Text, case, func, literal_column, or_, select
 from sqlalchemy.orm import Session, load_only
 
 from app import models, schemas
@@ -228,13 +228,23 @@ def require_event(db: Session, event_id: int, dataset_id: str | None = None) -> 
     return event
 
 
+def media_array_length(column: Any) -> Any:
+    """Optional JSON null means no media; malformed non-arrays still fail visibly.
+
+    JSONB's default ORM serialization stores explicit Python None as JSON null,
+    which is different from SQL NULL. Normalize that value before array_length,
+    not after the aggregate has already raised a database error.
+    """
+    return func.jsonb_array_length(func.nullif(column, literal_column("'null'::jsonb")))
+
+
 def history_overview(db: Session, event_id: int, dataset_id: str | None = None) -> dict[str, Any]:
     event = require_event(db, event_id, dataset_id)
     value = card_values(db, [event])[0]
     report, zone = models.FloodReport, models.FloodAvoidanceZone
-    report_media = db.query(func.coalesce(func.sum(func.jsonb_array_length(report.media_urls)), 0)).filter(
+    report_media = db.query(func.coalesce(func.sum(media_array_length(report.media_urls)), 0)).filter(
         report.event_id == event_id, report.deleted_at.is_(None)).scalar()
-    zone_media = db.query(func.coalesce(func.sum(func.jsonb_array_length(zone.media_urls)), 0)).filter(zone.event_id == event_id).scalar()
+    zone_media = db.query(func.coalesce(func.sum(media_array_length(zone.media_urls)), 0)).filter(zone.event_id == event_id).scalar()
     value.update(reports=[], zones=[], timeline=[], media_count=int(report_media or 0)+int(zone_media or 0))
     # The paged collections own evidence; the initial dialog never loads it all.
     return value

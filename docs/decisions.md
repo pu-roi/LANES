@@ -1,6 +1,16 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 19, 2026, 4:07 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:59 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## 31. Versioned connected-road placement and active-only presentation output
+
+**Decision adopted October 23; implementation verified before the October 24 reader recovery.** Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Administrative names identify/disambiguate the road; they do not clip the explicitly selected `connected-road-noah-v1` estimate. Authenticated connected OSM ways, actual road ends/identity changes, physical qualifiers, grade and complete asset coverage determine the candidate network. The Marcos underloop requires separately verified ground-level links, not the nearest elevated bridge. User coordinates remain attributed placement hints rather than article evidence or buffer radii.
+
+Only source-centerline fragments intersecting retained 5-/25-/100-year NOAH envelopes contribute to the estimated corridor. Existing 25-metre display margin, gaps/holes, component limits and source/overlap checks remain enforced. NOAH susceptibility does not establish current flooding, measured depth or observed wet extent. Earlier placement contracts retain their behavior until this policy is explicitly selected.
+
+The GMA presentation creates active-only instances directly linked to correction 388, without ended counterparts. Existing internal metadata excludes those instances from genuine Flood History, historical analytics/exports and ordinary routing, without a new visible label or schema. All three locations had to qualify before atomic output; repeat execution must not duplicate or reactivate manually deactivated instances. Events/zones 77–79 implement this bounded decision; it does not restart RSS, authorize the other two pilot articles or establish routine operational acceptance. [Placement/output evidence](evaluations/gma-connected-road-20261023.md) · [Current serving-reader verification](evaluations/news-reader-recovery-20261024.md).
 
 ## Current NER requirement clarification — October 19, 2026
 
@@ -639,6 +649,8 @@ One flooding incident can generate several public reports and one or more tempor
 ---
 
 ## 21. Smart Auto-Activation and Supporting LLM Auditor Architecture for Trusted News
+
+**Implementation clarification, October 24:** The deployed manual NER → Gemini path is a full-article correction stage followed by strict backend source/evidence validation, not merely the older claim-verdict auditor. GMA has actual retained provider acceptance, corrected observations and separately authorized presentation geometry. Scheduled news/publication remains paused; routine automatic current-event acceptance and completion of all three pilot articles remain pending. This clarification does not change the original general publication gates below. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verified state](evaluations/news-reader-recovery-20261024.md).
 > **October 2 accuracy clarification:** The following records the original Option 2 prototype intent, not deployed automatic publication. Its historical 95% rule, authoritative-buffer wording, zero-risk assertion and no-migration assumption are superseded by the [activation safety contract](plans/news-activation-safety-gates.md) and [Priority 5 lifecycle/frontend proposal](plans/news-publication-review-frontend-plan.md). Rules extraction and checksum-identified OSM centerline evidence are deployed; public alerts, durable review/correction/expiry and routing activation remain open. Place scores are not probabilities, and centerlines/arbitrary buffers do not verify current flooded extent. Two extraction tables were separately approved/deployed; any further lifecycle schema needs its own approval. This clarification records current implementation limits, not a new architecture decision. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 **Date:** September 2026  

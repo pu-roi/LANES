@@ -1,10 +1,52 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current follow-up — event 76 history inspection failure
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Confirmed root cause and CI/CD state](evaluations/event76-inspection-20261024.md).
+
+- [x] Reproduce event-detail 503 on serving reader-recovery and v30; confirm history list/news still return 200 and no newer automatic deployment replaced the repaired API.
+- [x] Identify JSON-null photo metadata in zone 76 and the unsafe array-length aggregate; confirm the event exists and has no report rows.
+- [x] Verify remote branches/build history: recovery source remains uncommitted locally; backend trigger remains disabled pending reviewed `main` integration.
+- [x] Patch null-safe report/zone media counting; mandatory isolated PostGIS gate passes 18 checks and fresh/repeated migrations.
+- [x] Extend protected canary with database-expected history/collections and open the real detail modal on desktop/mobile; promote `lanes-api-history-details-20261024-v1` and verify unchanged 13 protected fingerprints.
+- [ ] Complete reviewed feature-branch publication/main integration before restoring automatic backend deployment. Do not re-enable against the old deployment path.
+
+The earlier reader recovery remains valid for News Intelligence; its verification did not include opening event 76's history-detail modal. This new inspection task is not a database reset or a reason to replay articles.
+
+## Current recovery — saved News Intelligence restored
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Preserve recovery configuration and fingerprints; disable the backend build trigger; restore working v30 traffic after protected acceptance.
+- [x] Package the saved-reader manifest in the normal API image, retain its pipeline/database hash, require startup validation and add authenticated canary promotion gates.
+- [x] Promote `lanes-api-reader-recovery-20261024-v1` after zero-provider cloud acceptance; preserve manual worker v30 and active zones 77–79.
+- [x] Verify hosted desktop/mobile cards, source details/scrolling, active/admin/public maps, history and exports; all 13 protected table fingerprints remain unchanged.
+- [x] Preserve stopped ledger content/generation: 42 attempts / US$0.7524937. Keep news automation paused, expiry OFF and old seed disabled.
+- [ ] Review/merge the repaired API packaging, tests/deployer and `cloudbuild.yaml` into `main`, then re-enable the existing backend trigger. The trigger intentionally remains disabled while `main` still contains the old deployment path. No commit/push/merge was performed in this recovery.
+
+[Recovery evidence](evaluations/news-reader-recovery-20261024.md) · [Release procedure](guides/news-reader-release.md).
+
+### Current pilot inventory and remaining work
+
+| Article | Verified final outcome | Remaining boundary |
+|---|---|---|
+| GMA 47 | Corrected original 140/native 569, NER 382 and completed correction 388; three News Intelligence observations; active presentation event/zone pairs 77–79 | GMA review stop; do not reseed or reactivate manually deactivated output |
+| Daily Tribune 25 | Retained selected original, including its 4:34 PM evidence | Processing and outputs remain pending; require a separate authorized continuation |
+| Philstar 274 | Selected original capture retained | Processing and outputs remain pending; require a separate authorized continuation |
+
+- [x] Reconcile wrong-source cleanup and final output choice: the five incorrect archive event/zone pairs 71–75 and their exact capture chain were removed under the earlier scoped authority; no corrected GMA historical counterpart was created. Unrelated ended event 76 remains the sole verified history/export record.
+- [x] Document accepted source facts for all three GMA locations: gutter deep, September 9, 2026 at 2:47 PM Asia/Manila, passable to all vehicles; measured inches/metres remain unknown.
+- [x] Record that connected-road OSM/NOAH placement is versioned and explicitly selected. Administrative boundaries disambiguate rather than clip this policy's geometry; it does not silently change the ordinary scheduled pipeline.
+- [ ] Obtain the next reviewed scope before processing Tribune/Philstar, resuming scheduled news/publication or increasing any pilot spending allowance. The ledger remains stopped at 42 attempts / US$0.7524937 under the unchanged US$1 cap.
+
+The full three-article pilot and routine automatic processing are **not complete**. Older checkpoints below preserve the tests, failures and open items that existed at those times; they are not instructions to repeat cleanup or restore deleted incorrect records.
+
 
 ## Current state — three connected-road GMA active locations saved
 
-Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. [Evidence and recovery](evaluations/gma-connected-road-20261023.md).
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Three corrected GMA active presentation event/zone pairs **77–79** are saved and served through API `lanes-api-reader-recovery-20261024-v1`; the qualified manual worker remains **v30**. They are linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. [Evidence and recovery](evaluations/gma-connected-road-20261023.md).
 
 - [x] Implement versioned connected-road and active-only contracts; preserve earlier behavior and verify original saved correction/assets without inference or provider calls.
 - [x] Qualify 5 Rizal ways, 7 F. Sevilla ways including both authenticated one-way arms, and 3 reviewed ground-level underloop links beneath the elevated Marcos bridge.

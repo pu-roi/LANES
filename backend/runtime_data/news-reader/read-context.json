@@ -1,0 +1,13 @@
+{
+  "database_identity_sha256": "06b0442e4f3747dbcc3dcefa37f1aac38c1965e6ff10ab00a82579ec02efa36c",
+  "fallback_pipeline_versions": [
+    "ner-v1:fe22b4312576960813c67d243745bb58721e5d1f41bc6d09380583bed877adeb",
+    "ner-v1:cea7814c6acb204bfdb2649fbc598969f8c91b90005a2dbd5b13ee74fc0e7f19",
+    "ner-v1:dc33bdea0ca42bed17d268e87602f1f27f8f56299a2b2439bde9cecc068cace9",
+    "ner-v1:0f1763740429a682a117ff044c8a6db03e47f2a6ea13fd09b3aa52bba164c597",
+    "ner-v1:456c555854ea31e7df7a9c981d62745c7f0109c78ae1609c4d864631c3969574",
+    "ner-v1:c94df15a2c730f3e789d369275a8356001d60a03718e67e4cf36949419a47360"
+  ],
+  "pipeline_version": "ner-v1:abb4e0674b807a124328dbabc65cd71f2df9c4f8362a4280a197a1b9672482f6",
+  "schema_version": "saved-native-read-context-v2"
+}

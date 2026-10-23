@@ -1,9 +1,12 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Latest News Intelligence / placement checkpoint:** Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. This is a versioned opt-in extension of the existing news module; ordinary scheduled placement retains its prior gates. [Connected-road rollout](evaluations/gma-connected-road-20261023.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Latest News Intelligence / placement checkpoint:** Three corrected GMA active presentation event/zone pairs **77–79** are saved and served through API `lanes-api-reader-recovery-20261024-v1`; the qualified manual worker remains **v30**. They are linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. This is a versioned opt-in extension of the existing news module; ordinary scheduled placement retains its prior gates. [Connected-road rollout](evaluations/gma-connected-road-20261023.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
+
+
+Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. Scoped main/trigger integration remains pending. [Evidence](evaluations/event76-inspection-20261024.md).
 
 ## Earlier v27 news-data correction checkpoint
 
@@ -115,6 +118,10 @@ This document serves as the central technical reference for all currently implem
 ## 🛠️ Feature Reference (Current and Planned)
 
 ### 1. Bilingual Taglish NLP Ingestion, Multi-Tier Hybrid Ensemble & Smart Auto-Activation
+
+**Current implementation boundary (October 24):** The manually qualified cloud workflow reuses actual trained location NER, sends the full original article and evidence-bound proposals to Gemini for correction, then validates source facts before separately authorized OSM/NOAH placement. GMA correction 388 supplies three accepted observations and active-only presentation zones 77–79; no routine scheduled-news restart or three-article completion is claimed. The model still learns location labels; depth/time resolution and association are separate rule/correction capabilities. The saved-reader outage is repaired on API `lanes-api-reader-recovery-20261024-v1`, with unchanged existing screens. [Current verification](evaluations/news-reader-recovery-20261024.md) · [Connected-road policy](evaluations/gma-connected-road-20261023.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The dated research/release checkpoints below preserve earlier implementation boundaries.
 
 **Offline trained-model boundary (October 16):** Research checkpoints and held-out results now exist in ignored artifacts; this extends the existing NLP research capability, not the deployed extractor. No new feature module, public API or runtime model adoption is claimed. Original seed 0 stays primary and Recipe A exploratory. The full Gate 3 review is complete; operational qualification evidence and Gate 4 integration remain pending. [Results](evaluations/flood-ner-heldout-test-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

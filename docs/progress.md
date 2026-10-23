@@ -1,6 +1,16 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Event 76 detail repair deployed; CI/CD integration in progress
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). API `lanes-api-history-details-20261024-v1` repairs JSON-null/SQL-null report and zone photo counting without editing data. Malformed non-array media stays rejected. The packaged-reader release now checks history overviews and evidence against the database before promotion. Linux 323 passed/one repository-only skip; required isolated PostGIS 18 passed with fresh/repeated migration head; local 36 passed; two responsive fixture tests and actual hosted desktop/mobile details, collections, scrolling and map focus passed. All 13 protected fingerprints and manual-worker specification remain unchanged. **Next gate:** scoped `roi-branch` PR/main integration, restore the existing trigger, then one exact merged-commit build. Trigger remains disabled until integration; no Gemini, inference, count calls, seeding or UI/schema/dependency changes. [Evidence](evaluations/event76-inspection-20261024.md#repair-and-protected-manual-release--october-24-205-am).
+
+## Saved News Intelligence reader restored and API deployment guarded
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The October 23 automatic build retained a pointer to a missing `/release/read-context.json`, producing 503s without deleting saved data. Restored v30, then built/tested/promoted `lanes-api-reader-recovery-20261024-v1` with the same authenticated reader selection packaged in the normal Docker image. Startup checks and a protected zero-write canary now guard promotion. API release readiness no longer runs RSS or overwrites news workers. Three correction-388 observations and zones 77–79 remain visible; unrelated history 76 and all 13 protected table fingerprints are unchanged. Hosted desktop/mobile cards, evidence, scrolling, active/public maps and history pass. Final Linux regressions: 126 passed/one repository-only skip; disposable PostGIS: 24 passed. Ledger content/generation remains stopped at 42 / US$0.7524937; no provider/inference/count calls. Automatic backend deployment remains disabled until the repaired build path is reviewed and merged into `main`; no push/merge is included. [Evidence](evaluations/news-reader-recovery-20261024.md).
+
+**Conversation closeout:** GMA is the completed article within the three-article pilot. Its earlier five wrong-source historical events were subsequently removed by the scoped cleanup; the final accepted output is three active-only presentation instances with no GMA historical counterparts. Tribune 25 and Philstar 274 remain pending. Later failures, supersession and cleanup supersede the older successful processing checkpoints below; none of those earlier tests alone proves publisher-capture accuracy. [Current ordered checklist](task_plan.md#current-recovery--saved-news-intelligence-restored).
 
 ## Connected-road GMA active plotting deployed
 

@@ -1,8 +1,25 @@
 # LANES documentation
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-## Latest verified cloud state — three connected-road GMA active zones
+## Latest investigation — event 76 details and CI/CD integration
+
+[Event-detail 503 diagnosis](evaluations/event76-inspection-20261024.md): the current API is still the repaired reader release. A separate JSON-null photo-count query fails when opening event 76; list/news readers remain healthy. The patch and expanded PostGIS/canary/desktop/mobile checks now pass on serving API `lanes-api-history-details-20261024-v1`, without data edits. The backend trigger remains disabled pending scoped PR/main integration and an exact merged-commit build. [Current follow-up](task_plan.md#current-follow-up--event-76-history-inspection-failure).
+
+## Latest recovery — News Intelligence serving normally
+
+API `lanes-api-reader-recovery-20261024-v1` restores the three saved correction-388 observations without changing database records. Active zones 77–79, desktop/mobile source details/maps and unrelated history 76 remain intact. The normal API image now packages its authenticated reader manifest and deployment uses a protected canary gate. Automatic backend deployment stays disabled until the repair is reviewed and merged into `main`; the qualified manual worker is unchanged.
+
+- [October 24 reader outage, recovery and verification](evaluations/news-reader-recovery-20261024.md)
+- [Saved-reader release and recovery procedure](guides/news-reader-release.md)
+- [Current pilot inventory, completed GMA work and pending gates](task_plan.md#current-pilot-inventory-and-remaining-work)
+- [Conversation bug/status reconciliation](others/bug-log.md#conversation-status-reconciliation--october-24)
+- [Current screen behavior and reader release](others/system-documentation.md#current-news-intelligence-readers-and-presentation-state--october-24)
+
+The latest verified pilot has three GMA observations and active presentation zones; Tribune 25 and Philstar 274 are unprocessed. Existing history contains unrelated event 76, not replacement GMA archives. Older headings below record earlier results and are not the current work queue.
+
+
+## Prior spatial rollout — three connected-road GMA active zones
 
 Three corrected GMA active presentation event/zone pairs **77–79** are deployed through API/manual worker **v30**, linked directly to article **47**, source **140/native 569**, unchanged correction **388**. Rizal Avenue Extension, Tañong F. Sevilla Boulevard and the ground-level Marcos Highway Underloop qualify under opt-in `connected-road-noah-v1`. Administrative names disambiguate roads without clipping geometry. Source observations remain gutter deep, September 9 at 2:47 PM, passable to all vehicles, with measured inches/metres unknown. These instances have no ended counterpart and are excluded from Flood History, historical analytics/exports and routing; unrelated history event 76 is preserved. [Release and geometry verification](evaluations/gma-connected-road-20261023.md); [current checklist](task_plan.md#current-state--three-connected-road-gma-active-locations-saved). Hosted/local desktop/mobile acceptance passed. Earlier stopped checkpoints below describe their earlier releases.
 
@@ -11,7 +28,7 @@ Three corrected GMA active presentation event/zone pairs **77–79** are deploye
 
 [Incorrect-capture cleanup and active-only gate](evaluations/gma-active-cleanup-20261023.md): old event/zone pairs 71–75 and their incorrect capture/processing chain were removed after backup/rehearsal. Three corrected run-388 observations remain visible; unrelated history event 76 is preserved. API/worker v27 supports active-only output without ended counterparts, but the actual three-location spatial preview remains unresolved and **no active GMA polygons were created**. No provider calls; stopped ledger unchanged at 42 / US$0.7524937. [Current work and blockers](task_plan.md#current-state--incorrect-gma-chain-removed-active-plotting-blocked).
 
-## Latest verified completion — three GMA News Intelligence observations
+## Earlier extraction completion — three GMA News Intelligence observations
 
 [GMA three-location completion](evaluations/gma-three-location-completion-20261023.md): correction 388 is live on API v26 and localhost, including **Tañong F. Sevilla Blvd. (Bayan)**. Exact article evidence, gutter depth, Sep 9 at 2:47 PM and vehicle passage agree across all three cards. Cached responses and zero-provider finalization avoided further calls after the one authorized request. Hosted/local desktop/mobile pass; ledger stopped at **42 attempts / US$0.7524937**. No GMA history/polygon/active output; other articles and spatial qualification remain pending review.
 
@@ -25,11 +42,11 @@ Three corrected GMA active presentation event/zone pairs **77–79** are deploye
 
 [GMA clean-source correction and superseded-history withdrawal](evaluations/gma-source-correction-20261023.md): actual NER/Gemini processing now uses original 140/native 569. Two correct gutter-deep observations at Sep 9, 2:47 PM appear in News Intelligence. Five obsolete history polygons are retained as evidence but withdrawn from current history/maps/analytics/exports; **no replacement polygon qualifies yet**. F. Sevilla citation and spatial coverage/road interpretation remain pending. API/worker v23, frontend unchanged; preserved accounts/posts/reports and repeat/offline/desktop/mobile checks pass. Stopped ledger: 39 attempts / US$0.7418188, cap US$1. Older checkpoints below are not current geometry acceptance.
 
-## Latest source review — GMA capture mismatch and deployed admin reader repair
+## Earlier source review — GMA capture mismatch and deployed admin reader repair
 
 [GMA source review and summary repair](evaluations/news-source-review-20261023.md): the pilot reused an indexed snapshot despite a clean publisher body already being saved. The current source display now matches that publisher capture; selected Flood Details replaces duplicated raw NER diagnostics, and immutable processing evidence stays accessible. API/frontend/manual guard deployed and hosted/local desktop/mobile checks pass without data or Gemini-budget changes. Existing five derived observations/events require reprocessing/review before source accuracy is claimed. Other articles and activation remain pending.
 
-## Latest verified outcome — GMA Flood History populated; review stop
+## Earlier historical population — later superseded and cleaned up
 
 [GMA shared-depth historical archives](evaluations/three-article-cloud-pilot-20261022/gma-shared-history.md): five ended incidents and five inactive estimated corridors now appear in existing hosted/local history cards, maps, analytics and exports. News Intelligence retains five observations. Source-supported shared severity is preserved without individual depth measurements; old evaluations remain immutable. Worker v18 only, API v17 unchanged; no extra Gemini/inference calls, ledger unchanged/stopped, protected records preserved. Desktop/mobile acceptance and repeat zero-write checks pass. Tribune, Philstar and active instances remain pending.
 

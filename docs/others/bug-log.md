@@ -1,6 +1,40 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Event 76 history-detail 503 — JSON-null media counting
+
+**Status:** Resolved on serving API `lanes-api-history-details-20261024-v1`; CI/CD integration in progress. **Severity:** Medium (history inspection unavailable). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Opening event 76's detail modal returns 503 while history cards and the three News Intelligence results load normally.
+2. **Root cause:** `history_overview` directly invokes `jsonb_array_length` on zone 76's JSON-null `media_urls`. PostgreSQL raises `cannot get array length of a scalar`; aggregate coalesce cannot catch that error, and the read wrapper returns 503. Both current reader-recovery and retained v30 reproduce it, ruling out a new deployment replacement.
+3. **Solution:** Normalize only SQL/JSON null inside the array-count expression; keep malformed scalars rejected. Mandatory isolated PostGIS gates cover arrays/no-photo and staff authorization. Protected canary checks real history overviews/collections against database expectations, and hosted desktop/mobile actually open event 76. Linux 323 passed/one source-only skip, PostGIS 18 passed and fresh/repeated migration head passed.
+4. **Files/verification:** `spatial_browse_service.py`, `test_history_media_postgres.py`, `check_history_media_ci.sh`, `run_history_media_tests.py`, `check_news_reader.py`, `cloudbuild.yaml` and responsive `history-inspection.spec.ts`. Zero-traffic and serving checks passed; all protected records/manual-worker spec unchanged. CI/CD remains disabled pending scoped PR/main integration. [Evidence and exact integration state](../evaluations/event76-inspection-20261024.md).
+
+## Conversation status reconciliation — October 24
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The entries below retain their original failures and release checkpoints. A past “accepted” run can later be superseded by a source-provenance finding; a past “pending” blocker can be resolved by a later versioned policy. Use this reconciliation and the [current task plan](../task_plan.md#current-recovery--saved-news-intelligence-restored) for remaining work.
+
+| Issue | Final verified disposition | Evidence |
+|---|---|---|
+| Gemini request size/schema, evidence references and spending accounting | Repaired/versioned request contracts, retained responses/offline replay, sequential stop gates and durable accounting qualified GMA correction 388; strict validation still rejects future unsupported output | [Three-location completion](../evaluations/gma-three-location-completion-20261023.md) |
+| Publisher article mismatch and five wrong-source derived incidents | Current article uses original 140/native 569; the exact incorrect 137/574 capture chain and five event/zone pairs 71–75 were removed in the authorized 62-row cleanup | [Scoped cleanup](../evaluations/gma-active-cleanup-20261023.md) |
+| Missing F. Sevilla city context and duplicate San Agustin card | Versioned heading/inline ownership and retained-response adoption yield exactly three correction-388 cards; genuine locality-only reports remain supported | [Heading/inline completion](../evaluations/gma-three-location-completion-20261023.md) |
+| Flood Details duplicated raw NER, misleading source rendering and scrolling | Selected flood summary and source-version comparison are deployed; raw NER remains in Processing History; source/depth/time/access and scrolling pass desktop/mobile verification | [Source/UI repair](../evaluations/news-source-review-20261023.md) |
+| Barangay clipping, F. Sevilla road identity and elevated Marcos snapping | Connected-road policy qualifies all three actual road networks and NOAH intersections; verified underloop excludes overhead bridge; active pairs 77–79 saved | [Road/geometry evidence](../evaluations/gma-connected-road-20261023.md) |
+| Conventional gauge values filled unknown measured depth | Source-bound projection/response validation retains unknown inches/metres while displaying gutter-deep wording; ordinary gauge behavior unchanged | [Projection repair](../evaluations/gma-connected-road-20261023.md) |
+| News Intelligence 503 after an automatic build | Runtime repaired on `lanes-api-reader-recovery-20261024-v1`; packaged/pinned reader and protected promotion checks implemented; deployment-branch integration remains pending and trigger disabled | [Reader recovery](../evaluations/news-reader-recovery-20261024.md) |
+
+**Still pending:** merge/review the deployment repair into `main` before enabling its trigger; Tribune 25 and Philstar 274 processing/output acceptance; any separately authorized routine-news restart. The original five GMA archives are not current Flood History, and the full three-article pilot is not complete. No additional source correction, geometry change, provider request or cleanup was performed by this documentation audit.
+
+## Saved News Intelligence reader missing from automatic deployment image
+
+**Status:** Resolved on serving API `lanes-api-reader-recovery-20261024-v1`; protected-branch integration remains pending. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** News Intelligence returned 503 while the three saved observations and zones 77–79 remained in Cloud SQL.
+2. **Root cause:** The ordinary Docker image omitted the hash-pinned reader file but inherited `/release/read-context.json` from a manually qualified release. Cloud Build checked ordinary source-mode tests and a discovery execution rather than the protected saved-reader endpoint, then promoted the incomplete image.
+3. **Solution:** Restore v30; package the unchanged nonsecret manifest independently of inference assets; explicitly bind its production path/hash and require read-only startup validation. Stage and authenticate actual result/detail/article/collection reads before promotion; reject failed checks or concurrent traffic changes. Decouple API deployment from news-worker updates and RSS execution. Keep the backend trigger disabled until this repaired path is present on `main`.
+4. **Changes/verification:** `backend/Dockerfile`, `backend/app/main.py`, `news_native_read_context.py`, `news_reader_release.py`, packaged `runtime_data/news-reader/read-context.json`, `verify_news_reader_package.py`, `check_news_reader.py`, `deploy_api_checked.py`, `test_news_reader_release.py` and root `cloudbuild.yaml`; no schema/UI/dependency changes. Linux 126 passed/one repository-only skip; PostGIS 24 passed; hosted desktop/mobile news/maps and exact protected-row preservation pass. [Evidence](../evaluations/news-reader-recovery-20261024.md) · [Operations](../guides/news-reader-release.md).
 
 ## Connected-road placement and source-depth projection repaired
 

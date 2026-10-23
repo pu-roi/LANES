@@ -58,3 +58,25 @@ def configured_native_read_context() -> SavedNativeReadContext | None:
 
 def reader_pipeline_selection(context: object) -> str | tuple[str, ...]:
     return getattr(context,'pipeline_selection',context.pipeline_version)
+
+
+def validate_native_reader_startup(engine: object) -> None:
+    """Reject broken configured readers before readiness; never run extraction.
+
+    Legacy-only installations remain supported unless native reading is required.
+    Keep this outside the application's best-effort role-seeding exception handler.
+    """
+    from sqlalchemy.orm import Session
+    try:
+        context = configured_native_read_context()
+        if context is None:
+            if os.environ.get('LANES_NEWS_NATIVE_READ_REQUIRED') == '1':
+                raise ValueError('required_reader_missing')
+            return
+        with Session(engine) as db:
+            db.execute(text('SET TRANSACTION READ ONLY'))
+            db.execute(text('SET LOCAL statement_timeout=10000'))
+            context.validate(db)
+    except Exception:
+        # Neither connection URLs nor exception payloads belong in startup logs.
+        raise RuntimeError('news_native_reader_startup_failed') from None

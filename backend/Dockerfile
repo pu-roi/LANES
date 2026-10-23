@@ -34,6 +34,7 @@ COPY runtime_data/ /data/
 # Reject missing or mismatched analytical assets before deploying this image.
 # This check performs no database writes, discovery, or provider requests.
 RUN python -m scripts.verify_news_runtime_assets
+RUN python -m scripts.verify_news_reader_package --path /data/news-reader/read-context.json
 
 # Expose default Cloud Run port
 EXPOSE 8080
