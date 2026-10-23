@@ -87,7 +87,16 @@ class NewsResultLifecycle(BaseModel):
     reason_code: str | None = None
 
 
+class NewsSourceReview(BaseModel):
+    """Current collection body and immutable extraction input remain separate."""
+    state: Literal['matching_capture', 'different_capture', 'current_unavailable']
+    current_input: NewsCapturedInput | None = None
+    current_fetched_at: datetime | None = None
+    selected_captured_at: datetime
+
+
 class NewsResultDetail(BaseModel):
+    source_review: NewsSourceReview | None = None
     item: NewsNativeResultItem | NewsResultItem
     claim: NerProjectedClaim | ExtractedClaim
     captured_input: NewsNativeCapturedInput | NewsCapturedInput
@@ -101,6 +110,13 @@ class NewsResultDetail(BaseModel):
 
 
 class NewsNativeGroupDetail(BaseModel):
+    source_review: NewsSourceReview | None = None
+    supporting_passages: list[str] = Field(default_factory=list)
+    depth_scope: Literal['shared', 'individual', 'unknown'] = 'unknown'
+    historical_outputs: list[dict] = Field(default_factory=list)
+    claim: NewsResultClaim
+    extraction_errors: list[str] = Field(default_factory=list)
+    is_metadata_only: Literal[False] = False
     item: NewsNativeResultItem
     group: dict
     result: NewsNerResult

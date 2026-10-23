@@ -54,24 +54,26 @@ def card_values(db: Session, events: list[models.FloodEvent]) -> list[dict[str, 
     zones = {row[0]: row[1:] for row in db.query(zone.event_id, func.count(zone.id),
         func.count(zone.id).filter(zone.is_active.is_(True), unexpired_deadline(db, zone.expires_at, now)))
         .filter(zone.event_id.in_(ids)).group_by(zone.event_id)}
-    counts = dict(db.query(location.event_id, func.count(location.id)).filter(location.event_id.in_(ids))
-        .group_by(location.event_id).all())
-    ranked = db.query(location.id.label("id"), func.row_number().over(partition_by=location.event_id,
+    counts: dict[int, int] = {}
+    ranked = db.query(location.id.label("id"), func.count().over(partition_by=location.event_id).label('total'), func.row_number().over(partition_by=location.event_id,
         order_by=(location.location_type, location.display_name, location.id)).label("rank"))
     ranked = ranked.filter(location.event_id.in_(ids)).subquery()
     locations: dict[int, list[Any]] = {}
-    for row in db.query(location).options(load_only(location.id, location.event_id, location.location_type,
+    for row, total in db.query(location, ranked.c.total).options(load_only(location.id, location.event_id, location.location_type,
             location.display_name, location.normalized_name, location.created_at)).join(ranked, ranked.c.id == location.id).filter(ranked.c.rank <= 3).order_by(
             location.location_type, location.display_name, location.id):
+        counts[row.event_id] = total
         locations.setdefault(row.event_id, []).append(schemas.FloodEventLocationResponse.model_validate(row).model_dump(mode="json"))
     result = []
+    from app.services.news_history_evidence import event_projections, project_values
+    projections = event_projections(db, ids)
     for event in events:
         evidence, supporting, reporters = reports.get(event.id, (0, 0, 0))
         zone_count, active_count = zones.get(event.id, (0, 0))
-        result.append({**schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
+        result.append(project_values({**schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
             **_event_metrics(event, now, {"evidence_count": evidence, "supporting_report_count": supporting,
                 "reporter_count": reporters, "zone_count": zone_count, "active_zone_count": active_count,
-                "location_count": counts.get(event.id, 0)}), "locations": locations.get(event.id, [])})
+                "location_count": counts.get(event.id, 0)}), "locations": locations.get(event.id, [])}, projections.get(event.id)))
     return result
 
 
@@ -126,6 +128,8 @@ def map_read(db: Session, *, filters: dict[str, Any] | None, bbox: str | None, z
     if historical and zoom < 14:
         return result
     fields = [zone.id, func.ST_AsGeoJSON(zone.geometry).label("geojson")]
+    if not historical:
+        fields.append(zone.event_id)
     if historical:
         fields.extend([zone.event_id, event.peak_severity.label("severity")])
     else:
@@ -159,9 +163,14 @@ def map_read(db: Session, *, filters: dict[str, Any] | None, bbox: str | None, z
                 .outerjoin(user, user.id == report.user_id).outerjoin(profile, profile.user_id == user.id)
                 .outerjoin(role, role.id == user.role_id).outerjoin(survey, survey.report_id == report.id)
                 .filter(report.id.in_(report_ids))}
+    from app.services.historical_news_metadata import event_metadata, public_metadata
+    historical_metadata = event_metadata(db, [row.event_id for row in rows[:250] if row.event_id])
     for row in rows[:250]:
         properties = dict(row._mapping)
         geometry = json.loads(properties.pop("geojson"))
+        metadata = historical_metadata.get(row.event_id)
+        properties["historical"] = public_metadata(metadata)
+        properties["affects_routing"] = not metadata.is_demo if metadata else True
         if historical:
             properties["zone_id"] = row.id
         else:
@@ -202,16 +211,25 @@ def heatmap_cells(db: Session, query: Any, envelope: Any, bounds: tuple[float, f
     return [MapFeature(geometry=json.loads(row.point), properties={"weight": row.weight, "zone_count": row.zone_count}) for row in rows]
 
 
-def require_event(db: Session, event_id: int) -> models.FloodEvent:
+def require_event(db: Session, event_id: int, dataset_id: str | None = None) -> models.FloodEvent:
     from fastapi import HTTPException
-    event = db.get(models.FloodEvent, event_id)
+    event = (history_query(db, {'dataset_id': dataset_id, 'event_id': event_id}).first()
+             if dataset_id else db.get(models.FloodEvent, event_id))
     if event is None:
         raise HTTPException(404, "Flood Event not found")
+    from app.services.news_gma_active_outputs import active_only_event
+    from app.services.news_source_repair import superseded_event
+    blocked = db.query(models.FloodEvent.id, active_only_event().label('active_only')).filter(
+        models.FloodEvent.id == event_id, or_(active_only_event(), superseded_event())).first()
+    if blocked and blocked.active_only:
+        raise HTTPException(404, "Flood Event not found")
+    if blocked:
+        raise HTTPException(409, "This news archive was superseded after a source correction. Review the current Flood History records.")
     return event
 
 
-def history_overview(db: Session, event_id: int) -> dict[str, Any]:
-    event = require_event(db, event_id)
+def history_overview(db: Session, event_id: int, dataset_id: str | None = None) -> dict[str, Any]:
+    event = require_event(db, event_id, dataset_id)
     value = card_values(db, [event])[0]
     report, zone = models.FloodReport, models.FloodAvoidanceZone
     report_media = db.query(func.coalesce(func.sum(func.jsonb_array_length(report.media_urls)), 0)).filter(
@@ -222,13 +240,16 @@ def history_overview(db: Session, event_id: int) -> dict[str, Any]:
     return value
 
 
-def history_collection(db: Session, event_id: int, collection: str, page: int) -> Any:
+def history_collection(db: Session, event_id: int, collection: str, page: int, dataset_id: str | None = None) -> Any:
     from app.schemas.spatial_browse import InspectionPage
     from app.schemas.flood_event import HistoricalFloodZoneResponse
     from app.crud.zone_queue import queue_zone_details
-    from app.services.news_zone_projection_service import brief_zone_response_bases, zone_responses_with_news
+    from app.services.news_zone_projection_service import brief_zone_response_bases
     from sqlalchemy.orm import selectinload
-    require_event(db, event_id)
+    require_event(db, event_id, dataset_id)
+    if collection == 'news_sources':
+        from app.services.news_history_evidence import news_sources
+        return news_sources(db, event_id, page)
     model, schema, time = {
         "reports": (models.FloodReport, schemas.FloodReportResponse, models.FloodReport.created_at),
         "zones": (models.FloodAvoidanceZone, HistoricalFloodZoneResponse, models.FloodAvoidanceZone.created_at),
@@ -236,6 +257,8 @@ def history_collection(db: Session, event_id: int, collection: str, page: int) -
         "locations": (models.FloodEventLocation, schemas.FloodEventLocationResponse, models.FloodEventLocation.created_at),
     }[collection]
     query = db.query(model).filter(model.event_id == event_id)
+    if collection == "timeline":
+        query = query.filter(model.entry_type != 'historical_demo_deactivated')
     if collection == "reports":
         query = query.filter(model.deleted_at.is_(None))
     total = query.count()
@@ -248,7 +271,9 @@ def history_collection(db: Session, event_id: int, collection: str, page: int) -
         ids = [row.id for row in selected.with_entities(model.id)]
         by_id = {row.id: row for row in queue_zone_details(db, ids, brief=True)}
         zones = [by_id[id] for id in ids]
-        values = zone_responses_with_news(db, zones, base_responses=brief_zone_response_bases(db, zones, schema=HistoricalFloodZoneResponse))
+        # History owns retained source evidence in news_sources; current alerts
+        # cannot describe an inactive historical footprint.
+        values = brief_zone_response_bases(db, zones, schema=HistoricalFloodZoneResponse)
     else:
         values = [schema.model_validate(row) for row in selected]
     return InspectionPage(items=[value.model_dump(mode="json") for value in values], total=total,
@@ -288,15 +313,21 @@ def zone_contributors(db: Session, zone_id: int, page: int, focus_report_id: int
 def planning_metrics(db: Session, query: Any) -> dict[str, Any]:
     """Aggregate the entire matching history without materializing event/evidence rows."""
     event, report, location = models.FloodEvent, models.FloodReport, models.FloodEventLocation
-    selected = query.with_entities(event.id, event.status, event.verified_at, event.ended_at, event.peak_severity).subquery()
+    from app.services.historical_news_metadata import demo_event, occurrence_day, observed_duration_eligible, metadata_field
+    demo_count, simulated_count, unknown_count = query.with_entities(
+        func.count().filter(demo_event()),
+        func.count().filter(~demo_event(), metadata_field('closure_basis') == 'assumed_two_hours'),
+        func.count().filter(~demo_event(), metadata_field('dataset_id').is_not(None), event.ended_at.is_(None))).one()
+    selected = query.filter(~demo_event()).with_entities(event.id, event.status, event.verified_at, event.ended_at, event.peak_severity, occurrence_day().label("occurrence_day"), observed_duration_eligible().label("duration_eligible")).subquery()
     ended = selected.c.status == "ended"
+    duration_ended = ended & selected.c.duration_eligible
     minutes = func.greatest(0, func.floor(func.extract("epoch", selected.c.ended_at-selected.c.verified_at)/60))
     total, ended_count, average = db.query(func.count(selected.c.id), func.count().filter(ended),
-        func.avg(minutes).filter(ended, selected.c.ended_at.is_not(None))).one()
-    durations = db.query(*(func.count().filter(ended, selected.c.ended_at.is_not(None), predicate) for predicate in (
+        func.avg(minutes).filter(duration_ended, selected.c.ended_at.is_not(None))).one()
+    durations = db.query(*(func.count().filter(duration_ended, selected.c.ended_at.is_not(None), predicate) for predicate in (
         minutes < 60, (minutes >= 60) & (minutes < 180), (minutes >= 180) & (minutes < 360), minutes >= 360))).one()
     levels = dict(db.query(selected.c.peak_severity,func.count()).group_by(selected.c.peak_severity).all())
-    day = func.date(selected.c.verified_at)
+    day = selected.c.occurrence_day
     days = db.query(day,func.count()).group_by(day).order_by(day).all()
     local_time = func.timezone("Asia/Manila",selected.c.verified_at)
     weekday, hour = func.extract("isodow",local_time)-1, func.extract("hour",local_time)
@@ -311,11 +342,13 @@ def planning_metrics(db: Session, query: Any) -> dict[str, Any]:
     report_days = db.query(report_day,func.count(report.id)).join(selected,selected.c.id == report.event_id).filter(
         report.status == models.ReportStatus.APPROVED,report.deleted_at.is_(None)).group_by(report_day).order_by(report_day).all()
     report_count = sum(count for _,count in report_days)
-    return {"total_events":total,"ended_events":ended_count,"active_events":total-ended_count,
+    return {"demonstration_instances":demo_count,
+        "historical_intervals":{"assumed_two_hour_events":simulated_count,"unknown_endpoints":unknown_count},
+        "total_events":total,"ended_events":ended_count,"active_events":total-ended_count,
         "peak_severity_distribution":[{"severity":name,"event_count":levels.get(name,0)} for name in SEVERITY_RANK],
         "duration":{"ended_event_count":sum(durations),"average_minutes":round(float(average),1) if average is not None else None,
             "distribution":[{"bucket":label,"event_count":count} for label,count in zip(("Under 1 hour","1–3 hours","3–6 hours","Over 6 hours"),durations)]},
-        "events_over_time":[{"date":str(date),"event_count":count} for date,count in days],
+        "events_over_time":[{"date":str(date) if date is not None else "Unknown","event_count":count} for date,count in days],
         "approved_reports_over_time":[{"date":str(date),"report_count":count} for date,count in report_days],
         "verification_pattern":[{"weekday":int(weekday),"hour":int(hour),"event_count":count} for weekday,hour,count in pattern],
         "recurring_barangays":top("barangay"),"frequently_affected_roads":top("road"),
@@ -324,5 +357,6 @@ def planning_metrics(db: Session, query: Any) -> dict[str, Any]:
             "flood_events":"Distinct verified incidents. Repeated reports for one incident count once.",
             "supporting_reports":"Approved, non-deleted reports linked to the selected Flood Events; a confidence signal, not an event count.",
             "peak_verified_severity":"The highest verified severity recorded for each Flood Event.",
-            "official_duration":"Time from event verification until the final active zone ended. Active events are excluded from duration averages.",
+            "official_duration":"Time from operational verification until the final active zone ended. News administrative intervals, imported assumptions and active events are excluded.",
+            "historical_occurrence":"News-origin events use supported source occurrence dates; unknown source dates remain unknown. Demonstration instances do not add real flood occurrences.",
             "verification_pattern":"Verified Flood Events by Asia/Manila day and hour. This shows verification timing, not when floodwater first began."}}

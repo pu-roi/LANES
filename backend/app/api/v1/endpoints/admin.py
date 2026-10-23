@@ -308,7 +308,8 @@ def get_flood_event_summary(
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> dict[str, Any]:
     """Return admin-only server-calculated lifecycle metrics for one Flood Event."""
-    event = db.get(models.FloodEvent, event_id)
+    from app.services.spatial_browse_service import require_event
+    event = require_event(db, event_id)
     if not event:
         raise HTTPException(status_code=404, detail="Flood Event not found")
     return get_event_metrics(db=db, event=event)
@@ -319,7 +320,8 @@ def list_flood_events(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> list[models.FloodEvent]:
-    return db.query(models.FloodEvent).order_by(models.FloodEvent.verified_at.desc()).all()
+    from app.services.news_source_repair import superseded_event
+    return db.query(models.FloodEvent).filter(~superseded_event()).order_by(models.FloodEvent.verified_at.desc()).all()
 
 
 @router.get("/flood-events/history")
@@ -331,6 +333,7 @@ def list_flood_event_history(
     barangay: Optional[str] = None,
     road: Optional[str] = None,
     search: Optional[str] = None,
+    dataset_id: Optional[str] = None,
     limit: int = 100,
     page: Optional[int] = None,
     page_size: int = 20,
@@ -359,6 +362,7 @@ def list_flood_event_history(
             barangay=barangay,
             road=road,
             search=search,
+            dataset_id=dataset_id,
             multiple_places=multiple_places,
         )
     except ValueError as exc:
@@ -383,6 +387,7 @@ def get_flood_event_analytics(
     barangay: Optional[str] = None,
     road: Optional[str] = None,
     search: Optional[str] = None,
+    dataset_id: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> dict[str, Any]:
@@ -397,6 +402,7 @@ def get_flood_event_analytics(
             barangay=barangay,
             road=road,
             search=search,
+            dataset_id=dataset_id,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -415,6 +421,7 @@ def export_flood_event_planning_data(
     barangay: Optional[str] = None,
     road: Optional[str] = None,
     search: Optional[str] = None,
+    dataset_id: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Response:
@@ -433,6 +440,7 @@ def export_flood_event_planning_data(
             barangay=barangay,
             road=road,
             search=search,
+            dataset_id=dataset_id,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -503,7 +511,8 @@ def get_flood_event_history_detail(
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> dict[str, Any]:
     """Return the staff-only event detail, evidence, and readable lifecycle timeline."""
-    event = db.get(models.FloodEvent, event_id)
+    from app.services.spatial_browse_service import require_event
+    event = require_event(db, event_id)
     if not event:
         raise HTTPException(status_code=404, detail="Flood Event not found")
 
@@ -518,7 +527,8 @@ def get_flood_event_history_detail(
         models.FloodReport.deleted_at.is_(None),
     ).order_by(models.FloodReport.created_at.asc()).all()
     timeline = db.query(models.FloodEventTimelineEntry).filter(
-        models.FloodEventTimelineEntry.event_id == event.id
+        models.FloodEventTimelineEntry.event_id == event.id,
+        models.FloodEventTimelineEntry.entry_type != 'historical_demo_deactivated',
     ).order_by(models.FloodEventTimelineEntry.occurred_at.asc()).all()
 
     return {
@@ -749,6 +759,7 @@ async def approve_report(
 @router.get("/reports/merge-candidates", response_model=schemas.MergeCandidatesListResponse)
 def get_merge_candidates(
     report_id: int,
+    extra_report_ids: Optional[str] = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Any:
@@ -759,8 +770,11 @@ def get_merge_candidates(
     Requires admin privileges.
     """
     from app.services.merge_service import find_merge_candidates
+    parsed_extra_ids = []
+    if extra_report_ids:
+        parsed_extra_ids = [int(x.strip()) for x in extra_report_ids.split(",") if x.strip().isdigit()]
     try:
-        return find_merge_candidates(report_id=report_id, db=db)
+        return find_merge_candidates(report_id=report_id, db=db, extra_report_ids=parsed_extra_ids)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
@@ -1325,7 +1339,8 @@ async def deactivate_zone(
         "data": {"zone_id": zone_id}
     })
 
-    return zone
+    from app.services.news_zone_projection_service import zone_responses_with_news
+    return zone_responses_with_news(db, [zone])[0]
 
 
 @router.patch("/zones/{zone_id}/restore", response_model=schemas.FloodAvoidanceZoneResponse)

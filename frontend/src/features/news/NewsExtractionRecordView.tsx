@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileText, MapPin, Settings2 } from "lucide-react";
 import { Button, Skeleton, Tabs, TabContentPanel } from "@/shared/ui";
 import { getNewsArticle, type NewsArticleDetail, type NewsRun } from "./newsApi";
+import { NativeExtractionEvidence } from "./NativeExtractionEvidence";
+import { isNativeExtraction } from "./newsApi";
 import { newsDate, processingLabels } from "./newsPresentation";
 import { NewsSourceArticle } from "./NewsSourceArticle";
 
@@ -31,7 +33,7 @@ export function NewsExtractionRecordView({ articleId, runId, currentRunId, onBac
       {query.isError && <div className="space-y-3"><p role="alert" className="text-sm text-red-800">Extraction record could not be loaded. {query.error.message}</p><Button variant="outline" size="sm" onClick={() => void query.refetch()}>Retry extraction record</Button></div>}
       {query.data && !run && <p role="alert" className="text-sm text-amber-800">This record is not available in the loaded processing history.</p>}
       {run && query.data && <TabContentPanel tabKey={tab} direction={direction}>
-        {tab === "mentions" ? <RecordMentions run={run} data={query.data} /> : tab === "article" ? version ? <NewsSourceArticle source={version.input_snapshot} publisher={query.data.publisher} savedAt={query.data.article.first_seen_at} articleId={articleId} presentation="reader" /> : <p role="alert" className="text-sm text-amber-800">The captured article is unavailable for this record.</p> : <RecordTechnicalDetails run={run} fingerprint={version?.input_fingerprint} capturedAt={version?.created_at} />}
+        {tab === "mentions" ? <RecordMentions run={run} data={query.data} /> : tab === "article" ? version ? <NewsSourceArticle source={version.input_snapshot} publisher={query.data.publisher} savedAt={version.created_at} articleId={articleId} presentation="reader" captureLabel="Extraction input saved" textLabel="Captured extraction input" /> : <p role="alert" className="text-sm text-amber-800">The captured article is unavailable for this record.</p> : <RecordTechnicalDetails run={run} fingerprint={version?.input_fingerprint} capturedAt={version?.created_at} />}
       </TabContentPanel>}
     </div>
   </section>;
@@ -39,6 +41,7 @@ export function NewsExtractionRecordView({ articleId, runId, currentRunId, onBac
 
 function RecordMentions({ run, data }: { run: NewsRun; data: NewsArticleDetail }) {
   const summaries = data.flood_summaries[run.id] ?? [];
+  if (isNativeExtraction(run.result)) return <NativeExtractionEvidence result={run.result} outputs={data.historical_outputs?.[run.id]} />;
   return <div className="space-y-5">
     <div><h4 className="text-sm font-bold text-slate-900">Extracted mentions {run.result ? `(${run.result.claims.length})` : ""}</h4><p className="mt-1 text-xs leading-5 text-slate-500">Saved extraction output. Locations and measurements still need evidence checks before operational use.</p></div>
     {run.error_code && <p role="alert" className="break-words text-sm text-red-800">Processing failed: {run.error_code}</p>}

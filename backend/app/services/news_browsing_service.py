@@ -24,11 +24,12 @@ def browse_news_articles(
 ) -> NewsArticlePage:
     if processing_context is not None:
         from app.services.news_ner_durable.readers import validate_read_context
+        from app.services.news_native_read_context import reader_pipeline_selection
         validate_read_context(db,processing_context)
     rows, total, actual_page, publishers = list_articles(
         db, page=page, page_size=page_size, search=search, publisher=publisher,
         body=body, processing=processing, order=order,
-        **({'mode':'ner_rules_v1','pipeline_version':processing_context.pipeline_version} if processing_context is not None else {}),
+        **({'mode':'ner_rules_v1','pipeline_version':reader_pipeline_selection(processing_context)} if processing_context is not None else {}),
     )
     labels = publisher_labels()
     return NewsArticlePage(
@@ -58,7 +59,10 @@ def read_news_article_detail(db: Session, article_id: int) -> NewsArticleDetail 
             version=by_version[run.article_version_id];result=inspect_native(run,version)
             summaries[run.id]=[native_item(group_row(run,version,article,result,g.group_id),{}).summary for g in result.read_projection.groups]
     body_status = "error" if article.article_error is not None else "available" if (article.article_text or "").strip() else "missing"
+    from app.services.news_ner_durable.readers import read_historical_outputs
     return NewsArticleDetail(
+        historical_outputs={run.id: read_historical_outputs(db, run.id)
+            for run in runs if run.mode == 'ner_rules_v1'},
         article=NewsArticleSummary.model_validate(article),
         publisher=publisher_labels().get(article.publisher_source_id, article.publisher_source_id),
         body_status=body_status,

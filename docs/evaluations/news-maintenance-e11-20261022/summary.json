@@ -1,0 +1,51 @@
+{
+  "schema": "lanes-news-maintenance-e11-verification-v1",
+  "status": "passed_locally_not_deployed",
+  "owner": "roicambe",
+  "tests_passed": 82,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "warnings": 3,
+  "suite_counts": {
+    "tests.test_news_expiry_maintenance": 9,
+    "tests.test_news_maintenance_postgres": 4,
+    "tests.test_news_monitoring_phase_d": 21,
+    "tests.test_news_pipeline": 17,
+    "tests.test_news_pipeline_cli": 9,
+    "tests.test_news_publication_lifecycle": 16,
+    "tests.test_news_publication_lifecycle_postgres": 6
+  },
+  "xml_sha256": "4eb06412e5503dd2a8d59b2a1bf21184394e588b69f17659dc06f8e1d71df12b",
+  "source_sha256": {
+    "backend/app/services/news_pipeline_service.py": "d5d219a54c09028e8234ea5177a2aaab2f30c0ab1bedc389054060f1959d0d92",
+    "backend/app/services/news_publication_service.py": "54f9f4d828ebcf2981c1a0472ff2f324e53d13a84730d18f4be1577d617fed13",
+    "backend/app/services/news_scheduler_service.py": "3d0e5d27fd57d3ad6b7bd59f87c10ddb49e9d25b9890b1b69cd5771e5b6141d6",
+    "backend/tests/test_news_pipeline.py": "c5aa8167710efee28f9c36543e1abc562d797efe8d8c2ce1d5dadfb2ec39e611",
+    "backend/tests/test_news_expiry_maintenance.py": "46642bbacbf97417d3f61649067283c72e7e3f583174ff8d2b5784e4da3c5296",
+    "backend/tests/test_news_maintenance_postgres.py": "5fd162dff4e4225edfa7e501605a522e0a682f07ff8c5d10e2d885c53eeb9a77"
+  },
+  "expiry_off_real_zone_event_history_preserved": true,
+  "expiry_on_single_action_and_idempotent_repeat": true,
+  "configuration_error_and_maintenance_outcomes_separate": true,
+  "overall_success_timestamp_preserved_on_failure": true,
+  "frozen_e0_files_unchanged": 5,
+  "e0_package_file_sha256": {
+    "inventory.json": "978216c63d4868da22f958967dbddebc446d69bb77ac405ec32a08a1fb1128d0",
+    "manifest.json": "cafc52059da0b53545c5a7b9bbbffb5c5579652861cceb76798d475e8aeeec7b",
+    "native-25.json": "8be755996b3128c1c4ef2d9faf159e73ea721749fbc0ea6c03fe055735f5295c",
+    "native-47.json": "41fa7e830e84d93821eea3686903b972c5fcaff413955c342fc0e71417b9a3a2",
+    "receipt.json": "bc55cebfe670217a04f94628c4b078f601de5786c7288235e9277b98c9b47ec9"
+  },
+  "disposable_postgis_cleanup": {
+    "owned_databases_removed": 2,
+    "case_databases_remaining": 0,
+    "cloud_access": false
+  },
+  "existing_migration_head_verified": "e8a6f1c2d903",
+  "schema_or_migration_file_changes": 0,
+  "new_dependencies": 0,
+  "cloud_access": false,
+  "model_inference_calls": 0,
+  "frontend_changes": false,
+  "deployments": 0
+}

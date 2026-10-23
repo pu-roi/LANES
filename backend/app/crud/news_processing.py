@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 import hashlib
+import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
@@ -57,17 +58,29 @@ def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str 
         if publication_evidence is not None:
             raise ValueError("legacy_publication_evidence_not_supported")
         snapshot, fingerprint = extraction_input_snapshot(source)
+    return enqueue_input_snapshot(db, article.id, snapshot, fingerprint, mode=mode, pipeline_version=pipeline_version)
+
+
+def enqueue_input_snapshot(db: Session, article_id: int, snapshot: dict, fingerprint: str, *,
+                           mode: ProcessingMode, pipeline_version: str) -> int:
+    """Insert an already authenticated immutable capture; never recapture/update an article."""
+    pipeline_version = processing_identity(mode, pipeline_version)
+    if mode == 'ner_rules_v1':
+        from app.services.news_ner_durable.contracts import NativeInput, sha
+        NativeInput.model_validate_json(json.dumps(snapshot), strict=True)
+        if sha(snapshot) != fingerprint:
+            raise ValueError('ner_input_binding_invalid')
     dialect = db.get_bind().dialect.name
     insert = pg_insert if dialect == "postgresql" else sqlite_insert if dialect == "sqlite" else None
     if insert is None:
         raise ValueError("News processing requires PostgreSQL or development SQLite")
     now = utc_now()
     version_id = db.scalar(insert(NewsArticleVersion).values(
-        article_id=article.id, input_fingerprint=fingerprint, input_snapshot=snapshot, created_at=now,
+        article_id=article_id, input_fingerprint=fingerprint, input_snapshot=snapshot, created_at=now,
     ).on_conflict_do_nothing(index_elements=["article_id", "input_fingerprint"]).returning(NewsArticleVersion.id))
     if version_id is None:
         version_id = db.scalar(select(NewsArticleVersion.id).where(
-            NewsArticleVersion.article_id == article.id, NewsArticleVersion.input_fingerprint == fingerprint))
+            NewsArticleVersion.article_id == article_id, NewsArticleVersion.input_fingerprint == fingerprint))
     run_id = db.scalar(insert(NewsExtractionRun).values(
         article_version_id=version_id, pipeline_version=pipeline_version, mode=mode, status="pending",
         attempt_count=0, created_at=now, updated_at=now,
@@ -121,13 +134,22 @@ class ClaimedExtraction:
 
 
 def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None, source_ids: tuple[str, ...] | None = None,
-                  mode: ProcessingMode = "rules_only", pipeline_version: str | None = None) -> ClaimedExtraction | None:
+                  mode: ProcessingMode = "rules_only", pipeline_version: str | None = None,
+                  run_ids: tuple[int, ...] | None = None, pending_only: bool = False) -> ClaimedExtraction | None:
     """Caller commits the short claim transaction before doing CPU extraction."""
     run = NewsExtractionRun
     due = or_(run.status == "pending", (run.status == "retry_wait") & (run.next_attempt_at <= now),
               (run.status == "processing") & (run.lease_expires_at <= now))
     identity = processing_identity(mode, pipeline_version)
+    if run_ids is not None:
+        if (not isinstance(run_ids, tuple) or len(run_ids)>200 or any(type(i) is not int or i<=0 for i in run_ids)
+                or len(set(run_ids))!=len(run_ids)):
+            raise ValueError('invalid_run_selection')
     query = select(run).join(NewsArticleVersion).where(due, run.pipeline_version == identity, run.mode == mode)
+    if run_ids is not None:
+        query = query.where(run.id.in_(run_ids))
+    if pending_only:
+        query = query.where(run.status == 'pending', run.attempt_count < MAX_ATTEMPTS)
     if source_ids is not None:
         query = query.join(NewsArticle, NewsArticle.id == NewsArticleVersion.article_id).where(NewsArticle.publisher_source_id.in_(source_ids))
     if article_id is not None:

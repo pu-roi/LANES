@@ -10,7 +10,7 @@ from app.models.news import NewsArticle, NewsExtractionRun
 from app.schemas.news_collection import CollectionFilter
 
 
-def collection_rows(db: Session, *, pipeline_version: str | None = None) -> tuple[Select, ColumnElement]:
+def collection_rows(db: Session, *, pipeline_version: str | tuple[str, ...] | None = None) -> tuple[Select, ColumnElement]:
     if pipeline_version is not None:
         return native_collection_rows(db,pipeline_version)
     rows, value, _, _ = result_rows(db, latest_only=True)
@@ -53,7 +53,7 @@ def collection_rows(db: Session, *, pipeline_version: str | None = None) -> tupl
 
 
 def list_collection(db: Session, *, page: int, page_size: int, search: str, publisher: str | None,
-                    status: CollectionFilter, pipeline_version: str | None = None,
+                    status: CollectionFilter, pipeline_version: str | tuple[str, ...] | None = None,
                     retrieval: str | None = None) -> tuple[list, int, int, dict[str, int], list[str], dict[str, int]]:
     query, state = collection_rows(db,pipeline_version=pipeline_version)
     overview = query.subquery()
@@ -79,28 +79,32 @@ def list_collection(db: Session, *, page: int, page_size: int, search: str, publ
     return list(rows), total, actual_page, counts, publishers, retrieval_counts
 
 
-def native_collection_rows(db: Session, pipeline_version: str) -> tuple[Select, ColumnElement]:
-    from .news_ner_results import native_result_rows
-    cards,_=native_result_rows(pipeline_version)
-    card_rows=cards.subquery()
-    totals=select(card_rows.c.run_id,func.count().label('locations')).group_by(card_rows.c.run_id).subquery()
-    latest=latest_article_runs('ner_rules_v1',pipeline_version)
-    run=NewsExtractionRun
-    body=article_body_status();processing=func.coalesce(run.status,'not_recorded')
-    locations=func.coalesce(totals.c.locations,0)
-    contextual=func.coalesce(run.result['read_projection']['omitted_counts']['location_context_only'].as_integer(),0)
-    group_count=func.coalesce(func.jsonb_array_length(run.result['projection']['groups']),0)-contextual
-    questionable=func.greatest(group_count-locations,0)
-    state=case(
-        (NewsArticle.review_state=='local_update','excluded'),
-        (body=='error','retrieval_failed'),(body=='missing','missing_text'),
-        (processing=='not_recorded','waiting'),
-        (processing.in_(('pending','processing','retry_wait')),'processing'),
-        (processing=='failed','processing_failed'),
-        (run.result['read_projection']['version'].astext.is_distinct_from('ner-result-read-v1'),'needs_checking'),
-        (run.result['projection']['disposition'].astext=='no_eligible_observations','no_locations'),
-        (locations==0,'needs_checking'),(questionable>0,'needs_checking'),else_='ready')
-    query=select(NewsArticle,body,processing,run.id,state.label('collection_status'),locations,
-        questionable.label('questionable_count')).outerjoin(latest,latest.c.article_id==NewsArticle.id).outerjoin(
-            run,run.id==latest.c.run_id).outerjoin(totals,totals.c.run_id==run.id)
-    return query,state
+def native_collection_rows(db: Session, pipeline_version: str | tuple[str, ...]) -> tuple[Select, ColumnElement]:
+    from .news_ner_results import mixed_result_rows
+    from .news_browsing import selected_article_runs
+    cards = mixed_result_rows(db, pipeline_version).subquery()
+    totals = select(cards.c.run_id, func.count().label('locations')).group_by(cards.c.run_id).subquery()
+    latest = selected_article_runs(pipeline_version)
+    run = NewsExtractionRun
+    native = run.mode == 'ner_rules_v1'
+    body = article_body_status()
+    processing = func.coalesce(run.status, 'not_recorded')
+    locations = func.coalesce(totals.c.locations, 0)
+    contextual = func.coalesce(run.result['read_projection']['omitted_counts']['location_context_only'].as_integer(), 0)
+    groups = case((native, func.coalesce(func.jsonb_array_length(run.result['projection']['groups']), 0)-contextual),
+        else_=func.coalesce(func.jsonb_array_length(run.result['claims']), 0))
+    questionable = func.greatest(groups-locations, 0)
+    state = case(
+        (and_(NewsArticle.review_state == 'local_update', ~func.coalesce(native, False)), 'excluded'),
+        (body == 'error', 'retrieval_failed'), (body == 'missing', 'missing_text'),
+        (processing == 'not_recorded', 'waiting'),
+        (processing.in_(('pending', 'processing', 'retry_wait')), 'processing'),
+        (processing == 'failed', 'processing_failed'),
+        (and_(native, run.result['read_projection']['version'].astext.is_distinct_from('ner-result-read-v1')), 'needs_checking'),
+        (and_(native, run.result['projection']['disposition'].astext == 'no_eligible_observations'), 'no_locations'),
+        (and_(~native, ~readable_run(db)), 'needs_checking'),
+        (locations == 0, 'needs_checking'), (questionable > 0, 'needs_checking'), else_='ready')
+    query = select(NewsArticle, body, processing, run.id, state.label('collection_status'), locations,
+        questionable.label('questionable_count')).outerjoin(latest, latest.c.article_id == NewsArticle.id).outerjoin(
+        run, run.id == latest.c.run_id).outerjoin(totals, totals.c.run_id == run.id)
+    return query, state

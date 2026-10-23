@@ -144,12 +144,13 @@ def browse_results(
 
 @router.get('/results/{run_id}/groups/{group_id}', response_model=NewsNativeGroupDetail)
 def read_result_group(
-    run_id: int = Path(ge=1), group_id: str = Path(pattern=r'^g[0-9]+$', max_length=32),
+    run_id: int = Path(ge=1), group_id: str = Path(pattern=r'^(?:g[0-9]+|resolved-n[0-9]+)$', max_length=32),
     db: Session = Depends(get_db), _staff: object = Depends(deps.get_current_active_admin),
 ) -> NewsNativeGroupDetail:
     from app.services.news_browsing_service import publisher_labels
+    from app.services.news_source_read_service import with_source_review
     try:
-        detail=read_native_group(db,run_id,group_id,publisher_labels())
+        detail=with_source_review(db,read_native_group(db,run_id,group_id,publisher_labels()))
     except SavedRunReadError as exc:
         raise HTTPException(status_code=409,detail=str(exc)) from exc
     except SQLAlchemyError as exc:
@@ -167,8 +168,9 @@ def read_result(
     _staff: object = Depends(deps.get_current_active_admin),
 ) -> NewsResultDetail:
     """Read one artifact ordinal and its immutable source; no lifecycle inference."""
+    from app.services.news_source_read_service import with_source_review
     try:
-        detail = read_news_result(db, run_id, claim_index)
+        detail = with_source_review(db,read_news_result(db, run_id, claim_index))
     except SavedRunReadError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except SQLAlchemyError as exc:

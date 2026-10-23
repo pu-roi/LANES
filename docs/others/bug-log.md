@@ -1,6 +1,376 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 21, 2026, 09:15 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 23, 2026, 11:05 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Connected-road placement and source-depth projection repaired
+
+**Status:** v30 deployed; active event/zone pairs 77–79 saved. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The earlier path required barangay containment and one bounded ranked section. The new opt-in policy resolves a complete connected OSM road first, including reviewed one-way boulevard arms and a feature-specific grade-separated underloop. It intersects all retained NOAH scenarios and the existing 25-metre road margin with the modeled envelope. Administrative borders do not clip; same-name disconnected roads, unexplained branches, grade ambiguity, dry gaps and component limits remain strict. Selected low-depth/passable observations can overlap only near a proven shared OSM junction. Existing-zone overlaps are checked before inserting the selected set, so one new member cannot be misclassified as an unrelated conflict.
+
+HTTP acceptance exposed old gauge autofill: gutter was converted to 8 inches/0.20 m despite absent measured depth. Saved-source projection plus response revalidation now preserve raw wording/unknown measurements for this presentation set. A regression tests actual revalidation, and ordinary gauge behavior remains unchanged. No stored source facts were rewritten. [Tests/receipts](../evaluations/gma-connected-road-20261023.md).
+
+
+## Incorrect GMA capture chain removed; spatial qualification remains unresolved
+
+**Status:** Scoped cleanup and active-only release deployed; three-location plotting blocked. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Fresh backup/restored rehearsal and exact dependency/preservation checks support authorized deletion of old 137/574, runs 375/376/378/379/380, their five cases/sources, ten evaluations and five event/zone pairs 71–75 with 25 location/timeline rows. Corrected 388 and unrelated event 76 are preserved. The transaction restores only the two required deletion guards and keeps FKs enabled; repeat is a no-op.
+
+The existing paired output writer would create unwanted historical counterparts. New restricted active-only preview/apply uses direct corrected-source lineage and separate history exclusion, with an all-three geometry gate and deactivation-safe reuse. API/worker v27, 126 regressions, 62 disposable-PostGIS checks, seven Linux contracts and disposable/hosted/local checks pass. The actual cloud preview creates nothing: San Agustin's retained COD polygon conflicts with checked OSM city containment; F. Sevilla's full section is unmatched; Marcos's raw landmark has no qualified underloop road. Nearby unnamed PBF links cannot be substituted for the elevated bridge without qualification. [Evidence and remaining blockers](../evaluations/gma-active-cleanup-20261023.md).
+
+## GMA inline barangay duplicate and overly strict final role gate — resolved for News Intelligence
+
+**Status:** Resolved/deployed, three observations accepted; spatial qualification remains separate. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+V4 adds exact inline-locality ownership after independent strict road validation. Retained n7 San Agustin becomes context for n6 Rizal Avenue, preserving its original provider row, owner/passages and audit reason. Genuine locality-only reports, ambiguous owners and conflicting facts remain independent/unresolved. Authenticated adoption reuses the two paid v3 batches, then one new v4 batch supplies F. Sevilla and Marcos Highway.
+
+That response passed source/reference checks, but failed correction 387 because the final manual gate demanded Tañong in `barangay` even though the source gives it only in the reported road section. The v4 final gate now requires the exact quoted Tañong section and Malabon city, permits unknown administrative role and rejects a conflicting barangay; no citation/fact was fabricated or ordinary source check relaxed. A separate zero-provider finalizer with reservation/network tripwires adopted all responses into completed 388. Failed evidence and v2/v3 behavior remain intact.
+
+API/manual worker v26 and local readers serve three cards. 234 regressions, 29 PostGIS checks, seven Linux contracts, actual-response disposable reuse/replay and desktop/mobile pass. Ledger stopped at 42 / US$0.7524937; repeat has zero calls/rows. No UI/API-shape/schema/dependency/model changes or GMA historical/active geometry writes. [Release, exact outcomes, budget and recovery](../evaluations/gma-three-location-completion-20261023.md).
+
+
+## GMA unbulleted city-heading context — parser fixed; duplicate-locality cloud follow-up open
+
+**Status:** v3 repair deployed to manual worker; three-location acceptance incomplete. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The v2 layout required bullet markers and cleared Malabon context at unbulleted road entries, so F. Sevilla reached Gemini without its heading. New `news_ner_durable/scoped_resolution_v3.py` and versioned resolver/application bindings retain bounded plain-list heading relationships and require exact city/road citations. `news_gma_heading_repair.py`, `news_gma_heading_budget.py` and `run_news_gma_heading_repair.py` permit only the reviewed older parent and bounded three-request schedule; old commands/evidence remain unchanged. Regression, retained-source/response fixtures, frozen Linux and disposable persistence/read/reuse checks pass.
+
+Two real requests then passed transport/retention/reference checks, but n7 Brgy San Agustin was accepted as an extra observation using n6 Rizal Avenue's same passage. `native_resolution_unexpected_observation` stopped the third dispatch; new correction 386 failed, and serving v23 was not promoted. Both responses replay twice offline; a new regression proves this failure cannot dispatch batch three. Next repair must establish inline locality ownership while preserving genuine locality-only reports, rather than silently dropping a row or loosening evidence. [Evidence, budget and preservation](../evaluations/gma-city-heading-20261023.md). No UI/API-shape/schema/dependency/model change; old records exact, ledger stopped at 41 / US$0.748841; other articles/geometry remain pending.
+
+
+## GMA stale derived facts/polygons — source correction and safe withdrawal
+
+**Status:** Clean-source correction deployed; incorrect current geometry withdrawn. Replacement mapping and F. Sevilla citation remain unresolved. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The old capture was still driving five QC observations/archives after the UI began showing the current clean GMA article. Actual NER 382 → three bounded Gemini responses → validated correction 384 now supplies two correct areas. The first new correction 383 failed before dispatch because equivalent JSON documents had different key order; canonical embedded-document serialization and a separately versioned resolver fix request counting/authorization identity without changing facts or array order. Failed evidence is retained.
+
+An exact source/run/release/preview-bound transaction appends two unresolved evaluations plus five `news_source_superseded` timeline markers. Shared history readers, maps, analytics, exports and archive matching exclude those old outputs; old records and geometry remain immutable. Protected readers and hosted/local desktop/mobile pass, alongside disposable rollback/concurrency/repeat checks and offline provider-response replay. No arbitrary polygon substitutes for missing spatial evidence. [Actual outcomes, deployment, budget and remaining blockers](../evaluations/gma-source-correction-20261023.md).
+
+## GMA indexed input reused after publisher correction; raw NER obscured Flood Details
+
+**Status:** Source display, selected-summary UI and manual source guard resolved/deployed; old derived-data reprocessing pending. **Severity:** High (source provenance/derived data). **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem:** Source Article showed different roads/depths from the live GMA report, with play symbols and page chrome. Flood Details repeated all 51 NER entities and technical offsets instead of summarizing its selected observation.
+
+**Root cause:** The pilot copied search-index version 137 to native 574 after clean publisher captures 140/569 already existed. Hash/evidence checks authenticated consistency with the old input, not original-publisher provenance. The source renderer labelled that input as the full article without a current-version distinction; the native Flood Details branch rendered `NativeExtractionEvidence` wholesale. Play symbols were literal captured characters.
+
+**Resolution:** Add server-owned capture comparison and exact field-quote presentation; show the current collected publisher article with an input-mismatch warning, retain old input/raw NER in Processing History, restore the existing selected flood summary and explain shared depth. Add `pilot_source_capture_requires_review` before manual processing/outputs. Preserve all records rather than silently editing their facts. API v20, frontend October 23 build 002 and manual guard v21 are live. Actual hosted/local desktop/mobile and frozen/regression checks pass; all application fingerprints and the spending ledger remain unchanged.
+
+**Files:** `news_source_read_service.py`, `news_results.py`, `admin_news.py`, `news_three_article_pilot.py`; news dialog/source/history/presentation/types and the required shared scrolling release dependency; targeted backend/Playwright tests. [Release, root cause and remaining remediation](../evaluations/news-source-review-20261023.md).
+
+## Inactive news archives incorrectly required individual operational depth
+
+**Status:** Resolved for the explicitly approved five GMA observations; operational depth gates unchanged. **Severity:** Medium. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem:** Run 380 supplied five source-supported observations to News Intelligence, but all historical outputs stopped with `operational_depth_not_verified`.
+
+**Root cause:** The archive writer reused the live publication attribute validator. Shared depth correctly lacks an individual canonical scalar, but the event schema still requires a severity category. Requiring an invented scalar or silently defaulting severity would be incorrect.
+
+**Resolution:** Add the opt-in `gma-shared-depth-history-v1` policy under a new exact archive authority. Revalidate full saved results, heading/member ownership and exact numeric gauge evidence; persist high severity and null individual depth/passability. Keep OSM/NOAH geometry checks and activation gates. Append new policy evaluations, preserve old outcomes and protect matching/insertion against concurrent operational writes. Explicit rollback and zero-write repeated execution pass.
+
+**Files:** `backend/app/services/news_gma_shared_history.py`, the archive-attributes hook in `news_historical_outputs.py`, the manual runner `backend/scripts/run_news_gma_shared_history.py`, dispatch wiring in `run_news_verified_cloud.py`, and `backend/tests/test_news_gma_shared_history.py` (42 tests). No UI/model/schema/dependency changes.
+
+**Verified:** Events/zones 71–75 saved inactive; five News Intelligence observations unchanged; historical cards/maps, source evidence, dates, analytics/exports and desktop/mobile scrolling pass hosted/local. API v17 is unchanged; worker v18 only; no paid calls. [Detailed evidence](../evaluations/three-article-cloud-pilot-20261022/gma-shared-history.md).
+
+
+## Local website omitted cloud-native results and lost sessions after restarts
+
+**Status:** Resolved for this checkout; authenticated direct/proxied local APIs verified. **Severity:** High. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The local backend already connected to Cloud SQL, but lacked the hash-pinned saved native reader configuration and fell back to legacy selection. It also had no explicit local `SECRET_KEY`, so per-process defaults invalidated JWTs across restarts. Added an ignored `backend/.env.local` selecting the reviewed run-380 pipeline and a private connection-bound descriptor under `data/local-cloud-reader/`, plus a stable random local signing key. Existing VS Code task dotenvx ordering applies the override. Restarted only the local backend; direct port-8000 and Next.js port-3000 requests now return all five corrected observations/details with source times, and unauthenticated requests remain 401. Existing sources/accounts/posts/reports/events/zones stayed exact. No frontend, schema, cloud revision or credential change, no paid calls. [Setup and future-release sync](../guides/news-gemini-runtime.md#local-vs-code-tasks--display-the-same-saved-cloud-sql-results).
+
+## Corrected News Intelligence Info IDs rejected by legacy path validator
+
+**Status:** Fixed and deployed in API `lanes-api-gma-scoped-20261023-v17`; hosted desktop/mobile verified. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The list emits corrected group IDs such as `resolved-n13`, but the existing detail route accepted only `g<number>`, causing HTTP 422 before the reader ran. Expanded only the bounded backend path pattern to accept both actual formats. Added nine endpoint cases for raw/corrected IDs, malformed IDs and authentication; 28 reader tests pass. All five live detail/source requests and modal scrolling pass; no UI or public response shape changes. [Evidence](../evaluations/three-article-cloud-pilot-20261022/gma-population.md).
+
+The separate historical-output blocker is **not resolved**: shared source measurements lack individual canonical depth required by `_operational_zone_attributes`; all five outcomes are explicitly unresolved. No invented depth/geometry or validation relaxation.
+
+## Editorial headline ROAD false positive blocked valid source-date evidence
+
+**Status:** Resolved for scoped validation; deployed and single-batch verified. Full GMA/pilot remains pending. **Severity:** High. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem/RCA:** A source-authored positive GMA replay, before further paid calls, fails because NER labels the leading editorial rubric FLOOD ALERT as ROAD. The strict competing-road check treats a valid headline date citation as another street's fact. This is separate from the previous model's omitted/misassigned citations.
+
+**Solution:** Scoped V2 recognizes only an exact leading flood/weather/traffic alert/update/bulletin token followed by a colon as editorial context. Preserve raw mentions; reject it as an observed road; exclude that rubric from competing-road ownership. Genuine names with a Road suffix and nonleading mentions retain strict ownership; V1 behavior is unchanged. The approved request hash stays exact. Configured publishers are rechecked inside read-only source preparation.
+
+**Files/verification:** `news_ner_durable/resolution.py`, `scoped_resolution.py`, new `news_scoped_gma_diagnostic.py`, restricted worker script/mode registration and scoped/diagnostic regressions. 231 tests, seven Linux/cloud contracts and immutable storage pass. One real n12–n15 request accepts both roads with source-supported dates/clocks/shared depths; two offline replays agree. Ledger stopped, all database fingerprints and API exact; no seed output. [Actual evidence and recovery](../evaluations/three-article-cloud-pilot-20261022/scoped-cloud-gate.md).
+
+## GMA nested-list evidence contract and optional thinking-token mismatch
+
+**Status:** Restricted cloud batch qualified; complete-article/pilot acceptance pending. **Severity:** High — blocks corrected article acceptance. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem/RCA:** The real response supplies legal passage IDs in the wrong field/scope. Current request arrays share the full article's allowed IDs and generic descriptions, while context-only instructions mention CITY but omit barangay list headings. Independent `resolve_time` calls reveal missing date evidence in all four rows, hidden behind status/place exceptions. Source date and city clock are separate passages. Current fail-fast/all-article handling turns one bad row into a complete article stop. Separately, the response reader emits optional `thinking_tokens`, but the final transport allowlist rejects that field even when zero; this counterexample is confirmed offline and did not cause run 379.
+
+**Strategy:** New explicit source-scope/target-role contract, deterministic occurrence bindings before generation, meaningful field candidates, scoped heading inheritance, aggregate semantic diagnostics and compatible usage metadata. Evaluate unresolved per-row handling as an explicit policy change, preserving strict checks and atomic article outcome storage. No automatic correction of the old response and no blind paid retry. Search/Maps do not replace dated article evidence; their actual invocation, separate source identity, pricing and presentation requirements need integration.
+
+**Implementation follow-up:** `scoped_resolution.py`, native resolver/assets/worker, private receipts and explicit worker selection now implement versioned field/scope hints, unresolved row outcomes and strict recomputation. Optional thinking tokens and failure usage reporting are repaired. Regression and frozen-image evidence: [offline repair](../evaluations/three-article-cloud-pilot-20261022/scoped-evidence-repair.md). No paid request, cloud change or seeding. The following evidence describes the original pre-repair investigation.
+
+**Original investigation files/evidence:** No production files were modified during that investigation. Private network-disabled audit under ignored `data/gma-evidence-research-20261023/`; [research, exact errors, sources and required regressions](../research/gemini-evidence-validation-20261023.md). Current deployed v11 files match their frozen hashes; original bundle stays unchanged. Local repair now passes 197 regression tests and seven frozen Linux worker contracts; hosted/new-model acceptance remains pending.
+
+## Gemini maximum-only budgeting repaired; source-evidence selection still blocks GMA
+
+**Status:** Accounting repair deployed/verified; source-evidence issue remains open and execution stopped. **Severity:** High — blocks seeding. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem/RCA:** Maximum reservations were permanently accumulated, and usage was captured only after validation, obscuring paid HTTP-200 failures. The eight-target wire format also encountered a generic provider rejection. Returning to the frozen four-target format now produces three HTTP-200 responses; no definitive Google-side maximum-of-four claim is made. The new blocker is independently reproduced offline: `n12` lacks flood-status support, `n13/n14` omit their street occurrence from place citations, and `n15` crosses source ownership. This is a semantic rejection, not an HTTP error or invalid passage number.
+
+**Solution:** Separate V2 ledger/immutable settlement receipts; preserve old attempts; count all 13 payloads; reserve complete inputs/schema/framing/output; settle trustworthy usage before fact validation; adopt exact caches and stop on any later failure. Retain full bounded request/response evidence and strict validation. No guessed citations or weakened source checks.
+
+**Files/verification:** `news_pilot_accounting.py`, `news_gma_budget_review.py`, `news_gemini_receipts.py`, `news_ner_durable/gemini_resolution.py`, `news_three_article_pilot.py`, `news_verified_cloud.py`, restricted cloud/GMA CLI and accounting tests. 161 regression tests, expanded 18 accounting checks, seven image/cloud contracts, protected hosted readers and desktop/mobile checks pass. Failed 379 is visible; no accepted flood output. Ledger stopped at 23 attempts/US$0.6673744 effective commitment under US$1. [Exact diagnosis, release and remaining work](../evaluations/three-article-cloud-pilot-20261022/budget-review.md).
+
+## GMA eight-target continuation rejected by provider
+
+**Status:** Investigating; execution stopped without retry. **Severity:** High — blocks article acceptance/seeding. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem:** The new GMA-only cloud stage's first eight-target request returns HTTP 400 `INVALID_ARGUMENT`; run 378 saves the visible failure and no correction/flood outputs. The accepted four-target cache is reused without fees.
+
+**RCA:** Full article, instructions, quotes, native proposals and generation settings are unchanged. Only targets plus schema target enum and result min/max bounds change from four to eight. The provider returns no detailed cause. Structured-output serving complexity is a documented hypothesis, not a conclusively isolated root cause; mock/software success cannot establish provider compatibility. Original NER is preserved and was not the failing stage.
+
+**Strategy / changes:** Shared semantic validation now runs after every batch, with immutable semantic receipts; `news_gma_review.py` and `run_news_gma_review.py` add exact old-parent/cache adoption and an archive-only operation. Release loader, worker CLI/contracts, resolution worker and operation guards support this separate stage. `test_news_gma_review.py` covers bounds, fail-fast semantics, activation rejection and actual ended/inactive/idempotent PostGIS writes. 151 tests/seven image/cloud contracts pass; one new live request fails, is retained and reproduces twice offline. Ledger stops at 20 attempts/US$0.7731994 reservations, no reset/cap increase. Full article/spatial acceptance remains open. [Exact evidence and recovery](../evaluations/three-article-cloud-pilot-20261022/gma-review.md).
+
+## Quote-ID repair — single cloud batch validated without weakening evidence checks
+
+**Status:** Deployed; one repaired batch accepted. Full-article/pilot acceptance pending. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The article-specific enums and explicit character-offset distinction now pass one actual four-target GMA response (`lanes-news-verified-dgd76`, HTTP 200), retained before parsing and reproduced on two network-disabled replays. The new V2 diagnostic/authority permits only the frozen replacement request and zero database writes; V1 is unchanged. **127 tests and seven image/cloud contracts pass**, including rejection of old/expanded/tampered authority and repeat-send prevention. Original runs 375/376 and source/account/community/citizen/flood records remain unchanged. Final all-table audit detects a normal concurrent public visitor timestamp update, supported by API `/visits` logs; it is recorded, not hidden or reset. Worker-only release, API v5 unchanged, ledger stopped at 19 attempts/US$0.7306760 conservative reservations. No second batch, full article output, spatial processing or seeding. [Actual evidence and recovery](../evaluations/three-article-cloud-pilot-20261022/quote-contract-cloud.md).
+
+## Source-character offsets returned as passage references — offline contract repair
+
+**Status:** Implemented and qualified offline; cloud/live acceptance pending. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The retained real response used 318/327/347 where only quote IDs 0–58 exist. New explicit instructions distinguish these namespaces; each evidence array's integer items enumerate the current article's permitted quote IDs. Empty unsupported evidence and unchanged strict duplicate/range/source/semantic validation remain. No guessed reference translation or nested compact array-length bounds are added. The new `quote-option-enum-v1` identity prevents reuse under an old request contract. `gemini_resolution.py`, native transport tests and new `test_news_gemini_evidence_contract.py` qualify with **114 passing tests and seven offline Linux contracts**. Two unchanged-response replays still reject, and all nine bad values are outside the new enum. No provider/cloud/database action or budget reservation. [Evidence and pending release gates](../evaluations/three-article-cloud-pilot-20261022/evidence-contract.md).
+
+## Gemini lost-response/fail-late defect repaired; invalid index namespace diagnosed
+
+**Status:** Retention/replay repair deployed and verified; model evidence correction remains pending. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**RCA:** The old worker validated evidence references only after all batches and discarded rejected payloads. Private create-only intent/response/validation receipts now preserve bounded responses before parsing, stop on the first bad batch and expose exact target/field/duplicate/range diagnostics. Interrupted intent and durable budget reservations prevent automatic resend; storage failure stops continuation. The offline replay command verifies external artifact pins and bindings with no provider/database access.
+
+**Actual diagnostic:** One unchanged four-target request from raw run 375 returns HTTP 200. Nine fields for `n1`/`n2` (España Blvd.) and `n3` (Antipolo Street) contain 318/327/347 while only quote IDs 0–58 exist. These numbers match source-character positions, indicating offset/index confusion; no duplicate is present in this response. The original run 376's lost response cannot establish its exact historical target. No guessed mapping or relaxed source/time/depth/ownership check is applied.
+
+**Changed/verified:** New `news_gemini_receipts.py`, diagnostic/replay scripts and retention tests; native transport/worker, manual release wiring and mock-contract isolation updated. Ninety-one tests, seven local/cloud contracts and real private-storage immutability pass. Actual response retained and rejected identically on two network-disabled replays. Manual worker v7 deployed; API v5, all database rows/protections and runs 375/376 preserved. Eighteen ledger attempts/US$0.6885786 conservative reservations retained and stopped; no further dispatch, NER or seeding. [Exact diagnostics and recovery](../evaluations/three-article-cloud-pilot-20261022/evidence-retention.md).
+
+## Real GMA correction — invalid evidence indices and lost diagnostic payload
+
+**Status:** Investigating; pilot stopped before further paid calls or flood output. **Severity:** High, blocks first-article acceptance. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem:** Actual NER run 375 succeeds. Cloud correction `lanes-news-verified-cwz6z` completes 13 Gemini transports, then run 376 fails `native_resolution_evidence_invalid`. No history/active polygon is saved; Tribune/Philstar are deferred.
+
+**RCA:** `_spans` rejects duplicate/out-of-range quote-option indices. The exact offending target/field is unconfirmed: both failures share one code, source validation occurs after the full response sequence, and failed resolution discards the assembled provider payload. Token/request metadata survives but returned evidence arrays do not. Do not claim which condition occurred from this error alone.
+
+**Required repair:** Preserve bounded provider responses privately before validation, expose safe target/field/index diagnostics and validate evidence structure per batch before subsequent dispatch. Inspect real rejected evidence before a cause-specific correction; preserve strict source/temporal/depth checks, prior requests and budget. No repair/retry is claimed as complete here.
+
+**Files/verification:** Existing `news_ner_durable/resolution.py`, `gemini_resolution.py` and `resolution_worker.py` are the affected path; no production source change was made during this execution. Private control/authority/estimate/verification scripts and receipts are retained. Selected failure and raw history are visible; completed NER repeat uses no inference/provider call. Unrelated rows and all original articles/versions remain unchanged. [Full record](../evaluations/three-article-cloud-pilot-20261022/pilot-execution.md).
+
+## Native Gemini HTTP 400 — schema compatibility and target binding
+
+**Status:** Repaired and cloud acceptance passes; three real articles remain unprocessed. **Severity:** High, blocked pilot. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem/RCA:** Exact original payload replay returns generic HTTP 400. Removing only schema array bounds changes the result to HTTP 200 with the same key/model/article/instructions/output cap, isolating the bounded-schema compatibility problem. Google's internal threshold remains unspecified. The accepted comparison then fails exact-target validation; the old wire schema allowed arbitrary IDs/counts, and its unsuccessful raw output was not retained. The previous diagnostic adapter also discarded Google message/details, preventing useful retained diagnosis.
+
+**Solution:** Select explicit compact schema in the cloud release, constrain target IDs and only the outer count to the actual batch, retain unsupported context-city rows, and preserve strict local evidence/size/duplicate checks. Add bounded redacted provider message/reason/field diagnostics and count-only target mismatch diagnostics. No model swap, fallback, new dependency, schema or UI change.
+
+**Changed/verified:** `news_ner_durable/gemini_resolution.py`, new `news_provider_diagnostics.py`, manual `diagnose_news_gemini_request.py`, focused native/provider/budget tests. Fifty checks pass; seven image/cloud contracts pass; real acceptance `lanes-news-verified-65rcn` verifies quoted time and saved-result recomputation. Matching API v5 promoted after protected checks; all database fingerprints/protections unchanged, no seeding. Previous requests/manifests and cumulative budget evidence retained. [Detailed comparison, spending and recovery](../evaluations/three-article-cloud-pilot-20261022/provider-repair.md).
+
+## Three-article manual pilot — paused processing and archive-only admission gaps
+
+**Status:** Implemented/tested and cloud software gates pass; funded provider acceptance blocked by HTTP 400 / `INVALID_ARGUMENT`. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Ordinary native resolution correctly rejected paused processing, shared archive authority correctly rejected activation, and the earlier candidate selector admitted only one primary/backup. Added a distinct hash-bound three-input authority and supervised pilot modes while preserving those ordinary/archive defaults. Qualified output saves an ended archive and linked active session instance atomically; repeats preserve manual deactivation. Complete multipart news footprints are matched as one incident. Private durable budget reservations prevent repeated/competing invocations from resetting the US$1 news allowance. Sanitized provider error classification supports diagnosis without retaining credentials or error text. Internal presentation-only deactivation entries are filtered consistently before timeline counts/pagination. No UI/schema changes. **21 focused and 73 regression checks pass**; see [evidence and pending cloud gates](../evaluations/three-article-cloud-pilot-20261022/README.md).
+
+The staged worker's first software-only preflight exposed an unsupported generated reader descriptor (`saved-native-read-context-v4`). Corrected packaging to the existing supported v2 descriptor and added exact image validation; cloud execution `lanes-news-verified-4c47c` passes. The subsequent single funded request `lanes-news-verified-bjlbv` returned HTTP 400 / `INVALID_ARGUMENT`. Safe diagnostics do not identify the cause. No retry, source registration, seeding or API promotion; the ledger stays stopped with its reservation and original evidence retained.
+
+**Investigation, 9:51 PM:** The exact failed 8,766-byte request is reproducible offline with a matching reservation identity. Its 8,192-token limit is within the advertised model maximum; the LANES authorization key exists, has compatible Gemini-only restrictions and belongs to the funded billing account. Confirmed diagnostic defect: `provider_error_diagnostic` discards Google's message/details/reason/field violations, preventing a definitive upstream RCA from retained evidence. Nested array schema complexity is documented by Google as a possible 400 cause but remains unproved here. No integration/cloud changes or additional generation calls. [Evidence and next diagnostic gate](../evaluations/three-article-cloud-pilot-20261022/provider-investigation.md).
+
+## Personal Gemini credential acceptance — HTTP 400
+
+**Status:** Investigating; replacement stored but not promoted. **Severity:** High for real corrected article processing. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The authorized key replacement stores and tests version 3, but actual Cloud Run execution `lanes-news-verified-5bnpz` receives HTTP 400 from the single native-resolution request. Weather and API promotion are not reached.
+
+**2. Root cause / limits:** Exact uploaded content and execution binding are verified; the prior models/image/schema configuration is unchanged. Receipts intentionally exclude provider error bodies, so status alone cannot establish a credential, billing, schema or other request cause. No diagnosis or successful correction is fabricated.
+
+**3. Strategy:** Honor the agreed stop condition: no retry, weather test, article seeding or promotion. Restore both worker bindings to version 2; retain new version 3 and previous version/revision for later qualification and recovery. Investigate before another explicitly controlled provider request.
+
+**4. Changed / verified:** Secret Manager gained version 3; temporary worker secret references were restored. No application, frontend, model, schema or dependency edit. Final task/configuration and database fingerprints match; protected GETs pass. News stays paused, both expiry settings OFF. [Safe receipts and recovery](../evaluations/gemini-key-rotation-20261022/README.md).
+
+## Gemini cloud acceptance — provider HTTP 402
+
+**Status:** Provider acceptance blocked; guarded software release deployed. **Severity:** High for corrected article processing. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The single authorized Cloud Run request using the existing key and selected `gemini-3.5-flash-lite` model returns HTTP 402. Successful structured correction cannot be claimed.
+
+**2. Root cause / evidence limits:** Transport reaches the provider and receives HTTP 402. Provider error bodies are deliberately excluded from receipts; the exact account/payment restriction is not established. Funding alone is not proof of model/schema/key acceptance. A separate first preflight failed because an engine-identity validator received a Connection-bound Session lacking the expected engine URL; no provider request or database write occurred in that attempt.
+
+**3. Strategy:** Keep one-request/no-retry fictional provider checks separate from authority-bound real article processing. Retain the blocker and all failed receipts; leave news automation paused. The preflight now owns an Engine-bound Session with a read-only repeatable-read transaction and is verified on real disposable PostGIS and Cloud Run. Resolve payment/model access before another explicitly controlled provider acceptance request or saved-article replay.
+
+**4. Files / verification:** `news_verified_cloud.py`, `run_news_verified_cloud.py`, `news_verified_provider_check.py`, `news_verified_contract.py`, `news_verified_entrypoint.py`, `Verified.Dockerfile` and `test_news_verified_cloud.py`. Sixty current local checks, seven cloud software contracts, protected canary/promoted reads and hosted desktop/mobile empty-state/export/spatial checks pass. Full database fingerprints/configuration are preserved. [Release IDs and limitations](../evaluations/ner-gemini-cloud-release-20261022/README.md).
+
+## Incorrect flood test data — authorized reset completed
+
+**Status:** Data reset completed on Cloud SQL; correction/reprocessing release remains pending. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+The user selected clearing flood data instead of retaining/reprocessing the incorrect live output. This is an explicit maintenance action, not evidence that model accuracy was fixed. Preserved articles/accounts/community; detached report links before deletes. `backend/app/services/flood_data_reset.py` and its guard tests implement exact-target/snapshot checks, transactional explicit deletes and preservation validation. Two private restored-backup rehearsals prove rollback/repeat behavior; 12 tests and real hosted desktop/mobile/API/map/analytics/export/SSE checks pass. No schema/dependency/UI change or Gemini spending. Automated news processing remains paused. [Execution and recovery](../evaluations/flood-data-reset-20261022/README.md).
+
+## News Flood Details — evidence cannot scroll
+
+**Status:** Resolved locally; hosted deployment pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Open a long native result from News Intelligence → Flooded Areas → Info. Wheel scrolling over Flood Details cannot reach the final evidence sections. Reproduced with a fictional 25-location extraction before changing source code.
+
+**2. Root cause:** The flow dialog already has a constrained scroll body, but `RecordDetailsPanels` also applied `overflow-y-auto overscroll-contain` to its unconstrained evidence section. This inner scroll container traps scrolling instead of allowing the dialog body to scroll.
+
+**3. Solution:** Make panel scrolling optional and disable it for the flow Flood Details tab. Keep independently scrolling fixed-height Source Article/history panes. No visible text, styles, backend processing or database records are changed.
+
+**4. Files / verification:** `frontend/src/shared/ui/feedback/RecordDetailsPanels.tsx`, `frontend/src/features/news/NewsResultDialog.tsx`, `frontend/tests/news-details-scroll.spec.ts`. Regression exercises actual desktop wheel and mobile touch gestures to the end of evidence, full article and processing history, plus close control, background position and horizontal overflow. Targeted ESLint passes. Before-fix screenshot/trace retained privately under `data/news-details-scroll-20261022/`.
+
+## News Intelligence — observation time missing from article results
+
+**Status:** Evidence-linked correction and matching guarded cloud release are implemented. Earlier 297 local/mocked checks and 60 current release checks pass; one real request returns HTTP 402. Exact screenshot replay, successful provider correction and populated hosted results remain pending. The user accepted publication-time fallback in the existing starting-time field, with no new database column. **Severity:** Medium. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Reported flood time is absent despite explicit source wording such as “As of 4:34 pm”; other articles describe flooding “today”.
+
+**2. Root cause / confirmed boundaries:** In retained run 153, all three time facts are unassigned; none of its 19 projected claims has a time fact. In run 154, none of its ten projected claims has a time fact; some other time-bearing groups remain native-only. Both saved inputs have unknown original publication-timezone provenance. This establishes assignment/projection loss in these samples, rather than absence of all clock extraction; the screenshot's exact 4:34 PM article has not been identified/replayed. Separately, pure `time_fields` probes confirm that an explicit full date plus 4:34 PM is unresolved without explicit supported timezone wording, resolves with PHT, and “today” without a clock remains unresolved even with known publication metadata.
+
+The native policy/evaluator in `news_ner_durable/evaluation.py` hardcodes source-rule checks with no provider IO. Its seeder binds only nonempty projected claims, excluding native-only groups. The legacy `NewsClaimAuditor` still supports Gemini/OpenRouter and sends full article text, metadata, candidate occurrences and source quote choices, but verifies candidate values rather than correcting them. The legacy preliminary gate rejects missing observation times before dispatch. Native publication compares the resulting evidence to the deterministic source check; current readers display the original saved projection. Re-enabling a key alone cannot connect native processing, repair facts or update their displayed values.
+
+**3. Initial proposed strategy (investigation checkpoint):** Preserve original article versions and NER runs. Give Gemini the full original body, source metadata, native locations/groups, unassigned facts and candidate IDs; require field-level source quotations and evidence-linked proposed resolutions. Validate quote identity, locality, time role/date/timezone and cross-place association in the backend before accepting any derived fact. Use the user's publication-time starting-time fallback only for contemporaneous observations without a supported clock, preserving its administrative basis in existing JSON metadata and excluding estimated durations from measured statistics. Keep source verification and operational eligibility separate so missing time can reach resolution without becoming publication-eligible. Adapt native dispatch, validated derived-fact persistence, reader projection and publication consumers together. Existing evaluation JSON can hold audit/derived facts, but native-only group identity/binding must be designed explicitly; the existing scalar claim binder cannot accept these groups unchanged. No new SQL column, UI label or schema migration is proposed by this investigation. Preserve historical/live admission, duplicate, geometry, clearance and expiry boundaries. Historical batches stay disabled.
+
+**4. Verification / scope:** 186 existing pure/mocked native/auditor checks passed in the initial run; one environment-loading test failed on encrypted local dotenv settings and passes when nonsecret batch/config/schema/reasoning values are explicitly supplied for that test. Three deterministic clock probes are retained privately in `data/news-llm-handoff-investigation-20261022/clock-probes.json`. Inspection covers repository code and retained saved receipts, not a new hosted runtime inspection. Documentation only: no application/test source, model, database, deployment, API spending or frozen Part 2A evidence changed.
+
+**5. Local implementation follow-up:** `news_ner_durable/resolution.py`, `gemini_resolution.py` and `resolution_worker.py` add strict source-linked corrections before scalar evaluation gates. `adapter.py`, `read_projection.py`, `source_check.py`, `evaluation.py`, `pipeline.py` and historical interpretation independently reconstruct and consume the derived output. `scripts/resolve_news_native.py` provides read-only preflight and exact-target/input/code/model authority for resolve-only writes; existing native CLI adds explicit Gemini opt-in. `news_native_read_context.py` v2 and mixed readers retain approved raw results for articles not yet resolved while selecting later failed/pending attempts truthfully. Date-only/unknown/foreign-zone/contradictory evidence stays unresolved; quoted clocks cannot be replaced by an ignored-clock publication fallback. Redirects, unsupported access/sections and cross-road clocks fail visibly. No new model/table/column/migration or UI source change. Existing key is reused; no real provider call, shared replay or deployment. [Plan](../plans/ner-gemini-verification.md) · [297-check acceptance](../evaluations/ner-gemini-verification-20261022/README.md).
+
+## Part 2A — shared execution and mixed saved readers
+
+**Status:** Backend fixes deployed; all 111 articles and 56 repeats accepted with unresolved outcomes and zero new archives. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Native-only selection previously displaced legacy-only articles and did not consistently preserve the selected native failure/pending state. Mixed SQL selection now keeps one selected method per article across details, filters, counts and pagination; historical processing persists the read projection for unresolved outputs too. Shared execution now requires exact archive-only authorities; citizen matches require immutable observation evidence and equal qualified geometry, preserving existing records.
+
+The first registration task committed 99 captures but exited with a missing status-key error. The corrected repeat task succeeds with the same IDs; the failed task and its successful database receipt remain retained. A no-traffic API canary failed because the non-root worker image lacked writable API operational directories. A separate API image creates only the existing backup/export/data directories and redirects its existing SQLite weather cache there; local import and hosted canary pass. A later bounded log-reader page-limit failure paused dispatch; exact execution time windows recovered complete receipts before continuation, without repeating inference. [Evidence](../evaluations/news-history-shared-execution-20261022/README.md).
+
+## Hosted article query dialog — close action remains open
+
+**Status:** Existing UI issue reproduced; retained under the explicit no-UI-edit Part 2A boundary. Opening `/admin/news?article=123&run=153` correctly shows the exact retained native result and source article after the existing-reader release. On desktop and 320 px mobile, the close action leaves the query URL/dialog open without a browser exception. Normal card-opened result details remain usable. Private reproduction and screenshot evidence are retained with shared execution verification. No UI source was changed; this issue does not authorize changing article evidence or seeding fabricated events.
+
+## Separate NER cloud check — resource layout and PID-1 supervision
+
+**Status:** Resolved for the isolated test job; full Cloud Run NER qualification passed under the approved cloud resource profile. Production integration is separate. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The first approved unscheduled NER check exited before successful preflight. One separately approved diagnostic collected evidence without NER/database access: required root cgroup-v2 CPU file absent, v1 controller files available, and unchanged isolation rejecting a child whose parent was PID 1. Configured 1 CPU differs from measured 0.806; combined swap limit does not prove zero swap.
+
+**2. Root cause:** The check wrapper assumed a local cgroup-v2 layout and relied on Docker external init that Cloud Run did not supply. The original inference runtime correctly retained its parent-death guard. Structured logs can also round large resource integers; independently rereading a changing peak can create inconsistent diagnostic bindings. CPU allocation discrepancy and cloud swap enforcement remain unestablished; do not infer a model/OOM fault.
+
+**3. Solution:** Approved local-only correction adds a fixed Linux supervisor, signal forwarding, bounded termination and reaping; supports v1/v2 resource reads; quotes large integers; binds one snapshot and adds bounded host-swap summaries. The strict resource requirements and inference isolation/model remain unchanged. Cloud-like mismatches still reject qualification. No cloud retry, production connection, database operation or NER inference accompanied this correction.
+
+**4. Files/verification:** `infrastructure/ner-check/Dockerfile`, `backend/scripts/news_ner_cloud_entrypoint.py`, `news_ner_cloud_probe.py`, `qualify_news_ner_cloud.py`, `backend/tests/test_news_ner_cloud.py`. **103 tests / nine Linux container cases pass**; final image preflight and unchanged seccomp/socket/parent guard pass without external init. [Identity and indexed evidence](../evaluations/ner-cloud-check-20261022/README.md#local-startup-correction--verified-checkpoint-before-cloud-upload). The separately approved corrected diagnostic (`lanes-ner-check-b4b8m`) verifies supervision/isolation in cloud. Actual CPU quota varies to 1.043 and host swap is absent, while the original enforced resource contract still fails. The later explicitly approved `cloud-run-v1` profile separates actual configured CPU from measured quota and accepts labeled enforced-zero or repeated no-host-swap evidence; 150 tests / 12 Linux cases pass. Strict local checks, model, isolation, memory and deadlines remain intact. After that local revision, one separately approved full execution (`lanes-ner-check-nbpmz`) matched all 355 graph/provenance results, 352 retained predictions and 53 reviewed mentions, passed all 358 resource snapshots/isolation/timing/shutdown checks, and peaked at 2,067.3 MiB. No automatic retry or application/Cloud SQL/schedule write. [Cloud acceptance](../evaluations/ner-cloud-check-20261022/README.md#cloud-acceptance--full-frozen-workload-passed).
+
+## News-derived history omitted retained evidence and mixed administrative timing
+
+**Status:** Resolved locally; shared seed/release pending qualification. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Six retained news events showed zero citizen reports without article evidence in View Event. Expired event 23 lost its source projection; five inactive zones exposed Active news projections. September occurrences were grouped under October verification dates and administrative intervals appeared as flood durations.
+
+**2. Root cause:** Inspection reused current-publication projections and report-only counters. Frontend types/details omitted news lineage; temporal policy recognized historical_import metadata but not older publication-linked incidents.
+
+**3. Solution:** Resolve retained decision/source/run/version links and native import groups independently of current state. Add paginated news_sources and separate origin/article metrics; preserve citizen Reports and mixed-event timing. SQL/Python date helpers and exports use supported source days and exclude administrative/assumed durations. General archive preparation removes September-only/two-input limits and retains unresolved admission/identity/geometry outcomes. The continuation-clock leak and list-evidence marker are corrected without changing saved extraction. No new schema or design change.
+
+**4. Files/verification:** `news_history_evidence.py`, history schemas/readers, historical preparation/output/registration services and commands, `taglish_extraction_service.py`, existing Flood History details/types and `NewsArticleDialog.tsx`. [Evidence](../evaluations/news-history-part2a-20261022/README.md): 374 backend passes, 19 desktop/mobile passes and one intentional skip, TypeScript/lint/build pass. Shared reads only; no seed writes or deployment.
+
+## GMA source article — outer page captured as reporting text
+
+**Status:** Automatic capture resolved locally; explicitly approved September 9 correction applied as version/run 140 and verified through saved readers. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The September 9 Source Article panel includes a repeated headline, byline, Google promotion and caption. September 24 contains the expected clean reporting body.
+
+**2. Root cause:** The manual September 9 import used an early publisher-index snapshot, not the later retained original HTML. Independently, automatic GMA parsing admitted the outer article/main wrapper, including publisher chrome. The dialog renders its immutable saved input, so a parser fix cannot rewrite an existing run's evidence.
+
+**3. Solution:** Select standard/AMP GMA reporting containers; retain explicit source byline/time evidence and paragraph/list boundaries, exclude unrelated page sections, and reject absent/short bodies. After explicit one-article authorization, save the actual later publisher capture as version 140/completed rules-only run 140, retaining original extraction and ended history. Read-only saved-reader checks confirm the corrected source and unchanged history/publication counts. Do not substitute later locations into old polygons or alter the existing UI design.
+
+**4. Files/verification:** `news_discovery_service.py`, existing reconstruction/timeline/replay helpers, `test_news_gma_capture.py` and current discovery/replay fixtures. [245 distinct passing checks and source receipts](../evaluations/news-publisher-body-capture-20261022/README.md); real source captures and a fresh live fetch checked, September 24 unchanged, owned PostGIS cleaned up. Broader September 9 extraction still has two baseline failures, independently reproduced with the original collector: an older uncertainty-reason assertion and neighboring-road clock inheritance. These are not claimed fixed by the capture patch.
+
+## Flood History — redundant dataset dropdown removed
+
+**Status:** Implemented; focused verification recorded in the Phase 1 evidence amendment. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Phase 1 added a visible Historical dataset selector to Flood History & Analytics, changing the established history workflow. The user clarified that the existing Flood Events view already provides the desired historical browsing.
+
+**2. Root cause:** The original technical plan exposed dataset/session processing scope as an additional user-facing filter.
+
+**3. Solution:** Remove the selector and its page-level filtering. Records/analytics/maps/exports use the established unified history with normal filters. Normalize obsolete dataset URL parameters while retaining event IDs; extraction links address the event directly. Internal lineage and backend dataset-aware APIs remain available for processing/verification.
+
+**4. Files/verification:** `frontend/src/app/admin/flood-history/page.tsx`, `NativeExtractionEvidence.tsx`, the existing Phase 1 Playwright history test and `AGENTS.md`. Desktop/mobile checks assert no dropdown or hidden dataset filter, preserve deep-linked details, verify failure/Retry and export requests, and retain 320 px behavior. See the [evidence amendment](../evaluations/news-historical-phase1-20261022/README.md#unified-history-amendment).
+
+## Local backend task — Windows blocks the Uvicorn launcher
+
+**Status:** Launcher failure resolved locally; full application startup is checked when the task is rerun. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** `LANES: Backend` loaded 20 environment variables, then dotenvx returned `spawn UNKNOWN` before the FastAPI application started.
+
+**2. Root cause:** Running `backend/venv/Scripts/uvicorn.exe --version` directly reproduced a Windows Application Control block. The interpreter in the same environment successfully loaded the installed Uvicorn module, distinguishing a launcher restriction from a missing dependency or application traceback.
+
+**3. Solution:** The existing task now invokes `venv/Scripts/python.exe -m uvicorn`, preserving the environment, host, port and reload settings. No security policy, dependency, database or UI was changed.
+
+**4. Files/verification:** `.vscode/tasks.json` changes only the backend executable/arguments. The exact dotenvx environment-loading command with `python -m uvicorn --version` exits successfully, reporting Uvicorn 0.30.1 on CPython 3.12.14. JSON parsing and the focused diff are checked; no live API or worker is started during verification.
+
+## Phase 1 — saved native placement, archive endpoints and bounded history
+
+**Status:** Resolved locally; real September/hosted acceptance remains Phase 2. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Authenticated native road groups reached placement without a scalar canonical road, historical processing results lacked the separately required browsing projection, and date-only missing archives could not satisfy the ordinary ended-event timestamp check. Adding historical metadata also increased the existing history query budget from seven to eight.
+
+**2. Root cause:** Immutable extraction, downstream historical interpretation, browsing projection and ordinary event lifecycle had different contracts. Rewriting neural results or assigning arbitrary closure times would hide those differences. A new metadata query duplicated an existing history projection read.
+
+**3. Solution:** Derive an authenticated single-road/source-local qualifier through `historical-source-interpretation-v2`; keep original extraction immutable. Save versioned completed historical evaluations and their separate read projection. Reuse frozen matching history or retain geometry disagreement as unresolved; separate demos use stable observation/session identities and transaction locks. The explicitly approved `f1a9c7e2b604` migration permits unknown archive endpoints only with retained historical lineage, preserving ordinary end requirements and blocking unsafe downgrade. Batch validated historical metadata into the existing location projection to retain the seven-query limit. Public/demo routing eligibility is server-authored and preserved through saved synchronization/caching.
+
+**4. Files/evidence:** `news_historical_outputs.py`, `news_historical_interpretation.py`, `historical_news_metadata.py`, durable readers/results CRUD, history/spatial services, routing policy and the narrow migration. Disposable-PostGIS checks cover authenticated selection, read-only preflight, suppression/tampering, generated/unresolved geometry, original archive reuse, exact/date precision, repeats/concurrency/rollback, protected deactivation/history, migration round trips and SQL/Python/export parity. Backend regression batches pass 365 and 68 checks. [Final connected-workflow evidence](../evaluations/news-historical-phase1-20261022/README.md) records the final browser/build qualification separately.
+
+**Presentation correction:** the user later removed the visible historical-demonstration label and extra badge/modal presentation. Restore existing controls/layout, retain truthful source dates, and keep internal lineage/routing/count semantics. The preference is now recorded in repository `AGENTS.md` for future tasks.
+
+## E1 — historical target and date/source handoff gaps
+
+**Status:** Resolved locally for the complete E1 software gate; hosted and actual-candidate acceptance remain open. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** E1.2 deliberately rejected origin processing. Native source checks enforce live age/time rules, and treating historical normalization as an edit to stored NER output would invalidate its provenance.
+
+**2. Root cause:** A disposable-only worker entrypoint had no bounded origin authority, while saved neural/rule projection and downstream historical interpretation were separate responsibilities without a connected adapter.
+
+**3. Solution:** Authenticate a complete exact-target/workload/current-code/assets policy and use a typed, exact-run worker path with transaction-time checks. Keep normal worker restrictions. Produce separately versioned source/date/placement-context receipts without changing native results, inventing time, splitting collective groups or publishing data. Surface downstream failure separately and retain completed model evidence for inference-free recovery.
+
+**4. Files/evidence:** Historical policy/interpretation/processing services, shared native worker and operator CLI; new fictional policy/date/placement/PostGIS tests. [345 passing checks](../evaluations/news-historical-e1-20261022/README.md) include E1.1/E1.2 and existing road/NOAH/estimated-road regressions. Five E0 files and three E1.1 services are unchanged. No cloud access, real September inference, new flood records, frontend/schema/dependency change or deployment. E2–E6 remain open.
+
+## E1.2 — immutable-source handoff and native schema preflight
+
+**Status:** Resolved locally for the command/software gate; historical cloud/date/publication integration remains pending. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The existing worker captures current pending article text and claims a general native queue. Using it directly for frozen September inputs could recapture changed text or consume another queued version; broadening its disposable guard would also admit unqualified cloud processing. Initial new preflight tests additionally rejected valid native storage because they used the model's short constraint name.
+
+**2. Root cause:** Mutable-article enqueue and immutable snapshot insertion shared one entrypoint, and claims lacked an exact run set. E0's pipeline identity also predates intentional application edits. PostgreSQL migration naming expands the native-mode check to `ck_news_extraction_runs_rules_only_mode`, not the model's short name.
+
+**3. Solution:** Share authenticated snapshot insertion and add optional exact/pending-only worker selection without changing normal defaults. Authenticate/reconstruct the frozen E0 package and create a separately pinned current execution identity. Readonly preflight validates actual source/schema/settings/runtime; native storage inspection now checks the exact approved named/validated canonical constraint. Cloud processing remains blocked. Preserve existing failures/leases and expose bounded private receipts rather than reset or duplicate evidence.
+
+**4. Files/evidence:** New historical processing service/CRUD/CLI; shared `crud/news_processing.py` and `news_ner_durable/processing.py`; fictional package/CLI/PostGIS tests. [227 passing checks](../evaluations/news-historical-command-e12-20261022/README.md), zero skips, include unrelated version preservation, conflict-safe enqueue, empty exact selection, completed reuse, lost leases and timeout/cancellation/cleanup. Failed initial XML receipts were retained and the cause corrected; no test was removed. E0 and E1.1 protected files are unchanged. No cloud access/inference/activation/schema/frontend/deployment change; the broader historical workflow remains open.
+
+## E1.1 — invalid auditor configuration blocked independent expiry
+
+**Status:** Resolved locally; not deployed. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Invalid constructor settings or unsupported auditor configuration raised before the pipeline reached publication's expiry loop. Existing due news cases could therefore miss independent maintenance. A successful fallback must not hide the configuration failure or activate new evidence.
+
+**2. Root cause:** The due-case expiry loop lived inside `process_news_publications`, behind construction/validation of an auditor and its policy. Scheduler error handling had only the auditor error, without a separate maintenance result.
+
+**3. Solution:** Extract shared auditor-independent `process_news_expiry`; normal publication merges its counts/skips. On auditor configuration failure, run only this helper, attach the bounded summary and rethrow the same original exception. Scheduler persists maintenance health/counts/errors separately while keeping the overall cycle unsuccessful. Preserve case/configuration locks, effective deadlines, idempotent actions, limits and expiry OFF; no clearance or dependent publication is admitted without policy.
+
+**4. Files/evidence:** `news_publication_service.py`, `news_pipeline_service.py`, `news_scheduler_service.py`; expanded pipeline tests and new expiry/real PostGIS maintenance suites. [82 passing checks](../evaluations/news-maintenance-e11-20261022/README.md), zero skips, include real zone/history preservation with expiry OFF, single expiry/idempotent repeat with expiry ON, storage failures, scheduler success/error persistence and existing valid clearance/publication. Owned disposable databases were cleaned up; all five E0 files are byte-identical. No cloud access, inference, setting/GUI/schema/dependency change or deployment. Remaining historical integration and the separate mobile entry finding are not resolved by this fix.
+
+## Historical news import — current activation and timestamp semantics
+
+**Status:** Investigating; historical-import integration is not implemented. **Severity:** Medium for presentation/analytics correctness. **Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** The corrected workflow processes saved September articles into both selected active examples on the public map/Spatial Operations and historical examples in Flood History & Analytics. Current services do not yet provide the required explicit historical-demonstration identity and source-date/current-demo-lifecycle distinction; normal freshness checks reject old evidence. An archive-only implementation would fail the user's active-map demonstration requirement. Treating import/demo timestamps as real flood occurrence/clearance would also misrepresent the source.
+
+**2. Root cause:** `activate_estimated_road` reuses `build_estimated_road_zone`, then calls the current-evidence activation transaction with `is_active=True`; `create_verified_event_with_zone` opens an active event and sets `verified_at` to wall time. Historical map readers already support saved inactive geometry, but history date filters/daily counts use `verified_at` and duration metrics use verification-to-end time. Explicitly historical preview uncertainty also prevents ordinary estimated-road activation. These are current operational contracts, not proof that the geometry engine is broken. Native processing/read-context defaults remain disposable-local/legacy until separately released.
+
+**3. Planned correction, not a delivered fix:** The [E0–E6 blueprint](../plans/historical-news-demonstration-phase-e.md) now separates `historical_archive` from selected `active_demo` output. Reuse existing extraction/geometry/evidence and lifecycle services; preserve original inactive history, add source-bound repeat-safe demo identity, display selected labeled examples on both active maps and retain them in history after actual deactivation. Preserve source dates separately from current demo administrative actions. Demo instances/assumed intervals stay separate from real occurrence/observed-duration analytics and normal routing. Keep the no-reset/no-backup delivery decision. Metadata/readers/runtime/cloud qualification and the independent maintenance fix remain unfinished; an additional necessary schema change still requires a concrete approved proposal.
+
+**4. Files/evidence:** The initial review modified no application files. It inspected `news_ner_durable/{processing,enrichment,pipeline,fields,projection,readers}.py`, road-placement/preview/estimated-road/footprint/publication services, `flood_event_service.py`, `spatial_browse_service.py` and `HistoricalEventsMap.tsx`; 54 existing placement/estimate checks and bundled spatial-asset verification pass. [Review](../evaluations/news-historical-readiness-20261021/README.md). E0 subsequently added `services/news_historical_preparation.py`, `crud/news_historical_preparation.py`, `scripts/prepare_news_historical_inputs.py` and its 27-check suite: exact private native captures and repeat verification now pass using read-only cloud queries. Both saved sources lack original body-bound feed proof; that limitation remains explicit rather than manufacturing publication/observation evidence. [E0 result](../evaluations/news-historical-e0-20261021/README.md). No historical processing, activation or database write ran at the E0 checkpoint; broader historical integration remains open. The separate Phase D maintenance finding is now resolved locally in E1.1 above.
 
 ## Historical zone handoff adds an unwanted blue outline
 
@@ -137,13 +507,13 @@
 
 ## Independent baseline findings retained during Chris integration
 
-**Status:** Investigating / outside this merge. **Severity:** Medium for maintenance; low for mobile entry acceptance. **Reviewer:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Maintenance subsequently resolved locally in E1.1; mobile entry remains investigating. Both were outside the original frontend merge. **Severity:** Medium for maintenance; low for mobile entry acceptance. **Reviewer:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 **1. Problem:** The earlier Phase D review found invalid auditor configuration can prevent otherwise independent publication/expiry maintenance. An early mobile fixture run also observed the report panel resetting after direct `/map?action=report` entry; the normal menu-driven picker flow passes.
 
-**2. Root cause / limits:** `news_pipeline_service.py` constructs/validates the auditor before `process_news_publications`, including maintenance-only execution. That baseline backend ordering is unchanged. The map context restores/collapses mobile panels on hydration while GlobalMap opens query-selected panels; the direct-entry symptom needs a separate focused reproduction before a code correction is claimed.
+**2. Root cause / limits:** At the original merge, `news_pipeline_service.py` constructed/validated the auditor before `process_news_publications`, including maintenance-only execution. That ordering is now corrected locally by [E1.1](../evaluations/news-maintenance-e11-20261022/README.md). The map context restores/collapses mobile panels on hydration while GlobalMap opens query-selected panels; the direct-entry symptom still needs a separate focused reproduction before a code correction is claimed.
 
-**3. Disposition:** Keep the Phase D maintenance correction separate as instructed. No backend change is included. Direct-entry mobile hydration is not claimed qualified or repaired by the incoming map fixes.
+**3. Disposition:** The original frontend merge included no backend correction. E1.1 subsequently delivered the separate local maintenance fix with 82 passing checks; cloud release remains pending. Direct-entry mobile hydration is not claimed qualified or repaired.
 
 **4. Files/evidence:** Unchanged `backend/app/services/news_pipeline_service.py`, `frontend/src/features/map/MapContext.tsx` and `GlobalMap.tsx` initialization paths; [integration limits](../evaluations/chris-integration-20261021/README.md). No database or worker was started to investigate these findings during this merge.
 

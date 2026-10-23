@@ -1,0 +1,90 @@
+{
+  "actual_article_inferences": 111,
+  "api_revision": "lanes-api-history2a-20261022-v3",
+  "at": "2026-10-22T07:26:08.074043+00:00",
+  "evidence_attachments": 0,
+  "existing_history_reuses": 0,
+  "final_receipt_sha256": "1f6f0971e6ea3439d2214da8ab3b8a79a6f761eb460fff47aaa4060fca8f7c22",
+  "first_pass_batches": 56,
+  "frontend_revision": "lanes-frontend-build-2026-10-22-002",
+  "group_outcomes": {
+    "unresolved": 629
+  },
+  "hosted_parity": {
+    "articles": 174,
+    "at": "2026-10-22T07:24:28.895281+00:00",
+    "checks": [
+      {
+        "list_detail_article_agree": true,
+        "method": "ner_rules_v1",
+        "run_id": 371
+      }
+    ],
+    "collection": 174,
+    "exports_match": true,
+    "history_records": 56,
+    "methods": {
+      "ner_rules_v1": 55
+    },
+    "pagination_filters_counts_agree": true,
+    "result_count": 55,
+    "unauthenticated_rejected": true
+  },
+  "manual_seed_disabled": true,
+  "measured_cpu_range": [
+    0.806,
+    1.043
+  ],
+  "new_archives": 0,
+  "new_zones": 0,
+  "original_september_manifest_sha256": "0beb452c80dd0a805bada20dffd6c92dfdee3cd99e1951bf5eaf0862ce9f8439",
+  "part2b_executed": false,
+  "peak_mib": 1223.16,
+  "private_receipt_files": 2000,
+  "private_receipt_manifest_sha256": "e6ccb28fb8e91f22d7abc9f7400a90d9be345e4263d18b408248be4655b0948c",
+  "protected_original_rows_unchanged": true,
+  "reasons": {
+    "ambiguous_observation_partition": 15,
+    "evidence_exceeds_legacy_contract": 1,
+    "historical_native_only_or_context_group": 577,
+    "historical_observation_date_unknown": 8,
+    "historical_observation_time_unknown": 43,
+    "joint_or_collective_requires_native_consumer": 163,
+    "local_area_requires_native_consumer": 21,
+    "locality_ambiguous": 82,
+    "locality_not_supported": 263,
+    "location_type_not_supported": 15,
+    "non_metro_locality": 95,
+    "not_observed_flood_evidence": 391,
+    "operational_depth_not_verified": 1,
+    "status_not_supported": 154
+  },
+  "recorded_groups": 629,
+  "repeated_batches": 56,
+  "repeated_inferences": 0,
+  "resource_snapshots": 390,
+  "scalar_historical_evaluations": 52,
+  "schema": "part2a-shared-final-v1",
+  "selected_sources": 111,
+  "source_outcomes": {
+    "processed_no_groups": 15,
+    "processed_unresolved": 96
+  },
+  "status": "completed_with_unresolved_sources",
+  "tablecounts": {
+    "flood_avoidance_zones": 56,
+    "flood_event_locations": 125,
+    "flood_event_timeline_entries": 208,
+    "flood_events": 56,
+    "news_article_versions": 224,
+    "news_articles": 174,
+    "news_claim_cases": 105,
+    "news_claim_decisions": 87,
+    "news_claim_evaluations": 127,
+    "news_claim_sources": 105,
+    "news_claim_zone_links": 6,
+    "news_extraction_runs": 244
+  },
+  "training_publisher_unresolved": 33,
+  "ui_source_changes": 0
+}

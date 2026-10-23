@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from contextlib import nullcontext
+import asyncio
 from dataclasses import asdict
 from datetime import datetime
 import time
@@ -18,6 +19,7 @@ from .contracts import NerEvidenceError
 from .processing import (process_native_saved_news,deadline,OperationDeadline,require_local_target)
 from .evaluation import native_evaluation_policy,seed_native_evaluations,evaluate_native_claims
 from .reconciliation import pending_reconciliation_runs,reconcile_native_article
+from .resolution import ResolutionError
 
 INVOCATION_SECONDS=580
 DISCOVERY_SECONDS=120
@@ -41,7 +43,8 @@ def bounded_session_factory(factory, end: float, monotonic):
 
 async def run_native_news_pipeline(factory, *, load_assets, environment: str, database_url: str,
         sources: tuple, client: httpx.Client | None=None, limit: int=50, clock=utc_now,
-        monotonic=time.monotonic, runtime_factory=None, on_stage=None) -> dict:
+        monotonic=time.monotonic, runtime_factory=None, on_stage=None, resolver=None,
+        resolution_client: httpx.AsyncClient | None=None) -> dict:
     started=monotonic();end=started+INVOCATION_SECONDS
     require_local_target(environment,database_url)
     if not 1<=limit<=200:raise NerEvidenceError('ner_configuration_invalid')
@@ -53,6 +56,8 @@ async def run_native_news_pipeline(factory, *, load_assets, environment: str, da
     try:
         with deadline(min(60,end-monotonic()-FINAL_SECONDS)):
             trusted=load_assets();trusted.validate()
+            if trusted.manifest['projection'].get('llm_resolution') is not None:
+                raise NerEvidenceError('ner_configuration_invalid')
             if 'placement' not in trusted.manifest['geography']:
                 raise NerEvidenceError('ner_configuration_invalid')
             context=NativeCollectionContext(trusted,environment,database_url)
@@ -63,7 +68,13 @@ async def run_native_news_pipeline(factory, *, load_assets, environment: str, da
                 except (ValueError,TypeError,KeyError) as exc:
                     raise NerEvidenceError('ner_configuration_invalid') from exc
             result['pipeline_version']=trusted.pipeline_version
-            policy=native_evaluation_policy(trusted,configuration)
+            operational_trusted=trusted
+            if resolver is not None:
+                from .assets import with_resolution_assets
+                operational_trusted=with_resolution_assets(trusted,resolver.identity)
+                result['raw_pipeline_version']=trusted.pipeline_version
+                result['pipeline_version']=operational_trusted.pipeline_version
+            policy=native_evaluation_policy(operational_trusted,configuration)
         report('collection')
         if configuration.news_collection_enabled and selected:
             with deadline(min(DISCOVERY_SECONDS-(monotonic()-started),end-monotonic()-DOWNSTREAM_SECONDS-FINAL_SECONDS)):
@@ -90,6 +101,26 @@ async def run_native_news_pipeline(factory, *, load_assets, environment: str, da
             result['extraction']={'completed':0,'error_code':None,'stop_reason':'paused'}
             result['stage_outcomes']['extraction']='paused'
         report('extraction',result['extraction'])
+        if resolver is not None and configuration.news_processing_enabled:
+            from sqlalchemy import select, exists
+            from sqlalchemy.orm import aliased
+            from app.models.news import NewsExtractionRun,NewsArticleVersion
+            from app.crud.news_browsing import latest_article_runs
+            from .resolution_worker import resolve_native_runs
+            other=aliased(NewsExtractionRun)
+            latest=latest_article_runs('ner_rules_v1',trusted.pipeline_version)
+            completed=exists(select(other.id).where(other.article_version_id==NewsExtractionRun.article_version_id,
+                other.pipeline_version==operational_trusted.pipeline_version,other.mode=='ner_rules_v1',other.status=='completed'))
+            with factory() as db:
+                ids=tuple(db.scalars(select(NewsExtractionRun.id).join(NewsArticleVersion).join(latest,latest.c.run_id==NewsExtractionRun.id).where(
+                    NewsExtractionRun.status=='completed',~completed).order_by(NewsExtractionRun.id).limit(2)))
+            if ids:
+                report('resolution')
+                async with asyncio.timeout(max(.001,end-monotonic()-FINAL_SECONDS)):
+                    result['resolution']=await resolve_native_runs(factory,ids,trusted=trusted,resolver=resolver,
+                        sources=sources,clock=clock,client=resolution_client,
+                        budget_seconds=min(450,max(1,end-monotonic()-DOWNSTREAM_SECONDS-FINAL_SECONDS)))
+                report('resolution',result['resolution'])
         with deadline(min(DOWNSTREAM_SECONDS,end-monotonic()-FINAL_SECONDS)):
             if configuration.news_processing_enabled:
                 report('seed')
@@ -108,7 +139,7 @@ async def run_native_news_pipeline(factory, *, load_assets, environment: str, da
                 from app.services.news_footprint_worker_service import process_news_footprints
                 result['footprints']=asdict(process_news_footprints(factory,policy=policy,clock=clock,sources=sources,limit=limit))
                 report('footprints',result['footprints'])
-            with factory() as db:ids=pending_reconciliation_runs(db,trusted.pipeline_version,limit)
+            with factory() as db:ids=pending_reconciliation_runs(db,operational_trusted.pipeline_version,limit)
             report('reconciliation')
             for run_id in ids:
                 with factory() as db,db.begin():
@@ -119,10 +150,12 @@ async def run_native_news_pipeline(factory, *, load_assets, environment: str, da
             result['stop_reason']='budget_exhausted'
         if pipeline_has_failures(result) or result['collection']['failed']:
             result['stop_reason']='requires_attention'
-    except OperationDeadline:
+    except (OperationDeadline,TimeoutError):
         result['error_code']='ner_pipeline_budget_exhausted';result['stop_reason']='budget_exhausted'
     except NerEvidenceError as exc:
         result['error_code']=exc.code;result['stop_reason']='configuration_or_contract_failed'
+    except ResolutionError as exc:
+        result['error_code']=exc.code;result['stop_reason']='requires_attention'
     except SQLAlchemyError:
         result['error_code']='news_processing_storage_unavailable';result['stop_reason']='storage_failed'
     except Exception:

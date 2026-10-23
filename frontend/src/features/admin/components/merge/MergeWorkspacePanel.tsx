@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { ArrowLeft, ArrowRight, CheckCircle2, Layers, Loader2, MapPinned, RefreshCw, Save, ShieldCheck, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Layers, Loader2, MapPinned, Plus, RefreshCw, Save, Search, ShieldCheck, X } from "lucide-react";
 import { Button, useToast } from "@/shared/ui";
 import { cn } from "@/lib/utils";
 import { useMapContext } from "@/features/map/MapContext";
@@ -11,6 +11,7 @@ import {
   getMergeCandidates,
   getMergePreview,
   mergeReports,
+  getPendingReports,
   type AvoidanceZone,
   type FloodReport,
   type MergeCandidateItem,
@@ -92,6 +93,9 @@ export function MergeWorkspacePanel({
 
   const [currentStep, setCurrentStep] = useState<WorkflowStep>(1);
   const [selectedCandidateIds, setSelectedCandidateIds] = useState<number[]>([]);
+  const [manualCandidateIds, setManualCandidateIds] = useState<number[]>([]);
+  const [isAddReportOpen, setIsAddReportOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [targetZoneId, setTargetZoneId] = useState<number | null>(null);
   const [mergeMode, setMergeMode] = useState<"extend" | "corroborate" | "add_section">("extend");
   const [geometryMode, setGeometryMode] = useState<GeometryMode>("line");
@@ -119,14 +123,41 @@ export function MergeWorkspacePanel({
     error: candidatesError,
     refetch,
   } = useQuery({
-    queryKey: ["mergeCandidates", primaryReport?.id],
+    queryKey: ["mergeCandidates", primaryReport?.id, manualCandidateIds],
     queryFn: () => {
       if (!primaryReport) throw new Error("Select a primary report first.");
-      return getMergeCandidates(primaryReport.id);
+      return getMergeCandidates(primaryReport.id, manualCandidateIds);
     },
     enabled: Boolean(primaryReport && isOpen),
     retry: 1,
   });
+
+  const { data: allPendingReports } = useQuery({
+    queryKey: ["adminPendingReports"],
+    queryFn: getPendingReports,
+    enabled: isOpen && currentStep === 1,
+  });
+
+  const availableExtraReports = useMemo(() => {
+    if (!allPendingReports || !primaryReport) return [];
+    const candidateIds = new Set((candidatesData?.candidates || []).map((c) => c.report_id));
+    return allPendingReports.filter(
+      (r) =>
+        r.id !== primaryReport.id &&
+        !candidateIds.has(r.id) &&
+        (searchQuery.trim() === "" ||
+          String(r.id).includes(searchQuery.trim()) ||
+          (r.human_readable_location || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (r.barangay || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (r.raw_text || "").toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [allPendingReports, primaryReport, candidatesData?.candidates, searchQuery]);
+
+  const handleAddManualReport = (reportId: number) => {
+    setManualCandidateIds((prev) => (prev.includes(reportId) ? prev : [...prev, reportId]));
+    setSelectedCandidateIds((prev) => (prev.includes(reportId) ? prev : [...prev, reportId]));
+    setSearchQuery("");
+  };
 
   const selectedCandidates = useMemo(
     () => (candidatesData?.candidates || []).filter((candidate) => selectedCandidateIds.includes(candidate.report_id)),
@@ -142,14 +173,25 @@ export function MergeWorkspacePanel({
   }, [selectedCandidates]);
 
   const previewPayload: MergeReportsPayload | null = primaryReport ? {
-    primary_report_id: primaryReport.id, merged_report_ids: selectedCandidateIds, target_zone_id: targetZoneId,
-    merge_mode: mergeMode, final_data: { ...editorValues, passable_vehicles: editorValues.passable_vehicles.join(",") },
+    primary_report_id: primaryReport.id,
+    merged_report_ids: selectedCandidateIds,
+    target_zone_id: targetZoneId,
+    merge_mode: mergeMode,
+    final_data: { ...editorValues, passable_vehicles: editorValues.passable_vehicles.join(",") },
   } : null;
-  const coverage = useQuery({ queryKey: ["mergeCoverage", previewPayload],
-    queryFn: () => getMergePreview(previewPayload!), enabled: isOpen && currentStep >= 3 && Boolean(previewPayload), retry: false });
-  const proposalMutation = useMutation({ mutationFn: () => getMergePreview({ ...previewPayload!, use_report_extents: true }),
+
+  const coverage = useQuery({
+    queryKey: ["mergeCoverage", previewPayload],
+    queryFn: () => getMergePreview(previewPayload!),
+    enabled: isOpen && currentStep >= 3 && Boolean(previewPayload),
+    retry: false,
+  });
+
+  const proposalMutation = useMutation({
+    mutationFn: () => getMergePreview({ ...previewPayload!, use_report_extents: true }),
     onSuccess: (data) => setEditorValues((previous) => ({ ...previous, geometry: data.reviewed_geometry ?? data.geometry })),
-    onError: (error: Error) => showError("Boundary Unavailable", error.message) });
+    onError: (error: Error) => showError("Boundary Unavailable", error.message),
+  });
 
   useEffect(() => {
     onPreviewChange?.(isOpen ? selectedCandidates : [], isOpen ? coverage.data?.geometry ?? editorValues.geometry : null);
@@ -172,14 +214,12 @@ export function MergeWorkspacePanel({
       floodOppositeGeometry as ReportGeometry | null,
       floodIsBidirectional,
     );
-    // MapContext is an external map controller; synchronizing its routed preview is intentional.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEditorValues((previous) => ({ ...previous, geometry: nextGeometry, is_bidirectional: floodIsBidirectional }));
   }, [currentStep, floodEnd, floodIsBidirectional, floodOppositeGeometry, floodPreviewGeometry, floodStart, geometryMode]);
 
   useEffect(() => {
     if (currentStep !== 3 || geometryMode === "line" || !drawnGeometry) return;
-    // Terra Draw is an external canvas controller; synchronize its completed shape into form state.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEditorValues((previous) => ({ ...previous, geometry: drawnGeometry }));
   }, [currentStep, drawnGeometry, geometryMode]);
@@ -362,8 +402,8 @@ export function MergeWorkspacePanel({
                 {!candidatesData?.candidates.length ? (
                   <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
                     <CheckCircle2 className="mx-auto mb-2 h-8 w-8 text-emerald-500" />
-                    <h3 className="text-xs font-bold text-slate-700">No matches were suggested</h3>
-                    <p className="mx-auto mt-1 max-w-xs text-[11px] text-slate-500">Close this workspace to approve, reject, or defer the primary report normally.</p>
+                    <h3 className="text-xs font-bold text-slate-700">No matches were automatically suggested</h3>
+                    <p className="mx-auto mt-1 max-w-xs text-[11px] text-slate-500">Use the manual search below to include distinct reports, or approve this report normally.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -384,6 +424,80 @@ export function MergeWorkspacePanel({
                   </div>
                 )}
                 </section>
+
+                {/* Manual report addition */}
+                <section aria-label="Manually add reports" className="border-t border-slate-200 pt-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-semibold text-slate-800">Add other report to merge</h3>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsAddReportOpen(!isAddReportOpen)}
+                      className="h-7 px-2 text-[11px] text-blue-600 hover:bg-blue-50"
+                    >
+                      <Plus className="mr-1 h-3.5 w-3.5" />
+                      {isAddReportOpen ? "Hide search" : "Search pending queue"}
+                    </Button>
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    Include any pending report from another road, dip, or location into this merge review.
+                  </p>
+
+                  {isAddReportOpen && (
+                    <div className="mt-2 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search by report ID, street, or barangay..."
+                          className="w-full rounded-lg border border-slate-200 bg-white py-1.5 pl-8 pr-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="max-h-44 space-y-1.5 overflow-y-auto">
+                        {availableExtraReports.length === 0 ? (
+                          <p className="py-2 text-center text-[11px] text-slate-400">
+                            {searchQuery.trim() ? "No matching pending reports found." : "No other pending reports in queue."}
+                          </p>
+                        ) : (
+                          availableExtraReports.slice(0, 10).map((r) => (
+                            <div
+                              key={r.id}
+                              className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2 text-left shadow-xs"
+                            >
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-bold text-slate-800 text-[11px]">#{r.id}</span>
+                                  <span className="truncate text-[11px] text-slate-600">
+                                    {r.human_readable_location || r.barangay || "Pasig City"}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                                  <span className="capitalize">{r.severity}</span>
+                                  {r.depth && <span>· {r.depth}</span>}
+                                </div>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleAddManualReport(r.id)}
+                                className="h-7 shrink-0 px-2 text-[10px] text-blue-600 hover:bg-blue-50"
+                              >
+                                <Plus className="mr-1 h-3 w-3" />
+                                Include
+                              </Button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </section>
+
                 <section aria-label="Nearby active zones" className="border-t border-slate-200 pt-4">
                   <h3 className="text-xs font-semibold text-slate-800">Nearby active flood zones</h3>
                   <p className="my-2 text-xs text-slate-500">Choose a zone only when this report belongs to the same ongoing flood. Streets and barangays may differ.</p>

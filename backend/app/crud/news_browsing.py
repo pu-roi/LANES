@@ -1,6 +1,6 @@
 """Bounded, deterministic staff reads over existing news evidence tables."""
 
-from sqlalchemy import case, func, or_, select
+from sqlalchemy import and_, case, func, or_, select
 from sqlalchemy.orm import Session, defer, selectinload
 from sqlalchemy.sql.selectable import Subquery
 
@@ -16,7 +16,7 @@ def article_body_status() -> object:
     )
 
 
-def latest_article_runs(mode: str | None = None, pipeline_version: str | None = None) -> Subquery:
+def latest_article_runs(mode: str | None = None, pipeline_version: str | tuple[str, ...] | None = None) -> Subquery:
     """Select the newest recorded run, including failures and pending attempts."""
     query = select(NewsArticleVersion.article_id, func.max(NewsExtractionRun.id).label("run_id")).join(
         NewsExtractionRun, NewsExtractionRun.article_version_id == NewsArticleVersion.id,
@@ -24,16 +24,27 @@ def latest_article_runs(mode: str | None = None, pipeline_version: str | None = 
     if mode is not None:
         query = query.where(NewsExtractionRun.mode == mode)
     if pipeline_version is not None:
-        query = query.where(NewsExtractionRun.pipeline_version == pipeline_version)
+        query = query.where(NewsExtractionRun.pipeline_version.in_(pipeline_version) if isinstance(pipeline_version,tuple)
+                            else NewsExtractionRun.pipeline_version == pipeline_version)
     return query.group_by(NewsArticleVersion.article_id).subquery()
+
+
+def selected_article_runs(pipeline_version: str | tuple[str, ...]) -> Subquery:
+    """Prefer selected native attempts in every state; otherwise retain legacy."""
+    run, version = NewsExtractionRun, NewsArticleVersion
+    version_match=run.pipeline_version.in_(pipeline_version) if isinstance(pipeline_version,tuple) else run.pipeline_version==pipeline_version
+    selected = func.max(case((and_(run.mode == 'ner_rules_v1',version_match), run.id)))
+    legacy = func.max(case((run.mode == 'rules_only', run.id)))
+    return select(version.article_id, func.coalesce(selected, legacy).label('run_id')).join(
+        run, run.article_version_id == version.id).group_by(version.article_id).subquery()
 
 
 def list_articles(
     db: Session, *, page: int, page_size: int, search: str, publisher: str | None,
     body: BodyStatus | None, processing: ProcessingStatus | None, order: ArticleOrder,
-    mode: str | None = None, pipeline_version: str | None = None,
+    mode: str | None = None, pipeline_version: str | tuple[str, ...] | None = None,
 ) -> tuple[list[tuple[NewsArticle, str, str, int | None]], int, int, list[str]]:
-    latest = latest_article_runs(mode,pipeline_version)
+    latest = selected_article_runs(pipeline_version) if pipeline_version else latest_article_runs(mode,pipeline_version)
     body_status = article_body_status()
     processing_status = func.coalesce(NewsExtractionRun.status, "not_recorded")
     query = select(NewsArticle, body_status, processing_status, NewsExtractionRun.id).outerjoin(

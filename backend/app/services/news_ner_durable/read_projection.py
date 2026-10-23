@@ -12,6 +12,9 @@ from .locality import Catalog, resolve_locality
 
 
 def build_read_projection(source: NativeInput, result: object, catalog: Catalog) -> NativeReadProjection:
+    if 'llm_resolution' in result.provenance:
+        return NativeReadProjection(groups=[NativeReadGroup(group_id=g['group_id'],claim_index=g['claim_index'])
+            for g in result.projection['groups'] if g['claim_index'] is not None],omitted_counts={})
     graph = result.native.graph.model_dump(mode='json', by_alias=True)
     mentions = {m['id']: m for m in graph['mentions']}
     facts = {f['id']: f for f in graph['facts']}

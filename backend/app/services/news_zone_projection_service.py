@@ -71,11 +71,21 @@ def zone_responses_with_news(db: Session, zones: list, *,
             expiry_override=deadline)
         if public and public.status == "Active" and public.affects_routing:
             by_zone[zone_id].append(public)
+    from app.services.historical_news_metadata import event_metadata
+    historical = event_metadata(db, [z.event_id for z in zones if z.event_id])
+    from app.services.news_presentation_source_facts import source_facts
+    reported = source_facts(db, historical)
     responses = []
     for index, zone in enumerate(zones):
         response = base_responses[index]
         news = sorted(by_zone[zone.id], key=lambda alert: (alert.observed_at, alert.case_id), reverse=True)
         updates = {"news": news}
+        metadata = historical.get(zone.event_id)
+        if metadata:
+            updates.update(historical=metadata, affects_routing=not metadata.is_demo,
+                report_source='news', report_text=metadata.source_excerpt,
+                reporter_name=metadata.source_publisher, reporter_role='News report')
+            updates.update(reported.get(zone.event_id, {}))
         if news and not zone.report_id:
             updates.update(reporter_name=news[0].source_publisher, reporter_role="News report",
                 reporter_trust_score=None, report_text=news[0].evidence_excerpt,

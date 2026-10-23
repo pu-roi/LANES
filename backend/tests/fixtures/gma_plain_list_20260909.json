@@ -1,0 +1,131 @@
+{
+  "article_text": "By GMA News Published September 9, 2026 9:19am\nUpdated September 9, 2026 3:09pm\nSome roads in Metro Manila got flooded on Wednesday, September 9, 2026, due to heavy rains from the Southwest Monsoon (Habagat).\nThe Metropolitan Manila Development Authority (MMDA) said it deployed a mobile pump in the E. Rodriguez-Araneta Avenue area in Quezon City to reduce the accumulated water and speed up its discharge toward the nearest waterway\nNag-deploy ang Metropolitan Manila Development authority (MMDA) ng mobile pump sa E-Rodriguez-Araneta Avenue, Quezon City, kasunod ng biglaang pagbuhos ng malakas na ulan sa ilang bahagi ng Metro Manila.\nIsinagawa ang hakbang na ito upang mapababa agad ang naipong tubig at… pic.twitter.com/oce0g7zUTU\n— Official MMDA (@MMDA) September 9, 2026\nBelow is a list of flooded areas, based on information gathered by GMA News and Super Radyo dzBB on the ground and from local government units and government agencies:\nMalabon City\nRizal Ave Extn Brgy San Agustin - Gutter deep Passable to all type of Vehicles as of 2:47 p.m.\nTañong F. Sevilla Blvd. (Bayan) - Gutter deep Passable to all type of Vehicles as of 2:47 p.m.\nMarikina City\nMarcos Highway Underloop - Gutter Deep, Passable to all type of Vehicles as of 2:47 p.m.\nRefresh this page for updates. —KG, GMA News",
+  "body_sha256": "f5ff7d13e255ed82ab9c024bcd1aae02fee4ce5806c4a7411bc818e2f58ed763",
+  "mentions": [
+    {
+      "id": "n0",
+      "end": 312,
+      "text": "E. Rodriguez",
+      "label": "ROAD",
+      "start": 300,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n1",
+      "end": 327,
+      "text": "Araneta Avenue",
+      "label": "ROAD",
+      "start": 313,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n2",
+      "end": 347,
+      "text": "Quezon City",
+      "label": "CITY",
+      "start": 336,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n3",
+      "end": 543,
+      "text": "E-Rodriguez-Araneta Avenue",
+      "label": "ROAD",
+      "start": 517,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n4",
+      "end": 556,
+      "text": "Quezon City",
+      "label": "CITY",
+      "start": 545,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n5",
+      "end": 959,
+      "text": "Malabon City",
+      "label": "CITY",
+      "start": 947,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n6",
+      "end": 974,
+      "text": "Rizal Ave Extn",
+      "label": "ROAD",
+      "start": 960,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n7",
+      "end": 991,
+      "text": "Brgy San Agustin",
+      "label": "BARANGAY",
+      "start": 975,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n8",
+      "end": 1078,
+      "text": "F. Sevilla Blvd.",
+      "label": "ROAD",
+      "start": 1062,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n9",
+      "end": 1163,
+      "text": "Marikina City",
+      "label": "CITY",
+      "start": 1150,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    },
+    {
+      "id": "n10",
+      "end": 1178,
+      "text": "Marcos Highway",
+      "label": "LANDMARK",
+      "start": 1164,
+      "provenance_sha256": "a094e98ca7d54fc0948a1757596718f5c8bb6ae05297e725dd45e06bf2f1a8c2"
+    }
+  ],
+  "failed_row": {
+    "target_id": "n8",
+    "verdict": "observed",
+    "city": null,
+    "barangay": "Tañong",
+    "place_evidence": [
+      10
+    ],
+    "status": "active",
+    "historical": false,
+    "contradictory": false,
+    "status_evidence": [
+      7,
+      10
+    ],
+    "time_role": "observation",
+    "date_text": "September 9, 2026",
+    "clock_text": "2:47 p.m.",
+    "contemporaneous": true,
+    "time_evidence": [
+      0,
+      10
+    ],
+    "depth_text": "Gutter deep",
+    "depth_scope": "individual",
+    "depth_evidence": [
+      10
+    ],
+    "access": "passable_all",
+    "access_evidence": [
+      10
+    ],
+    "road_section": "Tañong F. Sevilla Blvd. (Bayan)",
+    "section_evidence": [
+      10
+    ]
+  }
+}

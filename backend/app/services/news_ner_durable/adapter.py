@@ -63,6 +63,12 @@ def verify_saved_result(context: RunEvidence, saved: object, trusted: TrustedAss
         proposal=from_neural_mentions({**request,'mentions':[m.model_dump(mode='json') for m in result.native.neural_mentions]})['proposal']
         expected=build_native_result(context,{'proposal':proposal,'graph':result.native.graph.model_dump(mode='json',by_alias=True),
             'provenance':result.provenance['runtime'],'measurements':result.measurements},trusted,extracted_at=result.extracted_at)
+        resolution_identity = trusted.manifest['projection'].get('llm_resolution')
+        if resolution_identity is not None:
+            from .resolution import apply_resolution
+            expected = apply_resolution(context.source(),expected,result.provenance['llm_resolution'],trusted.catalog,resolution_identity)
+        elif 'llm_resolution' in result.provenance:
+            raise ValueError('unconfigured_native_resolution')
         actual_json=result.model_dump(mode='json',by_alias=True);expected_json=expected.model_dump(mode='json',by_alias=True)
         if result.read_projection is not None:
             from .read_projection import build_read_projection

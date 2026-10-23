@@ -4,37 +4,43 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, ExternalLink, FileText, History, ListChecks } from "lucide-react";
 import { Button, FloodDetailMetric, FloodLocationSummary, RecordDetailsDialog, Skeleton, Tabs, TabContentPanel } from "@/shared/ui";
+import { NativeExtractionEvidence } from "./NativeExtractionEvidence";
+import { isNativeExtraction } from "./newsApi";
 import { getNewsArticle, type NewsArticleDetail, type NewsFloodSummary, type NewsRun } from "./newsApi";
-import { floodSummaryData, newsDate, processingLabels, publisherLink } from "./newsPresentation";
+import { articleDisplayText, floodSummaryData, newsDate, processingLabels, publisherLink } from "./newsPresentation";
 
 type DetailTab = "source" | "facts" | "history";
 const tabs = [{ id: "source", label: "Article", icon: FileText }, { id: "facts", label: "Flood locations", icon: ListChecks }, { id: "history", label: "History", icon: History }] satisfies { id: DetailTab; label: string; icon: typeof FileText }[];
 
-export function NewsArticleDialog({ articleId, onClose }: { articleId: number; onClose: () => void }) {
-  const [tab, setTab] = useState<DetailTab>("source");
+export function NewsArticleDialog({ articleId, initialRunId, onClose }: { articleId: number; initialRunId?: number; onClose: () => void }) {
+  const [tab, setTab] = useState<DetailTab>(initialRunId ? "facts" : "source");
   const [direction, setDirection] = useState(1);
-  const [runId, setRunId] = useState<number | null>(null);
+  const [runId, setRunId] = useState<number | null>(initialRunId ?? null);
   const query = useQuery({ queryKey: ["news-article", articleId], queryFn: ({ signal }) => getNewsArticle(articleId, signal), retry: false, refetchOnWindowFocus: false });
   const data = query.data;
   const run = data?.runs.find((item) => item.id === (runId ?? data.runs[0]?.id));
-  const version = data?.versions.find((item) => item.id === run?.article_version_id);
+  // Collection opens the current saved article; explicitly selected history stays immutable.
+  const version = runId ? data?.versions.find((item) => item.id === run?.article_version_id) : undefined;
+  const viewingCurrentArticle = tab === "source" && !version;
+  const missingSavedEvidence = Boolean(data && runId && (!run || !version));
   const changeTab = (next: DetailTab) => { setDirection(tabs.findIndex((item) => item.id === next) > tabs.findIndex((item) => item.id === tab) ? 1 : -1); setTab(next); };
   return <RecordDetailsDialog title="News Article" subtitle={data?.publisher} closeLabel="Close article details" onClose={onClose}>
     {query.isPending && <div aria-label="Loading article details" role="status" className="space-y-4"><Skeleton className="h-7 w-3/4" /><Skeleton className="h-10 w-full" /><Skeleton className="h-36 w-full" /></div>}
     {query.isError && <div className="space-y-3"><p role="alert" className="text-sm text-red-800">Article details could not be loaded. {query.error.message}</p><Button variant="outline" size="sm" onClick={() => void query.refetch()}>Retry details</Button></div>}
-    {data && <>
+    {missingSavedEvidence && <p role="alert" className="text-sm text-amber-800">The selected saved extraction or article version is unavailable. Its evidence cannot be replaced with the current article.</p>}
+    {data && !missingSavedEvidence && <>
       <h3 className="break-words text-lg font-bold leading-snug">{version?.input_snapshot.title ?? data.article.title}</h3>
       <p className="text-xs text-slate-500">One news article can mention several flood locations.</p>
       {data.article.article_error && <p role="alert" className="break-words text-sm text-red-800">Latest article retrieval failed: {data.article.article_error}</p>}
       <Tabs<DetailTab> tabs={tabs} activeTab={tab} onChange={changeTab} variant="pills" fullWidth layoutId="news-article-detail-tabs" tabClassName="min-h-11" />
       <TabContentPanel tabKey={`${tab}-${run?.id ?? "current"}`} direction={direction}>
         {tab === "source" && <Source data={data} version={version} />}
-        {tab === "facts" && <Facts run={run} summaries={run ? data.flood_summaries?.[run.id] : undefined} publishedAt={version?.input_snapshot.published_at} />}
+        {tab === "facts" && run && isNativeExtraction(run.result) ? <NativeExtractionEvidence result={run.result} outputs={data.historical_outputs?.[run.id]} /> : tab === "facts" && <Facts run={run} summaries={run ? data.flood_summaries?.[run.id] : undefined} publishedAt={version?.input_snapshot.published_at} />}
         {tab === "history" && <HistoryList data={data} onSelect={(item) => { setRunId(item.id); changeTab("facts"); }} />}
       </TabContentPanel>
       {data.runs.length > 0 && <details className="text-xs text-slate-500"><summary className="cursor-pointer font-semibold">Article version & processing details</summary><div className="mt-3 space-y-3">
-        <p>{run ? `Viewing extraction #${run.id} from saved article version #${run.article_version_id}` : "Viewing the current saved article"}</p>
-        <div className="flex flex-wrap gap-2"><Button variant="outline" size="sm" onClick={() => setRunId(run ? 0 : data.runs[0].id)}>{run ? "View current article" : "View latest extraction"}</Button><Button variant="ghost" size="sm" onClick={() => changeTab("history")}>Older extractions</Button></div>
+        <p>{!viewingCurrentArticle && run ? `Viewing extraction #${run.id} from saved article version #${run.article_version_id}` : "Viewing the current saved article"}</p>
+        <div className="flex flex-wrap gap-2"><Button variant="outline" size="sm" onClick={() => { setRunId(viewingCurrentArticle ? data.runs[0].id : 0); changeTab(viewingCurrentArticle ? "facts" : "source"); }}>{viewingCurrentArticle ? "View latest extraction" : "View current article"}</Button><Button variant="ghost" size="sm" onClick={() => changeTab("history")}>Older extractions</Button></div>
         {version && <p className="break-all">Input fingerprint: {version.input_fingerprint}</p>}
       </div></details>}
     </>}
@@ -45,10 +51,10 @@ function Source({ data, version }: { data: NewsArticleDetail; version?: NewsArti
   const source = version?.input_snapshot ?? data.article;
   const href = publisherLink(source.canonical_url);
   return <section aria-label="Article source" className="space-y-4">
-    <div className="grid gap-3 sm:grid-cols-2"><FloodDetailMetric icon={<Calendar className="size-4" />} iconClassName="bg-blue-100 text-blue-600" label="Article published" value={newsDate(source.published_at, "Not stated")} /><FloodDetailMetric icon={<Clock className="size-4" />} iconClassName="bg-violet-100 text-violet-600" label="Saved in LANES" value={newsDate(version?.created_at ?? data.article.first_seen_at)} /></div>
+    <div className="grid gap-3 sm:grid-cols-2"><FloodDetailMetric icon={<Calendar className="size-4" />} iconClassName="bg-blue-100 text-blue-600" label="Article published" value={newsDate(source.published_at, "Not stated")} /><FloodDetailMetric icon={<Clock className="size-4" />} iconClassName="bg-violet-100 text-violet-600" label="Saved in LANES" value={newsDate(version?.created_at ?? data.article.fetched_at ?? data.article.first_seen_at)} /></div>
     {href && <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 underline underline-offset-4">Read on {data.publisher}<ExternalLink className="size-3.5" aria-hidden="true" /></a>}
     {source.excerpt && <p className="break-words text-sm leading-6 text-slate-600">{source.excerpt}</p>}
-    {source.article_text ? <details className="text-sm text-slate-600"><summary className="cursor-pointer font-semibold">Full article text</summary><p className="mt-3 whitespace-pre-wrap break-words leading-7">{source.article_text}</p></details> : <p className="text-sm text-amber-800">Article text unavailable. Only publisher metadata is saved.</p>}
+    {source.article_text ? <details className="text-sm text-slate-600"><summary className="cursor-pointer font-semibold">Full article text</summary><p className="mt-3 whitespace-pre-wrap break-words leading-7">{articleDisplayText(source.article_text)}</p></details> : <p className="text-sm text-amber-800">Article text unavailable. Only publisher metadata is saved.</p>}
     <details className="text-xs text-slate-500"><summary className="cursor-pointer font-semibold">Collection details</summary><div className="mt-3 space-y-2 break-all"><p>First collected: {newsDate(data.article.first_seen_at)}</p><p>Last seen: {newsDate(data.article.last_seen_at)}</p><p>Latest retrieval attempt: {newsDate(data.article.fetched_at)}</p>{data.article.feed_entries.length ? data.article.feed_entries.map((entry, index) => <p key={index}>Feed: {entry.feed_url}<br />GUID: {entry.feed_guid}</p>) : <p>No feed provenance recorded for this article.</p>}<p>Retrieval attempt history is unavailable.</p></div></details>
   </section>;
 }

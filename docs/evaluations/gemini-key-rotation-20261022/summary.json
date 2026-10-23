@@ -1,0 +1,52 @@
+{
+  "active_runtime_secret_version": "2",
+  "actual_billed_cost": "not_verified",
+  "all_database_fingerprints_preserved": true,
+  "api_canary_created": false,
+  "api_promoted": false,
+  "api_revision": "lanes-api-gemini-20261022-v4",
+  "automatic_retries": 0,
+  "consumer_services": [
+    "lanes-api",
+    "lanes-news-discovery",
+    "lanes-news-verified"
+  ],
+  "counts": {
+    "community_posts": 37,
+    "flood_avoidance_zones": 0,
+    "flood_events": 0,
+    "flood_reports": 0,
+    "news_article_versions": 224,
+    "news_articles": 174,
+    "news_extraction_runs": 0,
+    "users": 8
+  },
+  "database_writes": 0,
+  "expiry_flags_preserved_off": true,
+  "failure_cause": "not_established_from_status_alone",
+  "maximum_news_reservation_usd": "0.03",
+  "models_images_resources_preserved": true,
+  "new_key_plaintext_in_source_or_receipts": false,
+  "news_automation_paused": true,
+  "news_execution": "lanes-news-verified-5bnpz",
+  "news_generation_attempts": 1,
+  "news_model": "gemini-3.5-flash-lite",
+  "news_pilot_allowance_usd": "1.00",
+  "news_provider_http_status": 400,
+  "private_evidence_directory": "data/gemini-key-rotation-20261022",
+  "private_receipt_sha256": {
+    "database-before-private.json": "25450c66f41474629f1b69f5480525855678ca0b9a613eed527f33737d3df8eb",
+    "database-final-private.json": "25450c66f41474629f1b69f5480525855678ca0b9a613eed527f33737d3df8eb",
+    "new-version.json": "d62d87d233a516b5ff51b2c9b36fb3ccaeaf24ba4e3e2e4873d57f5967100138",
+    "news-acceptance.json": "c440b7e47796aa757ae69a9773bf2d313d13997755d4d5e68cfc3c4513848e13",
+    "news-smoke-dispatched.json": "4000564b6f9e17d7a08ee03b149817e0b608f887b1bcc7b49f8f286f508934b4",
+    "news-smoke-execution-private.json": "76bdb3562774bfb5d7bd568d64ed2777c5f221ed24ac2e070a53628cc052f006",
+    "recovery-acceptance.json": "30c4501de72ce765c26036e112b3406daa422614283f8b358d6818c54aa7cd50",
+    "recovery.json": "c3ea3a3a1f0191ffb256a73ec0755035bfbd56519df83a2facb6f7a1bcf99b92"
+  },
+  "status": "rotation_withheld_news_provider_http_400",
+  "stored_new_secret_version": "3",
+  "traffic_percent": 100,
+  "weather_generation_attempts": 0,
+  "weather_model": "gemini-3.8-flash"
+}

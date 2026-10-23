@@ -1,7 +1,7 @@
 """PostgreSQL native group pagination over compact saved read projections."""
 from __future__ import annotations
 
-from sqlalchemy import Integer, Text, DateTime, and_, case, cast, column, func, or_, select, true
+from sqlalchemy import Integer, Text, DateTime, and_, case, cast, column, func, or_, select, true, null, union_all
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Session
 
@@ -9,9 +9,15 @@ from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from .news_browsing import latest_article_runs
 
 
-def native_result_rows(pipeline_version: str):
+def native_result_rows(pipeline_version: str | tuple[str, ...]):
     run, version = NewsExtractionRun, NewsArticleVersion
-    items = func.jsonb_array_elements(run.result['read_projection']['groups']).table_valued(
+    from app.models.news_publication import NewsClaimSource, NewsClaimEvaluation
+    historical = select(NewsClaimEvaluation.result['read_projection']).join(NewsClaimSource).where(
+        NewsClaimSource.extraction_run_id == run.id, NewsClaimEvaluation.status == 'completed',
+        NewsClaimEvaluation.result['schema_version'].as_string() == 'historical-output-v1').order_by(
+            NewsClaimEvaluation.id.desc()).limit(1).correlate(run).scalar_subquery()
+    projection = func.coalesce(run.result['read_projection'], historical, type_=JSONB)
+    items = func.jsonb_array_elements(projection['groups']).table_valued(
         column('item', JSONB)).render_derived(name='native_cards')
     item = items.c.item
     index = cast(item['claim_index'].astext, Integer)
@@ -34,14 +40,14 @@ def native_result_rows(pipeline_version: str):
                 run.status == 'completed', run.mode == 'ner_rules_v1',
                 run.result['schema_version'].astext == 'lanes-news-ner-result-v1',
                 run.result['processing_method'].astext == 'ner_rules_v1',
-                run.result['read_projection']['version'].astext == 'ner-result-read-v1')
+                projection['version'].astext == 'ner-result-read-v1')
     return query, claim
 
 
-def list_native_result_rows(db: Session, *, pipeline_version: str, page: int, page_size: int,
+def list_native_result_rows(db: Session, *, pipeline_version: str | tuple[str, ...], page: int, page_size: int,
                            search: str, publisher: str | None, condition: str | None,
                            placement: str | None, order: str) -> tuple[list[dict], int, int, list[str]]:
-    query, claim = native_result_rows(pipeline_version)
+    query = mixed_result_rows(db, pipeline_version)
     all_rows = query.subquery()
     publishers = list(db.scalars(select(all_rows.c.publisher_source_id).distinct().order_by(all_rows.c.publisher_source_id)))
     filtered = query.subquery()
@@ -64,3 +70,18 @@ def list_native_result_rows(db: Session, *, pipeline_version: str, page: int, pa
     result = db.execute(select(rows).order_by(cast(clock, DateTime(timezone=True)).desc().nulls_last(),
         rows.c.run_id.desc(), rows.c.group_id).offset((actual - 1) * page_size).limit(page_size)).mappings()
     return [dict(row) for row in result], total, actual, publishers
+
+
+def mixed_result_rows(db: Session, pipeline_version: str | tuple[str, ...]):
+    """One selected method per article; SQL owns union filtering and pagination."""
+    from .news_results import result_rows, readable_claim, readable_run
+    from .news_browsing import selected_article_runs
+    native, _ = native_result_rows(pipeline_version)
+    legacy, value, _, _ = result_rows(db)
+    chosen = selected_article_runs(pipeline_version)
+    legacy = legacy.join(chosen, and_(chosen.c.article_id == NewsArticleVersion.article_id,
+        chosen.c.run_id == NewsExtractionRun.id)).where(readable_claim(value), readable_run(db)).subquery()
+    names = ('run_id', 'article_version_id', 'article_id', 'claim_index', 'group_id', 'claim',
+        'title', 'publisher_source_id', 'published_at', 'extracted_at', 'captured_at', 'saved_at')
+    legacy_columns = [cast(null(), Text).label(name) if name == 'group_id' else legacy.c[name] for name in names]
+    return union_all(native, select(*legacy_columns))

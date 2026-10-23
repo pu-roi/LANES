@@ -1,3 +1,4 @@
+from app.schemas.historical_news import HistoricalNewsMetadata
 from datetime import datetime
 import struct
 from typing import Any, Literal, Optional, Union
@@ -315,6 +316,8 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     report_media_urls: Optional[list[str]] = None
     contributors: list[ZoneContributorResponse] = []
     news: list["PublicNewsAlert"] = []
+    historical: HistoricalNewsMetadata | None = None
+    affects_routing: bool = True
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -364,6 +367,11 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
 
     @model_validator(mode="after")
     def populate_zone_measurements(self) -> "FloodAvoidanceZoneResponse":
+        # This versioned presentation set reads measured values from its
+        # authenticated source result. Response revalidation must not refill
+        # deliberately unknown measurements using the conventional gauge.
+        if self.historical and self.historical.dataset_id == "gma-active-only-20260909-v1":
+            return self
         target_depth = self.depth_override or self.depth
         if target_depth and (self.depth_meters is None or self.depth_formatted is None):
             measurement = get_flood_depth_measurement(target_depth)
@@ -494,6 +502,7 @@ class MergeConflict(BaseModel):
     field: str  # "severity", "depth", "direction", "passable_vehicles"
     message: str
     suggested_value: Any
+    conflict_type: Optional[str] = "discrepancy"
 
 
 class MergeCandidateItem(BaseModel):

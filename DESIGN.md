@@ -118,6 +118,8 @@ flowchart TD
 
 ---
 
+The explicitly selected `connected-road-noah-v1` policy follows authenticated connected roads across administrative borders and intersects the existing 25 m margin with retained NOAH envelopes. Administrative names disambiguate and describe; physical identity, exact centerlines, modeled gaps, grade and spatial coverage govern extent. Earlier contracts retain their behavior. Restricted active presentation output remains outside real history and routing. See [connected-road evidence](docs/evaluations/gma-connected-road-20261023.md).
+
 ## 4. UI & Security Boundaries
 
 ### UI Constraints (Frontend):

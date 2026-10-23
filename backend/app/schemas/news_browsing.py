@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.news_candidate import NewsArticleSummary, NewsExtractionRunSummary
 from app.schemas.news_presentation import NewsFloodSummary
@@ -73,6 +73,7 @@ class NewsArticleVersionSummary(BaseModel):
 
 
 class NewsArticleDetail(BaseModel):
+    historical_outputs: dict[int, list[dict]] = Field(default_factory=dict)
     article: NewsArticleSummary
     publisher: str
     body_status: BodyStatus

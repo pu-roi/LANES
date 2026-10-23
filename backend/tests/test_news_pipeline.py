@@ -10,6 +10,7 @@ from app.services.news_evaluation_service import EvaluationSummary
 from app.services.news_processing_service import ProcessingSummary
 from app.services.news_publication_service import PublicationSummary
 from app.services.news_footprint_worker_service import FootprintWorkerSummary
+from app.services.news_claim_auditor import AuditorConfig, AuditorConfigurationError, NewsClaimAuditor
 
 
 @pytest.fixture(autouse=True)
@@ -137,3 +138,53 @@ async def test_progress_reports_real_stage_boundaries_and_committed_counts(monke
     assert [stage for stage, result in updates if result is None] == ["extraction", "seed", "evaluation", "publication", "footprints"]
     assert updates[1][1]["completed"] == 2
     assert updates[5][1]["retry_wait"] == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('kind', ['constructor', 'provider', 'revision'])
+async def test_invalid_auditor_runs_only_independent_expiry_and_preserves_error(monkeypatch, kind):
+    def forbidden(*_args, **_kwargs):
+        pytest.fail('Invalid auditor reached dependent work, provider IO or policy construction')
+    for name in ('process_saved_news', 'seed_claim_evaluations', 'evaluate_news_claims',
+                 'process_news_footprints', 'runtime_configuration', 'evaluation_policy'):
+        monkeypatch.setattr(pipeline, name, forbidden)
+    monkeypatch.setattr(publication, 'process_news_publications', forbidden)
+    monkeypatch.setattr(NewsClaimAuditor, '_request', forbidden)
+    expected = {'constructor': 'auditor_configuration_invalid', 'provider': 'auditor_provider_not_configured',
+                'revision': 'auditor_config_revision_invalid'}[kind]
+    auditor = None
+    if kind == 'constructor':
+        monkeypatch.setenv('LANES_NEWS_AUDITOR_BATCH_SIZE', 'private-invalid-setting')
+    else:
+        auditor = NewsClaimAuditor(AuditorConfig(provider='missing' if kind == 'provider' else 'source_rules',
+            model='source-rules-v1', config_revision='INVALID!' if kind == 'revision' else 'default'))
+    factory = object()
+    calls = []
+    summary = PublicationSummary(expired=2)
+    def maintain(actual, **kwargs):
+        assert actual is factory and kwargs['limit'] == 7 and kwargs['clock']() is now
+        calls.append('maintenance')
+        return summary
+    monkeypatch.setattr(publication, 'process_news_expiry', maintain)
+    now = datetime(2026, 10, 22, tzinfo=timezone.utc)
+    with pytest.raises(AuditorConfigurationError) as caught:
+        await pipeline.run_news_pipeline(factory, limit=7, auditor=auditor, clock=lambda: now)
+    assert caught.value.code == str(caught.value) == expected
+    assert caught.value.maintenance_summary is summary
+    assert calls == ['maintenance']
+    assert 'private-invalid-setting' not in str(caught.value)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('failure,expected', [(SQLAlchemyError('private connection details'), 'maintenance_storage_unavailable'),
+                                           (RuntimeError('private details'), 'maintenance_failed')])
+async def test_maintenance_failure_never_hides_original_configuration_error(monkeypatch, failure, expected):
+    def unavailable(*_args, **_kwargs):
+        raise failure
+    monkeypatch.setattr(publication, 'process_news_expiry', unavailable)
+    monkeypatch.setenv('LANES_NEWS_AUDITOR_BATCH_SIZE', 'private-invalid-setting')
+    with pytest.raises(AuditorConfigurationError) as caught:
+        await pipeline.run_news_pipeline(object())
+    assert caught.value.code == 'auditor_configuration_invalid'
+    assert caught.value.maintenance_summary.skipped == [{'reason_code': expected}]
+    assert 'private' not in str(caught.value.maintenance_summary)

@@ -1,0 +1,159 @@
+{
+  "status": "automatic_capture_fixed_and_approved_article_47_correction_applied",
+  "verified_at": "2026-10-22T03:45:31.022596+08:00",
+  "automatic_capture": {
+    "layouts": [
+      "GMA standard story_main",
+      "GMA AMP article-text"
+    ],
+    "retained": [
+      "source byline/publication/update evidence",
+      "paragraph and list boundaries",
+      "final reporting paragraph"
+    ],
+    "excluded": [
+      "repeated headline",
+      "Google promotion",
+      "photo captions",
+      "related stories",
+      "subsequently loaded stories",
+      "scripts"
+    ],
+    "missing_body": "explicit retrieval error; no outer-wrapper or index-summary fallback",
+    "september24_body_unchanged": true
+  },
+  "verification": {
+    "capture_discovery_replay_network_boundary_batch": {
+      "passed": 225,
+      "subtests_passed": 13,
+      "skipped": 20,
+      "failures": 0
+    },
+    "owned_postgis_native_batch": {
+      "passed": 22,
+      "skipped": 0,
+      "failures": 0,
+      "resolves_previous_20_skips": true,
+      "owned_databases_removed": 3,
+      "case_databases_remaining": 0
+    },
+    "distinct_passing_tests_across_batches": 245,
+    "broader_september9_extraction": {
+      "passed": 36,
+      "failed": 2,
+      "same_two_failures_reproduced_with_original_collector_in_memory": true,
+      "fixed_by_this_change": false
+    },
+    "syntax_checked_python_files": 7,
+    "live_publisher_fetch": "succeeded; 1297-character clean capture"
+  },
+  "source_capture_checks": [
+    {
+      "case": "gma-standard",
+      "capture_sha256": "6e346f4be0974ed3d97fcfc5142c56c54fa78b2f031008d6867a63b2271ca759",
+      "capture_unchanged": true,
+      "characters": 1297,
+      "error": null,
+      "google_promotion_absent": true,
+      "body_sha256": "f5ff7d13e255ed82ab9c024bcd1aae02fee4ce5806c4a7411bc818e2f58ed763",
+      "update_anchor": "2026-09-09T15:09:00+08:00",
+      "complete_final_reporting": true,
+      "has_malabon_and_marikina": true
+    },
+    {
+      "case": "gma-amp",
+      "capture_sha256": "511b862e24b6a17b6d503e8e4c3d2066858ef58bd3ef8c9cb13d88f247637823",
+      "capture_unchanged": true,
+      "characters": 1576,
+      "error": null,
+      "google_promotion_absent": true,
+      "body_sha256": "1f08813c11ed564e7c6db71df9a28220c9938dbc52986f015a2396a87a9be501",
+      "update_anchor": "2026-09-09T15:09:00+08:00",
+      "complete_final_reporting": true,
+      "has_malabon_and_marikina": true
+    },
+    {
+      "case": "tribune",
+      "capture_sha256": "a8f2948343b438218236d1ae06245c9d7cb3d291c2b42bbe211496bca0b9fadb",
+      "capture_unchanged": true,
+      "characters": 1136,
+      "error": null,
+      "google_promotion_absent": true,
+      "body_sha256": "dc4773d602277a22fb0660705e21eb45f64125f4bd8167cd55ad21ec3350bc0f",
+      "exact_saved_september24_body_preserved": true
+    }
+  ],
+  "prepared_replacement": {
+    "status": "prepared_not_applied",
+    "article_id": 47,
+    "previous_version_id": 137,
+    "previous_input_fingerprint": "b7dc414b045b1f203a385867169a74b8af5d18553f86a07b51d1a2921055c131",
+    "previous_body_sha256": "a7b92b1ec22db882779dcc2d3f0d3dc153d834f325a00432a551d04357b57708",
+    "previous_characters": 1970,
+    "replacement_characters": 1297,
+    "replacement_body_sha256": "f5ff7d13e255ed82ab9c024bcd1aae02fee4ce5806c4a7411bc818e2f58ed763",
+    "replacement_input_fingerprint": "3305b740213c71681f13fdb53f4ed1a3141f4b8e4d00a6294e5d22afa06af7fa",
+    "published_at": "2026-09-09T01:19:06+00:00",
+    "publisher_updated_at": "2026-09-09T15:09:00+08:00",
+    "database_read_only": true,
+    "database_writes": false,
+    "native_inference": false,
+    "archive_or_zone_writes": false,
+    "frozen_e0_package_changed": false
+  },
+  "shared_database_mutation": true,
+  "ui_changes": false,
+  "schema_changes": false,
+  "new_dependencies": false,
+  "deployment": false,
+  "commit_or_push": false,
+  "shared_database_authorization": "Explicit user approval: Apply this one-article correction. Limited to article 47 source capture/new immutable version/completed rules-only run; no publication, activation or native inference.",
+  "applied_correction": {
+    "status": "applied_and_saved_readers_verified",
+    "verified_at": "2026-10-21T19:44:19.343256+00:00",
+    "database": "lanes",
+    "verification_read_only": true,
+    "article_id": 47,
+    "article_version_id": 140,
+    "run_id": 140,
+    "mode": "rules_only",
+    "run_status": "completed",
+    "pipeline_version": "rules-spatial-preview-v21:0ff4b222542397c710ebf51dfd55908a14a4edc0ac137d59f026eda10373ba32",
+    "body_sha256": "f5ff7d13e255ed82ab9c024bcd1aae02fee4ce5806c4a7411bc818e2f58ed763",
+    "input_fingerprint": "3305b740213c71681f13fdb53f4ed1a3141f4b8e4d00a6294e5d22afa06af7fa",
+    "reader_rows": 3,
+    "reader_roads": [
+      "Rizal Ave",
+      "F. Sevilla Blvd",
+      "Marcos Highway"
+    ],
+    "original_version_137_fingerprint_unchanged": true,
+    "old_runs_retained": [
+      137,
+      139
+    ],
+    "old_history_matches_pre_correction_inspection": true,
+    "retained_inactive_zones": [
+      61,
+      62,
+      63
+    ],
+    "table_counts": {
+      "flood_events": 56,
+      "flood_avoidance_zones": 56,
+      "news_claim_cases": 53,
+      "news_claim_sources": 53,
+      "news_claim_evaluations": 75,
+      "news_claim_decisions": 87,
+      "news_claim_zone_links": 6
+    },
+    "article_47_versions": 2,
+    "article_47_runs": 3,
+    "native_inference": false,
+    "publication_called": false,
+    "flood_lifecycle_writes": false,
+    "schema_changes": false,
+    "frozen_e0_package_changed": false,
+    "apply_transaction": "source/version/pending-run/owned-completion saved atomically; before/after retained-row hash checks passed in apply transaction and immediately after commit; final reader checks completed read-only after fixing DTO access in operator verification"
+  }
+}

@@ -115,6 +115,8 @@ async def test_result_detail_uses_artifact_capture_and_unavailable_lifecycle(res
         data = response.json()
         assert data["item"]["key"] == "1:1"
         assert data["item"]["title"] == data["captured_input"]["title"] == "Older headline"
+        assert data['source_review']['state'] == 'different_capture'
+        assert data['source_review']['current_input']['article_text'] != data['captured_input']['article_text']
         assert "abot-tuhod" in data["captured_input"]["article_text"]
         assert data["claim"]["raw_place_name"] == "Flood 100% here"
         assert data["claim"]["condition"] == "receding"

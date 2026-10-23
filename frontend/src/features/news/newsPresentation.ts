@@ -20,6 +20,9 @@ export const bodyLabels: Record<BodyStatus, string> = {
 
 export const readable = (value: string | null | undefined) => value?.replaceAll("_", " ") || "Not recorded";
 
+/** Decorative plain-text bullets are not video controls. Saved evidence is untouched. */
+export const articleDisplayText = (value: string) => value.replace(/^([\t ]*)▶️?[\t ]*/gm, "$1");
+
 export function floodSummaryData(summary: NewsFloodSummary, publishedAt?: string | null): FloodLocationSummaryData {
   return { location: summary.location, area: summary.area, locationQualifier: summary.location_qualifier,
     waterLevel: summary.water_level, condition: summary.condition, floodTimeLabel: summary.flood_time_label,

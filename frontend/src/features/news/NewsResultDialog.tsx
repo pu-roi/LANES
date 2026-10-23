@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FileText, History, MapPin } from "lucide-react";
 import { Button, FloodLocationSummary, RecordDetailsDialog, RecordDetailsPanels, Skeleton, Tabs, TabContentPanel } from "@/shared/ui";
 import { getNewsResult } from "./newsApi";
-import { floodSummaryData } from "./newsPresentation";
+import { articleDisplayText, floodSummaryData } from "./newsPresentation";
 import { NewsSourceArticle } from "./NewsSourceArticle";
 import { NewsProcessingDetails } from "./NewsProcessingDetails";
 import { NewsExtractionRecordView } from "./NewsExtractionRecordView";
@@ -16,14 +16,14 @@ const tabs = [{ id: "flood", label: "Flood Details", icon: MapPin }, { id: "sour
 type SourcePane = "article" | "history";
 const sourcePanes = [{ id: "article", label: "Article", icon: FileText }, { id: "history", label: "Processing history", icon: History }] satisfies { id: SourcePane; label: string; icon: typeof MapPin }[];
 
-export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number; claimIndex: number; onClose: () => void }) {
+export function NewsResultDialog({ runId, claimIndex, groupId, onClose }: { runId: number; claimIndex: number | null; groupId?: string; onClose: () => void }) {
   const router = useRouter();
   const [tab, setTab] = useState<DetailTab>("flood");
   const [direction, setDirection] = useState(1);
   const [mobileHistory, setMobileHistory] = useState(false);
   const [inspectedRunId, setInspectedRunId] = useState<number | null>(null);
   const recordOpener = useRef<HTMLButtonElement | null>(null);
-  const query = useQuery({ queryKey: ["news-result", runId, claimIndex], queryFn: ({ signal }) => getNewsResult(runId, claimIndex, signal), retry: false, refetchOnWindowFocus: false });
+  const query = useQuery({ queryKey: ["news-result", runId, claimIndex, groupId], queryFn: ({ signal }) => getNewsResult(runId, claimIndex, signal, groupId), retry: false, refetchOnWindowFocus: false });
   const data = query.data;
   const changeTab = (next: DetailTab) => { setDirection(next === "source" ? 1 : -1); setTab(next); setMobileHistory(false); setInspectedRunId(null); };
   const inspectRun = (id: number, opener: HTMLButtonElement) => { recordOpener.current = opener; setInspectedRunId(id); };
@@ -35,8 +35,9 @@ export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number
       <div className="shrink-0"><Tabs<DetailTab> tabs={tabs} activeTab={tab} onChange={changeTab} variant="underline" layoutId="news-flood-detail-tabs" tabClassName="min-h-11 min-w-0 focus-visible:ring-2 focus-visible:ring-blue-500" /></div>
       <div className={inspectedRunId !== null ? "hidden" : "flex min-h-0 flex-1 flex-col gap-4"}>
       {tab === "source" && <div className="shrink-0 lg:hidden"><Tabs<SourcePane> tabs={sourcePanes} activeTab={mobileHistory ? "history" : "article"} onChange={(next) => setMobileHistory(next === "history")} variant="underline" fullWidth tabClassName="min-h-11 px-2 text-xs focus-visible:ring-2 focus-visible:ring-blue-500" layoutId="news-source-panes" /></div>}
-      <RecordDetailsPanels mainLabel="News evidence" asideLabel="Article processing records" showAsideOnMobile={tab === "source" && mobileHistory} main={<TabContentPanel tabKey={tab} direction={direction}>
+      <RecordDetailsPanels mainLabel="News evidence" asideLabel="Article processing records" scrollable={tab === "source"} showAsideOnMobile={tab === "source" && mobileHistory} main={<TabContentPanel tabKey={tab} direction={direction}>
         {tab === "flood" ? <section aria-label="Flood details" className="space-y-4">
+          {data.source_review?.state === "different_capture" && <p role="alert" className="text-sm leading-6 text-amber-800">This observation comes from a different saved article version. Review Source Article before using these details.</p>}
           <FloodLocationSummary showPublication={false} data={floodSummaryData(data.item.summary, data.captured_input.published_at)} locationDetails={
             <section aria-label="Reported location" className="space-y-3">
               <h4 className="text-sm font-semibold text-slate-900">Reported location</h4>
@@ -49,14 +50,22 @@ export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number
               </dl>
             </section>
           } />
+          {data.depth_scope === "shared" && <p className="text-xs leading-5 text-slate-600">The article reports this depth for a group of roads, without a separate measurement for this road.</p>}
           {data.item.summary.reading_reason && <p className="text-sm text-amber-800">Needs checking: {data.item.summary.reading_reason}</p>}
-          <div className="space-y-2"><h4 className="text-sm font-semibold">What the article says</h4><blockquote className="whitespace-pre-wrap break-words border-l-2 border-blue-200 pl-3 text-sm leading-6 text-slate-600">{data.claim.evidence_sentence}</blockquote>{data.claim.event_time_raw && <p className="text-xs text-slate-500">Time wording: {data.claim.event_time_raw}</p>}</div>
+          <div className="space-y-2"><h4 className="text-sm font-semibold">What the article says</h4><blockquote className="whitespace-pre-wrap break-words border-l-2 border-blue-200 pl-3 text-sm leading-6 text-slate-600">{articleDisplayText(data.supporting_passages?.length ? data.supporting_passages.join("\n") : data.claim.evidence_sentence || "No supporting passage recorded.")}</blockquote>{data.claim.event_time_raw && <p className="text-xs text-slate-500">Time wording: {data.claim.event_time_raw}</p>}</div>
           <p className="text-xs text-slate-500">Times shown in Philippine time. This is the flood described by the article, not confirmation of flooding now.</p>
-          <Button variant="outline" className="min-h-11 w-full gap-2 sm:w-auto"
+          {claimIndex !== null && <Button variant="outline" className="min-h-11 w-full gap-2 sm:w-auto"
             onClick={() => router.push(`/admin/map?review_news=${runId}:${claimIndex}`)}>
             <MapPin className="size-4" aria-hidden="true" />Inspect placement on map
-          </Button>
-        </section> : <NewsSourceArticle articleId={data.item.article_id} source={data.captured_input} publisher={data.item.publisher} savedAt={data.item.saved_at} presentation="reader" />}
+          </Button>}
+        </section> : <section className="space-y-4">
+          {data.source_review?.state === "different_capture" && <p role="alert" className="text-sm leading-6 text-amber-800">The current saved publisher article differs from this observation’s input. Original evidence is in Processing history.</p>}
+          {data.source_review?.state === "current_unavailable" && <p role="alert" className="text-sm text-amber-800">The current article body is unavailable. Showing the saved extraction input.</p>}
+          <NewsSourceArticle articleId={data.item.article_id} source={data.source_review?.current_input ?? data.captured_input} publisher={data.item.publisher}
+            savedAt={data.source_review ? data.source_review.current_input ? data.source_review.current_fetched_at ?? "" : data.source_review.selected_captured_at : data.item.captured_at}
+            captureLabel={data.source_review?.current_input ? "Publisher capture retrieved" : "Extraction input saved"} presentation="reader" />
+          <p className="text-xs leading-5 text-slate-500">Saved article text; the publisher may update its live page after retrieval.</p>
+        </section>}
       </TabContentPanel>} aside={tab === "source" ? <NewsProcessingDetails articleId={data.item.article_id} currentRunId={runId} presentation="panel" onInspectRun={inspectRun} /> : undefined} />
       </div>
       {tab === "source" && inspectedRunId !== null && <NewsExtractionRecordView key={inspectedRunId} articleId={data.item.article_id} runId={inspectedRunId} currentRunId={runId} onBack={backToArticle} />}

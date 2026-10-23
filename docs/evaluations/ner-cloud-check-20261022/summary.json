@@ -1,0 +1,1220 @@
+{
+  "automatic_processing_connected": false,
+  "built_image_credential_guard_passed": true,
+  "cloud_acceptance": {
+    "actual_cloud_model_sessions": 1,
+    "application_isolation": {
+      "cloud_sql_binding": false,
+      "database_credentials": false,
+      "matching_schedules": 0,
+      "ordinary_worker_image_and_args_unchanged": true,
+      "runtime_project_roles": [],
+      "user_managed_keys": 0
+    },
+    "automatic_processing_connected": false,
+    "automatic_retries": 0,
+    "claim_sha256": "1d0aebc4500ec24f60da3dc58d1312a6b170764fd414ad6648adaafc4b4326b7",
+    "cleanup_authorized": false,
+    "cloud_qualification_passed": true,
+    "completed_at": "2026-10-22T04:04:01.937441Z",
+    "configuration": {
+      "configured_cpu": 1,
+      "configured_memory_bytes": 3221225472,
+      "database_credentials": false,
+      "execution": "lanes-ner-check-nbpmz",
+      "image_index": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:e9fb8f878b3e84283cfd46da4e154db24357bd107bf15f8753f4b96510eb8e42",
+      "max_retries": 0,
+      "platform_image": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:0ae3389fca6b827cbd80ecc2a6872262ab5f48954820cb8c8bb08ac6a5a56c59",
+      "tasks": 1,
+      "timeout_seconds": 600
+    },
+    "database_access": false,
+    "execution": "lanes-ner-check-nbpmz",
+    "failure_events": 0,
+    "freeze_sha256": "6e89a749a81439187fa1dd60a9058843bb3e9af03af9be7e288ab11cd7f6a49b",
+    "full_model_attempts_this_revision": 1,
+    "history_seeding": false,
+    "image_index": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:e9fb8f878b3e84283cfd46da4e154db24357bd107bf15f8753f4b96510eb8e42",
+    "inference_started": true,
+    "job": "lanes-ner-check",
+    "local_linux_container_cases": 12,
+    "local_tests": 150,
+    "longest_request_seconds": 15.455119029000002,
+    "model_manifest_sha256": "13137f64b216d2a9f2978f0eb3d278950754dc56731688495b8348f2ad43a8cd",
+    "model_runtime_isolation_unchanged": true,
+    "original_failed_attempts_retained": true,
+    "package_id": "ca02f710217295ca019c7162470fd4471bb20bcf6ad61e0f335478f2b690f79d",
+    "passage_p95_seconds": 0.04006447799997659,
+    "peak_mib": 2067.3046875,
+    "previous_receipt_files_verified": 418,
+    "prior_diagnostic_executions": 2,
+    "production_deployment": false,
+    "project": "lanes-project-508809",
+    "region": "asia-east1",
+    "resolved_platform_manifest": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:0ae3389fca6b827cbd80ecc2a6872262ab5f48954820cb8c8bb08ac6a5a56c59",
+    "resource_profile": "cloud-run-v1",
+    "results": {
+      "checks": {
+        "articles": true,
+        "cleanup": true,
+        "cold": true,
+        "headroom": true,
+        "passage_p95": true,
+        "session": true,
+        "startup_request_cleanup": true,
+        "stress": true
+      },
+      "cleanup_seconds": 0.18347261899998557,
+      "cold_seconds": 4.9636656409999205,
+      "measured_cpu_fraction_max": 1.043,
+      "measured_cpu_fraction_min": 1.043,
+      "peak_bytes": 2167726080,
+      "records": 355,
+      "resource_profile": "cloud-run-v1",
+      "resource_snapshots": 358,
+      "retained_prediction_records": 352,
+      "reviewed_article_mentions": 53,
+      "separate_cloud_configuration_verification_required": true,
+      "session_seconds": 30.734199278000006,
+      "swap_basis_counts": {
+        "host_no_swap": 358
+      }
+    },
+    "schema": "lanes-ner-cloud-full-qualification-verification-v1",
+    "scope": "Known-input deployment regression with approved cloud resource profile; not a new accuracy benchmark or pipeline/data release",
+    "started_at": "2026-10-22T04:03:18.677994Z",
+    "status": "passed_cloud_ner_acceptance_isolated_job",
+    "task_attempt": 0,
+    "task_exit_code": 0,
+    "temporary_cloud_resources_retained": true,
+    "timings": {
+      "article": [
+        0.09530308299997614,
+        0.12392202299997734,
+        0.03737920100002157,
+        0.4204463080000096,
+        0.7170116620000044,
+        0.03742688099998759
+      ],
+      "passage": [
+        0.1596025200000213,
+        0.027569206999942253,
+        0.017034901999977592,
+        0.027447327000004407,
+        0.01762120299997605,
+        0.045120600000018385,
+        0.025043962000040665,
+        0.03487896499996168,
+        0.03182731699996566,
+        0.03121212599990031,
+        0.022411244999943847,
+        0.02666416499994284,
+        0.026990234999971108,
+        0.02573835299995153,
+        0.02277721500001917,
+        0.024539220000065143,
+        0.02415607899990846,
+        0.021209261999956652,
+        0.02350195700000768,
+        0.025087101000053735,
+        0.024438999999915723,
+        0.02420359899997493,
+        0.026817434999998113,
+        0.02704316699998799,
+        0.026938975000007304,
+        0.026733936000027825,
+        0.023592297000050166,
+        0.026044143000035547,
+        0.023916869000004226,
+        0.016140298999971492,
+        0.02521436100005303,
+        0.026497194999933527,
+        0.026291184000001522,
+        0.03193463800005247,
+        0.021448032000080275,
+        0.031005125999968186,
+        0.022473415000035857,
+        0.024044318000051135,
+        0.026171824000016386,
+        0.028251149000084297,
+        0.03641466900000978,
+        0.029583532000060586,
+        0.07948136400000294,
+        0.031100145999971573,
+        0.01923575700004676,
+        0.020619650999947226,
+        0.021504832999994505,
+        0.017789543999924717,
+        0.02239431499992861,
+        0.017281892000028165,
+        0.022952035999992404,
+        0.013160982000044896,
+        0.012349169999993137,
+        0.014265634999901522,
+        0.019547167999917292,
+        0.021138661999998476,
+        0.027850779000004877,
+        0.025503522999997585,
+        0.020527190000052542,
+        0.01914966699996512,
+        0.019742228000040996,
+        0.018429435000030026,
+        0.016911901999947077,
+        0.017701404000035836,
+        0.02342093700008263,
+        0.03626832899999499,
+        0.019158556999968823,
+        0.023266647000014018,
+        0.025046720999966965,
+        0.02314737699998659,
+        0.021665901999995185,
+        0.02346253700000034,
+        0.019049436999921454,
+        0.027424116999895887,
+        0.026506035000011252,
+        0.028419948999953704,
+        0.02685791600003995,
+        0.02317671599996629,
+        0.07313102900002377,
+        0.03605550800000401,
+        0.02145741200001794,
+        0.021137902000077702,
+        0.018134975000066333,
+        0.024939141000004383,
+        0.027338407000002007,
+        0.020269869999992807,
+        0.037305351999975755,
+        0.02786413800004084,
+        0.017390901999988273,
+        0.02227689400001509,
+        0.021530002999952558,
+        0.031447817000071154,
+        0.060532208000040555,
+        0.023722738000060417,
+        0.021239931999957662,
+        0.02386917799992716,
+        0.02713257599998542,
+        0.02064781999990828,
+        0.02625280400002339,
+        0.027178435999985595,
+        0.026111883999988095,
+        0.02715888599993832,
+        0.025426961999983178,
+        0.021334541999976864,
+        0.01980333899996367,
+        0.01663971000004949,
+        0.012909261000004335,
+        0.01502107699991484,
+        0.013712873000031323,
+        0.020598629999994955,
+        0.023613857999976062,
+        0.024762591000012435,
+        0.051430225999979484,
+        0.07662438699992435,
+        0.020369710000068153,
+        0.03220543899999484,
+        0.021842773000003035,
+        0.023745727999994415,
+        0.04979624199995669,
+        0.024006558999985828,
+        0.021470852999982526,
+        0.019543128000009347,
+        0.02464559999998528,
+        0.012447199999996883,
+        0.0593424750001077,
+        0.02663533500003723,
+        0.017527803000007225,
+        0.021291301000019303,
+        0.026602655000033337,
+        0.021551923000060924,
+        0.023229166999954032,
+        0.023335087000077692,
+        0.019609857999967062,
+        0.020607420000033017,
+        0.023846788000014385,
+        0.02657939499999884,
+        0.0287128310000071,
+        0.02226894499995069,
+        0.0228407460000426,
+        0.04221676299994215,
+        0.029344951000098263,
+        0.018560074999982135,
+        0.019057385999985854,
+        0.02349294700002247,
+        0.019991518999972868,
+        0.020324419000075977,
+        0.024127189000068938,
+        0.016889111999944362,
+        0.018539734999990287,
+        0.01703009099992414,
+        0.02857273000006444,
+        0.01489797700003237,
+        0.020349459999920327,
+        0.02171152300002177,
+        0.023957237999979952,
+        0.02560334200006764,
+        0.02361116800000218,
+        0.027169545999981892,
+        0.027048317000094357,
+        0.023919019000004482,
+        0.019131046999973478,
+        0.02099929099995279,
+        0.016997862000039277,
+        0.0161214590000327,
+        0.020763061000025118,
+        0.020488760000034745,
+        0.014144743999963794,
+        0.015621108000004824,
+        0.015442567999912171,
+        0.025649232999967353,
+        0.026408165000020745,
+        0.019457117000001745,
+        0.0212195920000795,
+        0.022476695000023028,
+        0.016012188999980026,
+        0.03636724900002264,
+        0.021913743000027353,
+        0.02597454299996116,
+        0.019371467000041775,
+        0.02664417500000127,
+        0.025411741999960213,
+        0.05093782400001601,
+        0.015778229000034116,
+        0.020994761999986622,
+        0.027686187999961476,
+        0.02519150199998421,
+        0.028150389000074938,
+        0.022702774999970643,
+        0.023809098000015183,
+        0.02220108399990295,
+        0.01593787899992094,
+        0.025172591000000466,
+        0.01610344999994595,
+        0.01603402900002493,
+        0.01964889900000344,
+        0.021596153000018603,
+        0.023018766000063806,
+        0.0228515649999963,
+        0.014526724999996077,
+        0.015385187999982008,
+        0.014644936000081543,
+        0.014051173999973798,
+        0.01500530600003458,
+        0.020651720000046225,
+        0.02205658399998356,
+        0.01935391699998945,
+        0.020897241000056965,
+        0.030424025000002075,
+        0.025792402999968544,
+        0.02916858100002173,
+        0.020766320999996424,
+        0.02666445499994552,
+        0.022734935000016776,
+        0.02413393899996663,
+        0.022981766000043535,
+        0.015299077000008765,
+        0.048236329000019396,
+        0.01703454200003307,
+        0.01774143400007233,
+        0.016089649000036843,
+        0.01320317200008958,
+        0.020151328999986617,
+        0.012855891999947744,
+        0.017373012000007293,
+        0.01602173899993886,
+        0.016952832000015405,
+        0.017903774000046724,
+        0.03827612300005967,
+        0.023120446999996602,
+        0.013927753999951165,
+        0.018436585000017658,
+        0.018468616000063776,
+        0.025209791999941444,
+        0.02264772500006984,
+        0.02231609400007528,
+        0.018508665000013025,
+        0.029996293000067453,
+        0.011945308999997906,
+        0.018160574000035012,
+        0.01522585700001855,
+        0.013597373000038715,
+        0.013401582000028611,
+        0.017308651999996982,
+        0.026484114000027148,
+        0.014367525000011483,
+        0.015224666999984038,
+        0.01653297100006057,
+        0.013372692999951141,
+        0.015880759000083344,
+        0.014322905000085484,
+        0.015330176999896139,
+        0.016518550000000687,
+        0.014777466000055028,
+        0.012936371000023428,
+        0.015123177000077703,
+        0.017781973999944967,
+        0.015285227000049417,
+        0.01570088800008307,
+        0.02250149499991494,
+        0.015554947999930846,
+        0.015388497000003554,
+        0.01357410399998571,
+        0.014113965000092321,
+        0.011750518999974702,
+        0.020533679999971355,
+        0.01695747200005826,
+        0.01627621900001941,
+        0.02309281700001975,
+        0.010932827000033285,
+        0.010335875000009764,
+        0.01497658699997828,
+        0.016044619000012972,
+        0.018379073999994944,
+        0.013390722999929494,
+        0.01790362399992773,
+        0.016411240000024918,
+        0.013865384000041558,
+        0.011884518999977445,
+        0.013835384000003614,
+        0.015076257000032456,
+        0.023075215999938337,
+        0.015289417000076355,
+        0.012164940000047864,
+        0.017244042000015725,
+        0.01835246499990717,
+        0.020723961000044255,
+        0.014804776000005404,
+        0.01645891999999094,
+        0.018249503999982153,
+        0.01714296199997989,
+        0.01496440599999005,
+        0.01975223800002368,
+        0.020132909000039945,
+        0.018529375000071013,
+        0.012539059999994606,
+        0.04006447799997659,
+        0.030393425000056595,
+        0.030164354000021376,
+        0.027081736000013734,
+        0.018293825000000652,
+        0.026360724000028313,
+        0.04372519599996849,
+        0.03506499599996005,
+        0.019250587999977142,
+        0.020878211000081137,
+        0.02089908099992499,
+        0.024263209000082497,
+        0.027809488000002602,
+        0.016366430000061882,
+        0.029356631999917226,
+        0.02605653400007668,
+        0.043855276999920534,
+        0.017990963999977794,
+        0.03869009400000323,
+        0.02837684899998294,
+        0.01864745499995024,
+        0.03668936899998698,
+        0.03295758100000512,
+        0.016107679000015196,
+        0.02505893099998957,
+        0.02837009899997156,
+        0.0315359769999759,
+        0.047400124999967375,
+        0.025840123000079984,
+        0.01962286800005586,
+        0.018693756000061512,
+        0.019796089000010397,
+        0.021602002000008724,
+        0.037838102000023355,
+        0.03149202700001297,
+        0.021399232000021584,
+        0.033169181000062053,
+        0.026597835000075065,
+        0.05639640699996562,
+        0.061567960999923343,
+        0.026484184999958416,
+        0.015119596999966234,
+        0.013316983000095206,
+        0.016043999999965308,
+        0.022476514999993924,
+        0.015645987999960198,
+        0.018041035000010197,
+        0.017989103999980216,
+        0.023118175999911728,
+        0.021543763000067884
+      ],
+      "reviewed": [
+        0.18504446199995073
+      ],
+      "stress": [
+        0.011348378000093362,
+        0.011987219000047844,
+        15.455119029000002
+      ]
+    },
+    "total_cloud_executions": 4,
+    "verified_at": "2026-10-22T12:06:28.916065+08:00"
+  },
+  "cloud_acceptance_receipt_sha256": {
+    "application-isolation-verification.json": "d477d2f053b6fac4fb3d84ef92ac7d1703f7dcbce2297d87f0dd1a6ea7e3d5c6",
+    "cloud-acceptance.json": "d27e760485dce1f555d621f6e2a0ab2a74565be96a4fa16bceb54d7b73575e18",
+    "cloud-configuration-verification.json": "654cca6a731f69a27d49ca6114cbef9e88f473fba5707882f7f54da88e47e08e",
+    "final-receipt-manifest.json": "3aa5113ff293ea308021a03bc0f83ba0e74c5b7d0a4215bd4f8a43ba2cd4a49f",
+    "independent-results-verification.json": "27a1ca1ed9880980756aaa8e610af9a6a42e770ba193ab604eee1bc1538df0ae",
+    "probe-events.json": "8b8fa96aa87a47dd7998f337df16740749f63fbfb07fa970b207e028bbcbfe77",
+    "qualification-verification.json": "e49155d065f0ed83e345943ee031cf38d0e498020c95713d13fd90e14fb3315d"
+  },
+  "cloud_changes": true,
+  "cloud_creation": {
+    "cloud_inference_attempts": 0,
+    "cloud_sql_bindings": [],
+    "database_writes": false,
+    "environment_names": [
+      "LANES_NER_CHECK_PROFILE"
+    ],
+    "execution_authorized": false,
+    "executions": 0,
+    "existing_worker_modified": false,
+    "extra_iam_grants": false,
+    "image": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:37fbb6ee0d68b166038687200b39744dfd91c127ddad3de36b020aeb0b608123",
+    "image_digest": "sha256:37fbb6ee0d68b166038687200b39744dfd91c127ddad3de36b020aeb0b608123",
+    "initial_creation_propagation_failure_preserved": true,
+    "job": "lanes-ner-check",
+    "matching_regional_schedules": 0,
+    "max_retries": 0,
+    "migrations": false,
+    "parallelism": 1,
+    "project": "lanes-project-508809",
+    "ready": true,
+    "region": "asia-east1",
+    "resources": {
+      "cpu": "1",
+      "memory": "3Gi"
+    },
+    "runtime_project_roles": [],
+    "schema": "lanes-ner-cloud-check-created-v1",
+    "secrets": [],
+    "service_account": "lanes-ner-check@lanes-project-508809.iam.gserviceaccount.com",
+    "source_code_modified": false,
+    "status": "created_verified_not_executed",
+    "tasks": 1,
+    "timeout_seconds": 600,
+    "user_managed_service_account_keys": 0,
+    "verified_at": "2026-10-22T10:41:14.414315+08:00"
+  },
+  "cloud_diagnostic": {
+    "actual_cpu_fraction": 0.806,
+    "actual_cpu_period": 100000,
+    "actual_cpu_quota": 80600,
+    "actual_memory_limit_bytes": 3221225472,
+    "child_isolation_error": "parent_guard_failed",
+    "completed_at": "2026-10-22T03:20:30.060138Z",
+    "configured_resources": {
+      "cpu": "1",
+      "memory": "3Gi"
+    },
+    "database_access": false,
+    "diagnostic_execution_attempts": 1,
+    "diagnostics": {
+      "asset_validation_passed": true,
+      "cgroup_mounts": {
+        "entries": [
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/blkio",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [
+              "cpu",
+              "cpuacct"
+            ],
+            "mount_point": "/sys/fs/cgroup/cpu,cpuacct",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/cpuset",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/devices",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/freezer",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [
+              "memory"
+            ],
+            "mount_point": "/sys/fs/cgroup/memory",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/net_cls,net_prio",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/perf_event",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [
+              "pids"
+            ],
+            "mount_point": "/sys/fs/cgroup/pids",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/unified",
+            "type": "cgroup2"
+          }
+        ],
+        "status": "readable"
+      },
+      "diagnostic_schema": "lanes-ner-cloud-environment-v1",
+      "event": "diagnostics",
+      "inference_started": false,
+      "isolation_probe": {
+        "error_code": "parent_guard_failed",
+        "error_type": "RuntimeError",
+        "parent_pid": 1,
+        "pid": 10,
+        "status": "failed"
+      },
+      "package_id": "64867a5e67028b193ecb87f3133ee27d6a0020864205726daf2e4b0165dff4bc",
+      "process": {
+        "parent_pid": 0,
+        "pid": 1
+      },
+      "qualification_passed": false,
+      "resource_files": {
+        "v1_cpu_combined_period": {
+          "status": "readable",
+          "values": [
+            100000
+          ]
+        },
+        "v1_cpu_combined_quota": {
+          "status": "readable",
+          "values": [
+            80600
+          ]
+        },
+        "v1_cpu_period": {
+          "status": "readable",
+          "values": [
+            100000
+          ]
+        },
+        "v1_cpu_quota": {
+          "status": "readable",
+          "values": [
+            80600
+          ]
+        },
+        "v1_memory_and_swap_limit": {
+          "status": "readable",
+          "values": [
+            9.223372036854772e+18
+          ]
+        },
+        "v1_memory_and_swap_peak": {
+          "status": "readable",
+          "values": [
+            161259520
+          ]
+        },
+        "v1_memory_limit": {
+          "status": "readable",
+          "values": [
+            3221225472
+          ]
+        },
+        "v1_memory_peak": {
+          "status": "readable",
+          "values": [
+            161259520
+          ]
+        },
+        "v2_cpu": {
+          "status": "missing"
+        },
+        "v2_memory_limit": {
+          "status": "missing"
+        },
+        "v2_memory_peak": {
+          "status": "missing"
+        },
+        "v2_swap_limit": {
+          "status": "missing"
+        }
+      },
+      "schema": "lanes-ner-cloud-check-v1",
+      "strict_resource_check": {
+        "error_type": "FileNotFoundError",
+        "passed": false,
+        "resource_key": "v2_cpu"
+      }
+    },
+    "execution": "lanes-ner-check-wpsmc",
+    "existing_worker_rules_only_unchanged": true,
+    "freeze_sha256": "b1ef34a53c86ce35f33ae3ff35f5d34f6f7d1966b503f08e700567b864ca8569",
+    "image_index": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:d338e078dbfaf60059249149da136643329e85c29d24ded1e7dfb62a1d66ddfd",
+    "index_to_platform_manifest_verified": true,
+    "inference_started": false,
+    "job": "lanes-ner-check",
+    "matching_schedules": 0,
+    "max_retries": 0,
+    "missing_required_resource": "v2_cpu",
+    "package_id": "64867a5e67028b193ecb87f3133ee27d6a0020864205726daf2e4b0165dff4bc",
+    "project": "lanes-project-508809",
+    "qualification_passed": false,
+    "region": "asia-east1",
+    "resolved_linux_amd64_manifest": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:200f1d8ee412e142c3dd12f267d50541577b58402aa15adc7e0a4c079321fc60",
+    "runtime_project_roles": [],
+    "schema": "lanes-ner-cloud-diagnostic-verification-v1",
+    "scope": "diagnostic only; seccomp readiness/model/performance/shutdown acceptance still open",
+    "started_at": "2026-10-22T03:20:14.633472Z",
+    "status": "diagnostic_collected_startup_incompatibilities_confirmed",
+    "supervisor_pid": 1,
+    "task_attempt": 0,
+    "task_exit_code": 0,
+    "total_cloud_executions": 2,
+    "verified_at": "2026-10-22T11:23:03.128227+08:00",
+    "zero_swap_not_established": true
+  },
+  "cloud_diagnostic_execution_attempts": 2,
+  "cloud_diagnostic_receipt_sha256": {
+    "configuration-verification.json": "9359d3e531aaeeb83dc761d4166873685d228ebbfc0e9180a44bad57a2f53efd",
+    "diagnostic-verification.json": "ce84a36a08c9bc8becdd8368462cb9aca05058ee2810625d77d510e7c39309f9",
+    "probe-events.json": "ce27b3ea99fe9360651acd82c3725b886549920922e031e0fdac040d9d4ab7e0",
+    "receipt-manifest.json": "ed212b87942ca044579cc83e179a572acfa6f0a2bf7f5ed59d1b3768d2bf946c",
+    "registry-manifest-verification.json": "4e6f186da6e1caabc9fac51c486fb65d3a59fb794289d23a831dcede1221fdab"
+  },
+  "cloud_execution": {
+    "cloud_execution_attempts": 1,
+    "cloud_qualification_passed": false,
+    "completed_events": 0,
+    "database_writes": false,
+    "execution": "lanes-ner-check-m6bf8",
+    "execution_completed_at": "2026-10-22T02:44:10.129050Z",
+    "execution_started_at": "2026-10-22T02:43:54.587475Z",
+    "existing_news_worker_changed": false,
+    "image": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:37fbb6ee0d68b166038687200b39744dfd91c127ddad3de36b020aeb0b608123",
+    "independent_verifier_rejection": "incomplete_execution",
+    "job": "lanes-ner-check",
+    "max_retries": 0,
+    "migrations": false,
+    "missing_file_path": "not_reported_by_frozen_probe",
+    "model_changed": false,
+    "model_ready_events": 0,
+    "next_step_requires_approval": "bounded diagnostic probe change, followed by separately approved diagnostic execution",
+    "preflight_success_events": 0,
+    "probe_error_code": "ner_check_failed",
+    "probe_error_type": "FileNotFoundError",
+    "project": "lanes-project-508809",
+    "region": "asia-east1",
+    "result_records": 0,
+    "retry_performed": false,
+    "runtime_limits_changed": false,
+    "schedules_changed": false,
+    "schema": "lanes-ner-cloud-check-execution-verification-v1",
+    "source_code_changed": false,
+    "status": "failed_preflight_missing_file_no_retry",
+    "suspected_area": "cgroup-v2 resource-file assumptions; unconfirmed",
+    "task_attempt": 0,
+    "task_exit_code": 1,
+    "tasks": 1,
+    "verified_at": "2026-10-22T10:46:37.623277+08:00"
+  },
+  "cloud_execution_attempts": 4,
+  "cloud_full_qualification_attempts": 1,
+  "cloud_inference_attempts": 1,
+  "cloud_job_created": true,
+  "cloud_model_ready_events": 1,
+  "cloud_profile_receipt_sha256": {
+    "checks.xml": "2b464a1cb788362090ed5c84a7893ba30a72449cf61f2e5e73fd8f56d11a52af",
+    "cleanup.json": "6ffbece43e58f27efa25f708ead8ace3749d4d46b2338cfbd2cb90090bf4467d",
+    "cloud-qualification-proposal.json": "e8a75271accfd7abce6f933bfc7f4705338209a28bec99de647117f391a133c5",
+    "image-inventory.json": "e4350b5e9a95e2feaf5ef654aa3daf9f285853200a481be600490265434128cc",
+    "integration-checks.json": "423df5e2d28b8934fc9e33da49da2c5a2105090ea9f6983754814cca727de4c1",
+    "local-diagnostics.json": "713ffe96c6b23c244f3857ca6d20d1ed8d43a32da67bbaccc29271f56dc19ab7",
+    "local-profile-verification.json": "41ba060064987a3c3b41a1d8093edcbc67924f99a93b62cdd796ee586a124281",
+    "receipt-manifest.json": "5cbb976c3de5f5dff277752835a799e5175b4098fae06ae604ce750dd5f44c20"
+  },
+  "cloud_qualification_resource_profile": "cloud-run-v1",
+  "cloud_receipt_sha256": {
+    "creation-verification.json": "f648549e4043f822d2b677a1f1d645ded2ec2d54f1e5d48b868aa6a2627a52d1",
+    "execution-authorization.json": "dd87ddb651f45961716dba1336540c4f8482d42a439b09b4b5401c06ae844dbf",
+    "execution-final.json": "60ce9b13e9cee39ee7025e65b87be175d8d563dcf33e6707d2e0308026d3ed97",
+    "execution-tasks-final.json": "ba265389cf3fc888fb3ff9f4913371b541f485901300937795c8c58ebe39ebd1",
+    "execution-verification.json": "99f1d83388acb975173a6e5243ac9c679b8875487db3635c2a2dd1cb4185f3b9",
+    "probe-events.json": "30ab2997a98036a0e23d8682b1979099954e3751766ab2a5273593d2a7056d8b",
+    "registry-identity.json": "de9fb3c6af17b4c8f2db41c615bfe1e794d217c33e937e26dd266d165ec274f9"
+  },
+  "cloud_resource_profile_local_verification": {
+    "accepted_swap_bases": [
+      "enforced_zero_limit",
+      "host_no_swap"
+    ],
+    "cloud_operations_this_profile_revision": false,
+    "cloud_qualification_passed": false,
+    "configured_cloud_cpu": 1,
+    "database_access": false,
+    "exact_memory_limit_bytes": 3221225472,
+    "freeze_sha256": "6e89a749a81439187fa1dd60a9058843bb3e9af03af9be7e288ab11cd7f6a49b",
+    "headroom_bytes": 2818572288,
+    "image": "sha256:e9fb8f878b3e84283cfd46da4e154db24357bd107bf15f8753f4b96510eb8e42",
+    "independent_cloud_configuration_verifier_added": true,
+    "independent_resource_snapshots": 358,
+    "integration_cases": 12,
+    "measured_cpu_quota_must_be_finite_positive": true,
+    "model_runtime_isolation_unchanged": true,
+    "new_dependencies": [],
+    "new_neural_inference": false,
+    "owned_stopped_containers_removed": 14,
+    "package_id": "ca02f710217295ca019c7162470fd4471bb20bcf6ad61e0f335478f2b690f79d",
+    "previous_receipt_files_verified": 418,
+    "quota_is_recorded_not_rewritten_to_configured_cpu": true,
+    "resource_profile": "cloud-run-v1",
+    "schema": "lanes-ner-cloud-resource-profile-local-verification-v1",
+    "status": "approved_cloud_profile_verified_locally_full_cloud_approval_pending",
+    "strict_local_profile": "local-strict-v1",
+    "swap_checked_at": "preflight, ready, each of 355 requests, completed after cleanup",
+    "tests": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 150
+    },
+    "unchanged_prediction_oracle_records": 355,
+    "unchanged_retained_predictions": 352,
+    "verified_at": "2026-10-22T12:00:22.965993+08:00"
+  },
+  "cloud_service_account_created": true,
+  "cloud_startup_isolation_verified": true,
+  "cloud_verified": true,
+  "committed": false,
+  "corrected_cloud_diagnostic": {
+    "actual_cpu_fraction": 1.043,
+    "actual_cpu_period": 100000,
+    "actual_cpu_quota": 104300,
+    "actual_memory_limit_bytes": 3221225472,
+    "child_pid": 12,
+    "completed_at": "2026-10-22T03:48:10.150327Z",
+    "configured_resources": {
+      "cpu": "1",
+      "memory": "3Gi"
+    },
+    "database_access": false,
+    "diagnostic_execution_attempts_this_revision": 1,
+    "diagnostics": {
+      "asset_validation_passed": true,
+      "cgroup_mounts": {
+        "entries": [
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/blkio",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [
+              "cpu",
+              "cpuacct"
+            ],
+            "mount_point": "/sys/fs/cgroup/cpu,cpuacct",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/cpuset",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/devices",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/freezer",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [
+              "memory"
+            ],
+            "mount_point": "/sys/fs/cgroup/memory",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/net_cls,net_prio",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/perf_event",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [
+              "pids"
+            ],
+            "mount_point": "/sys/fs/cgroup/pids",
+            "type": "cgroup"
+          },
+          {
+            "controllers": [],
+            "mount_point": "/sys/fs/cgroup/unified",
+            "type": "cgroup2"
+          }
+        ],
+        "status": "readable"
+      },
+      "diagnostic_schema": "lanes-ner-cloud-environment-v2",
+      "event": "diagnostics",
+      "inference_started": false,
+      "isolation_probe": {
+        "isolation": {
+          "parent_death_signal": true,
+          "raw_socket_denied": true,
+          "seccomp": true,
+          "socket_families_denied": [
+            2,
+            10,
+            1
+          ]
+        },
+        "parent_pid": 11,
+        "pid": 12,
+        "status": "passed"
+      },
+      "package_id": "d77bb1fdc072f0535bfe58d9f7da76507afddd453d9cdc1ddee7412d59734da3",
+      "process": {
+        "parent_pid": 1,
+        "pid": 11
+      },
+      "qualification_passed": false,
+      "resource_files": {
+        "v1_cpu_combined_period": {
+          "status": "readable",
+          "values": [
+            100000
+          ]
+        },
+        "v1_cpu_combined_quota": {
+          "status": "readable",
+          "values": [
+            104300
+          ]
+        },
+        "v1_cpu_period": {
+          "status": "readable",
+          "values": [
+            100000
+          ]
+        },
+        "v1_cpu_quota": {
+          "status": "readable",
+          "values": [
+            104300
+          ]
+        },
+        "v1_memory_and_swap_limit": {
+          "status": "readable",
+          "values": [
+            "9223372036854771712"
+          ]
+        },
+        "v1_memory_and_swap_peak": {
+          "status": "readable",
+          "values": [
+            172666880
+          ]
+        },
+        "v1_memory_limit": {
+          "status": "readable",
+          "values": [
+            3221225472
+          ]
+        },
+        "v1_memory_peak": {
+          "status": "readable",
+          "values": [
+            172666880
+          ]
+        },
+        "v2_cpu": {
+          "status": "missing"
+        },
+        "v2_memory_limit": {
+          "status": "missing"
+        },
+        "v2_memory_peak": {
+          "status": "missing"
+        },
+        "v2_swap_limit": {
+          "status": "missing"
+        }
+      },
+      "resource_readings": {
+        "status": "readable",
+        "values": {
+          "cpu_period": 100000,
+          "cpu_quota": 104300,
+          "layout": "v1",
+          "memory_and_swap_limit_decimal": "9223372036854771712",
+          "memory_max": 3221225472,
+          "peak": 172666880,
+          "swap_max": null
+        }
+      },
+      "schema": "lanes-ner-cloud-check-v1",
+      "strict_resource_check": {
+        "error_code": "cpu_limit_required",
+        "error_type": "ValueError",
+        "passed": false,
+        "resource_key": null
+      },
+      "swap_inventory": {
+        "active_devices": 0,
+        "establishes_container_swap_limit": false,
+        "free_bytes": 0,
+        "host_reports_no_swap": true,
+        "status": "readable",
+        "total_bytes": 0
+      }
+    },
+    "enforced_zero_swap_limit_proved": false,
+    "execution": "lanes-ner-check-b4b8m",
+    "existing_worker_rules_only_unchanged": true,
+    "freeze_sha256": "634481433ec546336a56bb97d661708f6944a2b791cc102285a59d6895ad2f01",
+    "host_reports_no_swap": true,
+    "image_index": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:07feb6398089a2da13ec8cf0584fd15e83a43f83d7c720423664f8bcc16e871c",
+    "index_platform_binding_verified": true,
+    "inference_started": false,
+    "matching_schedules": 0,
+    "max_retries": 0,
+    "package_id": "d77bb1fdc072f0535bfe58d9f7da76507afddd453d9cdc1ddee7412d59734da3",
+    "qualification_passed": false,
+    "resolved_linux_amd64_manifest": "asia-east1-docker.pkg.dev/lanes-project-508809/lanes/lanes-ner-check@sha256:d32e3f0191331868043ecf4a7aec0ab1cf7df785a5fa2df93453531cd9326dbd",
+    "runtime_project_roles": [],
+    "schema": "lanes-ner-cloud-startup-diagnostic-verification-v1",
+    "scope": "Diagnostic collection only; exact original CPU/no-swap contract remains unsatisfied; no NER results or performance acceptance",
+    "started_at": "2026-10-22T03:47:54.657687Z",
+    "status": "cloud_supervision_isolation_passed_resource_contract_review_required",
+    "supervision_isolation_verified": true,
+    "supervisor_pid": 11,
+    "task_attempt": 0,
+    "task_exit_code": 0,
+    "total_cloud_executions": 3,
+    "total_diagnostic_executions": 2,
+    "verified_at": "2026-10-22T11:49:51.667282+08:00"
+  },
+  "corrected_cloud_receipt_sha256": {
+    "configuration-verification.json": "fbeb63842897feb3f92dda3c7592546928a94b6ac15193dd4838263e62ef4230",
+    "diagnostic-verification.json": "84e4b24b2b8b7865d0b0ae96497f590c6f3181b16b01e0d0c01b4f8b8b67fa62",
+    "probe-events.json": "a562a0b40067e6318a6e67cbd272a7fbfbf5da2adae54c657137b6178a55d4a1",
+    "receipt-manifest.json": "b415b2468762cf9d342cf272f7ce6c53b3b0b4a92ecb0839b91ca996f43a973a",
+    "registry-manifest-verification.json": "70e2078f53381fb234459833acba264142a848cb96ccdee13fa701fc532917e6"
+  },
+  "database_credentials_supplied": false,
+  "diagnostic_preparation": {
+    "actual_cloud_failure_path_confirmed": false,
+    "cloud_changes_this_revision": false,
+    "cloud_qualification_passed": false,
+    "freeze_sha256": "b1ef34a53c86ce35f33ae3ff35f5d34f6f7d1966b503f08e700567b864ca8569",
+    "image": "sha256:d338e078dbfaf60059249149da136643329e85c29d24ded1e7dfb62a1d66ddfd",
+    "integration_checks": {
+      "actual_cloud_layout_confirmed": false,
+      "bounded_failure_alias": "v2_cpu",
+      "cloud_changes": false,
+      "diagnostic_collects_legacy_files_without_acceptance": true,
+      "fictional_legacy_layout_reproduces_missing_file": true,
+      "new_neural_inference": false,
+      "no_init_fixture_exposes_parent_guard_failure": true
+    },
+    "known_possible_issue_in_fixture": "legacy cgroup layout lacks v2_cpu; PID-1 supervisor triggers existing parent_guard_failed",
+    "local_owned_containers_removed": 5,
+    "model_and_runtime_unchanged": true,
+    "new_neural_inference": false,
+    "package_id": "64867a5e67028b193ecb87f3133ee27d6a0020864205726daf2e4b0165dff4bc",
+    "previous_418_files_unchanged": true,
+    "proposed_cloud_args": [
+      "--diagnostic-only"
+    ],
+    "receipt_sha256": {
+      "checks.xml": "f498e76c86300393da9d677877821da2fa0e30683aeda969a4f6b042e537b995",
+      "cleanup.json": "aed0e658a2af041a0cf7f06f82fe3dd819aa62855d79553b823fc4b9bbd629e7",
+      "freeze.json": "b1ef34a53c86ce35f33ae3ff35f5d34f6f7d1966b503f08e700567b864ca8569",
+      "integration-checks.json": "c8cea312a1f9ef9dabfca74e5b5b6b7d2679d3b2605ba553ed76ded44d69ae75",
+      "local-diagnostics.json": "9baf4c447f30b894064fecb4f632faacf021ea45af84da18f3b30d7d12673c3d"
+    },
+    "schema": "lanes-ner-cloud-diagnostic-preparation-v1",
+    "status": "diagnostic_image_verified_locally_awaiting_cloud_approval",
+    "tests": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 83
+    },
+    "verified_at": "2026-10-22T10:59:53.223405+08:00"
+  },
+  "expected_answers_in_image": false,
+  "frontend_modified": false,
+  "history_seeding_performed": false,
+  "image_inventory_passed": true,
+  "image_size_bytes": 1434083134,
+  "initial_local_image_size_bytes": 1434057763,
+  "initial_local_qualification_tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 75
+  },
+  "job": "lanes-ner-check",
+  "limits": {
+    "cpu": 1,
+    "headroom_bytes": 2818572288,
+    "max_retries": 0,
+    "memory_bytes": 3221225472,
+    "parallelism": 1,
+    "task_count": 1,
+    "timeout_seconds": 600
+  },
+  "local_image_retained": true,
+  "local_owned_stopped_containers_removed": 3,
+  "local_qualification": {
+    "automatic_processing_connected": false,
+    "checks": {
+      "articles": true,
+      "cleanup": true,
+      "cold": true,
+      "headroom": true,
+      "passage_p95": true,
+      "session": true,
+      "startup_request_cleanup": true,
+      "stress": true
+    },
+    "cleanup_seconds": 0.25227042800179333,
+    "cloud_changes": false,
+    "cloud_verified": false,
+    "cold_seconds": 1.5571999269996013,
+    "database_connections": 0,
+    "freeze_sha256": "91ffefa3e853c1dea8dffa8cdfc6931070651429d9f005c31898d6d510f4a8cc",
+    "image": "sha256:37fbb6ee0d68b166038687200b39744dfd91c127ddad3de36b020aeb0b608123",
+    "logs_sha256": "5cbda1ba80c542e59ff52951a4f81d1d755a5fea7c870a397506415ef04135ee",
+    "neural_attempts": 1,
+    "package_id": "17ef610a2933c217fb3588b6d05422ca83613951ce915661e688464c602bf73b",
+    "peak_bytes": 1968701440,
+    "records": 355,
+    "retained_prediction_records": 352,
+    "reviewed_article_mentions": 53,
+    "session_seconds": 23.292061897998792,
+    "status": "passed_local_cloud_check_package",
+    "verifier_sha256": "e80753c71ecc379d8e3f025a4e5d543d171c106b27fce7d12527caf1880dea83"
+  },
+  "metric_scope": "Current cloud acceptance; original local measurements remain in local_qualification",
+  "model_or_runtime_modified": false,
+  "models_or_migrations_added": false,
+  "normal_backend_deployment_pipeline_modified": false,
+  "passage_p95_seconds": 0.04006447799997659,
+  "peak_mib": 2067.3046875,
+  "pending_approvals": [
+    "production_worker_integration",
+    "temporary_unused_cloud_resource_cleanup"
+  ],
+  "predecessors_unchanged": true,
+  "previous_package_files_verified": 418,
+  "private_receipt_sha256": {
+    "checks.xml": "ba096b19e4d1717dce7c6ea72b2b11488f58a22fe67586bfd41cd8a3465a95d6",
+    "cleanup.json": "eedf3397a44a8cfb801585ec5cd2612d243a24051d6458789bee18acbfd41e09",
+    "credential-guard-verification.json": "70765e053d92488b8cfabf7e415add985fbe2901978a200a6283e2bcf4265d6f",
+    "freeze.json": "91ffefa3e853c1dea8dffa8cdfc6931070651429d9f005c31898d6d510f4a8cc",
+    "image-inventory.json": "aa6d4d457641d0705895a64b2d4dba430eb1fc74a0b0aebe21475478e15698b1",
+    "local-verification.json": "92a004acb657493211917aa790f4a6b6dbdf11afed2c9cbcbf2c3b15a9cc3610",
+    "predecessor-recheck.json": "6b520aa02886b83b47488df9f1e940178667a09dd7b0d513f367299f379e9f93"
+  },
+  "production_deployment_performed": false,
+  "project": "lanes-project-508809",
+  "pushed": false,
+  "region": "asia-east1",
+  "scheduled_processing_modified": false,
+  "schema": "lanes-ner-cloud-check-verification-v2",
+  "startup_correction": {
+    "actual_cloud_cpu_and_swap_review_still_required": true,
+    "cases": [
+      "legacy-qualified",
+      "cloud-like",
+      "cloud-like-preflight",
+      "credential-rejected",
+      "child-failure",
+      "forward-term",
+      "forward-int",
+      "forced-shutdown",
+      "orphan-reaped"
+    ],
+    "cgroup_v1_v2_supported": true,
+    "cloud_operations": false,
+    "cloud_qualification_passed": false,
+    "database_access": false,
+    "freeze_sha256": "634481433ec546336a56bb97d661708f6944a2b791cc102285a59d6895ad2f01",
+    "image": "sha256:07feb6398089a2da13ec8cf0584fd15e83a43f83d7c720423664f8bcc16e871c",
+    "integration_case_count": 9,
+    "isolation_child_pid": 8,
+    "large_resource_integers_preserved_as_decimal_strings": true,
+    "model_and_runtime_unchanged": true,
+    "new_dependencies": [],
+    "new_neural_inference": false,
+    "no_external_docker_init": true,
+    "owned_stopped_containers_removed": 13,
+    "package_id": "d77bb1fdc072f0535bfe58d9f7da76507afddd453d9cdc1ddee7412d59734da3",
+    "previous_receipt_files": 418,
+    "probe_parent_pid": 1,
+    "probe_pid": 7,
+    "schema": "lanes-ner-cloud-startup-correction-v1",
+    "scope": "Local files, tests and diagnostic image only. Cloud upload/update/execution require separate approval.",
+    "seccomp_socket_denial_parent_death_guard": true,
+    "single_resource_snapshot_per_diagnostic": true,
+    "status": "local_startup_correction_verified_cloud_approval_pending",
+    "strict_cpu_quota_equals_one_cpu_unchanged": true,
+    "strict_no_swap_limit_unchanged": true,
+    "supervision_verified": true,
+    "swap_host_inventory_does_not_establish_limit": true,
+    "tests": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 103
+    },
+    "verified_at": "2026-10-22T11:45:07.968574+08:00"
+  },
+  "startup_correction_receipt_sha256": {
+    "checks.xml": "70ae54b98c1434000b676a9cd79bf2d867b28be404bb0b7f6dcfb4e6ee25aa88",
+    "cleanup.json": "9f1bce09f7492638f11a5474f4151bc61eee417ec025dd70543cd3672ae75244",
+    "image-inventory.json": "a06dbd86ccf5a85d32380cd1879d81cd422a78c60e02d46bc206d93aa90866ac",
+    "integration-checks.json": "b6c1b135a1abef3842ac3b4c06fa1b3d0aaf584c20fc64d00bc1e4cc38dddf67",
+    "local-diagnostics.json": "52f1a5d3527f240a81f80cd3e4d7f9f022bbb74bbc6578cef22c7a809e499836",
+    "predecessor-recheck.json": "c5b673fee1b298302a744697a457b9a2eee94637176f2c6a3a31ffbfeb0ee627",
+    "receipt-manifest.json": "4fcea8d76c0a5547d7b1a182eca5afad80f84d2b93c0d0612b3ff57740c5c9ce",
+    "startup-verification.json": "eb9ac03727248fabd5384f1d489caf6982b989b01eebb3284615b3ec54181140"
+  },
+  "status": "passed_cloud_ner_acceptance_isolated_job",
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 150
+  },
+  "updated_at": "2026-10-22T12:08:06.176824+08:00",
+  "verified_at": "2026-10-22T10:34:04.120807+08:00"
+}

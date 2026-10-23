@@ -6,7 +6,7 @@ import struct
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
-from geoalchemy2 import WKBElement
+from geoalchemy2 import WKBElement, WKTElement
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
@@ -21,6 +21,7 @@ from app.schemas.report import MergeCandidateItem, MergeConflict, MergeCandidate
 from app.services.carriageway_service import (
     trace_road_attributes,
 )
+from app.services.valhalla_service import request_valhalla_route, decode_polyline6
 
 logger = logging.getLogger(__name__)
 
@@ -80,19 +81,39 @@ def calculate_name_similarity(name_a: Optional[str], name_b: Optional[str]) -> f
     return 1.0 - (dist / max_len) if max_len > 0 else 0.0
 
 
+def haversine_distance_m(p1: List[float], p2: List[float]) -> float:
+    """Computes great-circle distance in meters between two [lon, lat] coordinates."""
+    lon1, lat1 = math.radians(p1[0]), math.radians(p1[1])
+    lon2, lat2 = math.radians(p2[0]), math.radians(p2[1])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = math.sin(dlat / 2.0) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2.0) ** 2
+    c = 2.0 * math.asin(math.sqrt(max(0.0, min(1.0, a))))
+    return c * 6371000.0
+
+
 def extract_geojson_geometry(geom_value: Any) -> Optional[dict]:
-    """Converts WKBElement or GeoAlchemy object to Python dict GeoJSON."""
+    """Converts WKBElement, WKTElement, Shapely, or dict to Python dict GeoJSON."""
     if geom_value is None:
         return None
     try:
         if isinstance(geom_value, dict):
             return geom_value
+        if hasattr(geom_value, "__geo_interface__"):
+            return geom_value.__geo_interface__
+        if isinstance(geom_value, WKTElement):
+            from shapely import wkt
+            from shapely.geometry import mapping
+            text = str(geom_value.data)
+            if text.startswith("SRID="):
+                text = text.split(";", 1)[1]
+            return mapping(wkt.loads(text))
         if isinstance(geom_value, WKBElement):
             data = bytes.fromhex(geom_value.desc) if isinstance(geom_value.desc, str) else bytes(geom_value.data)
             byte_order = '<' if data[0] == 1 else '>'
             geom_type = struct.unpack(f"{byte_order}I", data[1:5])[0]
             pure_geom_type = geom_type & 0x0fffffff
-            
+
             if pure_geom_type == 1:
                 return {"type": "Point", "coordinates": parse_ewkb_point(data)}
             elif pure_geom_type == 2:
@@ -183,22 +204,50 @@ def detect_conflicts(primary: FloodReport, candidate: FloodReport) -> List[Merge
     }
     prim_rank = sev_rank.get(primary.severity, 2)
     cand_rank = sev_rank.get(candidate.severity, 2)
+
+    # Evaluate temporal delta to recognize receding flood trends
+    p_time = primary.created_at.replace(tzinfo=timezone.utc) if primary.created_at.tzinfo is None else primary.created_at
+    c_time = candidate.created_at.replace(tzinfo=timezone.utc) if candidate.created_at.tzinfo is None else candidate.created_at
+    newer, older = (candidate, primary) if c_time > p_time else (primary, candidate)
+    newer_rank = sev_rank.get(newer.severity, 2)
+    older_rank = sev_rank.get(older.severity, 2)
+    time_diff_mins = abs((c_time - p_time).total_seconds()) / 60.0
+
     if prim_rank != cand_rank:
-        # Suggest higher severity for disaster safety
-        suggested = primary.severity.value if prim_rank > cand_rank else candidate.severity.value
-        conflicts.append(MergeConflict(
-            field="severity",
-            message=f"Conflicting severity: Primary is '{primary.severity.value}', Candidate is '{candidate.severity.value}'",
-            suggested_value=suggested
-        ))
+        if newer_rank < older_rank and time_diff_mins >= 30.0:
+            # Receding flood trend: later report indicates subsided water
+            conflicts.append(MergeConflict(
+                field="severity",
+                message=f"Receding flood trend detected: Newer report #{newer.id} ({int(time_diff_mins)}m later) indicates lower severity '{newer.severity.value}' vs earlier #{older.id} ('{older.severity.value}'). Verify if floodwaters are subsiding.",
+                suggested_value=newer.severity.value,
+                conflict_type="receding_trend",
+            ))
+        else:
+            # Standard safety-first peak severity
+            suggested = primary.severity.value if prim_rank > cand_rank else candidate.severity.value
+            conflicts.append(MergeConflict(
+                field="severity",
+                message=f"Conflicting severity: Primary is '{primary.severity.value}', Candidate is '{candidate.severity.value}'",
+                suggested_value=suggested,
+                conflict_type="discrepancy",
+            ))
 
     # 2. Water Depth Conflict
     if primary.depth and candidate.depth and primary.depth.strip().lower() != candidate.depth.strip().lower():
-        conflicts.append(MergeConflict(
-            field="depth",
-            message=f"Depth mismatch: '{primary.depth}' vs '{candidate.depth}'",
-            suggested_value=primary.depth
-        ))
+        if newer_rank < older_rank and time_diff_mins >= 30.0:
+            conflicts.append(MergeConflict(
+                field="depth",
+                message=f"Receding water depth: Later report #{newer.id} reports shallower '{newer.depth}' vs earlier #{older.id} ('{older.depth}').",
+                suggested_value=newer.depth,
+                conflict_type="receding_trend",
+            ))
+        else:
+            conflicts.append(MergeConflict(
+                field="depth",
+                message=f"Depth mismatch: '{primary.depth}' vs '{candidate.depth}'",
+                suggested_value=primary.depth,
+                conflict_type="discrepancy",
+            ))
 
     # 3. Passable Vehicles Conflict
     p_veh = primary.survey.passable_vehicles if primary.survey else None
@@ -213,7 +262,7 @@ def detect_conflicts(primary: FloodReport, candidate: FloodReport) -> List[Merge
     return conflicts
 
 
-def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListResponse:
+def find_merge_candidates(report_id: int, db: Session, extra_report_ids: Optional[List[int]] = None) -> MergeCandidatesListResponse:
     """
     Core Multi-Factor Candidate Engine:
     Finds nearby pending reports and active event-owned zone review targets.
@@ -238,6 +287,20 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
         FloodReport.geometry.isnot(None),
         func.ST_DWithin(func.ST_Transform(FloodReport.geometry, 32651), func.ST_Transform(primary.geometry, 32651), 500)
     ).all()
+
+    # Include any explicitly requested extra reports
+    if extra_report_ids:
+        explicit_reports = db.query(FloodReport).filter(
+            FloodReport.id.in_(extra_report_ids),
+            FloodReport.id != primary.id,
+            FloodReport.status == ReportStatus.PENDING,
+            FloodReport.deleted_at.is_(None),
+            FloodReport.geometry.isnot(None),
+        ).all()
+        existing_ids = {r.id for r in nearby_reports}
+        for er in explicit_reports:
+            if er.id not in existing_ids:
+                nearby_reports.append(er)
 
     # 2. Trace primary road network properties (Decision #16 & OSM way_id)
     primary_coords = get_linestring_coords(primary.geometry)
@@ -340,8 +403,11 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
         distance_m = db.query(func.ST_Distance(func.ST_Transform(primary.geometry, 32651),
             func.ST_Transform(cand.geometry, 32651))).scalar()
         cross_road_review = distance_m is not None and distance_m <= 50 and time_diff <= 120
-        if score >= 45 or cross_road_review:
-            if cross_road_review:
+        is_explicit = bool(extra_report_ids and cand.id in extra_report_ids)
+        if score >= 45 or cross_road_review or is_explicit:
+            if is_explicit:
+                match_reasons.append("Manually added for merge review")
+            elif cross_road_review:
                 match_reasons.append("Nearby affected section; confirm continuity before merging")
             cand_conflicts = detect_conflicts(primary, cand)
             all_conflicts.extend(cand_conflicts)
@@ -416,20 +482,116 @@ def synthesize_merged_geometry(
 ) -> Tuple[Optional[dict], bool]:
     """Propose all submitted sections without trimming branches or inventing gaps.
 
-    The administrator must confirm this proposal through the coverage preview.
-    Unsupported or mixed geometry requires an explicit reviewed boundary.
+    - Connects Point citizen reports along the road network via Valhalla.
+    - Bridges small road gaps (<= 150m) between disconnected line segments.
+    - Preserves explicit polygon inputs.
     """
-    from shapely.geometry import shape, mapping
+    from shapely.geometry import shape, mapping, LineString
     from shapely.ops import unary_union, linemerge
+    from app.services.valhalla_service import request_valhalla_route, decode_polyline6
+
     submitted = [extract_geojson_geometry(r.geometry) for r in reports if r.geometry is not None]
-    if not submitted or any(not raw or raw["type"] not in {"LineString", "MultiLineString", "Polygon"} for raw in submitted):
+    if not submitted or any(not raw or raw.get("type") not in {"Point", "LineString", "MultiLineString", "Polygon"} for raw in submitted):
         return None, False
-    shapes = [shape(raw) for raw in submitted]
-    if any(not geom.is_valid or geom.is_empty for geom in shapes):
+
+    # 1. Convert Points into LineString segments if present
+    point_geoms = [raw for raw in submitted if raw["type"] == "Point"]
+    line_shapes = [shape(raw) for raw in submitted if raw["type"] in {"LineString", "MultiLineString", "Polygon"}]
+
+    if point_geoms:
+        if len(point_geoms) >= 2 and not line_shapes:
+            # Two or more points: route between them along the road network
+            p_coords = [p["coordinates"] for p in point_geoms]
+            try:
+                route = request_valhalla_route(p_coords[0], p_coords[-1])
+                if route and "trip" in route and route["trip"].get("legs"):
+                    leg_coords = decode_polyline6(route["trip"]["legs"][0]["shape"])
+                    if len(leg_coords) >= 2:
+                        return {"type": "LineString", "coordinates": leg_coords}, is_bidirectional or any(r.is_bidirectional for r in reports)
+            except Exception as e:
+                logger.warning(f"Valhalla routing between points failed: {e}")
+            return {"type": "LineString", "coordinates": p_coords}, is_bidirectional or any(r.is_bidirectional for r in reports)
+        elif len(point_geoms) == 1 and line_shapes:
+            # 1 point and existing line shape: find closest endpoint and connect
+            p_coord = point_geoms[0]["coordinates"]
+            best_dist = float("inf")
+            best_endpoint = None
+            for l_shape in line_shapes:
+                if l_shape.geom_type == "LineString":
+                    start_pt = list(l_shape.coords[0])
+                    end_pt = list(l_shape.coords[-1])
+                    d_start = haversine_distance_m(p_coord, start_pt)
+                    d_end = haversine_distance_m(p_coord, end_pt)
+                    if d_start < best_dist:
+                        best_dist = d_start
+                        best_endpoint = start_pt
+                    if d_end < best_dist:
+                        best_dist = d_end
+                        best_endpoint = end_pt
+
+            if best_endpoint:
+                connector = None
+                if best_dist <= 250.0:
+                    try:
+                        route = request_valhalla_route(best_endpoint, p_coord)
+                        if route and "trip" in route and route["trip"].get("legs"):
+                            conn_coords = decode_polyline6(route["trip"]["legs"][0]["shape"])
+                            if len(conn_coords) >= 2:
+                                connector = LineString(conn_coords)
+                    except Exception:
+                        pass
+                if connector is None:
+                    connector = LineString([best_endpoint, p_coord])
+                line_shapes.append(connector)
+        elif len(point_geoms) == 1 and not line_shapes:
+            return None, False
+
+    if not line_shapes:
         return None, False
-    merged = unary_union(shapes)
+
+    if any(not geom.is_valid or geom.is_empty for geom in line_shapes):
+        return None, False
+
+    merged = unary_union(line_shapes)
     if merged.geom_type == "MultiLineString":
         merged = linemerge(merged)
+
+    # 2. Bridge small gaps (<= 150m) if lines remain disconnected
+    if merged.geom_type == "MultiLineString":
+        lines = list(merged.geoms)
+        if len(lines) == 2:
+            l1, l2 = lines[0], lines[1]
+            pairs = [
+                (list(l1.coords[-1]), list(l2.coords[0])),
+                (list(l1.coords[0]), list(l2.coords[-1])),
+                (list(l1.coords[-1]), list(l2.coords[-1])),
+                (list(l1.coords[0]), list(l2.coords[0])),
+            ]
+            min_dist = float("inf")
+            best_pair = None
+            for p_a, p_b in pairs:
+                d = haversine_distance_m(p_a, p_b)
+                if d < min_dist:
+                    min_dist = d
+                    best_pair = (p_a, p_b)
+
+            if best_pair and min_dist <= 150.0:
+                bridge = None
+                try:
+                    route = request_valhalla_route(best_pair[0], best_pair[1])
+                    if route and "trip" in route and route["trip"].get("legs"):
+                        raw_bridge = decode_polyline6(route["trip"]["legs"][0]["shape"])
+                        if len(raw_bridge) >= 2:
+                            bridge_coords = [best_pair[0]] + (raw_bridge[1:-1] if len(raw_bridge) > 2 else []) + [best_pair[1]]
+                            bridge = LineString(bridge_coords)
+                except Exception as e:
+                    logger.warning(f"Gap bridge routing failed: {e}")
+                if bridge is None:
+                    bridge = LineString([best_pair[0], best_pair[1]])
+                bridged = linemerge(unary_union([l1, bridge, l2]))
+                if bridged.geom_type in {"LineString", "MultiLineString"}:
+                    merged = bridged
+
     if merged.geom_type in {"LineString", "MultiLineString", "Polygon"}:
         return mapping(merged), is_bidirectional or any(r.is_bidirectional for r in reports)
     return None, False

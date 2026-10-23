@@ -1,16 +1,22 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Activity, CloudRain, Inbox, Map, Rss } from "lucide-react";
 import { Button, Tabs } from "@/shared/ui";
+import { NewsArticleDialog } from "./NewsArticleDialog";
 import { NewsResults } from "./NewsResults";
 import { NewsCollectionDrawer } from "./NewsCollectionDrawer";
 import { NewsSourcesDrawer } from "./NewsSourcesDrawer";
 import { useNewsSimulation } from "./useNewsSimulation";
 import { NewsAutomationPanel } from "./NewsAutomationPanel";
 
-export default function NewsIntelligencePage() {
+export default function NewsIntelligencePage() { return <Suspense><NewsIntelligenceContent /></Suspense>; }
+
+function NewsIntelligenceContent() {
+  const params = useSearchParams();
+  const articleId = Number(params.get("article"));
+  const initialRunId = Number(params.get("run")) || undefined;
   const router = useRouter();
   const simulation = useNewsSimulation();
   const [activeTab, setActiveTab] = useState<"overview" | "areas">("overview");
@@ -48,6 +54,7 @@ export default function NewsIntelligencePage() {
           active={activeTab === "areas"} defaultSearch={simulation.data?.article_title} />
       </div>
       {collectionOpen && <NewsCollectionDrawer onClose={closeCollection} />}
+      {Number.isSafeInteger(articleId) && articleId > 0 && <NewsArticleDialog key={`${articleId}-${initialRunId}`} articleId={articleId} initialRunId={initialRunId} onClose={() => { const next = new URLSearchParams(params.toString()); next.delete("article"); next.delete("run"); router.replace(`/admin/news?${next}`); }} />}
       {sourcesOpen && <NewsSourcesDrawer onClose={closeSources} />}
     </div>
   );

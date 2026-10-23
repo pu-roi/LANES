@@ -61,7 +61,7 @@ def make_captures(path: Path) -> None:
         body = ("As of 2:47 p.m., gutter-deep flooding affected Marcos Highway in Marikina City. "
                 "The road remained passable to all types of vehicles. Authorities monitored the floodwater.")
         html = (f'<article><div id="sports_article_writeup"><p>{body}</p></div></article>'
-                if spec.source_id == "feedspot-05" else f'<article><p>{body}</p></article>')
+                if spec.source_id == "feedspot-05" else f'<article><div class="story_main"><p>{body}</p></div></article>')
         (path / f"article-{spec.number}.html").write_text(html, encoding="utf-8")
 
 
@@ -137,7 +137,7 @@ async def test_persist_preserves_prior_revision_and_uses_full_reader_claim(queue
         candidate = discover_news(replay.replay_sources()[:1], client).candidates[0]
         source = replay.replay_sources()[0]
         entry = parse_feed(replay.reconstructed_feed(replay.ARTICLES[:1]), source, source.feed_urls[0])[0]
-        old_label = "Philstar (local historical test)"
+        old_label = f"{source.publisher} ({replay.TEST_LABEL})"
         with queue_db() as db, db.begin():
             row = save_candidate(db, replace(entry, source_id=old_label), replace(candidate, source_id=old_label))
             article_id = row.id

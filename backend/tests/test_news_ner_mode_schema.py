@@ -67,7 +67,7 @@ def database_factory():
     assert (url.database or '').startswith('lanes_ner_mode_test_')
     admin = create_engine(url.set(database='postgres'), poolclass=NullPool, isolation_level='AUTOCOMMIT')
     engines = []
-    def create(revision='head'):
+    def create(revision=REVISION):
         name = 'lanes_ner_mode_test_' + uuid4().hex
         with admin.connect() as connection:
             connection.exec_driver_sql('CREATE DATABASE ' + admin.dialect.identifier_preparer.quote(name))
@@ -198,7 +198,9 @@ def offline(direction: str) -> str:
 
 def test_single_head_and_offline_guard_order():
     scripts = ScriptDirectory.from_config(config())
-    assert scripts.get_heads() == [REVISION] and scripts.get_revision(REVISION).down_revision == PREVIOUS
+    assert scripts.get_heads() == ['f1a9c7e2b604']
+    assert scripts.get_revision('f1a9c7e2b604').down_revision == REVISION
+    assert scripts.get_revision(REVISION).down_revision == PREVIOUS
     for direction in ('upgrade', 'downgrade'):
         sql = offline(direction)
         assert sql.index('LOCK TABLE') < sql.index('pg_constraint') < sql.index('IS DISTINCT FROM') < sql.index('DROP CONSTRAINT')
@@ -208,7 +210,7 @@ def test_single_head_and_offline_guard_order():
 
 def test_fresh_upgrade_repeat_and_reflected_model(database):
     engine = database(None)
-    migrate(engine, 'head'); migrate(engine, 'head')
+    migrate(engine, REVISION); migrate(engine, REVISION)
     assert current_revision(engine) == REVISION
     inspector = inspect(engine)
     assert len([c for c in inspector.get_check_constraints('news_extraction_runs') if c['name'] == CHECK]) == 1
@@ -224,12 +226,12 @@ def test_legacy_rows_links_and_schema_survive_roundtrip(database):
     engine = database(PREVIOUS)
     seed(engine, publication=True)
     before, objects = evidence(engine), schema(engine, omit_mode=True)
-    migrate(engine, 'head')
+    migrate(engine, REVISION)
     assert evidence(engine) == before and schema(engine, omit_mode=True) == objects
     migrate(engine, PREVIOUS, down=True)
     assert current_revision(engine) == PREVIOUS and 'ner_rules_v1' not in checks(engine)[CHECK]
     assert evidence(engine) == before and schema(engine, omit_mode=True) == objects
-    migrate(engine, 'head')
+    migrate(engine, REVISION)
     assert current_revision(engine) == REVISION and evidence(engine) == before
 
 
@@ -290,7 +292,7 @@ def test_upgrade_refuses_constraint_drift_without_changes(database, drift):
             connection.execute(insert(NewsExtractionRun).values(**run_values(ids['version'], mode='ner_rules_v1')))
     before, objects = evidence(engine), schema(engine)
     with pytest.raises(DBAPIError, match='news_extraction_mode_constraint_drift'):
-        migrate(engine, 'head')
+        migrate(engine, REVISION)
     assert current_revision(engine) == PREVIOUS and evidence(engine) == before and schema(engine) == objects
 
 

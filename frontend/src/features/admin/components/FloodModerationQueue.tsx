@@ -7,7 +7,7 @@ import { AlertTriangle, CheckCircle2, Flag, Info, MapPin } from "lucide-react";
 import { getReportForSpatialReview } from "../adminApi";
 import { apiClient } from "@/lib/apiClient";
 import { formatFloodDepth } from "@/lib/floodDepth";
-import { AutocompleteInput, Button, Card, CardContent, DatePicker, FloodReportDetailsModal, LocationAutocomplete, Select, Skeleton, useToast } from "@/shared/ui";
+import { AutocompleteInput, Button, Card, CardContent, DatePicker, FloodReportDetailsModal, LocationAutocomplete, Pagination, Select, Skeleton, useToast } from "@/shared/ui";
 
 type FloodModerationCase = {
   report_id: number;
@@ -41,15 +41,12 @@ const rejectionLabels: Record<string, string> = {
   other: "Other",
 };
 
-const depthLabels: Record<string, string> = {
-  gutter: "Gutter", "half-knee": "Half-Knee", "half-tire": "Half-Tire",
-  knee: "Knee", tires: "Tires", waist: "Waist", chest: "Chest", neck: "Neck & Above",
-};
-
 const severityStyles: Record<string, string> = {
   low: "bg-lime-100 text-lime-800", medium: "bg-amber-100 text-amber-800",
   high: "bg-orange-100 text-orange-800", extreme: "bg-red-100 text-red-800",
 };
+
+const PAGE_SIZE = 10;
 
 export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?: "all" | FloodModerationCase["status"] }) {
   const router = useRouter();
@@ -62,7 +59,9 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
   const [source, setSource] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [page, setPage] = useState(1);
   const [detailCase, setDetailCase] = useState<FloodModerationCase | null>(null);
+
   const detail = useQuery({
     queryKey: ["flood-moderation-detail", detailCase?.report_id],
     queryFn: () => getReportForSpatialReview(detailCase!.report_id),
@@ -70,6 +69,7 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
     staleTime: 0,
     retry: false,
   });
+
   const cases = useQuery({
     queryKey: ["flood-moderation-cases", status, location, reporter, reason, source, dateFrom, dateTo],
     queryFn: () => {
@@ -80,10 +80,21 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
       if (source) params.set("source", source);
       if (dateFrom) params.set("date_from", `${dateFrom}T00:00:00`);
       if (dateTo) params.set("date_to", `${dateTo}T23:59:59`);
+      params.set("limit", "250");
       return apiClient.get<FloodModerationCase[]>(`/admin/moderation/flood-reports?${params.toString()}`);
     },
   });
-  const reporterSuggestions = [...new Set((cases.data || []).map((caseItem) => caseItem.reporter).filter((name) => name && name !== "System"))];
+
+  const allCases = cases.data || [];
+  const totalPages = Math.max(1, Math.ceil(allCases.length / PAGE_SIZE));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+
+  const paginatedCases = allCases.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  const reporterSuggestions = [...new Set(allCases.map((caseItem) => caseItem.reporter).filter((name) => name && name !== "System"))];
   const nextReviewToken = () => String(++reviewToken.current);
 
   const reviewOnMap = async (reportId: number) => {
@@ -101,31 +112,192 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
     }
   };
 
-  return <div className="space-y-4">
-    <Card className="shadow-sm"><CardContent className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <Select label="Status" value={status} onChange={(event) => setStatus(String(event.target.value) as typeof status)} options={[{ label: "All cases", value: "all" }, { label: "Pending", value: "pending" }, { label: "Approved / linked", value: "approved" }, { label: "Rejected", value: "rejected" }]} />
-      <Select label="Source" value={source} onChange={(event) => setSource(String(event.target.value))} options={[{ label: "Any source", value: "" }, { label: "Direct user report", value: "direct_user" }, { label: "X / Twitter", value: "twitter" }, { label: "Facebook", value: "facebook" }, { label: "Manual import", value: "manual_seeder" }]} />
-      <div className="flex flex-col gap-1"><label className="text-sm font-medium text-gray-700">Location</label><LocationAutocomplete value={location} onChange={setLocation} onSelect={(suggestion) => setLocation(suggestion.label)} onClear={() => setLocation("")} placeholder="Search a road or place" /></div>
-      <AutocompleteInput label="Reporter" value={reporter} onChange={setReporter} options={reporterSuggestions} placeholder="Search username" />
-      <Select label="Rejection reason" value={reason} onChange={(event) => setReason(String(event.target.value))} options={[{ label: "Any reason", value: "" }, ...Object.entries(rejectionLabels).map(([value, label]) => ({ value, label }))]} />
-      <DatePicker label="Submitted from" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} />
-      <DatePicker label="Submitted to" value={dateTo} onChange={(event) => setDateTo(event.target.value)} />
-    </CardContent></Card>
+  return (
+    <div className="space-y-4">
+      <Card className="shadow-sm">
+        <CardContent className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <Select
+            label="Status"
+            value={status}
+            onChange={(event) => {
+              setStatus(String(event.target.value) as typeof status);
+              setPage(1);
+            }}
+            options={[{ label: "All cases", value: "all" }, { label: "Pending", value: "pending" }, { label: "Approved / linked", value: "approved" }, { label: "Rejected", value: "rejected" }]}
+          />
+          <Select
+            label="Source"
+            value={source}
+            onChange={(event) => {
+              setSource(String(event.target.value));
+              setPage(1);
+            }}
+            options={[{ label: "Any source", value: "" }, { label: "Direct user report", value: "direct_user" }, { label: "X / Twitter", value: "twitter" }, { label: "Facebook", value: "facebook" }, { label: "Manual import", value: "manual_seeder" }]}
+          />
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700">Location</label>
+            <LocationAutocomplete
+              value={location}
+              onChange={(val) => {
+                setLocation(val);
+                setPage(1);
+              }}
+              onSelect={(suggestion) => {
+                setLocation(suggestion.label);
+                setPage(1);
+              }}
+              onClear={() => {
+                setLocation("");
+                setPage(1);
+              }}
+              placeholder="Search a road or place"
+            />
+          </div>
+          <AutocompleteInput
+            label="Reporter"
+            value={reporter}
+            onChange={(val) => {
+              setReporter(val);
+              setPage(1);
+            }}
+            options={reporterSuggestions}
+            placeholder="Search username"
+          />
+          <Select
+            label="Rejection reason"
+            value={reason}
+            onChange={(event) => {
+              setReason(String(event.target.value));
+              setPage(1);
+            }}
+            options={[{ label: "Any reason", value: "" }, ...Object.entries(rejectionLabels).map(([value, label]) => ({ value, label }))]}
+          />
+          <DatePicker
+            label="Submitted from"
+            value={dateFrom}
+            onChange={(event) => {
+              setDateFrom(event.target.value);
+              setPage(1);
+            }}
+          />
+          <DatePicker
+            label="Submitted to"
+            value={dateTo}
+            onChange={(event) => {
+              setDateTo(event.target.value);
+              setPage(1);
+            }}
+          />
+        </CardContent>
+      </Card>
 
-    {cases.isLoading && <Card><CardContent className="space-y-3 py-5"><Skeleton className="h-5 w-1/4" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-3/4" /></CardContent></Card>}
-    {cases.isError && <Card className="border-red-200 bg-red-50"><CardContent className="flex gap-3 text-sm text-red-800"><AlertTriangle className="h-5 w-5 shrink-0" />Could not load Flood Report moderation cases. Please refresh and try again.</CardContent></Card>}
-    {cases.data?.length === 0 && <Card><CardContent className="py-16 text-center text-sm text-gray-500"><Flag className="mx-auto mb-2 h-6 w-6 text-slate-400" />No Flood Report moderation cases match these filters.</CardContent></Card>}
-    {cases.data?.map((caseItem) => <Card key={caseItem.report_id} className="shadow-sm"><CardContent className="p-5">
-      <div className="flex flex-col justify-between gap-3 sm:flex-row"><div><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-gray-900">Flood report #{caseItem.report_id}</p><span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${caseItem.status === "pending" ? "bg-amber-100 text-amber-800" : caseItem.status === "approved" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>{caseItem.resolution || caseItem.status}</span></div><p className="mt-1 text-xs text-slate-500">{caseItem.source.replaceAll("_", " ")} · Submitted {new Date(caseItem.submitted_at).toLocaleString()} · Reporter: {caseItem.reporter}</p></div><div className="flex gap-2"><Button size="sm" variant="outline" onClick={() => setDetailCase(caseItem)}><Info className="mr-1 h-4 w-4" />Info</Button><Button size="sm" variant="outline" onClick={() => void reviewOnMap(caseItem.report_id)}><MapPin className="mr-1 h-4 w-4" />Review on Map</Button></div></div>
-      <p className="mt-4 whitespace-pre-wrap text-sm text-slate-700">{caseItem.raw_text}</p>
-      <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2"><p><span className="font-medium text-slate-800">Flood level:</span> <span className={`ml-1 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${severityStyles[caseItem.severity] || "bg-slate-100 text-slate-700"}`}>{caseItem.severity}</span>{caseItem.depth && <span className="ml-2 text-slate-600 font-medium">{formatFloodDepth(caseItem.depth, { compact: true })}</span>}</p><p><span className="font-medium text-slate-800">Location:</span> {caseItem.location || "Not supplied"}</p></div>
-      {caseItem.approval_kind === "automatic" && <p className="mt-3 text-sm text-blue-800">Automatically approved · {caseItem.automatic_review_reason?.replaceAll("_", " ")}. No reputation credit was awarded.</p>}
-      {caseItem.event_id && <p className="mt-3 text-xs text-slate-500">Verified Flood Event #{caseItem.event_id}{caseItem.zone_id ? ` · Zone #${caseItem.zone_id}` : ""}</p>}
-      {caseItem.status === "rejected" && <div className="mt-4 rounded-lg border border-rose-100 bg-rose-50 p-3 text-sm text-rose-900"><p><span className="font-semibold">Reason:</span> {caseItem.rejection_reason ? rejectionLabels[caseItem.rejection_reason] : "Not recorded"}</p>{caseItem.internal_note && <p className="mt-1"><span className="font-semibold">Internal note:</span> {caseItem.internal_note}</p>}</div>}
-      {caseItem.resolved_at && <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500"><CheckCircle2 className="h-4 w-4 text-emerald-600" />{caseItem.resolution === "linked" ? "Linked" : "Resolved"} {new Date(caseItem.resolved_at).toLocaleString()}{caseItem.acting_admin ? ` by ${caseItem.acting_admin}` : ""}</p>}
-    </CardContent></Card>)}
-    {detailCase && detail.isFetching && <p role="status" className="text-sm text-slate-500">Loading flood report details…</p>}
-    {detailCase && detail.isError && <div role="alert" className="flex flex-wrap items-center gap-3 text-sm text-red-800">Could not load flood report details. {detail.error.message}<Button variant="outline" size="sm" onClick={() => detail.refetch()}>Retry details</Button><Button variant="ghost" size="sm" onClick={() => setDetailCase(null)}>Dismiss</Button></div>}
-    <FloodReportDetailsModal showMapFocusAction={false} report={detailCase && !detail.isFetching && !detail.isError && detail.data?.id === detailCase.report_id ? detail.data : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => void reviewOnMap(report.id)} />
-  </div>;
+      {cases.isLoading && (
+        <Card>
+          <CardContent className="space-y-3 py-5">
+            <Skeleton className="h-5 w-1/4" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </CardContent>
+        </Card>
+      )}
+      {cases.isError && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="flex gap-3 text-sm text-red-800">
+            <AlertTriangle className="h-5 w-5 shrink-0" />
+            Could not load Flood Report moderation cases. Please refresh and try again.
+          </CardContent>
+        </Card>
+      )}
+      {cases.data?.length === 0 && (
+        <Card>
+          <CardContent className="py-16 text-center text-sm text-gray-500">
+            <Flag className="mx-auto mb-2 h-6 w-6 text-slate-400" />
+            No Flood Report moderation cases match these filters.
+          </CardContent>
+        </Card>
+      )}
+      {paginatedCases.map((caseItem) => (
+        <Card key={caseItem.report_id} className="shadow-sm">
+          <CardContent className="p-5">
+            <div className="flex flex-col justify-between gap-3 sm:flex-row">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-semibold text-gray-900">Flood report #{caseItem.report_id}</p>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${caseItem.status === "pending" ? "bg-amber-100 text-amber-800" : caseItem.status === "approved" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                    {caseItem.resolution || caseItem.status}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-slate-500">
+                  {caseItem.source.replaceAll("_", " ")} · Submitted {new Date(caseItem.submitted_at).toLocaleString()} · Reporter: {caseItem.reporter}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => setDetailCase(caseItem)}>
+                  <Info className="mr-1 h-4 w-4" />Info
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => void reviewOnMap(caseItem.report_id)}>
+                  <MapPin className="mr-1 h-4 w-4" />Review on Map
+                </Button>
+              </div>
+            </div>
+            <p className="mt-4 whitespace-pre-wrap text-sm text-slate-700">{caseItem.raw_text}</p>
+            <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+              <p>
+                <span className="font-medium text-slate-800">Flood level:</span>{" "}
+                <span className={`ml-1 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${severityStyles[caseItem.severity] || "bg-slate-100 text-slate-700"}`}>
+                  {caseItem.severity}
+                </span>
+                {caseItem.depth && <span className="ml-2 text-slate-600 font-medium">{formatFloodDepth(caseItem.depth, { compact: true })}</span>}
+              </p>
+              <p><span className="font-medium text-slate-800">Location:</span> {caseItem.location || "Not supplied"}</p>
+            </div>
+            {caseItem.approval_kind === "automatic" && (
+              <p className="mt-3 text-sm text-blue-800">Automatically approved · {caseItem.automatic_review_reason?.replaceAll("_", " ")}. No reputation credit was awarded.</p>
+            )}
+            {caseItem.event_id && (
+              <p className="mt-3 text-xs text-slate-500">Verified Flood Event #{caseItem.event_id}{caseItem.zone_id ? ` · Zone #${caseItem.zone_id}` : ""}</p>
+            )}
+            {caseItem.status === "rejected" && (
+              <div className="mt-4 rounded-lg border border-rose-100 bg-rose-50 p-3 text-sm text-rose-900">
+                <p><span className="font-semibold">Reason:</span> {caseItem.rejection_reason ? rejectionLabels[caseItem.rejection_reason] : "Not recorded"}</p>
+                {caseItem.internal_note && <p className="mt-1"><span className="font-semibold">Internal note:</span> {caseItem.internal_note}</p>}
+              </div>
+            )}
+            {caseItem.resolved_at && (
+              <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                {caseItem.resolution === "linked" ? "Linked" : "Resolved"} {new Date(caseItem.resolved_at).toLocaleString()}{caseItem.acting_admin ? ` by ${caseItem.acting_admin}` : ""}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      ))}
+      {allCases.length > 0 && (
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onPageChange={(newPage) => {
+            setPage(newPage);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          disabled={cases.isFetching}
+        />
+      )}
+      {detailCase && detail.isFetching && <p role="status" className="text-sm text-slate-500">Loading flood report details…</p>}
+      {detailCase && detail.isError && (
+        <div role="alert" className="flex flex-wrap items-center gap-3 text-sm text-red-800">
+          Could not load flood report details. {detail.error.message}
+          <Button variant="outline" size="sm" onClick={() => detail.refetch()}>Retry details</Button>
+          <Button variant="ghost" size="sm" onClick={() => setDetailCase(null)}>Dismiss</Button>
+        </div>
+      )}
+      <FloodReportDetailsModal
+        showMapFocusAction={false}
+        report={detailCase && !detail.isFetching && !detail.isError && detail.data?.id === detailCase.report_id ? detail.data : null}
+        isOpen={detailCase !== null}
+        onClose={() => setDetailCase(null)}
+        onViewOnMap={(report) => void reviewOnMap(report.id)}
+      />
+    </div>
+  );
 }

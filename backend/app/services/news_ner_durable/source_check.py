@@ -40,6 +40,9 @@ def check_native_sources(run: object, version: object, saved: object, claim_ordi
     if (any(type(i) is not int or not 0<=i<len(result.claims) for i in claim_ordinals)
             or len(set(claim_ordinals))!=len(claim_ordinals)):
         raise NerEvidenceError('ner_result_contract_invalid')
+    if 'llm_resolution' in result.provenance:
+        from .resolution import resolution_audit
+        return {i:resolution_audit(context,result,i) for i in claim_ordinals}
     return {i:_check_verified(context,result,i,now,publication_policy) for i in claim_ordinals}
 
 

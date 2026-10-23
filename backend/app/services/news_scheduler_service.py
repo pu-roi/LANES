@@ -1,5 +1,6 @@
 """The news job rechecks adaptive collection due time and pipeline policy."""
 from datetime import datetime, timezone
+from dataclasses import asdict
 import asyncio
 import httpx
 from sqlalchemy import select, text
@@ -137,7 +138,22 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                 return output
             except AuditorConfigurationError as exc:
                 runtime.error_code = exc.code
-                stage = runtime.current_stage or 'pipeline'
+                # The configuration failure belongs to the pipeline, even when
+                # independent expiry succeeded. Preserve both stage outcomes.
+                from app.services.news_publication_service import PublicationSummary
+                maintenance = getattr(exc, 'maintenance_summary', None)
+                if isinstance(maintenance, PublicationSummary):
+                    payload = asdict(maintenance)
+                    counts = {k: v for k, v in payload.items() if isinstance(v, int) and not isinstance(v, bool)}
+                    errors = sorted({safe_code(item.get('reason_code')) for item in maintenance.skipped})[:20]
+                    prior = runtime.stages.get('maintenance', NewsStageHealth())
+                    runtime.stage_counts['maintenance'] = counts
+                    runtime.stage_outcomes['maintenance'] = 'requires_attention' if errors else 'completed'
+                    runtime.stages['maintenance'] = NewsStageHealth(last_attempt_at=runtime.last_started_at,
+                        last_success_at=prior.last_success_at if errors else clock(),
+                        outcome=runtime.stage_outcomes['maintenance'], counts=counts, errors=errors)
+                    output['maintenance'] = payload
+                stage = 'pipeline'
                 runtime.stage_outcomes[stage] = 'requires_attention'
                 prior = runtime.stages.get(stage, NewsStageHealth())
                 runtime.stages[stage] = NewsStageHealth(last_attempt_at=runtime.last_started_at,

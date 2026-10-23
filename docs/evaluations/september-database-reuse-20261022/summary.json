@@ -1,0 +1,574 @@
+{
+  "checked_at": "2026-10-22T03:14:36.047472+08:00",
+  "database": "lanes",
+  "same_remote_target_as_frozen_e0": true,
+  "read_only": true,
+  "database_writes": false,
+  "transaction_rolled_back": true,
+  "revision": "d7e4b9a21c60",
+  "articles": [
+    {
+      "id": 25,
+      "title": "Minor flooding hits some metro areas",
+      "publisher_source_id": "daily-tribune",
+      "published_at": "2026-09-24 20:41:00+00:00",
+      "review_state": "pending",
+      "body_characters": 1136
+    },
+    {
+      "id": 47,
+      "title": "FLOOD ALERT: Flooded roads in Metro Manila on Wednesday, September 9, 2026",
+      "publisher_source_id": "feedspot-01",
+      "published_at": "2026-09-09 01:19:06+00:00",
+      "review_state": "pending",
+      "body_characters": 1970
+    }
+  ],
+  "versions": [
+    {
+      "id": 61,
+      "article_id": 25,
+      "input_fingerprint": "de64f2c4d759d7c2261ce18f2e75c846ec63fb52ec4638b9d71e06eda116e24b",
+      "created_at": "2026-10-09 12:05:15.815600+00:00",
+      "body_characters": 1136
+    },
+    {
+      "id": 66,
+      "article_id": 25,
+      "input_fingerprint": "0e1e1ba1f6b90200ac6188e544d62ec0f4c65a56024bee68676f9972cebec940",
+      "created_at": "2026-09-24 20:42:00+00:00",
+      "body_characters": 1136
+    },
+    {
+      "id": 137,
+      "article_id": 47,
+      "input_fingerprint": "b7dc414b045b1f203a385867169a74b8af5d18553f86a07b51d1a2921055c131",
+      "created_at": "2026-09-09 01:56:00+00:00",
+      "body_characters": 1970
+    }
+  ],
+  "runs": [
+    {
+      "id": 61,
+      "article_version_id": 61,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v12:f4223d6ac76f914cd391f94a1a36eba2f350c943fe249015da352a3e87275a10",
+      "completed_at": "2026-09-24 20:42:00+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 62,
+      "article_version_id": 61,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v13:88fe336552a76af2399abb022ee1b6e50dbbd3bc98e6b564f64bf8eea8503be1",
+      "completed_at": "2026-09-24 08:39:00+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 66,
+      "article_version_id": 66,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v13:88fe336552a76af2399abb022ee1b6e50dbbd3bc98e6b564f64bf8eea8503be1",
+      "completed_at": "2026-09-24 08:39:00+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 97,
+      "article_version_id": 66,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v13:7432821656724303c9d86ae77aa4b18dc7c22192d104812e1c00e89acc9be39f",
+      "completed_at": "2026-10-10 16:00:41.310938+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 111,
+      "article_version_id": 66,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v16:8a3375013e107b526043702d9ec1af5016980ccb1047f1fa241d81d3680ac76c",
+      "completed_at": "2026-10-11 16:00:41.888720+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 122,
+      "article_version_id": 66,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v17:8a3375013e107b526043702d9ec1af5016980ccb1047f1fa241d81d3680ac76c",
+      "completed_at": "2026-10-11 22:00:48.542119+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 133,
+      "article_version_id": 66,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v20:b5f52466d13f48710b6bc5b7ed136e12d13d115ae8c1270c1daebdaf6f573dc8",
+      "completed_at": "2026-10-12 19:00:48.405336+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 134,
+      "article_version_id": 66,
+      "article_id": 25,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v20:0ff4b222542397c710ebf51dfd55908a14a4edc0ac137d59f026eda10373ba32",
+      "completed_at": "2026-09-24 08:39:00+00:00",
+      "claim_count": 11
+    },
+    {
+      "id": 137,
+      "article_version_id": 137,
+      "article_id": 47,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v20:0ff4b222542397c710ebf51dfd55908a14a4edc0ac137d59f026eda10373ba32",
+      "completed_at": "2026-09-09 01:56:00+00:00",
+      "claim_count": 31
+    },
+    {
+      "id": 139,
+      "article_version_id": 137,
+      "article_id": 47,
+      "mode": "rules_only",
+      "status": "completed",
+      "pipeline_version": "rules-spatial-preview-v20:b5f52466d13f48710b6bc5b7ed136e12d13d115ae8c1270c1daebdaf6f573dc8",
+      "completed_at": "2026-10-13 13:45:54.177427+00:00",
+      "claim_count": 31
+    }
+  ],
+  "all_processing_modes": [
+    {
+      "mode": "rules_only",
+      "status": "completed",
+      "count": 120
+    }
+  ],
+  "frozen_source_bindings": [
+    {
+      "version_id": 66,
+      "article_id": 25,
+      "fingerprint_unchanged": true,
+      "snapshot_unchanged": true,
+      "body_sha256": "dc4773d602277a22fb0660705e21eb45f64125f4bd8167cd55ad21ec3350bc0f"
+    },
+    {
+      "version_id": 137,
+      "article_id": 47,
+      "fingerprint_unchanged": true,
+      "snapshot_unchanged": true,
+      "body_sha256": "a7b92b1ec22db882779dcc2d3f0d3dc153d834f325a00432a551d04357b57708"
+    }
+  ],
+  "zones": [
+    {
+      "id": 23,
+      "event_id": 23,
+      "name": null,
+      "is_active": false,
+      "created_at": "2026-10-10 09:42:49.250517+00:00",
+      "updated_at": "2026-10-10 10:00:29.631705+00:00",
+      "expires_at": "2026-09-24 10:34:00+00:00",
+      "geometry_valid": true,
+      "geometry_srid": 4326
+    },
+    {
+      "id": 59,
+      "event_id": 59,
+      "name": null,
+      "is_active": false,
+      "created_at": "2026-10-13 13:38:52.697898+00:00",
+      "updated_at": "2026-10-21 13:55:24.131410+00:00",
+      "expires_at": "2026-09-24 09:04:00+00:00",
+      "geometry_valid": true,
+      "geometry_srid": 4326
+    },
+    {
+      "id": 60,
+      "event_id": 60,
+      "name": null,
+      "is_active": false,
+      "created_at": "2026-10-13 13:38:55.738135+00:00",
+      "updated_at": "2026-10-21 13:55:24.152361+00:00",
+      "expires_at": "2026-09-24 09:04:00+00:00",
+      "geometry_valid": true,
+      "geometry_srid": 4326
+    },
+    {
+      "id": 61,
+      "event_id": 61,
+      "name": null,
+      "is_active": false,
+      "created_at": "2026-10-13 13:41:23.100284+00:00",
+      "updated_at": "2026-10-21 13:55:24.040042+00:00",
+      "expires_at": "2026-09-09 02:35:00+00:00",
+      "geometry_valid": true,
+      "geometry_srid": 4326
+    },
+    {
+      "id": 62,
+      "event_id": 62,
+      "name": null,
+      "is_active": false,
+      "created_at": "2026-10-13 13:41:29.505885+00:00",
+      "updated_at": "2026-10-21 13:55:24.107785+00:00",
+      "expires_at": "2026-09-09 02:15:00+00:00",
+      "geometry_valid": true,
+      "geometry_srid": 4326
+    },
+    {
+      "id": 63,
+      "event_id": 63,
+      "name": null,
+      "is_active": false,
+      "created_at": "2026-10-13 13:41:32.961555+00:00",
+      "updated_at": "2026-10-21 13:55:24.059876+00:00",
+      "expires_at": "2026-09-09 02:15:00+00:00",
+      "geometry_valid": true,
+      "geometry_srid": 4326
+    }
+  ],
+  "events": [
+    {
+      "id": 23,
+      "status": "ended",
+      "first_reported_at": "2026-09-24 08:34:00+00:00",
+      "verified_at": "2026-10-10 09:42:49.178052+00:00",
+      "ended_at": "2026-10-10 12:35:03.169788+00:00",
+      "peak_severity": "low",
+      "peak_depth": "half-knee"
+    },
+    {
+      "id": 59,
+      "status": "ended",
+      "first_reported_at": "2026-09-24 08:34:00+00:00",
+      "verified_at": "2026-10-13 13:38:52.657283+00:00",
+      "ended_at": "2026-10-21 13:55:18.953818+00:00",
+      "peak_severity": "low",
+      "peak_depth": "gutter"
+    },
+    {
+      "id": 60,
+      "status": "ended",
+      "first_reported_at": "2026-09-24 08:34:00+00:00",
+      "verified_at": "2026-10-13 13:38:55.696491+00:00",
+      "ended_at": "2026-10-21 13:55:18.953818+00:00",
+      "peak_severity": "low",
+      "peak_depth": "gutter"
+    },
+    {
+      "id": 61,
+      "status": "ended",
+      "first_reported_at": "2026-09-09 00:55:00+00:00",
+      "verified_at": "2026-10-13 13:41:23.050313+00:00",
+      "ended_at": "2026-10-21 13:55:18.953818+00:00",
+      "peak_severity": "high",
+      "peak_depth": "tires"
+    },
+    {
+      "id": 62,
+      "status": "ended",
+      "first_reported_at": "2026-09-09 00:55:00+00:00",
+      "verified_at": "2026-10-13 13:41:29.448554+00:00",
+      "ended_at": "2026-10-21 13:55:18.953818+00:00",
+      "peak_severity": "medium",
+      "peak_depth": "knee"
+    },
+    {
+      "id": 63,
+      "status": "ended",
+      "first_reported_at": "2026-09-09 00:55:00+00:00",
+      "verified_at": "2026-10-13 13:41:32.922540+00:00",
+      "ended_at": "2026-10-21 13:55:18.953818+00:00",
+      "peak_severity": "medium",
+      "peak_depth": "knee"
+    }
+  ],
+  "locations": [
+    {
+      "id": 151,
+      "event_id": 59,
+      "location_type": "road",
+      "display_name": "Quirino Avenue near Guazon Street"
+    },
+    {
+      "id": 152,
+      "event_id": 59,
+      "location_type": "city",
+      "display_name": "City of Manila"
+    },
+    {
+      "id": 153,
+      "event_id": 60,
+      "location_type": "road",
+      "display_name": "Gov. Pascual Avenue"
+    },
+    {
+      "id": 154,
+      "event_id": 60,
+      "location_type": "city",
+      "display_name": "City of Malabon"
+    },
+    {
+      "id": 155,
+      "event_id": 61,
+      "location_type": "road",
+      "display_name": "NS Amoranto cor Banawe St."
+    },
+    {
+      "id": 156,
+      "event_id": 61,
+      "location_type": "barangay",
+      "display_name": "Sienna"
+    },
+    {
+      "id": 157,
+      "event_id": 61,
+      "location_type": "city",
+      "display_name": "Quezon City"
+    },
+    {
+      "id": 158,
+      "event_id": 62,
+      "location_type": "road",
+      "display_name": "Don Jose St cor Sct Alcaraz St."
+    },
+    {
+      "id": 159,
+      "event_id": 62,
+      "location_type": "barangay",
+      "display_name": "Sienna"
+    },
+    {
+      "id": 160,
+      "event_id": 62,
+      "location_type": "city",
+      "display_name": "Quezon City"
+    },
+    {
+      "id": 161,
+      "event_id": 63,
+      "location_type": "road",
+      "display_name": "NS Amoranto cor Banawe"
+    },
+    {
+      "id": 162,
+      "event_id": 63,
+      "location_type": "barangay",
+      "display_name": "Santo Domingo"
+    },
+    {
+      "id": 163,
+      "event_id": 63,
+      "location_type": "city",
+      "display_name": "Quezon City"
+    }
+  ],
+  "timeline_counts": [
+    {
+      "event_id": 23,
+      "entry_type": "event_ended",
+      "count": 1
+    },
+    {
+      "event_id": 23,
+      "entry_type": "event_verified",
+      "count": 1
+    },
+    {
+      "event_id": 23,
+      "entry_type": "evidence_expired",
+      "count": 1
+    },
+    {
+      "event_id": 23,
+      "entry_type": "news_support_ended",
+      "count": 1
+    },
+    {
+      "event_id": 23,
+      "entry_type": "zone_created",
+      "count": 1
+    },
+    {
+      "event_id": 59,
+      "entry_type": "event_ended",
+      "count": 1
+    },
+    {
+      "event_id": 59,
+      "entry_type": "event_verified",
+      "count": 1
+    },
+    {
+      "event_id": 59,
+      "entry_type": "evidence_expired",
+      "count": 1
+    },
+    {
+      "event_id": 59,
+      "entry_type": "zone_created",
+      "count": 1
+    },
+    {
+      "event_id": 60,
+      "entry_type": "event_ended",
+      "count": 1
+    },
+    {
+      "event_id": 60,
+      "entry_type": "event_verified",
+      "count": 1
+    },
+    {
+      "event_id": 60,
+      "entry_type": "evidence_expired",
+      "count": 1
+    },
+    {
+      "event_id": 60,
+      "entry_type": "zone_created",
+      "count": 1
+    },
+    {
+      "event_id": 61,
+      "entry_type": "event_ended",
+      "count": 1
+    },
+    {
+      "event_id": 61,
+      "entry_type": "event_verified",
+      "count": 1
+    },
+    {
+      "event_id": 61,
+      "entry_type": "evidence_expired",
+      "count": 1
+    },
+    {
+      "event_id": 61,
+      "entry_type": "zone_created",
+      "count": 1
+    },
+    {
+      "event_id": 62,
+      "entry_type": "event_ended",
+      "count": 1
+    },
+    {
+      "event_id": 62,
+      "entry_type": "event_verified",
+      "count": 1
+    },
+    {
+      "event_id": 62,
+      "entry_type": "evidence_expired",
+      "count": 1
+    },
+    {
+      "event_id": 62,
+      "entry_type": "zone_created",
+      "count": 1
+    },
+    {
+      "event_id": 63,
+      "entry_type": "event_ended",
+      "count": 1
+    },
+    {
+      "event_id": 63,
+      "entry_type": "event_verified",
+      "count": 1
+    },
+    {
+      "event_id": 63,
+      "entry_type": "evidence_expired",
+      "count": 1
+    },
+    {
+      "event_id": 63,
+      "entry_type": "zone_created",
+      "count": 1
+    }
+  ],
+  "table_counts": [
+    {
+      "table": "news_articles",
+      "total": 74,
+      "selected_ids": 2
+    },
+    {
+      "table": "news_article_versions",
+      "total": 13,
+      "selected_ids": 3
+    },
+    {
+      "table": "news_extraction_runs",
+      "total": 120,
+      "selected_ids": 10
+    },
+    {
+      "table": "news_claim_cases",
+      "total": 53,
+      "selected_ids": 53
+    },
+    {
+      "table": "news_claim_sources",
+      "total": 53,
+      "selected_ids": 53
+    },
+    {
+      "table": "news_claim_evaluations",
+      "total": 75,
+      "selected_ids": 75
+    },
+    {
+      "table": "news_claim_decisions",
+      "total": 87,
+      "selected_ids": 87
+    },
+    {
+      "table": "news_claim_zone_links",
+      "total": 6,
+      "selected_ids": 6
+    },
+    {
+      "table": "flood_avoidance_zones",
+      "total": 56,
+      "selected_ids": 6
+    },
+    {
+      "table": "flood_events",
+      "total": 56,
+      "selected_ids": 6
+    },
+    {
+      "table": "flood_reports",
+      "total": 43,
+      "selected_ids": 0
+    }
+  ],
+  "private_inspection_sha256": "9d4697e0e4c4761843442031440590f51cbe7bad51c189a4ca4f1cec7d7be0ab",
+  "protected_tables": [
+    "news_article_versions",
+    "news_claim_decisions",
+    "news_claim_evaluations",
+    "news_claim_sources",
+    "news_claim_zone_links"
+  ],
+  "linked_report_count": 0,
+  "historical_import_entries": 0,
+  "recommendation": "Preserve existing source/history; no deletion required for separately qualified native extraction and active-zone instances."
+}

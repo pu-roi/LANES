@@ -109,6 +109,12 @@ export interface RouteInfo {
 
 import { getFloodsOffline } from '@/lib/offline/storage';
 
+interface CachedRoutingFlood {
+  affects_routing?: boolean;
+  routing_restrictions?: Record<string, string>;
+  polygon?: { type: string; coordinates: [number, number][][] };
+}
+
 export async function getRoute(
   start: [number, number],
   end: [number, number],
@@ -125,7 +131,7 @@ export async function getRoute(
       const cachedFloods = await getFloodsOffline();
       if (cachedFloods && cachedFloods.length > 0) {
           // Convert cached GeoJSON polygons to Valhalla format
-          excludePolygons = cachedFloods.map((flood: any) => {
+          excludePolygons = cachedFloods.filter((flood: CachedRoutingFlood) => flood.affects_routing !== false).map((flood: CachedRoutingFlood) => {
              // Older cached records have no server-authored restriction metadata.
              // Treat them as blocked until a fresh sync can safely classify them.
              if (!flood.routing_restrictions || flood.routing_restrictions[vehicleProfile] === "blocked") {
@@ -135,7 +141,7 @@ export async function getRoute(
                }
              }
              return null;
-          }).filter(Boolean);
+          }).filter((polygon): polygon is [number, number][] => polygon !== null);
           console.log("[Offline Routing] Fetched cached floods. excludePolygons =", excludePolygons);
       }
     } catch (err) {

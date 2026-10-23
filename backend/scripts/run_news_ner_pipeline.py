@@ -15,6 +15,8 @@ def main() -> int:
     parser.add_argument('--bundle-sha256',required=True)
     parser.add_argument('--worker-code-sha256',required=True)
     parser.add_argument('--limit',type=int,default=50)
+    parser.add_argument('--verify-with-gemini',action='store_true',help='Use the existing Gemini key for an owned derived-run handoff')
+    parser.add_argument('--gemini-model',help='Explicit Gemini model; required with --verify-with-gemini')
     args=parser.parse_args()
     try:
         result=_run(args)
@@ -45,9 +47,16 @@ def _run(args: argparse.Namespace) -> dict:
         require_local_target(environment,url)
         if platform.system()!='Linux':raise NerEvidenceError('ner_configuration_invalid')
         engine=create_engine(url,connect_args={'connect_timeout':5},pool_timeout=5,pool_pre_ping=False)
+        resolver=None
+        if args.verify_with_gemini:
+            from dataclasses import replace
+            from app.services.news_claim_auditor import AuditorConfig
+            from app.services.news_ner_durable.gemini_resolution import GeminiResolver
+            if not args.gemini_model:raise NerEvidenceError('ner_configuration_invalid')
+            resolver=GeminiResolver(replace(AuditorConfig.from_environment(),provider='gemini',model=args.gemini_model))
         return asyncio.run(run_native_news_pipeline(sessionmaker(bind=engine),environment=environment,database_url=url,
             load_assets=lambda:with_placement_assets(load_trusted_assets(args.bundle,args.bundle_sha256,
-                expected_worker_code_sha256=args.worker_code_sha256)),sources=load_news_sources(),limit=args.limit))
+                expected_worker_code_sha256=args.worker_code_sha256)),sources=load_news_sources(),limit=args.limit,resolver=resolver))
     except NerEvidenceError as exc:
         return {'error_code':exc.code}
     except ArgumentError:

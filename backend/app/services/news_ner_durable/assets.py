@@ -112,3 +112,25 @@ def with_placement_assets(trusted: TrustedAssets) -> TrustedAssets:
     manifest = trusted.manifest
     manifest['geography']['placement'] = placement_identity()
     return TrustedAssets(manifest,trusted._code,trusted._normalizer,sha(manifest),trusted.catalog)
+
+
+def with_resolution_assets(trusted: TrustedAssets, identity: dict) -> TrustedAssets:
+    """Separate derived-run identity; never changes the parent NER identity."""
+    from .resolution import VERSION
+    from .scoped_resolution import VERSION as SCOPED_VERSION, CONTRACT
+    from . import scoped_resolution_v3 as v3, scoped_resolution_v4 as v4
+    trusted.validate()
+    version = identity.get('prompt_version')
+    if version in {v3.VERSION,v4.VERSION}:
+        policy=v3 if version==v3.VERSION else v4
+        if (identity.get('response_version')!=policy.VERSION or identity.get('evidence_contract')!=policy.CONTRACT
+                or identity.get('semantic_validation')!='row-outcomes-'+policy.VERSION.rsplit('-',1)[-1]):
+            raise NerEvidenceError('ner_configuration_invalid')
+    if (identity.get('provider') != 'gemini' or version not in {VERSION, SCOPED_VERSION,v3.VERSION,v4.VERSION}
+            or (version == SCOPED_VERSION and (identity.get('response_version') != SCOPED_VERSION
+                or identity.get('evidence_contract') != CONTRACT
+                or identity.get('semantic_validation') != 'row-outcomes-v2'))):
+        raise NerEvidenceError('ner_configuration_invalid')
+    manifest = trusted.manifest
+    manifest['projection']['llm_resolution'] = deepcopy(identity)
+    return TrustedAssets(manifest,trusted._code,trusted._normalizer,sha(manifest),trusted.catalog)
