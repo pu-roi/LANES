@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Source publication:** Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending.
 
 **Latest Tribune context correction (October 24):** API `lanes-api-tribune-context-20261024-v6` selects saved correction 395 with three flooded-road observations. Subsided evidence is excluded from Flooded Areas/counts but retained in source inspection. Boni remains zone 80; Quirino/Gov. Pascual retain unknown exact times and no polygons. Hosted/local desktop/mobile and preservation checks pass with zero new paid calls. [Context repair](evaluations/tribune-context-repair-20261024.md).
 

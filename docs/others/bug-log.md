@@ -1,11 +1,15 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Tribune source publication status
+
+Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. The deployed context/list repair remains accepted; publication verification passes 385 normal-gate tests and 42 required PostGIS checks. No additional data correction or provider request was performed.
 
 ## Tribune cleared-list inclusion, missing date citations and sitio role
 
-**Status:** Resolved on serving API `lanes-api-tribune-context-20261024-v6`; source publication pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Resolved on serving API `lanes-api-tribune-context-20261024-v6`; source published in PR #143; main integration pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 1. **Problem:** Quezon City correctly says subsided in saved evidence but appears under Flooded Areas. Quirino/Gov. Pascual provider rows return Thursday without its source citation; Sitio 6 is placed in a canonical barangay slot.
 2. **Root cause:** Native/legacy list readers permit cleared rows. Structured provider evidence omits date links and confuses a local-area qualifier with a barangay. A replay attempted to reuse the previous write-once receipt prefix, then a missing zero-budget `stop` method masked its storage failure.

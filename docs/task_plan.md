@@ -1,6 +1,6 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ## Tribune context follow-up — completed on serving API
@@ -14,7 +14,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Evidence](evaluati
 - [x] Pass protected candidate/serving selection and hosted/local desktop/mobile news/source/scroll checks; promote `lanes-api-tribune-context-20261024-v6`.
 - [x] Preserve all original rows, four active zones, history 76, paused automation/expiry and the stopped 46-attempt ledger.
 
-Quirino and Gov. Pascual now appear as source-supported flooded roads with unknown exact times; they remain unplotted. Source/CI changes remain uncommitted on `roi-branch`; the separately listed publication task remains pending.
+Quirino and Gov. Pascual now appear as source-supported flooded roads with unknown exact times; they remain unplotted. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending.
 
 
 ## Tribune pilot — completed active Boni output and retained unresolved evidence
@@ -28,7 +28,8 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Approved plan](pla
 - [x] Verify 142 Linux regressions, 41 mandatory PostGIS checks/repeated migrations, two offline replays and actual-data rollback/concurrency/reuse/deactivation-to-history behavior.
 - [x] Pass protected candidate/serving API selection checks, save active event/zone 80, and verify hosted/local desktop/mobile news, active/public maps and history.
 - [x] Verify baseline rows/GMA/history preserved, repeat commands reuse 392/80 without calls or writes, leave shared zone 80 active and ledger stopped.
-- [ ] Publish the scoped source/CI changes through a separately requested commit/PR/main integration; this execution leaves them uncommitted on `roi-branch`.
+- [x] Publish the scoped source/CI changes to `roi-branch` and open [PR #143](https://github.com/pu-roi/LANES/pull/143); exact normal CI gate passes 385 tests, with 42 mandatory PostGIS checks and repeated migrations.
+- [ ] Review/merge PR #143 into main and verify its automatic API deployment.
 
 The selected Tribune policy creates no separate historical counterpart initially. Its ended presentation instances become visible in the existing unified history after manual deactivation, without real-occurrence/duration or routing eligibility. GMA remains unchanged. Ledger: stopped, 46 attempts / US$0.7683261 effective conservative commitment; unchanged US$1 cap. Philstar, broader semantic repairs and scheduled processing remain outside this run.
 

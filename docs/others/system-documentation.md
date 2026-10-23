@@ -1,7 +1,11 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Source publication status
+
+Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. The deployed API and database are unchanged by this publication.
 
 ## Current news list behavior after Tribune context repair
 

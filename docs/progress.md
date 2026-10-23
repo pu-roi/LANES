@@ -1,11 +1,15 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Tribune source published — PR #143 awaiting review
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Published code commit `ba6d95b2a398ad264f522dbd2e2ef1e04cc03e06` on `roi-branch` and opened [PR #143](https://github.com/pu-roi/LANES/pull/143). The exact normal Cloud Build test gate passes **385 tests** with three optional skips; the required isolated PostGIS gate passes **42 checks** with fresh/repeated migrations at unchanged head `f1a9c7e2b604`. Documentation records the accepted source/deployment and remaining exact-time limitations. Four unrelated frontend edits remain local and unchanged. This publication makes no cloud, database or provider changes; main integration and its deployment remain pending. [Acceptance](evaluations/tribune-context-repair-20261024.md).
 
 ## Tribune context repair deployed — cleared observations excluded
 
-[@roicambe](https://github.com/roicambe) (Roi Cambe). Serving API `lanes-api-tribune-context-20261024-v6` selects zero-provider correction **395**. Flooded Areas now shows six road observations: three unchanged GMA plus Boni, Quirino and Gov. Pascual. Quezon City's subsided evidence remains inspectable but is excluded before list/collection counting and pagination. The source-linked weekday citation and Sitio 6 role are repaired without transferring Boni's 4:34 PM clock or inventing a barangay. No new polygon is created; active zones 77–80 and unified history 76 remain unchanged. Protected candidate/serving and hosted/local desktop/mobile news checks pass, as do 110 Linux regressions, 42 required PostGIS checks/repeated migrations and actual-data/offline replay checks. All original records and stopped 46 / US$0.7683261 ledger content/generation are preserved. Receipt collision 394 is retained; corrected 395 and repeat reuse incur zero provider/count/NER calls. Source/CI remains uncommitted. [Evidence](evaluations/tribune-context-repair-20261024.md).
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Serving API `lanes-api-tribune-context-20261024-v6` selects zero-provider correction **395**. Flooded Areas now shows six road observations: three unchanged GMA plus Boni, Quirino and Gov. Pascual. Quezon City's subsided evidence remains inspectable but is excluded before list/collection counting and pagination. The source-linked weekday citation and Sitio 6 role are repaired without transferring Boni's 4:34 PM clock or inventing a barangay. No new polygon is created; active zones 77–80 and unified history 76 remain unchanged. Protected candidate/serving and hosted/local desktop/mobile news checks pass, as do 110 Linux regressions, 42 required PostGIS checks/repeated migrations and actual-data/offline replay checks. All original records and stopped 46 / US$0.7683261 ledger content/generation are preserved. Receipt collision 394 is retained; corrected 395 and repeat reuse incur zero provider/count/NER calls. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. [Evidence](evaluations/tribune-context-repair-20261024.md).
 
 
 ## Tribune pilot deployed — one active Boni polygon; partial evidence acceptance

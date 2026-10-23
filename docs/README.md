@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 24, 2026, 04:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Source publication — October 24
+
+[PR #143](https://github.com/pu-roi/LANES/pull/143) publishes the scoped Tribune pilot, context repair, cleared-area filtering and CI checks on `roi-branch`. Validation: 385 normal-gate tests and 42 required PostGIS checks pass. Main review/merge and its deployment remain pending. [Latest evidence](evaluations/tribune-context-repair-20261024.md).
 
 ## Tribune context and cleared-list repair — October 24
 
@@ -8,7 +12,7 @@
 
 ## Tribune saved-article pilot — October 24
 
-[Approved source/lifecycle plan](plans/tribune-saved-article-pilot.md) · [Actual cloud runs, spending, tests and limitations](evaluations/tribune-pilot-20261024.md). Raw NER 390 and zero-provider finalized correction 392 are saved. Active event/zone **80** is deployed through `lanes-api-tribune-20261024-v3`; protected candidate/serving checks and hosted/local desktop/mobile acceptance pass. Source/CI changes remain uncommitted on `roi-branch`. Quirino/Gov. Pascual and specific cleared-road evidence gaps remain unresolved. Tribune's selected lifecycle enters unified history after manual deactivation; GMA's original exclusion is unchanged.
+[Approved source/lifecycle plan](plans/tribune-saved-article-pilot.md) · [Actual cloud runs, spending, tests and limitations](evaluations/tribune-pilot-20261024.md). Raw NER 390 and zero-provider finalized correction 392 are saved. Active event/zone **80** is deployed through `lanes-api-tribune-20261024-v3`; protected candidate/serving checks and hosted/local desktop/mobile acceptance pass. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. Quirino/Gov. Pascual and specific cleared-road evidence gaps remain unresolved. Tribune's selected lifecycle enters unified history after manual deactivation; GMA's original exclusion is unchanged.
 
 
 ## Latest completion — event details and checked CI/CD restored

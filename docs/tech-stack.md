@@ -1,11 +1,11 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 24, 2026, 04:30 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ## Tribune runtime and publication audit — October 24
 
-[@roicambe](https://github.com/roicambe) (Roi Cambe). Current serving API is `lanes-api-tribune-context-20261024-v6`, with packaged-reader selection of Tribune 395 and retained GMA 388. The qualified manual worker remains separately pinned to its recorded v6 image; provider execution defaults OFF. The Tribune pilot and context repair introduce no package, dependency version, model, schema or migration. News automation remains paused and expiry OFF. Scoped source publication is in progress on `roi-branch`; main integration is pending. [Runtime/replay evidence](evaluations/tribune-context-repair-20261024.md).
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Current serving API is `lanes-api-tribune-context-20261024-v6`, with packaged-reader selection of Tribune 395 and retained GMA 388. The qualified manual worker remains separately pinned to its recorded v6 image; provider execution defaults OFF. The Tribune pilot and context repair introduce no package, dependency version, model, schema or migration. News automation remains paused and expiry OFF. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. [Runtime/replay evidence](evaluations/tribune-context-repair-20261024.md).
 
 
 Earlier detail-reader checkpoint: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. PR #142/main integration is complete; exact-commit build d52b144e-2809-4f3c-b941-5d378c21bc33 passes and the existing main trigger is enabled. Current serving API is `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. [Evidence](evaluations/event76-inspection-20261024.md).
