@@ -144,7 +144,8 @@ def browse_results(
 
 @router.get('/results/{run_id}/groups/{group_id}', response_model=NewsNativeGroupDetail)
 def read_result_group(
-    run_id: int = Path(ge=1), group_id: str = Path(pattern=r'^(?:g[0-9]+|resolved-n[0-9]+)$', max_length=32),
+    run_id: int = Path(ge=1),
+    group_id: str = Path(pattern=r'^(?:g[0-9]{1,31}|resolved-n[0-9]{1,22}|resolved-v44-[a-f0-9]{24})$', max_length=37),
     db: Session = Depends(get_db), _staff: object = Depends(deps.get_current_active_admin),
 ) -> NewsNativeGroupDetail:
     from app.services.news_browsing_service import publisher_labels

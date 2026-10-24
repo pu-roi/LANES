@@ -1,7 +1,17 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 05:02 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## News Automation monitoring and source publication
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The existing Overview panel keeps the local card/accordion layout, read-only 15-second polling, error/retry states and completion-driven query invalidation. `frontend/src/features/news/NewsAutomationPanel.tsx` shows source-rule versus provider-backed audit mode, actual response model, recovery time, failure phase/elapsed time, quota uncertainty, dynamic weather provider count, server-provided coverage, and expandable bulletin issue/validity evidence. The weather section and pipeline stages retain accessible labels for desktop/mobile inspection. `frontend/src/app/layout.tsx` and app/public icon assets provide browser/PWA icon metadata. These frontend edits are source-only in this publication.
+
+`GET /api/v1/admin/news/results/{run_id}/groups/{group_id}` accepts existing `g…`, `resolved-n…` and bounded `resolved-v44-<24 hex>` identities while keeping staff authentication and malformed-ID rejection. The deployed reader retains GMA 388/Tribune 397 and selects Philstar 401. No endpoint, schema or public API is added. [Audit](../evaluations/roi-publication-audit-20261024.md).
+
+## Philstar source, map and history behavior
+
+Saved Philstar article **274/source 573** completed trained NER **398**, Gemini **399**, and authenticated zero-provider finalization **401**. **10 source-checked observations** appear in News Intelligence; **zones 83–85** plot NS Amoranto/Banawe, Don Jose/Sct Alcaraz, and G Araneta/Kitanlad. All use the supported **September 9, 4:30 PM Philippine-time** heading. Seven accepted observations remain unplotted: four ambiguous section matches and three without a canonical road. The 61 targets retain 10 accepted, 19 unresolved and 32 unsupported outcomes; captions, warnings, subsidence context and secondary crossings are not active observations. The approved **US$1.50 cumulative cap** was sufficient: complete maximum reservation **US$1.3426523**; final conservative cumulative estimate **US$1.0215894** (not invoice charges). Serving API **`lanes-api-philstar-20261024-v2`**, protected API checks, desktop/mobile News Intelligence, selected/public map colors and history checks pass. **447 runtime and 78 mandatory disposable-PostGIS checks pass**, including repeated migration upgrade. All original rows across 41 tables remain intact; GMA 388, Tribune 397 and zones 77–82 are preserved. The stopped 62-attempt ledger, paused automation, disabled expiry and unrelated frontend edits are preserved. The same Philstar events enter unified history after their final polygon is manually deactivated, rehearsed only on a restored disposable database. No live polygon was deactivated. [Evidence](../evaluations/philstar-saved-article-20261024.md).
 
 ## Active Zones overview and map recovery
 

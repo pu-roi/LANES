@@ -10,7 +10,8 @@ from app.main import app
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('group_id',['g0','g12','resolved-n13','resolved-n50'])
+@pytest.mark.parametrize('group_id',['g0','g12','resolved-n13','resolved-n50',
+                                   'resolved-v44-1e9236087f3e15e326aed003'])
 async def test_saved_group_ids_reach_protected_reader(group_id):
     app.dependency_overrides[get_db] = lambda: None
     app.dependency_overrides[deps.get_current_active_admin] = lambda: object()
@@ -26,7 +27,8 @@ async def test_saved_group_ids_reach_protected_reader(group_id):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('group_id',['resolved-n-1','resolved-nx','other-n13','resolved-n'+'9'*30])
+@pytest.mark.parametrize('group_id',['resolved-n-1','resolved-nx','other-n13','resolved-n'+'9'*30,
+    'resolved-v44-'+'a'*23,'resolved-v44-'+'a'*25,'resolved-v44-'+'G'*24])
 async def test_malformed_group_ids_remain_rejected(group_id):
     app.dependency_overrides[get_db] = lambda: None
     app.dependency_overrides[deps.get_current_active_admin] = lambda: object()
@@ -42,12 +44,13 @@ async def test_malformed_group_ids_remain_rejected(group_id):
 
 
 @pytest.mark.asyncio
-async def test_corrected_group_detail_still_requires_admin_authentication():
+@pytest.mark.parametrize('group_id',['resolved-n13','resolved-v44-1e9236087f3e15e326aed003'])
+async def test_corrected_group_detail_still_requires_admin_authentication(group_id):
     app.dependency_overrides[get_db] = lambda: None
     try:
         with patch('app.api.v1.endpoints.admin_news.read_native_group') as reader:
             async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),base_url='http://test') as client:
-                response = await client.get('/api/v1/admin/news/results/380/groups/resolved-n13')
+                response = await client.get('/api/v1/admin/news/results/380/groups/'+group_id)
             assert response.status_code == 401
             reader.assert_not_called()
     finally:

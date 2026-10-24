@@ -30,6 +30,7 @@ test("source validation explains credit-free operation on desktop and mobile", a
   await expect(panel).toContainText("without AI requests");
   await expect(panel).toContainText("Flood zones are estimated");
   await expect(panel).not.toContainText("Daily request limit");
+  await expect(panel).not.toContainText("Provider-backed verification");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   await page.screenshot({ path: info.outputPath("source-validation.png"), fullPage: true });
 });
@@ -94,6 +95,8 @@ test("Gemini configuration cooldown shows unknown allowance on desktop/mobile", 
   await expect(diagnostics).toContainText("400");
   await expect(diagnostics).toContainText("Not recorded");
   await expect(diagnostics).toContainText("Model recovery check");
+  await expect(diagnostics).toContainText("Provider-backed verification");
+  await expect(diagnostics).not.toContainText("Zero external LLM API dependency");
   const bounds = await diagnostics.boundingBox();
   expect(bounds!.x).toBeGreaterThanOrEqual(0);
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
@@ -197,6 +200,8 @@ test("adaptive weather sources, timestamps, coverage and dispatch failures are v
   await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
   const panel = page.getByRole("region", { name: "Weather-based scheduling" });
   await expect(panel.getByText("15-minute automatic interval")).toBeVisible();
+  await expect(panel).toContainText("2 sources checked");
+  await expect(panel).not.toContainText("17 Metro Manila LGUs");
   await expect(panel.getByRole("link", { name: "PAGASA", exact: true })).toHaveAttribute("href", "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd");
   await expect(panel.getByRole("alert").filter({ hasText: "Worker dispatch needs attention" })).toBeVisible();
   await expect(panel.getByText(/Rainfall Advisory No. 6.*Issued.*Valid until/)).toBeHidden();
@@ -204,10 +209,13 @@ test("adaptive weather sources, timestamps, coverage and dispatch failures are v
   await panel.getByText("Weather details", { exact: true }).click();
   await expect(panel.getByText(/Rainfall Advisory No. 6.*Issued.*Valid until/)).toBeVisible();
   await expect(panel.getByRole("alert").filter({ hasText: "news_dispatch_unavailable" })).toBeVisible();
-  await expect(panel.getByText("Antipolo (upstream)", { exact: true })).toBeVisible();
+  await expect(panel.getByText(/Antipolo\s*\(Upstream\)/, { exact: true })).toBeVisible();
   await expect(page.getByText("Worker last started", { exact: true })).toBeHidden();
   await page.getByText("Run details and diagnostics", { exact: true }).click();
   await expect(page.getByText("Worker last started", { exact: true })).toBeVisible();
+  state.weather.providers.pop();
+  await page.getByRole("button", { name: "Refresh automation status" }).click();
+  await expect(panel).toContainText("1 sources checked");
   for (const width of info.project.name === "mobile-chromium" ? [390, 320] : [1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -263,6 +271,6 @@ test("loading and paused collection keep overview status clear", async ({ page }
   release();
   await expect(page.getByRole("status").filter({ hasText: "Collection paused" })).toBeVisible();
   await expect(page.getByText("Collection paused", { exact: true })).toHaveCount(2);
-  await expect(page.getByText("Processing Enabled", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Processing Enabled", { exact: true })).toBeVisible();
   await expect(page.getByText("No saved weather checks. Refresh after the controller runs.")).toBeVisible();
 });

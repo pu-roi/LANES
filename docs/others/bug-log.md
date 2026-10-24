@@ -1,7 +1,34 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 05:10 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Capstone audit retains routing geometry and numeric-depth defects
+
+**Status:** Investigating — reproduced in retained source-audit checks; repairs pending. **Severity:** High for routing evidence, Medium for numeric-depth normalization. **Reviewer:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The documented evaluator skips MultiPolygon zones, treats Polygon holes as wet, doubles exposure for duplicate zones, and scores an empty coordinate sequence as unblocked/100. Six displayed metric depth references remain noncanonical.
+2. **Root cause:** The specific routing loader/evaluator path keeps exterior Polygon rings and sums overlaps without union; empty input lacks an evaluator-level invalid-route result. Numeric measurements map only within 0.05 inch of a gauge, while displayed metric references use rounding and one non-equivalent neck conversion.
+3. **Strategy:** Preserve these findings as open work. Add explicit geometry/invalid-input regressions and a defined numeric rounding policy before repair. The synthetic evaluator result does not prove the public endpoint accepts empty routes; neither these probes nor later map pilots establish live-route safety.
+4. **Evidence/files:** `backend/app/services/flood_routing_policy.py`, `flood_depth.py`, `taglish_extraction_service.py` are reviewed source paths, unchanged in this documentation audit. [Chapters III–IV review](../capstone/chapter3-4-source-audit-20261024.md) and [325-check receipt](../evaluations/chapter3-4-audit-20261024/verification.json) retain the original baseline. This push does not implement those separate repairs.
+
+## News Automation redesign omitted provider and weather evidence
+
+**Status:** Resolved locally — TypeScript, scoped lint/build and desktop/mobile acceptance pass; frontend deployment pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The existing local redesign showed “Zero external LLM API dependency” in Gemini mode, hid model recovery/failure diagnostics, omitted bulletin issue time and hardcoded provider/geographic counts.
+2. **Root cause:** The presentation rewrite dropped fields already returned by `NewsAutomationStatus`; its diagnostics label also broke existing controls' test selectors. Initial desktop/mobile source-validation regressions failed on that renamed control.
+3. **Solution:** Preserve the layout while restoring provider-mode wording, exact server diagnostics, issue/valid times, configured coverage/counts and accessible section/stage labels. Update the two selectors reflecting the new stage/upstream markup; retain all existing assertions and add dynamic-provider and mode-wording checks.
+4. **Files:** `frontend/src/features/news/NewsAutomationPanel.tsx`, `frontend/tests/news-automation.spec.ts`, synchronized core records and [publication audit](../evaluations/roi-publication-audit-20261024.md). UI deployment remains pending.
+
+## Philstar access wording, source context and receipt publication
+
+**Status:** Source-context and parser fixes deployed; uncertain geography remains unresolved. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problems:** “Impassable to all types of vehicles” failed the access parser; generic passable output omitted a directly cited caution restriction; shortened road sections lost their exact intersections. Photo-caption and secondary crossing mentions could become separate observations.
+2. **Fix:** Accept supported all-vehicle wording, retain exact cited caution/intersection evidence, and exclude the morning caption and verified duplicate crossing context in a source/hash-bound replay. Original responses and raw NER remain immutable. No city, depth or time is invented.
+3. **Budget/source:** Explicit US$1.50 approval follows the original US$1 stop; existing 46 attempts are retained, not reset. Obsolete GMA working input stays retired and DZRH remains local-only.
+4. **Acceptance:** 447 runtime/78 required PostGIS tests; actual-source rollback/concurrent reuse/deactivation rehearsal; desktop/mobile source, active zones and colors; protected canary/serving checks. Cloud run 400’s receipt collision is preserved as failed; independent receipt session finalization 401 succeeds with zero new provider requests. API packaging now ships matching manifests at both paths. [Evidence](../evaluations/philstar-saved-article-20261024.md).
 
 ## Selected active flood turns black; overview floods seem absent
 

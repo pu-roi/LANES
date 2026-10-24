@@ -1,7 +1,11 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 05:02 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## October 24 Philstar publication audit
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Retained acceptance records identify serving API `lanes-api-philstar-20261024-v2`, reader correction 401 with GMA 388/Tribune 397 fallbacks, and 447 runtime/78 required PostGIS checks. This publication introduces no Python/Node package, dependency-version change, trained model, schema or migration. News Automation uses the existing React Query/Lucide/shared UI stack; icon files use existing Next.js metadata conventions. Earlier runtime paragraphs below describe their dated checkpoints. [Audit](evaluations/roi-publication-audit-20261024.md).
 
 ## Tribune shared-time runtime follow-up
 

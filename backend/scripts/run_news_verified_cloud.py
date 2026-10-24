@@ -20,7 +20,8 @@ def main() -> int:
         'source-ner','source-count','source-resolve','source-preview','source-archive',
         'heading-count','heading-resolve','inline-count','inline-resolve','inline-finalize',
         'gma-active-preview','gma-active-apply',
-        'tribune-ner','tribune-count','tribune-resolve','tribune-finalize','tribune-preview','tribune-apply'),nargs='?',default='preflight')
+        'tribune-ner','tribune-count','tribune-resolve','tribune-finalize','tribune-preview','tribune-apply',
+        'philstar-ner','philstar-count','philstar-resolve','philstar-finalize','philstar-preview','philstar-apply'),nargs='?',default='preflight')
     parser.add_argument('--allow-one-provider-request',action='store_true')
     parser.add_argument('--run-id',type=int,action='append',default=[])
     parser.add_argument('--authority',type=Path)
@@ -38,7 +39,10 @@ def main() -> int:
         resources=[checkpoint()]
         release=release_file(Path(os.environ['LANES_NEWS_VERIFIED_RELEASE']),
                              os.environ['LANES_NEWS_VERIFIED_RELEASE_SHA256'])
-        if args.mode.startswith('tribune-'):
+        if args.mode.startswith('philstar-'):
+            from scripts.run_news_philstar_pilot import run_philstar
+            result=run_philstar(args,release)
+        elif args.mode.startswith('tribune-'):
             from scripts.run_news_tribune_pilot import run_tribune
             result=run_tribune(args,release)
         elif args.mode in ('gma-active-preview','gma-active-apply'):
