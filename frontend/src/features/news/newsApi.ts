@@ -216,6 +216,11 @@ export interface NewsResultDetail {
   read_only: true;
 }
 
+export function getNewsMapTarget(runId: number, claimIndex: number | null, groupId?: string) {
+  const params = new URLSearchParams(groupId ? { group_id: groupId } : { claim_index: String(claimIndex) });
+  return apiClient.get<{ zone_id: number | null; claim_index: number | null; read_only: true }>(`/admin/news/results/${runId}/map-target?${params}`);
+}
+
 export function getNewsResults(filters: NewsResultFilters, signal?: AbortSignal) {
   const params = new URLSearchParams({ page: String(filters.page), page_size: "12", order: filters.order });
   for (const name of ["search", "publisher", "condition", "placement"] as const) {

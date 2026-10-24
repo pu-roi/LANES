@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, History, MapPin } from "lucide-react";
 import { Button, FloodLocationSummary, RecordDetailsDialog, RecordDetailsPanels, Skeleton, Tabs, TabContentPanel } from "@/shared/ui";
-import { getNewsResult } from "./newsApi";
+import { getNewsResult, getNewsMapTarget } from "./newsApi";
 import { articleDisplayText, floodSummaryData } from "./newsPresentation";
 import { NewsSourceArticle } from "./NewsSourceArticle";
 import { NewsProcessingDetails } from "./NewsProcessingDetails";
@@ -26,6 +26,26 @@ export function NewsResultDialog({ runId, claimIndex, groupId, onClose }: { runI
   const recordOpener = useRef<HTMLButtonElement | null>(null);
   const query = useQuery({ queryKey: ["news-result", runId, claimIndex, groupId], queryFn: ({ signal }) => getNewsResult(runId, claimIndex, signal, groupId), retry: false, refetchOnWindowFocus: false });
   const data = query.data;
+  const [openingMap, setOpeningMap] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const inspectPlacement = async () => {
+    setOpeningMap(true);
+    setMapError(null);
+    try {
+      const target = await getNewsMapTarget(runId, claimIndex, groupId ?? data?.item.group_id);
+      if (target.zone_id !== null) {
+        router.push(`/admin/map?tab=zones&focus_zone_id=${target.zone_id}`);
+      } else if (target.claim_index !== null) {
+        router.push(`/admin/map?review_news=${runId}:${target.claim_index}`);
+      } else {
+        setMapError("This observation has no active flood zone or mapped placement to inspect.");
+      }
+    } catch (error) {
+      setMapError(error instanceof Error ? error.message : "Could not open the saved flood zone. Please retry.");
+    } finally {
+      setOpeningMap(false);
+    }
+  };
   const changeTab = (next: DetailTab) => { setDirection(next === "source" ? 1 : -1); setTab(next); setMobileHistory(false); setInspectedRunId(null); };
   const inspectRun = (id: number, opener: HTMLButtonElement) => { recordOpener.current = opener; setInspectedRunId(id); };
   const backToArticle = () => { setInspectedRunId(null); requestAnimationFrame(() => recordOpener.current?.focus({ preventScroll: true })); };
@@ -56,10 +76,11 @@ export function NewsResultDialog({ runId, claimIndex, groupId, onClose }: { runI
           {data.item.summary.reading_reason && <p className="text-sm text-amber-800">Needs checking: {data.item.summary.reading_reason}</p>}
           <div className="space-y-2"><h4 className="text-sm font-semibold">What the article says</h4><blockquote className="whitespace-pre-wrap break-words border-l-2 border-blue-200 pl-3 text-sm leading-6 text-slate-600">{articleDisplayText(data.supporting_passages?.length ? data.supporting_passages.join("\n") : data.claim.evidence_sentence || "No supporting passage recorded.")}</blockquote>{data.claim.event_time_raw && <p className="text-xs text-slate-500">Time wording: {data.claim.event_time_raw}</p>}</div>
           <p className="text-xs text-slate-500">Times shown in Philippine time. This is the flood described by the article, not confirmation of flooding now.</p>
-          {claimIndex !== null && <Button variant="outline" className="min-h-11 w-full gap-2 sm:w-auto"
-            onClick={() => router.push(`/admin/map?review_news=${runId}:${claimIndex}`)}>
-            <MapPin className="size-4" aria-hidden="true" />Inspect placement on map
-          </Button>}
+          <Button variant="outline" className="min-h-11 w-full gap-2 sm:w-auto" disabled={openingMap}
+            onClick={() => void inspectPlacement()}>
+            <MapPin className="size-4" aria-hidden="true" />{openingMap ? "Opening placement…" : "Inspect placement on map"}
+          </Button>
+          {mapError && <p role="alert" className="text-sm text-red-800">{mapError}</p>}
         </section> : <section className="space-y-4">
           {data.source_review?.state === "different_capture" && <p role="alert" className="text-sm leading-6 text-amber-800">The current saved publisher article differs from this observation’s input. Original evidence is in Processing history.</p>}
           {data.source_review?.state === "current_unavailable" && <p role="alert" className="text-sm text-amber-800">The current article body is unavailable. Showing the saved extraction input.</p>}

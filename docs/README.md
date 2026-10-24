@@ -1,6 +1,14 @@
 # LANES documentation
 
-> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 4:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 25 map-handoff source publication
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The [verified Active Zones handoff](evaluations/news-active-zone-handoff-20261025.md#source-publication-checkpoint) is packaged for `roi-branch` with its API/CI/browser regressions. The complete working-tree checkpoint also retains the [SOP 1 presentation guide](capstone/sop1-presentation-guide-20261025.md) and its [dated read-only cloud-state evidence](evaluations/sop1-system-audit-20261025/cloud-state.json). This push performs no deployment or production-data operation.
+
+## News placement to Active Zones handoff
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Local implementation and verification](evaluations/news-active-zone-handoff-20261025.md): News Flood Details resolves the saved source/group to its active zone, selects it in Spatial Operations and flies to it on desktop/mobile. Unplotted observations keep review handling; no production write or deployment is included.
 
 ## October 25 source publication checkpoint
 

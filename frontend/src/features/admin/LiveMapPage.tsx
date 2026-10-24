@@ -135,6 +135,8 @@ type SecondaryWorkspace = "merge" | "edit";
 
 export default function LiveMapPage() {
   const searchParams = useSearchParams();
+  const zoneFocusParam = searchParams.get("focus_zone_id");
+  const focusedZoneId = zoneFocusParam && /^[1-9]\d*$/.test(zoneFocusParam) && Number.isSafeInteger(Number(zoneFocusParam)) ? Number(zoneFocusParam) : null;
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -143,7 +145,7 @@ export default function LiveMapPage() {
   const createZoneDraftUserId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   
   // Keep the legacy 'pending' key compatible with report handoffs and layers.
-  const [activeTab, setActiveTab] = useState<"pending" | "zones">(() => searchParams.get("tab") === "zones" ? "zones" : "pending");
+  const [activeTab, setActiveTab] = useState<"pending" | "zones">(() => focusedZoneId !== null || searchParams.get("tab") === "zones" ? "zones" : "pending");
   
   // Pending Moderation State
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
@@ -214,11 +216,11 @@ export default function LiveMapPage() {
   // Layout follows available width; touch only controls map interactions.
   const isCompactLayout = useMediaQuery("(max-width: 767px)");
   const isTouchDevice = useMediaQuery("(max-width: 767px), (pointer: coarse)");
-  const [isMobileMapVisible, setIsMobileMapVisible] = useState(false);
+  const [isMobileMapVisible, setIsMobileMapVisible] = useState(focusedZoneId !== null);
   const [zoneLayerError, setZoneLayerError] = useState<string | null>(null);
   const [zoneDrawAttempt, setZoneDrawAttempt] = useState(0);
   const [overviewRequest, setOverviewRequest] = useState(() =>
-    searchParams.get("tab") === "zones" && !searchParams.get("focus_report_id")
+    searchParams.get("tab") === "zones" && focusedZoneId === null && !searchParams.get("focus_report_id")
       && !(searchParams.get("lat") && searchParams.get("lng")) ? 1 : 0);
   const framedOverview = useRef(0);
   const initiallyFramedMap = useRef<Map | null>(null);
@@ -343,6 +345,43 @@ export default function LiveMapPage() {
   // Track last focused query to avoid duplicate re-flying
   const lastFocusedParamRef = useRef<string | null>(null);
   const lastPrimaryTabRef = useRef<"pending" | "zones" | null>(null);
+  const lastZoneHandoff = useRef<number | null>(null);
+  const newsHandoffZone = useQuery({ ...zoneDetailQuery(focusedZoneId), enabled: isAuthenticated && focusedZoneId !== null });
+  useEffect(() => {
+    if (focusedZoneId === null) { lastZoneHandoff.current = null; return; }
+    if (lastZoneHandoff.current === focusedZoneId) return;
+    if (newsHandoffZone.isError) {
+      lastZoneHandoff.current = focusedZoneId;
+      showMapError("Could not open the linked flood zone. Please refresh and try again.");
+      return;
+    }
+    const zone = newsHandoffZone.data;
+    if (!zone || zone.id !== focusedZoneId) return;
+    if (!zone.is_active) {
+      lastZoneHandoff.current = focusedZoneId;
+      showMapError("The linked flood zone is no longer active.");
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      lastZoneHandoff.current = focusedZoneId;
+      setActiveTab("zones");
+      setActiveOnly(true);
+      setSelectedZoneId(zone.id);
+      setSelectedContributorId(null);
+      setSelectedReportId(null);
+      setSelectedReviewKey(null);
+      setReviewReport(null);
+      setNewsPlacement(null);
+      setSelectedNewsCandidate(null);
+      setIsolatedReportId(null);
+      setGroupToShowOnMap(null);
+      setZoneToShowOnMap(zone);
+      setIsMobileMapVisible(true);
+      // The existing visible-canvas zone flight owns camera placement.
+      lastPrimaryTabRef.current = "zones";
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [focusedZoneId, newsHandoffZone.data, newsHandoffZone.isError, showMapError]);
 
   // Read focus_report_id and coordinate params from URL query parameters (when redirected from Reports Page)
   useEffect(() => {

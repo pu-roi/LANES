@@ -1,0 +1,203 @@
+{
+  "observedAtUtc": "2026-10-24T19:20:33.0000000Z",
+  "timezone": "Asia/Manila",
+  "project": "lanes-project-508809",
+  "region": "asia-east1",
+  "sourceCommit": "d328b382d41af1d27247174717c286e5eae7cd3f",
+  "method": "Read-only gcloud resource descriptions and public health GET; credentials and full environment omitted.",
+  "services": [
+    {
+      "name": "lanes-api",
+      "url": "https://lanes-api-tymrlmxbkq-de.a.run.app",
+      "servingTraffic": [
+        {
+          "revisionName": "lanes-api-build-5eafeb0e-2bd9-4ae2-9380-656be548e5c8",
+          "percent": 100
+        }
+      ],
+      "cloudSqlBinding": "lanes-project-508809:asia-east1:lanes-db",
+      "limits": {
+        "cpu": "1000m",
+        "memory": "1Gi"
+      },
+      "selectedRuntimeSettings": [
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        },
+        {
+          "name": "LANES_NEWS_AUDITOR_PROVIDER",
+          "value": "source_rules"
+        },
+        {
+          "name": "LANES_NEWS_AUDITOR_MODEL",
+          "value": "source-rules-v1"
+        },
+        {
+          "name": "LANES_NEWS_GEMINI_EXECUTION_ENABLED",
+          "value": "0"
+        },
+        {
+          "name": "LANES_NEWS_NATIVE_READ_REQUIRED",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "name": "lanes-frontend",
+      "url": "https://lanes-frontend-tymrlmxbkq-de.a.run.app",
+      "servingTraffic": [
+        {
+          "revisionName": "lanes-frontend-build-2026-10-24-003",
+          "percent": 100
+        }
+      ],
+      "cloudSqlBinding": null,
+      "limits": {
+        "cpu": "1.00",
+        "memory": "512Mi"
+      },
+      "selectedRuntimeSettings": []
+    },
+    {
+      "name": "lanes-valhalla",
+      "url": "https://lanes-valhalla-tymrlmxbkq-de.a.run.app",
+      "servingTraffic": [
+        {
+          "revisionName": "lanes-valhalla-00001-jbh",
+          "percent": 100
+        }
+      ],
+      "cloudSqlBinding": null,
+      "limits": {
+        "cpu": "2000m",
+        "memory": "4Gi"
+      },
+      "selectedRuntimeSettings": []
+    }
+  ],
+  "jobs": [
+    {
+      "name": "lanes-news-discovery",
+      "command": [
+        "python"
+      ],
+      "args": [
+        "-m",
+        "scripts.run_news_discovery",
+        "--discover",
+        "--pipeline",
+        "--scheduled",
+        "--limit",
+        "50"
+      ],
+      "limits": {
+        "cpu": "1000m",
+        "memory": "1Gi"
+      },
+      "selectedRuntimeSettings": [
+        {
+          "name": "LANES_NEWS_AUDITOR_PROVIDER",
+          "value": "source_rules"
+        },
+        {
+          "name": "LANES_NEWS_AUDITOR_MODEL",
+          "value": "source-rules-v1"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        }
+      ]
+    },
+    {
+      "name": "lanes-news-verified",
+      "command": [
+        "python"
+      ],
+      "args": [
+        "-B",
+        "-m",
+        "scripts.news_verified_entrypoint",
+        "preflight"
+      ],
+      "limits": {
+        "cpu": "1",
+        "memory": "3Gi"
+      },
+      "selectedRuntimeSettings": [
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        },
+        {
+          "name": "LANES_NEWS_AUDITOR_PROVIDER",
+          "value": "gemini"
+        },
+        {
+          "name": "LANES_NEWS_AUDITOR_MODEL",
+          "value": "gemini-3.5-flash-lite"
+        },
+        {
+          "name": "LANES_NEWS_GEMINI_EXECUTION_ENABLED",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "name": "lanes-news-history-seed",
+      "command": [
+        "python"
+      ],
+      "args": [
+        "-c",
+        "raise SystemExit(0)"
+      ],
+      "limits": {
+        "cpu": "1",
+        "memory": "3Gi"
+      },
+      "selectedRuntimeSettings": [
+        {
+          "name": "ENVIRONMENT",
+          "value": "production"
+        }
+      ]
+    }
+  ],
+  "schedulers": [
+    {
+      "name": "projects/lanes-project-508809/locations/asia-east1/jobs/lanes-zone-expiry-every-minute",
+      "schedule": "* * * * *",
+      "timeZone": "Asia/Manila",
+      "state": "ENABLED"
+    },
+    {
+      "name": "projects/lanes-project-508809/locations/asia-east1/jobs/lanes-news-discovery-every-3-hours",
+      "schedule": "*/15 * * * *",
+      "timeZone": "Asia/Manila",
+      "state": "PAUSED"
+    }
+  ],
+  "cloudSql": [
+    {
+      "name": "lanes-db",
+      "databaseVersion": "POSTGRES_15",
+      "region": "asia-east1",
+      "state": "RUNNABLE"
+    }
+  ],
+  "apiHealth": {
+    "status": "healthy",
+    "details": {
+      "database": "connected"
+    }
+  },
+  "browserObservation": "Direct frontend run.app URL returned 403 Forbidden in fresh in-app browser; authenticated admin screens were source-reviewed.",
+  "limitations": [
+    "No cloud job execution, inference, schema changes or deployment performed.",
+    "No live table rows, PostGIS extension version, stored admin settings or authenticated admin UI were inspected.",
+    "Cloud Scheduler pause is verified; database processing/publication flags were not freshly verified."
+  ],
+  "observedAtManila": "2026-10-25T03:20:33.0000000+08:00"
+}

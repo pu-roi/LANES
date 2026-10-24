@@ -1,6 +1,14 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 4:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## News Flood Details map handoff — October 25 local
+
+**Source publication:** [@roicambe](https://github.com/roicambe) (Roi Cambe). Included in the verified `roi-branch` source checkpoint; release remains separate. The new map-target API and matching frontend must be deployed together. Existing schema, dependencies and production records are unchanged by this push.
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). `NewsResultDialog.tsx` resolves its existing Inspect placement on map action through `GET /api/v1/admin/news/results/{run_id}/map-target?claim_index=...` or `group_id=...`. `news_map_handoff_service.py` validates saved identity and reads exact publication/native-import lineage under existing active/expiry policy. The response contains a nullable active zone ID and projected claim ordinal, never inferred nearby geometry.
+
+`LiveMapPage.tsx` accepts `tab=zones&focus_zone_id=...`, fetches the precise zone, selects it and schedules the existing visible-canvas flight. The mobile map opens automatically and Back to zones retains selection. Unplotted claims retain `review_news`; failures and inactive-on-arrival cases are visible. Existing page layout, controls, models and migrations remain. [Verification](../evaluations/news-active-zone-handoff-20261025.md).
 
 ## October 25 source publication boundary
 

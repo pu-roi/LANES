@@ -1,6 +1,15 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 4:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## News placement action opened review instead of its saved active zone
+
+**Status:** Resolved and verified locally; included in the requested `roi-branch` source publication, deployment pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Inspect placement on map from Flooded Areas details opened Needs Review rather than Active Zones and did not select/fly to the saved zone.
+2. **Root cause:** The button always emitted `review_news=run:ordinal`; the map had no zone-ID handoff, and ordinal-free native groups had no action.
+3. **Solution:** Resolve the exact saved source/group to an active zone in FastAPI; navigate with `focus_zone_id`, fetch/select that zone independently of pagination/viewport, then reuse the mobile-visible zone flight. Keep review fallback and visible errors.
+4. **Files/checks:** `news_map_handoff_service.py`, `news_results.py`, `admin_news.py`, `NewsResultDialog.tsx`, `newsApi.ts`, `LiveMapPage.tsx`, new backend/Playwright regressions and existing CI lists. All 39 backend and 14 responsive cases pass; TypeScript/scoped lint and unchanged LiveMapPage lint baseline verified. No schema or production-data change. [Evidence](../evaluations/news-active-zone-handoff-20261025.md).
 
 **October 25 publication checkpoint:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The local expiry repair, citizen approval investigation and previously retained news/map fixes are packaged for the requested `roi-branch` source publication. Earlier unpushed-source wording describes its dated checkpoint. Citizen eligibility remains unresolved for the timestamp-free form; publication does not deploy the expiry change or alter production state. [Audit](../evaluations/roi-publication-audit-20261025.md).
 

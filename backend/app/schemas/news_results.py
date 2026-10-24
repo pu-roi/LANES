@@ -137,3 +137,9 @@ class NewsResultPlacementPreview(BaseModel):
     claim: NerProjectedClaim | ExtractedClaim
     preview: NewsPlacementPreview
     read_only: Literal[True] = True
+
+
+class NewsMapTarget(BaseModel):
+    zone_id: int | None = None
+    claim_index: int | None = None
+    read_only: Literal[True] = True
