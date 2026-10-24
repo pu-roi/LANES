@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 05:02 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Latest news-module checkpoint (October 24):** [@roicambe](https://github.com/roicambe) (Roi Cambe). Philstar correction 401 adds 10 source-checked observations and zones 83–85, alongside retained GMA/Tribune data. Historical article times, partial spatial qualification and deactivation-to-history behavior remain explicit. The local monitoring panel retains provider/recovery/weather diagnostics; its source publication is separate from frontend deployment. [Philstar acceptance](evaluations/philstar-saved-article-20261024.md) · [Publication audit](evaluations/roi-publication-audit-20261024.md).
 
 **Latest Tribune map state:** [@roicambe](https://github.com/roicambe) (Roi Cambe). Correction **397** records the developer-reviewed shared **September 24, 4:34 PM** time. New zones **81, 82** plot Quirino/Guazon and Gov. Pascual/Sitio 6 alongside preserved Boni 80 and GMA 77–79. Serving API `lanes-api-tribune-time-20261024-v1`, protected checks and hosted desktop/mobile news/maps pass. 401 CI tests and 45 required PostGIS checks pass; original data, stopped ledger, paused automation and four unrelated frontend edits remain intact. Future timestamp-free active reports have a recorded publication-time fallback; explicit individual clocks and supported shared scope retain precedence. [Evidence](evaluations/tribune-reviewed-time-20261024.md). Source follow-up is published in [PR #143](https://github.com/pu-roi/LANES/pull/143); main integration remains pending.
 

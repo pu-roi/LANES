@@ -37,7 +37,7 @@ def pending_history_event(event_column: Any = None) -> Any:
     return select(Timeline.id).where(
         Timeline.event_id == column, Timeline.entry_type == ENTRY,
         Timeline.snapshot_json['schema_version'].as_string() == 'historical-import-v1',
-        Timeline.snapshot_json['dataset_id'].as_string() == DATASET,
+        Timeline.snapshot_json['dataset_id'].as_string().in_((DATASET, 'philstar-active-history-20260909-v1')),
         Timeline.snapshot_json['disposition'].as_string() == 'active_demo',
     ).correlate_except(Timeline).exists() & (FloodEvent.status != 'ended')
 

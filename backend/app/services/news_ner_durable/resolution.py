@@ -179,7 +179,7 @@ def resolve_time(row: ResolvedMention, source: NativeInput, spans: tuple[AuditEv
 
 def _access_supported(value: str, spans: tuple[AuditEvidenceSpan, ...]) -> bool:
     patterns = (
-        ('impassable_all',r'(?:not\s+passable\s+(?:to|sa)\s+(?:all|any)(?:\s+(?:kinds?|types?)\s+of)?\s+vehicles?|impassable\s+to\s+all\s+vehicles|hindi\s+madaanan\s+ng\s+lahat\s+ng\s+sasakyan)'),
+        ('impassable_all',r'(?:not\s+passable\s+(?:to|sa)\s+(?:all|any)(?:\s+(?:kinds?|types?)\s+of)?\s+vehicles?|impassable\s+to\s+all(?:\s+(?:kinds?|types?)\s+of)?\s+vehicles|hindi\s+madaanan\s+ng\s+lahat\s+ng\s+sasakyan)'),
         ('light_vehicle_closed',r'(?:closed\s+to|not\s+passable\s+(?:to|sa)|impassable\s+to)\s+(?:light|small)\s+vehicles|hindi\s+madaanan\s+ng\s+maliliit\s+na\s+sasakyan'),
         ('passable_with_caution',r'passable\s+(?:with\s+caution|pero\s+mag-ingat)|madaanan\s+nang\s+may\s+pag-iingat'),
         ('passable_all',r'passable\s+to\s+all(?:\s+types?\s+of)?\s+vehicles|madaanan\s+ng\s+lahat\s+ng\s+sasakyan'),

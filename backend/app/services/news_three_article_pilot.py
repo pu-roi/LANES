@@ -32,6 +32,9 @@ class PilotAuthority:
     def validate(self, engine: object) -> None:
         engine = getattr(engine, 'engine', engine)
         p = self.policy
+        if p.get('schema_version') == 'philstar-saved-article-pilot-v1':
+            from app.services.news_philstar_pilot import validate_authority
+            return validate_authority(self, engine)
         if p.get('schema_version') == 'tribune-saved-article-pilot-v1':
             from app.services.news_tribune_pilot import validate_authority
             return validate_authority(self, engine)
@@ -77,6 +80,9 @@ class PilotAuthority:
 
     def validate_session(self, db: object, run_ids: tuple[int, ...] | None = None,
                          sources: tuple | None = None, *, operation: str = 'ner') -> None:
+        if self.policy.get('schema_version') == 'philstar-saved-article-pilot-v1':
+            from app.services.news_philstar_pilot import validate_session
+            return validate_session(self, db, run_ids, sources, operation)
         if self.policy.get('schema_version') == 'tribune-saved-article-pilot-v1':
             from app.services.news_tribune_pilot import validate_session
             return validate_session(self, db, run_ids, sources, operation)

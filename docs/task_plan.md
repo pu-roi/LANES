@@ -1,7 +1,35 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 05:10 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Publication audit and retained capstone findings
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Audit](evaluations/roi-publication-audit-20261024.md).
+
+- [x] Audit all eight core records; index the capstone review and preserve its verification baseline.
+- [x] Reconcile the earlier Philstar budget stop with deployed correction 401 and zones 83–85; preserve original evidence and unresolved placements.
+- [x] Restore truthful Gemini/provider and weather/recovery diagnostics in the existing local News Automation layout.
+- [x] Complete frontend TypeScript/lint/build and desktop/mobile scenario acceptance; prepare the current source/documentation for `roi-branch` publication.
+- [ ] Repair and regress the separately recorded routing evaluator's MultiPolygon, hole, duplicate exposure and empty-route findings.
+- [ ] Define the numeric-depth rounding/tolerance policy for the six unresolved displayed meter/centimeter references without inventing canonical gauges.
+- [ ] Reconcile raw survey/respondent evidence and the study cutoff before changing capstone statistics.
+- [ ] Review/merge `roi-branch` into `main`; this publication does not authorize a main merge or new deployment.
+
+## Philstar saved-article pilot — completed with partial spatial qualification
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Plan](plans/philstar-saved-article-pilot.md) · [Evidence](evaluations/philstar-saved-article-20261024.md).
+
+- [x] Pin 274/573 and full-body hash; skip RSS; retire obsolete working input and archive DZRH locally only.
+- [x] Restore a fresh backup and retain original NER 398 and every original provider response.
+- [x] Record explicit US$1.50 cumulative approval; count all 16 batches; preserve all 46 earlier attempts and spending.
+- [x] Complete Gemini 399 and zero-provider source-context correction 401; retain unresolved outcomes.
+- [x] Preview exact OSM/NOAH output; rehearse rollback, concurrency, duplicate-free reuse and final-deactivation history.
+- [x] Atomically save zones 83–85; repeat returns reused with zero writes and no reactivation.
+- [x] Publish the checked reader while retaining GMA 388/Tribune 397; verify protected API and desktop/mobile news/maps/history.
+- [x] Verify original rows, zero retention eligibility, stopped ledger, paused automation, disabled expiry and CI/migration gates.
+
+Remaining source limitations: 19 locality/evidence-unresolved targets and seven accepted but unplottable observations. No invented geometry or extra Gemini retries were used.
 
 ## Active Zones color and visibility follow-up
 

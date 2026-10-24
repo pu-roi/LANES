@@ -33,7 +33,17 @@ def release_file(path: Path, expected_sha256: str) -> dict:
 def resolver_for_release(release: dict) -> GeminiResolver:
     configured = replace(AuditorConfig.from_environment(), provider='gemini', model=release['resolver']['model'])
     batch_plan = None
-    if 'tribune_replay_manifest' in release:
+    if 'philstar_replay_manifest' in release:
+        from app.services.news_philstar_replay import PhilstarReplayBatchPlan
+        from app.services.news_pilot_budget import GCSLedgerStore
+        def cached_philstar(index: int) -> dict:
+            reference = release['philstar_replay_references'][index]
+            value, _ = GCSLedgerStore('lanes-storage', reference['object']).read()
+            if sha(value) != reference['sha256']:
+                raise ResolutionError('philstar_replay_bundle_changed')
+            return value
+        batch_plan = PhilstarReplayBatchPlan(release['philstar_replay_manifest'], cache_loader=cached_philstar)
+    elif 'tribune_replay_manifest' in release:
         from app.services.news_tribune_replay import TribuneReplayBatchPlan
         from app.services.news_pilot_budget import GCSLedgerStore
         def cached_tribune(index: int) -> dict:

@@ -1,0 +1,462 @@
+{
+  "schema": "lanes-documentation-source-audit-v1",
+  "date": "2026-10-24",
+  "timezone": "Asia/Manila",
+  "source_head": "eea154504a62f4931df430ed84818169bee7f938",
+  "branch": "roi-branch",
+  "includes_existing_uncommitted_changes": true,
+  "google_document_id": "1TcpT2REz48FL-H6w_3vwmgL-9B8EumRj8TroDAgyTsc",
+  "google_document_revision": "AHj4eMTy2d373uFoW9P-ikuh8-oGsVFzkU-34baNB1qvuxP0x67sOd5UT0zQDjQlYp1bJqzeDW6zzjGJsxvmNyNvIdTll-yv2E_ZZNqElw",
+  "scope": [
+    "Chapter III",
+    "Chapter IV"
+  ],
+  "google_doc_edited": false,
+  "application_code_edited": false,
+  "neural_inference": false,
+  "training": false,
+  "holdout_contents_opened": false,
+  "live_cloud_inspection": false,
+  "model": {
+    "name": "corrected-v19-control-seed-0",
+    "selected_step": 945,
+    "selected_checkpoint_files": 11,
+    "all_selected_hashes_match_runtime": true,
+    "all_runtime_bundle_file_hashes_and_sizes_valid": true,
+    "packaged_cloud_weights_match": true,
+    "weight_sha256": "a2e232cd04174488c97c4f6b45454ab1189646d1def0ea8f4bd2432344a547d8",
+    "runtime_bundle_manifest_sha256": "13137f64b216d2a9f2978f0eb3d278950754dc56731688495b8348f2ad43a8cd"
+  },
+  "pipeline": {
+    "adapter": "lanes-location-pipeline-v46",
+    "location_rules": "lanes-location-repair-v40+v44",
+    "context_rules": "lanes-context-association-v42",
+    "ordinary_scheduler_selects_native_context": false
+  },
+  "saved_neural_metrics": {
+    "training": {
+      "FN": 19,
+      "FP": 13,
+      "TP": 821,
+      "f1": 0.980884109916368,
+      "passages": 345,
+      "precision": 0.9844124700239808,
+      "predicted_spans": 834,
+      "recall": 0.9773809523809524,
+      "reference_spans": 840
+    },
+    "validation": {
+      "FN": 27,
+      "FP": 19,
+      "TP": 58,
+      "f1": 0.7160493827160493,
+      "passages": 60,
+      "precision": 0.7532467532467533,
+      "predicted_spans": 77,
+      "recall": 0.6823529411764706,
+      "reference_spans": 85
+    },
+    "holdout": {
+      "FN": 29,
+      "FP": 19,
+      "TP": 67,
+      "f1": 0.7362637362637363,
+      "passages": 60,
+      "precision": 0.7790697674418605,
+      "predicted_spans": 86,
+      "recall": 0.6979166666666666,
+      "reference_spans": 96
+    }
+  },
+  "saved_holdout_class_metrics": {
+    "BARANGAY": {
+      "FN": 3,
+      "FP": 3,
+      "TP": 19,
+      "f1": 0.8636363636363636,
+      "passages": 60,
+      "precision": 0.8636363636363636,
+      "predicted_spans": 22,
+      "recall": 0.8636363636363636,
+      "reference_spans": 22,
+      "support_status": "measured"
+    },
+    "CITY": {
+      "FN": 10,
+      "FP": 7,
+      "TP": 35,
+      "f1": 0.8045977011494253,
+      "passages": 60,
+      "precision": 0.8333333333333334,
+      "predicted_spans": 42,
+      "recall": 0.7777777777777778,
+      "reference_spans": 45,
+      "support_status": "measured"
+    },
+    "LANDMARK": {
+      "FN": 6,
+      "FP": 2,
+      "TP": 1,
+      "f1": 0.2,
+      "passages": 60,
+      "precision": 0.3333333333333333,
+      "predicted_spans": 3,
+      "recall": 0.14285714285714285,
+      "reference_spans": 7,
+      "support_status": "measured"
+    },
+    "LOCAL_AREA": {
+      "FN": 0,
+      "FP": 0,
+      "TP": 0,
+      "f1": null,
+      "passages": 60,
+      "precision": null,
+      "predicted_spans": 0,
+      "recall": null,
+      "reference_spans": 0,
+      "support_status": "unmeasured"
+    },
+    "PROVINCE": {
+      "FN": 4,
+      "FP": 6,
+      "TP": 5,
+      "f1": 0.5,
+      "passages": 60,
+      "precision": 0.45454545454545453,
+      "predicted_spans": 11,
+      "recall": 0.5555555555555556,
+      "reference_spans": 9,
+      "support_status": "measured"
+    },
+    "ROAD": {
+      "FN": 6,
+      "FP": 1,
+      "TP": 7,
+      "f1": 0.6666666666666666,
+      "passages": 60,
+      "precision": 0.875,
+      "predicted_spans": 8,
+      "recall": 0.5384615384615384,
+      "reference_spans": 13,
+      "support_status": "measured"
+    }
+  },
+  "saved_holdout_language_metrics": {
+    "english": {
+      "FN": 15,
+      "FP": 9,
+      "TP": 35,
+      "f1": 0.7446808510638298,
+      "passages": 30,
+      "precision": 0.7954545454545454,
+      "predicted_spans": 44,
+      "recall": 0.7,
+      "reference_spans": 50
+    },
+    "taglish": {
+      "FN": 14,
+      "FP": 10,
+      "TP": 32,
+      "f1": 0.7272727272727273,
+      "passages": 30,
+      "precision": 0.7619047619047619,
+      "predicted_spans": 42,
+      "recall": 0.6956521739130435,
+      "reference_spans": 46
+    }
+  },
+  "saved_metric_arithmetic_verified": true,
+  "neural_metrics_freshly_reproduced": false,
+  "constructed_span_98_73_freshly_reproduced": false,
+  "constructed_fixture_evaluation": {
+    "inputs": 50,
+    "expected_claims": 68,
+    "flood_mentioned_correct": 50,
+    "negation_correct": 48,
+    "forecast_correct": 50,
+    "historical_correct": 50,
+    "barangay": {
+      "matched": 47,
+      "eligible": 50
+    },
+    "depth": {
+      "matched": 43,
+      "eligible": 43
+    },
+    "condition": {
+      "matched": 59,
+      "eligible": 59
+    },
+    "procedure": "backend/scripts/evaluate_taglish_extraction.py",
+    "field_matching": "any claim matches expected value, independently for each field",
+    "exit_code": 0,
+    "log": "C:\\Users\\roicambe\\AppData\\Local\\Temp\\lanes-fixture-evaluation-wi3a67so\\evaluation.log"
+  },
+  "numeric_probe": {
+    "summary": {
+      "inches": {
+        "inputs": 8,
+        "matched": 8,
+        "unresolved": 0
+      },
+      "meters": {
+        "inputs": 8,
+        "matched": 3,
+        "unresolved": 5
+      },
+      "centimeters": {
+        "inputs": 8,
+        "matched": 7,
+        "unresolved": 1
+      }
+    },
+    "rows": [
+      {
+        "gauge": "gutter",
+        "input": "8 inches",
+        "canonical": "gutter",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "gutter",
+        "input": "0.2 meters",
+        "canonical": null,
+        "rule": "numeric_depth_without_exact_gauge",
+        "matched": false,
+        "unit": "meters"
+      },
+      {
+        "gauge": "gutter",
+        "input": "20.32 centimeters",
+        "canonical": "gutter",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "half-knee",
+        "input": "10 inches",
+        "canonical": "half-knee",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "half-knee",
+        "input": "0.25 meters",
+        "canonical": null,
+        "rule": "numeric_depth_without_exact_gauge",
+        "matched": false,
+        "unit": "meters"
+      },
+      {
+        "gauge": "half-knee",
+        "input": "25.4 centimeters",
+        "canonical": "half-knee",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "half-tire",
+        "input": "13 inches",
+        "canonical": "half-tire",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "half-tire",
+        "input": "0.33 meters",
+        "canonical": "half-tire",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "meters"
+      },
+      {
+        "gauge": "half-tire",
+        "input": "33.02 centimeters",
+        "canonical": "half-tire",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "knee",
+        "input": "19 inches",
+        "canonical": "knee",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "knee",
+        "input": "0.48 meters",
+        "canonical": null,
+        "rule": "numeric_depth_without_exact_gauge",
+        "matched": false,
+        "unit": "meters"
+      },
+      {
+        "gauge": "knee",
+        "input": "48.26 centimeters",
+        "canonical": "knee",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "tires",
+        "input": "26 inches",
+        "canonical": "tires",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "tires",
+        "input": "0.66 meters",
+        "canonical": "tires",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "meters"
+      },
+      {
+        "gauge": "tires",
+        "input": "66.04 centimeters",
+        "canonical": "tires",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "waist",
+        "input": "37 inches",
+        "canonical": "waist",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "waist",
+        "input": "0.94 meters",
+        "canonical": "waist",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "meters"
+      },
+      {
+        "gauge": "waist",
+        "input": "93.98 centimeters",
+        "canonical": "waist",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "chest",
+        "input": "45 inches",
+        "canonical": "chest",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "chest",
+        "input": "1.14 meters",
+        "canonical": null,
+        "rule": "numeric_depth_without_exact_gauge",
+        "matched": false,
+        "unit": "meters"
+      },
+      {
+        "gauge": "chest",
+        "input": "114.3 centimeters",
+        "canonical": "chest",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "centimeters"
+      },
+      {
+        "gauge": "neck",
+        "input": "55 inches",
+        "canonical": "neck",
+        "rule": "numeric_gauge_match",
+        "matched": true,
+        "unit": "inches"
+      },
+      {
+        "gauge": "neck",
+        "input": "1.4 meters",
+        "canonical": null,
+        "rule": "numeric_depth_without_exact_gauge",
+        "matched": false,
+        "unit": "meters"
+      },
+      {
+        "gauge": "neck",
+        "input": "140 centimeters",
+        "canonical": null,
+        "rule": "numeric_depth_without_exact_gauge",
+        "matched": false,
+        "unit": "centimeters"
+      }
+    ],
+    "earlier_log_summary_substring_bug": "Original ad hoc summary incorrectly counted centimeters inside meters; exact-unit regrouping of the unchanged 24 per-case records yields 3/8 meters. Per-case outputs were correct."
+  },
+  "spatial_probe": {
+    "loaded_ids": [
+      1
+    ],
+    "hole_route": {
+      "blocked": true,
+      "exposure_m": 222.4
+    },
+    "duplicate_exposure_m": 444.8,
+    "empty": {
+      "blocked": false,
+      "safety_score": 100.0
+    },
+    "db_mock_only": true
+  },
+  "tests": {
+    "tests": 325,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 325,
+    "warnings": 405,
+    "test_files": [
+      "backend/tests/test_nationwide_geometry.py",
+      "backend/tests/test_article_road_match_service.py",
+      "backend/tests/test_noah_road_prediction_service.py",
+      "backend/tests/test_news_road_placement.py",
+      "backend/tests/test_noah_catalog_builder.py",
+      "backend/tests/test_routing_service.py",
+      "backend/tests/test_flood_routing_policy.py",
+      "backend/tests/test_spatial_review.py",
+      "backend/tests/test_spatial_review_grouping.py",
+      "backend/tests/test_taglish_extraction.py",
+      "backend/tests/test_news_ner_location_v46.py",
+      "backend/tests/test_news_ner_context_v42_wiring.py"
+    ],
+    "noconftest": true,
+    "cache_disabled": true,
+    "routing_provider_responses": "mocked",
+    "database": "fixture-local SQLite or mocks",
+    "fresh_postgis_migration_test": false,
+    "evidence_directory": "C:\\Users\\roicambe\\AppData\\Local\\Temp\\lanes-chapter-review-fixed-1ybvwv4p",
+    "initial_harness": {
+      "passed": 292,
+      "failed": 26,
+      "errors": 7,
+      "cause": "Outbound socket.connect block also rejected Windows asyncio internal socketpair",
+      "application_fix": false,
+      "corrected_harness": "Thread-local allowance only during internal socketpair construction; outbound Python connect remains blocked"
+    }
+  },
+  "survey_raw_responses_validated": false
+}

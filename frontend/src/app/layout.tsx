@@ -24,6 +24,17 @@ export const metadata: Metadata = {
   },
   description: "Localized Alternative Navigation for Environs under Submersion - Flood-Adaptive Route Calculation Platform",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/lanes-logo/lanes-logo.png", sizes: "192x192", type: "image/png" },
+      { url: "/lanes-logo/lanes-logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/lanes-logo/lanes-logo.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
