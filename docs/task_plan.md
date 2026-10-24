@@ -1,7 +1,19 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Active Zones color and visibility follow-up
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verification](evaluations/active-zone-visibility-20261024.md).
+
+- [x] Preserve worker properties and rendered severity color through selection and queued updates.
+- [x] Frame all active floods in the overview; preserve explicit inspection/handoff focus and draft sessions.
+- [x] Retain geometry through refresh failures and add persistent accessible retry feedback.
+- [x] Verify style/terrain restoration, zoom transition and compact canvas behavior on desktop/mobile.
+- [x] Pass 72 functional browser checks, desktop scale checks and TypeScript; verify no added lint diagnostics.
+- [x] Include the scoped repair in the authorized `roi-branch` source publication.
+- [ ] Review/merge and deploy the frontend; the live site is not changed by source publication alone.
 
 ## Tribune shared-time and remaining-road follow-up
 

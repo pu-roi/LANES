@@ -12,13 +12,14 @@ import type { AvoidanceZone } from "../adminApi";
 
 const sourceLabels: Record<string, string> = { all: "All", user_reports: "User Reports", news: "News", official: "Official", other: "Other" };
 
-export function ActiveZonesPanel({ activeOnly, setActiveOnly, page, setPage, onRecords, onCount, onRequestBulkDeactivate, onViewGroupOnMap, visible = true, ...records }: Omit<ActiveZoneRecordsProps,
+export function ActiveZonesPanel({ activeOnly, setActiveOnly, page, setPage, onRecords, onCount, onRequestBulkDeactivate, onViewGroupOnMap, onOverview, visible = true, ...records }: Omit<ActiveZoneRecordsProps,
   "zones" | "listLoading" | "isPlaceholderData" | "totalPages" | "page" | "setPage"> & {
   activeOnly: boolean; setActiveOnly: (value: boolean) => void; page: number; setPage: (value: number) => void;
   onRecords: (zones: AvoidanceZone[]) => void;
   onCount?: (count: number) => void;
   onRequestBulkDeactivate: () => void;
   onViewGroupOnMap: (group: ZoneQueueItem) => void;
+  onOverview?: () => void;
   visible?: boolean;
 }) {
   const active = usePathname() === "/admin/map" && visible;
@@ -70,7 +71,7 @@ export function ActiveZonesPanel({ activeOnly, setActiveOnly, page, setPage, onR
   }, [activeOnly, records.selectedZoneId, groupId, members.data]);
   const refresh = useCallback(() => { void queryClient.invalidateQueries({ queryKey: ["adminZones"] }); }, [queryClient]);
   const clearFilters = () => { setSearch(""); setQ(""); setCity(""); setBarangay(""); setSeverity(""); setPage(1); };
-  const changeMode = (value: boolean) => { setActiveOnly(value); setPage(1); setGroupId(null); };
+  const changeMode = (value: boolean) => { setActiveOnly(value); setPage(1); setGroupId(null); if (value) onOverview?.(); };
   const inspecting = activeOnly && groupId !== null;
   return <section aria-label="Active Zones" className="flex min-h-0 flex-1 flex-col overflow-hidden">
     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 p-3">
@@ -109,7 +110,7 @@ export function ActiveZonesPanel({ activeOnly, setActiveOnly, page, setPage, onR
       </div>
     </div>
     {inspecting && <div className="flex min-h-0 flex-1 flex-col">
-      <div className="border-b border-slate-100 px-3 py-2"><Button variant="ghost" onClick={() => { setGroupId(null); requestAnimationFrame(() => { if (queueScroll.current) queueScroll.current.scrollTop = queueScrollTop.current; opener.current?.focus({ preventScroll: true }); }); }}><ArrowLeft className="mr-2 size-4" />Back to zones</Button></div>
+      <div className="border-b border-slate-100 px-3 py-2"><Button variant="ghost" onClick={() => { setGroupId(null); onOverview?.(); requestAnimationFrame(() => { if (queueScroll.current) queueScroll.current.scrollTop = queueScrollTop.current; opener.current?.focus({ preventScroll: true }); }); }}><ArrowLeft className="mr-2 size-4" />Back to zones</Button></div>
       {members.isPending && <p role="status" className="p-4 text-sm text-slate-500">Loading grouped zones…</p>}
       {members.isError && <div role="alert" className="space-y-2 p-4 text-sm text-red-800"><p>{members.error.message}</p><Button variant="outline" onClick={() => void members.refetch()}>Retry zone group</Button><p className="text-xs text-slate-600">Membership may have changed after expiry or deactivation. Return to zones to see the updated list.</p></div>}
       {members.data && !members.isError && <><p className="px-4 py-3 text-xs leading-5 text-slate-600">{members.data.total} {members.data.total === 1 ? "zone" : "related zones"} · {members.data.group_reason}</p><ActiveZoneRecords {...records} onCreateOfficialZone={undefined} zones={members.data.zones} listLoading={false} isPlaceholderData={false} page={members.data.page} setPage={setMemberPage} totalPages={members.data.pages} /></>}

@@ -39,9 +39,21 @@ export function syncGeoJSONSource(map: MapLibreMap, id: string, data: GeoJSON.Fe
       const old = before.get(key);
       if (!old) { add.push(feature); continue; }
       const geometryChanged = old.geometry !== feature.geometry && JSON.stringify(old.geometry) !== JSON.stringify(feature.geometry);
-      if (geometryChanged || JSON.stringify(old.properties) !== JSON.stringify(feature.properties)) update.push({
-        id: key, ...(geometryChanged ? { newGeometry: feature.geometry } : {}), removeAllProperties: true,
-        addOrUpdateProperties: Object.entries(feature.properties ?? {}).map(([key, value]) => ({ key, value })),
+      const oldProperties = old.properties ?? {};
+      const properties = feature.properties ?? {};
+      // Clearing and re-adding properties in one worker diff can drop every
+      // property in MapLibre, leaving black roads and invisible overview pins.
+      const removeProperties = Object.keys(oldProperties)
+        .filter(key => oldProperties[key] !== undefined && properties[key] === undefined);
+      const addOrUpdateProperties = Object.entries(properties)
+        .filter(([key, value]) => value !== undefined && JSON.stringify(oldProperties[key]) !== JSON.stringify(value))
+        .map(([key, value]) => ({ key, value }));
+      if (geometryChanged || removeProperties.length || addOrUpdateProperties.length) update.push({
+        id: key, ...(geometryChanged ? { newGeometry: feature.geometry } : {}),
+        ...(removeProperties.length ? { removeProperties } : {}),
+        // Keep the array even for geometry-only diffs: MapLibre can coalesce
+        // this update with a subsequent property removal before worker delivery.
+        addOrUpdateProperties,
       });
     }
     if (remove.length || add.length || update.length) existing.updateData({ remove, add, update });

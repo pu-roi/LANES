@@ -1,7 +1,11 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Active Zones color and visibility repair verified locally
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The shared GeoJSON updater now preserves severity colors, feature identities and evidence during selection. Active Zones frames all mapped active floods on overview entry/return, retains last-loaded shapes during viewport refreshes, surfaces persistent retryable failures, and restores layers after style/terrain changes. Compact coordinate handoffs wait for the visible canvas. **72 desktop/mobile functional cases pass**, plus desktop 1,000/10,000-zone scale checks; TypeScript passes and scoped lint adds no diagnostics over the 20 existing errors. Four unrelated frontend edits and concurrent unrelated changes remain untouched. Source publication is included in this `roi-branch` push; frontend deployment remains pending. [Evidence](evaluations/active-zone-visibility-20261024.md).
 
 ## Tribune three-road plotting completed
 

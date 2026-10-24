@@ -29,6 +29,10 @@ async function readMap(url: string, signal: AbortSignal): Promise<StaffMapPage> 
 
 export function useStaffMapData(map: Map | null, domain: "zones" | "history", params: string, active: boolean) {
   const [viewport, setViewport] = useState<{ bbox: string; zoom: number } | null>(null);
+  const scope = `${domain}:${params}`;
+  const [lastSuccessful, setLastSuccessful] = useState<{
+    map: Map; scope: string; pages: StaffMapPage[];
+  } | null>(null);
   const prefix = domain === "zones" ? staffKeys.zones : staffKeys.history;
   const endpoint = domain === "zones" ? "/admin/zones/map" : "/admin/flood-events/map";
   const staleTime = domain === "zones" ? 15_000 : 30_000;
@@ -58,9 +62,24 @@ export function useStaffMapData(map: Map | null, domain: "zones" | "history", pa
   const { hasNextPage, isFetching, isError, fetchNextPage } = pages;
   useEffect(() => { if (active && hasNextPage && !isFetching && !isError) void fetchNextPage(); },
     [active, hasNextPage, isFetching, isError, fetchNextPage]);
-  const features = useMemo(() => pages.data?.pages.flatMap(page => page.features) ?? [], [pages.data]);
-  const heatmap = useMemo(() => pages.data?.pages[0]?.heatmap_features ?? [], [pages.data]);
+  useEffect(() => {
+    if (active && map && pages.isSuccess && pages.data) {
+      let cancelled = false;
+      const successfulPages = pages.data.pages;
+      queueMicrotask(() => {
+        if (!cancelled) setLastSuccessful({ map, scope, pages: successfulPages });
+      });
+      return () => { cancelled = true; };
+    }
+  }, [active, map, scope, pages.isSuccess, pages.data]);
+  // Retain only this map/filter scope while a new viewport is loading or fails.
+  // A successful empty response replaces it; another filter never inherits it.
+  const displayedPages = pages.data?.pages ??
+    (lastSuccessful?.map === map && lastSuccessful.scope === scope ? lastSuccessful.pages : undefined);
+  const features = useMemo(() => displayedPages?.flatMap(page => page.features) ?? [], [displayedPages]);
+  const heatmap = useMemo(() => displayedPages?.[0]?.heatmap_features ?? [], [displayedPages]);
   return { features, heatmap, summary: summary.data, error: summary.error || pages.error,
+    isRetainingPrevious: pages.data === undefined && displayedPages !== undefined,
     isLoading: summary.isLoading || pages.isLoading || pages.hasNextPage, isFetching: summary.isFetching || pages.isFetching,
     refetch: () => { void summary.refetch(); void pages.refetch(); } };
 }

@@ -1,7 +1,16 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Selected active flood turns black; overview floods seem absent
+
+**Status:** Resolved and verified locally; frontend deployment pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Selecting a flood road produces a black stroke; Active Zones can show cards without visible floods.
+2. **Root cause:** Clearing/re-adding every GeoJSON property loses worker properties. The overview camera remains in Pasig; viewport loading and stale review isolation can also clear/hide shapes. Hidden compact-canvas flights can be interrupted by resize.
+3. **Solution:** Property deltas, explicit global overview framing, scoped retained geometry, persistent draw/read errors and retry, layer restoration, and visible-canvas handoff sequencing.
+4. **Files/checks:** Shared map updater/hooks, admin map/panel, accessible status component and Playwright regressions. 72 functional cases plus desktop 1,000/10,000 scale checks pass; TypeScript passes and there are no added lint diagnostics. [Detailed evidence and remaining release gate](../evaluations/active-zone-visibility-20261024.md).
 
 ## Tribune reviewed-time and locality clue follow-up
 

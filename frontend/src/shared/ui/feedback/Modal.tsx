@@ -24,7 +24,7 @@ export function Modal({ isOpen, onClose, title, children, size = "md", blurBackd
       />
       
       {/* Dialog */}
-      <div className={cn(
+      <div data-lenis-prevent className={cn(
         "relative z-10 w-full text-gray-900 transform scale-100 transition-all",
         bare ? "max-w-md" : "bg-white rounded-xl shadow-2xl",
         !bare && (size === "sm" ? "max-w-[18rem] p-4" : "max-w-md p-6")
