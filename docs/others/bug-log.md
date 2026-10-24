@@ -1,7 +1,16 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Tribune reviewed-time and locality clue follow-up
+
+**Status:** Resolved on serving API; source follow-up published in PR #143; main integration pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The two additional flooded roads lacked exact times; Sitio 6 was retained only in the road description, blocking locality matching.
+2. **Cause:** The strict paragraph-specific time rule needed an explicit developer-reviewed shared-time policy; resolution omitted the source local-area field.
+3. **Fix:** Exact-source V3 adoption records the reviewed clock and source qualifier, with additional-output selection preserving Boni and GMA. Timestamp-free active reports gain a recorded publication proxy; unrelated clocks/cleared or historical reports stay protected.
+4. **Verification:** 401 normal CI tests, 45 required PostGIS checks, two offline replays, actual-data lifecycle/concurrency/rollback/reuse and candidate/serving plus desktop/mobile acceptance pass. [Evidence](../evaluations/tribune-reviewed-time-20261024.md).
 
 ## Tribune source publication status
 

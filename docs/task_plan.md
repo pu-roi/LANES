@@ -1,7 +1,18 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 04:33 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 11:21 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+## Tribune shared-time and remaining-road follow-up
+
+- [x] Record the developer-reviewed article-wide clock without changing original responses.
+- [x] Repair Sitio 6 local-area projection and qualify both bounded road estimates.
+- [x] Save two new cloud road outputs, preserve Boni/GMA/history and verify desktop/mobile news/maps.
+- [x] Add publication-time fallback and regression checks for timestamp-free active reports.
+- [x] Publish this source follow-up through PR #143.
+- [ ] Review/merge PR #143 and verify the main deployment.
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Correction **397** records the developer-reviewed shared **September 24, 4:34 PM** time. New zones **81, 82** plot Quirino/Guazon and Gov. Pascual/Sitio 6 alongside preserved Boni 80 and GMA 77–79. Serving API `lanes-api-tribune-time-20261024-v1`, protected checks and hosted desktop/mobile news/maps pass. 401 CI tests and 45 required PostGIS checks pass; original data, stopped ledger, paused automation and four unrelated frontend edits remain intact. Future timestamp-free active reports have a recorded publication-time fallback; explicit individual clocks and supported shared scope retain precedence. [Evidence](evaluations/tribune-reviewed-time-20261024.md). Source follow-up is published in [PR #143](https://github.com/pu-roi/LANES/pull/143); main integration remains pending.
 
 ## Tribune context follow-up — completed on serving API
 
