@@ -45,6 +45,17 @@ def test_exact_single_article_authority_is_separate_from_gma(monkeypatch):
     authority.validate(engine)
 
 
+@pytest.mark.parametrize('groups', [['resolved-n1'], ['resolved-n5'], ['resolved-n5','resolved-n7','resolved-n10']])
+def test_reviewed_additional_outputs_cannot_expand_or_partially_select_roads(monkeypatch, groups):
+    from app.services.news_three_article_pilot import PilotAuthority
+    from app.services.news_tribune_replay import SHARED_TIME_REVIEW
+    authority, engine = grant_fixture(monkeypatch)
+    policy = {**authority.policy, 'allowed_operations':['outputs'],
+        'output_group_ids':groups, 'shared_time_review':SHARED_TIME_REVIEW}
+    with pytest.raises(ResolutionError, match='output_selection_invalid'):
+        PilotAuthority(policy, sha(policy), authority.trusted).validate(engine)
+
+
 @pytest.mark.parametrize('field,value',[
     ('schema_version','gma-source-repair-v1'),('session_id','other'),('dataset_id','other'),
     ('allowed_operations',['ner','resolve']),('allowed_operations',['archive']),

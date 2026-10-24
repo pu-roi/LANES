@@ -14,7 +14,11 @@ from app.services.news_ner_durable.gemini_resolution import GeminiResolver
 class SourceRepairResolver(GeminiResolver):
     @property
     def identity(self) -> dict:
-        return {**super().identity, 'request_serialization': 'canonical-document-v1'}
+        value = {**super().identity, 'request_serialization': 'canonical-document-v1'}
+        from app.services.news_tribune_replay import SHARED_TIME_VERSION, SHARED_TIME_REVIEW
+        if getattr(self.batch_plan, 'manifest', {}).get('schema_version') == SHARED_TIME_VERSION:
+            value['shared_time_review'] = SHARED_TIME_REVIEW.copy()
+        return value
 
     def request_packets(self, source: object, baseline: object, *, parent_run_id: int,
                         parent_result_sha256: str) -> list[dict]:

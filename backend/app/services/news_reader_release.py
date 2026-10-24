@@ -2,7 +2,7 @@
 from pathlib import Path
 
 
-READER_MANIFEST_SHA256 = "005cfaceff31f8faeab174dd7449a6a0fa721797b3a95407ec726574c485f480"
+READER_MANIFEST_SHA256 = "b3d290134c9c93d3e0fbf18add09661510513f77e2dbfd306a30c1b0dcb53c2d"
 READER_CONTAINER_PATH = "/data/news-reader/read-context.json"
 READER_SOURCE_PATH = Path(__file__).resolve().parents[2] / "runtime_data/news-reader/read-context.json"
 

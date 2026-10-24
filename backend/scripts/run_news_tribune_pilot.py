@@ -74,7 +74,19 @@ def run_tribune(args: object, release: dict) -> dict:
                 packets = None
                 if operation != 'outputs':
                     from app.services.news_ner_durable.adapter import verify_saved_result
-                    original = verify_saved_result(context, run.result, trusted)
+                    if 'parent_pipeline_version' in policy:
+                        from app.services.news_tribune_replay import SHARED_TIME_VERSION
+                        from app.services.news_ner_durable.adapter import parse_saved_result
+                        require(args.mode == 'tribune-finalize'
+                            and release['tribune_replay_manifest']['schema_version'] == SHARED_TIME_VERSION
+                            and run.pipeline_version == policy['parent_pipeline_version'],
+                            'tribune_replay_parent_invalid')
+                        # The exact parent result/source is bound by the grant.
+                        # The resolution worker independently reconstructs the
+                        # neural proposal and graph under current normalizers.
+                        original = parse_saved_result(run.mode, run.result)
+                    else:
+                        original = verify_saved_result(context, run.result, trusted)
                     packets = resolver.request_packets(context.source(), original,
                         parent_run_id=run_id, parent_result_sha256=sha(run.result))
                     require([sha(p['payload']) for p in packets] == policy['request_sha256s'], 'tribune_requests_changed')

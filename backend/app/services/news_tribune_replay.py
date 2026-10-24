@@ -18,6 +18,70 @@ from app.services.news_tribune_pilot import require
 
 VERSION = 'tribune-crossing-context-replay-v1'
 CONTEXT_VERSION = 'tribune-source-context-replay-v2'
+SHARED_TIME_VERSION = 'tribune-reviewed-shared-time-replay-v3'
+SHARED_TIME_REVIEW = {
+    'basis': 'developer_reviewed_article_as_of_context',
+    'reviewed_by': 'roicambe',
+    'reviewed_on': '2026-10-24',
+    'observation_date': '2026-09-24',
+    'clock_text': '4:34 p.m.',
+    'roads': ['Quirino Avenue', 'Gov. Pascual Avenue'],
+}
+
+
+def reviewed_clock_citation(source: Any, row: Any, target: dict, quote: Any) -> bool:
+    """Recognize only the exact reviewed cross-paragraph clock citation."""
+    import hashlib
+    from app.services.news_tribune_pilot import BODY
+    from app.services.news_ner_durable.resolution import quote_options
+    options = quote_options(source.article_text)
+    return (hashlib.sha256(source.article_text.encode()).hexdigest() == BODY
+        and target['label'] == 'ROAD'
+        and target['text'] in {'Quirino Avenue', 'Guazon Street', 'Gov. Pascual Avenue'}
+        and row.verdict == 'observed' and row.status == 'active' and not row.contradictory
+        and row.date_text == 'Thursday' and row.clock_text == '4:34 p.m.'
+        and row.time_role == 'observation' and row.time_evidence == (0, 1, 2)
+        and row.place_evidence == (2,) and row.status_evidence == (2,)
+        and options[2]['start'] <= target['start'] < target['end'] <= options[2]['end']
+        and quote.start == options[1]['start'] and quote.end == options[1]['end'])
+
+
+def shared_time_context(rows: list, document: dict) -> tuple[list, list[dict]]:
+    """Apply the developer-reviewed article-wide clock to two exact roads.
+
+    This opt-in interpretation is recorded separately from original Gemini
+    output. It is not a general rule for transferring timestamps across roads.
+    """
+    import hashlib
+    from app.services.news_tribune_pilot import BODY
+    from app.services.news_ner_durable.resolution import quote_options
+    body = document['evidence_text']
+    require(hashlib.sha256(body.encode()).hexdigest() == BODY, 'tribune_context_source_changed')
+    options = quote_options(body)
+    require('4:34 p.m.' in options[1]['quote'], 'tribune_shared_clock_changed')
+    targets = {t['id']: t for t in document['targets']}
+    effective, proof = [], []
+    for row in rows:
+        target = targets[row.target_id]
+        # Guazon is included only so the existing crossing-context rule can
+        # retain it under Quirino, never as an independent output road.
+        eligible = (target['label'] == 'ROAD'
+            and target['text'] in {'Quirino Avenue', 'Guazon Street', 'Gov. Pascual Avenue'}
+            and row.verdict == 'observed' and row.status == 'active'
+            and row.date_text == 'Thursday' and row.clock_text is None
+            and row.time_role == 'observation' and not row.contradictory
+            and row.time_evidence == (0, 2)
+            and row.place_evidence == (2,) and row.status_evidence == (2,)
+            and options[2]['start'] <= target['start'] < target['end'] <= options[2]['end'])
+        changed = row.model_copy(update={'clock_text': '4:34 p.m.', 'time_evidence': (0, 1, 2)}) if eligible else row
+        effective.append(changed)
+        if eligible:
+            proof.append(dict(target_id=row.target_id, reason='developer_reviewed_shared_as_of_time',
+                review=deepcopy(SHARED_TIME_REVIEW), changed_fields=['clock_text', 'time_evidence'],
+                original_row_sha256=sha(row.model_dump(mode='json')),
+                effective_row_sha256=sha(changed.model_dump(mode='json')),
+                original_provider_clock_missing=True))
+    return effective, proof
 
 
 def source_context(rows: list, document: dict, semantic: dict) -> tuple[list, list[dict], dict]:
@@ -110,10 +174,13 @@ def crossing_context(rows: list, targets: list[dict], semantic: dict, *, partial
 
 class TribuneReplayBatchPlan:
     def __init__(self, manifest: dict, *, cache_loader: Any = None) -> None:
-        require(manifest.get('schema_version') in {VERSION, CONTEXT_VERSION}
+        require(manifest.get('schema_version') in {VERSION, CONTEXT_VERSION, SHARED_TIME_VERSION}
             and manifest.get('generation_requests_allowed') == 0
             and manifest.get('batch_sizes') == [4,4,4,3]
             and len(manifest.get('bundle_sha256s',[])) == 4, 'tribune_replay_manifest_invalid')
+        if manifest['schema_version'] == SHARED_TIME_VERSION:
+            require(manifest.get('shared_time_review') == SHARED_TIME_REVIEW,
+                'tribune_shared_time_review_required')
         self.manifest = deepcopy(manifest)
         self.pin = sha(manifest)
         self.cache_loader = cache_loader
@@ -146,9 +213,12 @@ class TribuneReplayBatchPlan:
         targets = document['targets']
         rows, normalizations = parsed.results, []
         current = semantic
-        contextual = self.manifest['schema_version'] == CONTEXT_VERSION
+        contextual = self.manifest['schema_version'] in {CONTEXT_VERSION, SHARED_TIME_VERSION}
         if contextual:
             rows, normalizations, current = source_context(rows, document, semantic)
+        if self.manifest['schema_version'] == SHARED_TIME_VERSION:
+            rows, clock_proof = shared_time_context(rows, document)
+            normalizations += clock_proof
         rows, crossing = crossing_context(rows, targets, current, partial_depth=contextual)
         normalizations += crossing
         key=sha(dict(request_sha256=sha(payload),context=context))

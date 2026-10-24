@@ -6,6 +6,65 @@ from app.services.news_tribune_replay import crossing_context, source_context, Z
 from app.services.news_ner_durable.resolution import ResolutionError
 
 
+def test_reviewed_shared_clock_is_opt_in_and_keeps_raw_response(monkeypatch):
+    from app.services.news_tribune_replay import shared_time_context
+    row, document, semantic = context_case(monkeypatch)
+    original = row.model_dump()
+    rows, _, _ = source_context([row], document, semantic)
+    effective, proof = shared_time_context(rows, document)
+    assert effective[0].clock_text == '4:34 p.m.'
+    assert effective[0].time_evidence == (0, 1, 2)
+    assert effective[0].depth_text == row.depth_text and effective[0].access == row.access
+    assert row.model_dump() == original
+    assert proof[0]['review']['basis'] == 'developer_reviewed_article_as_of_context'
+    assert proof[0]['original_provider_clock_missing'] is True
+
+
+@pytest.mark.parametrize('change', [dict(clock_text='6 PM'), dict(status='subsided'),
+    dict(contradictory=True), dict(date_text=None), dict(time_role='clearance')])
+def test_reviewed_clock_never_overwrites_specific_or_cleared_evidence(monkeypatch, change):
+    from app.services.news_tribune_replay import shared_time_context
+    row, document, semantic = context_case(monkeypatch)
+    rows, _, _ = source_context([row], document, semantic)
+    changed = rows[0].model_copy(update=change)
+    effective, proof = shared_time_context([changed], document)
+    assert effective == [changed] and not proof
+
+
+def test_shared_clock_manifest_requires_exact_review():
+    from app.services.news_tribune_replay import TribuneReplayBatchPlan, SHARED_TIME_VERSION
+    with pytest.raises(ResolutionError, match='shared_time_review_required'):
+        TribuneReplayBatchPlan(dict(schema_version=SHARED_TIME_VERSION,
+            generation_requests_allowed=0, batch_sizes=[4, 4, 4, 3], bundle_sha256s=['a']*4))
+
+
+def test_timestamp_free_active_article_uses_labeled_publication_proxy():
+    from datetime import datetime
+    from app.services.news_ner_durable.resolution import resolve_time
+    rows, _, _ = source_rows()
+    row = rows[0].model_copy(update=dict(date_text=None,clock_text=None,contemporaneous=False))
+    source = SimpleNamespace(article_text='Two roads are flooded and remain passable.',
+        published_at=datetime.fromisoformat('2026-10-24T16:34:00+08:00'))
+    observed, basis, raw = resolve_time(row, source, ())
+    assert observed == source.published_at and basis == 'publication_time_fallback' and raw is None
+
+
+@pytest.mark.parametrize('change,body', [
+    ({}, 'Road A flooded at 3 PM; Road B was also affected.'),
+    ({}, 'The flooding happened yesterday.'),
+    ({'status':'subsided','time_role':'clearance'}, 'Floodwaters have subsided.'),
+    ({'historical':True}, 'Flooding affected two roads.'),
+    ({'contradictory':True}, 'Flooding affected two roads.'),
+])
+def test_publication_proxy_does_not_mask_clock_history_clearance_or_conflicts(change, body):
+    from datetime import datetime
+    from app.services.news_ner_durable.resolution import resolve_time
+    rows, _, _ = source_rows()
+    row = rows[0].model_copy(update=dict(date_text=None,clock_text=None,contemporaneous=False,**change))
+    source = SimpleNamespace(article_text=body,published_at=datetime.fromisoformat('2026-10-24T16:34:00+08:00'))
+    assert resolve_time(row, source, ())[0] is None
+
+
 def source_rows():
     facts=dict(verdict='observed',city='Mandaluyong',barangay=None,status='active',date_text='Thursday',
         clock_text='4:34 p.m.',time_role='observation',depth_text='10 inches',depth_scope='individual',

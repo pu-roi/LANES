@@ -58,6 +58,12 @@ def validate_authority(authority: Any, engine: Any) -> None:
         and p.get('pipeline_version') == authority.trusted.pipeline_version
         and p.get('resource_profile') == 'cloud-run-v1'
         and p.get('live_publication_allowed') is False, 'tribune_authority_invalid')
+    if 'output_group_ids' in p:
+        from app.services.news_tribune_replay import SHARED_TIME_REVIEW
+        require(p['allowed_operations'] == ['outputs']
+            and p['output_group_ids'] == ['resolved-n5', 'resolved-n7']
+            and p.get('shared_time_review') == SHARED_TIME_REVIEW,
+            'tribune_output_selection_invalid')
     inputs = p.get('inputs', [])
     require(len(inputs) == 1 and inputs[0].get('article_id') == 25
         and inputs[0].get('source_version_id') == 568
@@ -100,7 +106,8 @@ def validate_session(authority: Any, db: Session, run_ids: tuple | None,
     require(len(run_ids) == 1, 'tribune_one_run_required')
     run = db.get(NewsExtractionRun, run_ids[0])
     version = db.get(NewsArticleVersion, run.article_version_id) if run else None
-    pipeline = p['resolved_pipeline_version'] if operation == 'outputs' else p['pipeline_version']
+    pipeline = (p['resolved_pipeline_version'] if operation == 'outputs' else
+        p.get('parent_pipeline_version', p['pipeline_version']))
     require(run is not None and version is not None and version.article_id == 25
         and version.input_snapshot == item['input_snapshot']
         and version.input_fingerprint == item['native_input_fingerprint']
@@ -130,6 +137,9 @@ def qualify(db: Session, authority: Any, run_id: int, sources: tuple,
         trusted, now=datetime.fromisoformat(authority.policy['previewed_at']))
     outputs = []
     for group in result.projection['groups']:
+        if ('output_group_ids' in authority.policy
+                and group['group_id'] not in authority.policy['output_group_ids']):
+            continue
         item = dict(group_id=group['group_id'], claim_index=group['claim_index'],
             outcome='unresolved', reasons=list(group.get('reasons', [])), geometry=None)
         if group['claim_index'] is None:
@@ -174,10 +184,15 @@ def outputs(engine: Any, authority: Any, run_id: int, sources: tuple, *,
         authority.validate_session(db, (run_id,), sources, operation='outputs')
         saved = list(db.scalars(select(Timeline).where(Timeline.entry_type == 'news_tribune_pilot_output',
             Timeline.snapshot_json['session_id'].as_string() == SESSION)))
+        if 'output_group_ids' in authority.policy:
+            saved = [t for t in saved if t.snapshot_json.get('group_id') in authority.policy['output_group_ids']]
         if saved:
             require(all(t.snapshot_json['result_sha256'] == authority.policy['result_sha256']
                 and t.snapshot_json['outputs_sha256'] == authority.policy.get('outputs_sha256') for t in saved),
                 'tribune_existing_output_changed')
+            if 'output_group_ids' in authority.policy:
+                require(sorted(t.snapshot_json['group_id'] for t in saved) == authority.policy['output_group_ids'],
+                    'tribune_existing_output_incomplete')
             return dict(status='completed', stage='reused', event_ids=sorted(t.event_id for t in saved), database_writes=0)
         preview, run, version, result, trusted = qualify(db, authority, run_id, sources, placement_service)
         if not apply:
@@ -228,7 +243,9 @@ def outputs(engine: Any, authority: Any, run_id: int, sources: tuple, *,
             db.add(Timeline(event_id=event.id, entry_type='news_tribune_pilot_output', occurred_at=now,
                 summary=metadata.label, snapshot_json=dict(schema_version=VERSION, session_id=SESSION,
                     result_sha256=sha(run.result), outputs_sha256=sha(preview),
-                    group_id=item['group_id'], geometry_evidence=item['geometry_evidence'])))
+                    group_id=item['group_id'], geometry_evidence=item['geometry_evidence'],
+                    **({'shared_time_review': authority.policy['shared_time_review']}
+                       if 'shared_time_review' in authority.policy else {}))))
             created.append(dict(group_id=item['group_id'], event_id=event.id, zone_ids=zone_ids))
         from app.services.news_historical_outputs import _source
         from app.models.news_publication import NewsClaimEvaluation
