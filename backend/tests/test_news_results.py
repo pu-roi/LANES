@@ -53,6 +53,8 @@ def result_db(evidence_db, request):
                 newest.result["is_metadata_only"] = True
             elif variant == "errors":
                 newest.result["errors"] = ["incomplete extraction"]
+            elif variant == 'subsided':
+                newest.result['claims'][0]['condition'] = 'subsided'
         source = NewsArticleExtractorInput(article_id=2, title="Original Philstar title", canonical_url="https://example.org/2",
             publisher="feedspot-05", published_at=NOW - timedelta(days=1), article_text="Original captured text")
         snapshot, fingerprint = extraction_input_snapshot(source)
@@ -67,6 +69,19 @@ def result_db(evidence_db, request):
     baseline = len(evidence_db)
     yield evidence_db
     assert len(evidence_db) == baseline, "Result reads must not write"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('result_db', ['subsided'], indirect=True)
+async def test_subsided_rows_are_excluded_before_counts_but_details_remain(result_db):
+    staff()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://test') as client:
+        page = (await client.get('/api/v1/admin/news/results?page_size=2')).json()
+        assert page['total'] == 3 and page['pages'] == 2
+        assert all(item['claim']['condition'] != 'subsided' for item in page['items'])
+        assert (await client.get('/api/v1/admin/news/results?condition=subsided')).json()['total'] == 0
+        detail = await client.get('/api/v1/admin/news/results/2/0')
+        assert detail.status_code == 200 and detail.json()['claim']['condition'] == 'subsided'
 
 
 @pytest.mark.asyncio

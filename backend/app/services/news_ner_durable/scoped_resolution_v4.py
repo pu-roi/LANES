@@ -45,10 +45,12 @@ def source_layout(text: str, candidates: list[dict]) -> dict:
     return layout
 
 
-def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog: object) -> tuple:
+def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog: object, *,
+                  reviewed_time_context: bool = False) -> tuple:
     # First run every unchanged strict field/reference check. Context cannot
     # conceal an invalid provider fact or an unsupported owning road.
-    claims,groups,audits,outcomes,_=v3.evaluate_rows(source,baseline,rows,catalog)
+    claims,groups,audits,outcomes,_=v3.evaluate_rows(source,baseline,rows,catalog,
+        reviewed_time_context=reviewed_time_context)
     layout=source_layout(source.article_text,targets(baseline));options=quote_options(source.article_text)
     scopes={r['target_id']:r for r in layout['targets']};by_row={r.target_id:r for r in rows}
     by_group={g['target_entity_ids'][0]:g for g in groups};by_outcome={o['target_id']:o for o in outcomes}

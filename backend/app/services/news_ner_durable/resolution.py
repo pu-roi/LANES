@@ -158,6 +158,17 @@ def resolve_time(row: ResolvedMention, source: NativeInput, spans: tuple[AuditEv
     # Do not substitute an article's publication clock for a past date or a
     # clearance. An article describing flooding today may use the agreed proxy.
     quotes = ' '.join(e.quote for e in spans)
+    # A timestamp-free report can use publication as an administrative proxy.
+    # Never conceal an uncited clock elsewhere, a past observation date, a
+    # cleared update, or historical/conflicting provider evidence.
+    if (row.time_role == 'observation' and row.status in {'active', 'rising'}
+            and not row.historical and not row.contradictory and pub
+            and (day is None or day == pub.astimezone(PHT).date())
+            and not CLOCK.search(source.article_text)
+            and not re.search(r'\b(?:yesterday|kahapon|last\s+(?:night|week|month|year))\b',
+                source.article_text, re.I)
+            and not any(d != pub.astimezone(PHT).date() for d in _dates(source.article_text))):
+        return pub, 'publication_time_fallback', None
     if (row.time_role == 'observation' and row.contemporaneous and not row.historical
             and not row.contradictory and pub and day == pub.astimezone(PHT).date()
             and not CLOCK.search(quotes)
@@ -225,7 +236,13 @@ def apply_resolution(source: NativeInput, baseline: object, payload: dict, catal
     result = baseline.model_copy(deep=True)
     claims, groups, audits = [], [], []
     if scoped:
-        claims, groups, audits, outcomes, layout_sha = evaluate_rows(source, baseline, rows, catalog)
+        kwargs = {}
+        if 'shared_time_review' in expected_identity:
+            from app.services.news_tribune_replay import SHARED_TIME_REVIEW
+            if response_version != v4.VERSION or expected_identity['shared_time_review'] != SHARED_TIME_REVIEW:
+                raise ResolutionError('tribune_shared_time_review_required')
+            kwargs['reviewed_time_context'] = True
+        claims, groups, audits, outcomes, layout_sha = evaluate_rows(source, baseline, rows, catalog, **kwargs)
         if outcomes != payload['row_outcomes'] or layout_sha != payload['source_layout_sha256']:
             raise ResolutionError('native_resolution_outcomes_mismatch')
     else:
@@ -259,7 +276,7 @@ def editorial_prefix(target: dict, text: str) -> bool:
 
 
 def resolve_rows(source: NativeInput, baseline: object, rows: list | tuple, catalog: object, *,
-                 scoped_editorial_context: bool=False) -> tuple:
+                 scoped_editorial_context: bool=False, reviewed_time_context: bool=False) -> tuple:
     """One canonical row validator for fail-fast batches and final recomputation."""
     options = quote_options(source.article_text)
     candidates = {m['id']: m for m in targets(baseline)}
@@ -302,12 +319,25 @@ def resolve_rows(source: NativeInput, baseline: object, rows: list | tuple, cata
             raise ResolutionError('native_resolution_status_conflict')
         for name in ('time','depth','access','section'):
             for quote in evidence[name]:
+                if reviewed_time_context and name == 'time':
+                    from app.services.news_tribune_replay import reviewed_clock_citation
+                    if reviewed_clock_citation(source, row, target, quote):
+                        continue
                 if (target['text'].casefold() not in quote.quote.casefold()
                         and any(m['id']!=target['id'] and m['label']=='ROAD'
                             and not (scoped_editorial_context and editorial_prefix(m,source.article_text))
                             and m['text'].casefold() in quote.quote.casefold() for m in candidates.values())):
                     raise ResolutionError('native_resolution_fact_target_mismatch')
         observed, basis, raw_time = resolve_time(row, source, evidence['time'])
+        reviewed_clock = False
+        if reviewed_time_context:
+            from app.services.news_tribune_replay import reviewed_clock_citation
+            reviewed_clock = any(reviewed_clock_citation(source, row, target, q) for q in evidence['time'])
+        local_area = None
+        if reviewed_clock:
+            basis = 'developer_reviewed_article_as_of_context'
+            if target['text'] == 'Gov. Pascual Avenue' and row.road_section == 'Gov. Pascual Avenue in Sitio 6':
+                local_area = 'Sitio 6'
         # Retain a supported calendar day even when no clock can be resolved.
         # This is existing JSON metadata, not an invented starting-time instant.
         calendar_day = observed.astimezone(PHT).date() if observed else None
@@ -349,7 +379,7 @@ def resolve_rows(source: NativeInput, baseline: object, rows: list | tuple, cata
         claim = NerProjectedClaim(raw_place_name=target['text'], canonical_city=city.name,
             canonical_barangay=barangay, canonical_province=city.province, psgc_code=city.code,
             canonical_road=target['text'] if target['label'] == 'ROAD' else None,
-            road_segment_raw=row.road_section,
+            road_segment_raw=row.road_section, local_area_raw=local_area,
             place_type={'ROAD':'street','CITY':'city','BARANGAY':'barangay','LANDMARK':'landmark'}.get(target['label'],'unknown'),
             place_char_start=target['start'], place_char_end=target['end'],
             condition=row.status, is_historical=row.historical, road_passability=row.access,

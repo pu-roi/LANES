@@ -150,7 +150,14 @@ class GeminiResolver:
                         policy = scoped_policy(self.evidence_contract)
                         outcomes = None
                         if policy is not None:
-                            _, _, _, outcomes, _ = policy.evaluate_rows(source, baseline, parsed.results, baseline_catalog(baseline, self))
+                            kwargs = {}
+                            if 'shared_time_review' in self.identity:
+                                from app.services.news_tribune_replay import SHARED_TIME_REVIEW
+                                if self.identity['shared_time_review'] != SHARED_TIME_REVIEW:
+                                    raise ResolutionError('tribune_shared_time_review_required')
+                                kwargs['reviewed_time_context'] = True
+                            _, _, _, outcomes, _ = policy.evaluate_rows(source, baseline, parsed.results,
+                                baseline_catalog(baseline, self), **kwargs)
                             if self.evidence_contract.endswith(('-v3','-v4')):
                                 # Explicit required targets belong to a reviewed manual batch plan.
                                 required = getattr(self.batch_plan,'required_targets',())

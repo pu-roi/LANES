@@ -299,7 +299,10 @@ test("individual historical zone and supporting report focus preserve their own 
     reporter_name:"Historical witness",created_at:"2026-10-20T00:00:00Z",geometry:reportGeometry,media_urls:[],
   }], total: 1, page: 1, pages: 1, page_size: 20 } }));
   for(const kind of ["zone","report","zone","zone"]){
-    await mapLayers(page,{pan:true});
+    await mapLayers(page,{pan:true,zoom:15});
+    // Wait for the detailed viewport response before capturing its baseline;
+    // a compact-map resize can still be completing the overview request.
+    await expect.poll(async()=>(await mapLayers(page))?.sourceCounts["historical-flood-events-source"]).toBe(2);
     const before=(await mapLayers(page))!;
     const baseSource=before.sources["historical-flood-events-source"];
     const basePaint=before.layers.find(layer=>layer.id===fill)?.paint;

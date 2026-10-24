@@ -1,6 +1,37 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## Active Zones color and visibility repair verified locally
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The shared GeoJSON updater now preserves severity colors, feature identities and evidence during selection. Active Zones frames all mapped active floods on overview entry/return, retains last-loaded shapes during viewport refreshes, surfaces persistent retryable failures, and restores layers after style/terrain changes. Compact coordinate handoffs wait for the visible canvas. **72 desktop/mobile functional cases pass**, plus desktop 1,000/10,000-zone scale checks; TypeScript passes and scoped lint adds no diagnostics over the 20 existing errors. Four unrelated frontend edits and concurrent unrelated changes remain untouched. Source publication is included in this `roi-branch` push; frontend deployment remains pending. [Evidence](evaluations/active-zone-visibility-20261024.md).
+
+## Tribune three-road plotting completed
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Correction **397** records the developer-reviewed shared **September 24, 4:34 PM** time. New zones **81, 82** plot Quirino/Guazon and Gov. Pascual/Sitio 6 alongside preserved Boni 80 and GMA 77–79. Serving API `lanes-api-tribune-time-20261024-v1`, protected checks and hosted desktop/mobile news/maps pass. 401 CI tests and 45 required PostGIS checks pass; original data, stopped ledger, paused automation and four unrelated frontend edits remain intact. Future timestamp-free active reports have a recorded publication-time fallback; explicit individual clocks and supported shared scope retain precedence. [Evidence](evaluations/tribune-reviewed-time-20261024.md). Source follow-up is published in [PR #143](https://github.com/pu-roi/LANES/pull/143); main integration remains pending.
+
+## Tribune source published — PR #143 awaiting review
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Published code commit `ba6d95b2a398ad264f522dbd2e2ef1e04cc03e06` on `roi-branch` and opened [PR #143](https://github.com/pu-roi/LANES/pull/143). The exact normal Cloud Build test gate passes **385 tests** with three optional skips; the required isolated PostGIS gate passes **42 checks** with fresh/repeated migrations at unchanged head `f1a9c7e2b604`. Documentation records the accepted source/deployment and remaining exact-time limitations. Four unrelated frontend edits remain local and unchanged. This publication makes no cloud, database or provider changes; main integration and its deployment remain pending. [Acceptance](evaluations/tribune-context-repair-20261024.md).
+
+## Tribune context repair deployed — cleared observations excluded
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Serving API `lanes-api-tribune-context-20261024-v6` selects zero-provider correction **395**. Flooded Areas now shows six road observations: three unchanged GMA plus Boni, Quirino and Gov. Pascual. Quezon City's subsided evidence remains inspectable but is excluded before list/collection counting and pagination. The source-linked weekday citation and Sitio 6 role are repaired without transferring Boni's 4:34 PM clock or inventing a barangay. No new polygon is created; active zones 77–80 and unified history 76 remain unchanged. Protected candidate/serving and hosted/local desktop/mobile news checks pass, as do 110 Linux regressions, 42 required PostGIS checks/repeated migrations and actual-data/offline replay checks. All original records and stopped 46 / US$0.7683261 ledger content/generation are preserved. Receipt collision 394 is retained; corrected 395 and repeat reuse incur zero provider/count/NER calls. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. [Evidence](evaluations/tribune-context-repair-20261024.md).
+
+
+## Tribune pilot deployed — one active Boni polygon; partial evidence acceptance
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Article 25/source 568 is authenticated and backed up; actual cloud NER 390 supplies fifteen location mentions. Four paid Gemini batches save correction 391, then immutable-response replay saves correction 392 with Boni as the accepted flooded primary road and F. Ortigas retained as crossing context. Quirino/Gov. Pascual and specific cleared-road citation/role gaps remain unresolved. The bounded Boni intersection polygon is saved as active event/zone **80** and served by `lanes-api-tribune-20261024-v3`. Two offline replays, 142 Linux regressions, 41 mandatory PostGIS checks and actual-data atomicity/concurrency/repeat/deactivation/history inspection pass. Candidate/serving selection checks and hosted/local desktop/mobile news, active/public maps and real history inspection pass. News shows five observations; active maps show four polygons. History remains event 76 while Tribune 80 stays active; deactivation-to-history passes on the restored database. All baseline rows are preserved, and repeat commands reuse 392/80 without calls/writes. Source/CI changes remain uncommitted on `roi-branch`; no push/main integration is claimed. Ledger stopped at 46 / US$0.7683261, with no additional calls for finalization. [Evidence](evaluations/tribune-pilot-20261024.md).
+
+
+## Event details and checked main deployment completed
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). PR [#142](https://github.com/pu-roi/LANES/pull/142) merged reviewed head `b88dcd6e4a015163ae6e5c5a7a8859c42e965d63` into `main` as `8c33ae04b071bdf587b4b72e98289de5f77db583`. The existing `^main$` trigger was restored only after that exact tree was verified. Controlled build `d52b144e-2809-4f3c-b941-5d378c21bc33` passed all seven stages and serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33` at 100% traffic. Its protected canary confirms correction 388 (three observations) and event 76 with all five evidence collections. Cloud tests: 323 passed/one repository-only skip, required PostGIS 18 passed plus repeated migration; no new schema migration.
+
+Final hosted desktop/mobile News Intelligence evidence/scrolling, real history detail/collections/map focus, active-zone details and public-map popups all pass. Direct history, analytics and JSON exports contain only genuine event 76; active zones remain 77–79. All 13 protected fingerprints, manual-worker specification, stopped 42-attempt ledger (US$0.7524937), expiry OFF, paused news, inert old seed and four unrelated frontend edits are unchanged. No NER, Gemini, token counts, seeding or database cleanup occurred.
+
+[Verification and recovery](evaluations/event76-inspection-20261024.md#completed-publication-and-restored-cicd).
 
 ## Event 76 detail repair deployed; CI/CD integration in progress
 

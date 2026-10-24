@@ -40,7 +40,10 @@ def native_result_rows(pipeline_version: str | tuple[str, ...]):
                 run.status == 'completed', run.mode == 'ner_rules_v1',
                 run.result['schema_version'].astext == 'lanes-news-ner-result-v1',
                 run.result['processing_method'].astext == 'ner_rules_v1',
-                projection['version'].astext == 'ner-result-read-v1')
+                projection['version'].astext == 'ner-result-read-v1',
+                # Cleared evidence stays in saved details, outside attention
+                # items and the collection's matching location counts.
+                func.coalesce(claim['condition'].astext, '') != 'subsided')
     return query, claim
 
 

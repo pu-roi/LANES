@@ -101,7 +101,8 @@ def source_layout(text: str, candidates: list[dict]) -> dict:
 
 
 def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog: object, *,
-                  _layout: dict | None = None, _require_city_heading: bool = False) -> tuple:
+                  _layout: dict | None = None, _require_city_heading: bool = False,
+                  reviewed_time_context: bool = False) -> tuple:
     """Hard reference failures abort; semantic failures retain explicit row outcomes.
 
     Independent checks collect simultaneous missing date/place/status evidence.
@@ -177,6 +178,10 @@ def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog:
                             issue(field+'_evidence', 'native_resolution_scope_mismatch')
             for field in ('status','time','depth','access','section'):
                 for e in evidence[field]:
+                    if reviewed_time_context and field == 'time':
+                        from app.services.news_tribune_replay import reviewed_clock_citation
+                        if reviewed_clock_citation(source, row, target, e):
+                            continue
                     if (target['text'].casefold() not in e.quote.casefold()
                             and any(m['id']!=target['id'] and m['label']=='ROAD'
                                     and not editorial_prefix(m,source.article_text)
@@ -201,7 +206,7 @@ def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog:
         if not issues:
             try:
                 row_claims, row_groups, row_audits = resolve_rows(source, baseline, [row], catalog,
-                                                               scoped_editorial_context=True)
+                    scoped_editorial_context=True, reviewed_time_context=reviewed_time_context)
             except ResolutionError as exc:
                 issue('row', exc.code)
         for group in row_groups:

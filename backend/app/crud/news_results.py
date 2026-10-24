@@ -69,6 +69,7 @@ def readable_claim(value: Callable[[str], ColumnElement]) -> ColumnElement:
         ~truth("is_forecast", "false"), ~truth("is_negated", "false"), ~truth("is_historical", "false"),
         ~cast(func.coalesce(value("uncertainty_reasons"), "[]"), Text).contains('"photo_caption_only"'),
         ~context_only_claim(value),
+        func.coalesce(value('condition'), '') != 'subsided',
         or_(value("condition").in_(["active", "rising", "receding", "subsided"]),
             func.length(func.trim(func.coalesce(value("depth_raw"), ""))) > 0,
             func.length(func.trim(func.coalesce(value("depth_formatted"), ""))) > 0,

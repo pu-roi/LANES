@@ -1,17 +1,74 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## Active Zones color and visibility follow-up
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Verification](evaluations/active-zone-visibility-20261024.md).
+
+- [x] Preserve worker properties and rendered severity color through selection and queued updates.
+- [x] Frame all active floods in the overview; preserve explicit inspection/handoff focus and draft sessions.
+- [x] Retain geometry through refresh failures and add persistent accessible retry feedback.
+- [x] Verify style/terrain restoration, zoom transition and compact canvas behavior on desktop/mobile.
+- [x] Pass 72 functional browser checks, desktop scale checks and TypeScript; verify no added lint diagnostics.
+- [x] Include the scoped repair in the authorized `roi-branch` source publication.
+- [ ] Review/merge and deploy the frontend; the live site is not changed by source publication alone.
+
+## Tribune shared-time and remaining-road follow-up
+
+- [x] Record the developer-reviewed article-wide clock without changing original responses.
+- [x] Repair Sitio 6 local-area projection and qualify both bounded road estimates.
+- [x] Save two new cloud road outputs, preserve Boni/GMA/history and verify desktop/mobile news/maps.
+- [x] Add publication-time fallback and regression checks for timestamp-free active reports.
+- [x] Publish this source follow-up through PR #143.
+- [ ] Review/merge PR #143 and verify the main deployment.
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Correction **397** records the developer-reviewed shared **September 24, 4:34 PM** time. New zones **81, 82** plot Quirino/Guazon and Gov. Pascual/Sitio 6 alongside preserved Boni 80 and GMA 77–79. Serving API `lanes-api-tribune-time-20261024-v1`, protected checks and hosted desktop/mobile news/maps pass. 401 CI tests and 45 required PostGIS checks pass; original data, stopped ledger, paused automation and four unrelated frontend edits remain intact. Future timestamp-free active reports have a recorded publication-time fallback; explicit individual clocks and supported shared scope retain precedence. [Evidence](evaluations/tribune-reviewed-time-20261024.md). Source follow-up is published in [PR #143](https://github.com/pu-roi/LANES/pull/143); main integration remains pending.
+
+## Tribune context follow-up — completed on serving API
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Evidence](evaluations/tribune-context-repair-20261024.md).
+
+- [x] Exclude subsided rows server-side before Flooded Areas, collection counts, publisher filtering and pagination; retain saved-source inspection.
+- [x] Adopt original responses under an exact-source V2 context policy: supported Thursday citations, Sitio 6 as a qualifier, one observation per flooded road and no borrowed 4:34 PM clock.
+- [x] Save correction 395 with zero provider/count/NER requests; retain failed receipt-collision attempt 394 and fix the zero-budget failure handler.
+- [x] Pass Linux regressions, 42 mandatory PostGIS checks/repeated migrations, two offline replays and restored actual-data repeat/preservation checks.
+- [x] Pass protected candidate/serving selection and hosted/local desktop/mobile news/source/scroll checks; promote `lanes-api-tribune-context-20261024-v6`.
+- [x] Preserve all original rows, four active zones, history 76, paused automation/expiry and the stopped 46-attempt ledger.
+
+Quirino and Gov. Pascual now appear as source-supported flooded roads with unknown exact times; they remain unplotted. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending.
+
+
+## Tribune pilot — completed active Boni output and retained unresolved evidence
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Approved plan](plans/tribune-saved-article-pilot.md) · [Execution evidence](evaluations/tribune-pilot-20261024.md).
+
+- [x] Authenticate article 25/source 568 and retain a recoverable backup; skip RSS and preserve existing sources.
+- [x] Execute actual cloud NER 390 and four bounded Gemini batches; retain correction 391 and all original responses.
+- [x] Correct the duplicate crossing-road observation through zero-provider finalization 392. Keep missing date/locality/access citations unresolved; do not invent three completed locations.
+- [x] Qualify the source-bound Boni intersection corridor in the actual cloud preview. Preserve cleared/unresolved outcomes without active polygons.
+- [x] Verify 142 Linux regressions, 41 mandatory PostGIS checks/repeated migrations, two offline replays and actual-data rollback/concurrency/reuse/deactivation-to-history behavior.
+- [x] Pass protected candidate/serving API selection checks, save active event/zone 80, and verify hosted/local desktop/mobile news, active/public maps and history.
+- [x] Verify baseline rows/GMA/history preserved, repeat commands reuse 392/80 without calls or writes, leave shared zone 80 active and ledger stopped.
+- [x] Publish the scoped source/CI changes to `roi-branch` and open [PR #143](https://github.com/pu-roi/LANES/pull/143); exact normal CI gate passes 385 tests, with 42 mandatory PostGIS checks and repeated migrations.
+- [ ] Review/merge PR #143 into main and verify its automatic API deployment.
+
+The selected Tribune policy creates no separate historical counterpart initially. Its ended presentation instances become visible in the existing unified history after manual deactivation, without real-occurrence/duration or routing eligibility. GMA remains unchanged. Ledger: stopped, 46 attempts / US$0.7683261 effective conservative commitment; unchanged US$1 cap. Philstar, broader semantic repairs and scheduled processing remain outside this run.
+
 
 ## Current follow-up — event 76 history inspection failure
+
+**Completed:** lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33 serves the checked main build. [Final integration evidence](evaluations/event76-inspection-20261024.md#completed-publication-and-restored-cicd).
 
 Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). [Confirmed root cause and CI/CD state](evaluations/event76-inspection-20261024.md).
 
 - [x] Reproduce event-detail 503 on serving reader-recovery and v30; confirm history list/news still return 200 and no newer automatic deployment replaced the repaired API.
 - [x] Identify JSON-null photo metadata in zone 76 and the unsafe array-length aggregate; confirm the event exists and has no report rows.
-- [x] Verify remote branches/build history: recovery source remains uncommitted locally; backend trigger remains disabled pending reviewed `main` integration.
+- [x] Verify remote branches/build history: initially found recovery source uncommitted and trigger disabled; this observation is superseded by completed PR #142 integration below.
 - [x] Patch null-safe report/zone media counting; mandatory isolated PostGIS gate passes 18 checks and fresh/repeated migrations.
 - [x] Extend protected canary with database-expected history/collections and open the real detail modal on desktop/mobile; promote `lanes-api-history-details-20261024-v1` and verify unchanged 13 protected fingerprints.
-- [ ] Complete reviewed feature-branch publication/main integration before restoring automatic backend deployment. Do not re-enable against the old deployment path.
+- [x] Publish scoped repair through PR #142/main; verify exact merge 8c33ae04b071bdf587b4b72e98289de5f77db583, restore the existing trigger and pass controlled build d52b144e-2809-4f3c-b941-5d378c21bc33.
 
 The earlier reader recovery remains valid for News Intelligence; its verification did not include opening event 76's history-detail modal. This new inspection task is not a database reset or a reason to replay articles.
 
@@ -24,7 +81,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 - [x] Promote `lanes-api-reader-recovery-20261024-v1` after zero-provider cloud acceptance; preserve manual worker v30 and active zones 77–79.
 - [x] Verify hosted desktop/mobile cards, source details/scrolling, active/admin/public maps, history and exports; all 13 protected table fingerprints remain unchanged.
 - [x] Preserve stopped ledger content/generation: 42 attempts / US$0.7524937. Keep news automation paused, expiry OFF and old seed disabled.
-- [ ] Review/merge the repaired API packaging, tests/deployer and `cloudbuild.yaml` into `main`, then re-enable the existing backend trigger. The trigger intentionally remains disabled while `main` still contains the old deployment path. No commit/push/merge was performed in this recovery.
+- [x] Complete packaging/deployer/test integration through PR #142 and restore the trigger after main verification; exact-commit cloud deployment and serving acceptance pass.
 
 [Recovery evidence](evaluations/news-reader-recovery-20261024.md) · [Release procedure](guides/news-reader-release.md).
 

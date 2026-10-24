@@ -1,11 +1,34 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
-Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. Scoped main/trigger integration remains pending. [Evidence](../evaluations/event76-inspection-20261024.md).
+## Active Zones overview and map recovery
 
-## Current News Intelligence readers and presentation state — October 24
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The shared GeoJSON updater now preserves severity colors, feature identities and evidence during selection. Active Zones frames all mapped active floods on overview entry/return, retains last-loaded shapes during viewport refreshes, surfaces persistent retryable failures, and restores layers after style/terrain changes. Compact coordinate handoffs wait for the visible canvas. **72 desktop/mobile functional cases pass**, plus desktop 1,000/10,000-zone scale checks; TypeScript passes and scoped lint adds no diagnostics over the 20 existing errors. Four unrelated frontend edits and concurrent unrelated changes remain untouched. Source publication is included in this `roi-branch` push; frontend deployment remains pending. [Behavior and test record](../evaluations/active-zone-visibility-20261024.md).
+
+## Current Tribune map and time state
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Correction **397** records the developer-reviewed shared **September 24, 4:34 PM** time. New zones **81, 82** plot Quirino/Guazon and Gov. Pascual/Sitio 6 alongside preserved Boni 80 and GMA 77–79. Serving API `lanes-api-tribune-time-20261024-v1`, protected checks and hosted desktop/mobile news/maps pass. 401 CI tests and 45 required PostGIS checks pass; original data, stopped ledger, paused automation and four unrelated frontend edits remain intact. Future timestamp-free active reports have a recorded publication-time fallback; explicit individual clocks and supported shared scope retain precedence. [Evidence](../evaluations/tribune-reviewed-time-20261024.md). Source follow-up is published in [PR #143](https://github.com/pu-roi/LANES/pull/143); main integration remains pending.
+
+## Source publication status
+
+Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. The deployed API and database are unchanged by this publication.
+
+## Current news list behavior after Tribune context repair
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). API `lanes-api-tribune-context-20261024-v6` selects correction 395. The existing Flooded Areas list excludes `subsided` rows in backend SQL before native/legacy counts, publishers and pagination; the existing collection's location counts agree. Authenticated source/run/group inspection retains cleared evidence. Six current listed observations are the three GMA roads plus Boni, Quirino and Gov. Pascual. The latter two retain unknown exact observation times and no polygons; no clock is borrowed from Boni. Four active zones and unified-history event 76 are unchanged. No endpoint, response shape, screen or control is added. [Acceptance](../evaluations/tribune-context-repair-20261024.md).
+
+
+## Tribune selected-source processing and lifecycle — October 24
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The opt-in Tribune worker reuses article 25/source 568 without RSS. Raw NER 390, paid correction 391 and zero-provider finalized correction 392 remain separately inspectable. Existing News Intelligence readers select the approved correction while retaining the original GMA pipelines. No new route, response field or UI control is added. The selected output policy saves only qualified active event/zone/location/timeline and claim/evaluation records; Tribune instances wait outside all history readers until the final linked polygon is deactivated. Ended instances retain source-date/evidence/geometry inspection in unified history, without real statistics or routing eligibility. GMA's existing dataset exclusion remains unchanged. The serving API is `lanes-api-tribune-20261024-v3`; active Tribune event/zone 80 joins unchanged GMA 77–79. Hosted/local desktop/mobile and candidate/serving acceptance pass; source integration remains uncommitted. Final acceptance is recorded in [the evaluation](../evaluations/tribune-pilot-20261024.md).
+
+
+
+Current detail-reader follow-up: `lanes-api-history-details-20261024-v1` fixes optional JSON-null media counting without schema/UI/dependency changes. Mandatory disposable PostGIS and protected database-expected inspection checks pass; hosted desktop/mobile event 76 opens correctly. PR #142/main integration is complete; exact-commit build d52b144e-2809-4f3c-b941-5d378c21bc33 passes and the existing main trigger is enabled. That checked main build precedes the manually accepted Tribune release above. [Evidence](../evaluations/event76-inspection-20261024.md).
+
+## Earlier packaged-reader recovery checkpoint — October 24
 
 Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The serving API is `lanes-api-reader-recovery-20261024-v1`; the manually invoked qualified worker remains v30. A missing reader file in the automatic image caused 503s without deleting data. The restored normal image packages the authenticated saved-reader manifest and fails startup on a missing/invalid required reader or wrong database binding. Protected canary checks gate traffic promotion. Automatic backend deployment remains disabled until the repaired configuration is reviewed/merged into `main`. API release readiness does not execute RSS or replace worker specifications. No screen, endpoint path, public response shape or schema was added by this recovery. [Recovery](../evaluations/news-reader-recovery-20261024.md) · [Operator procedure](../guides/news-reader-release.md).
 

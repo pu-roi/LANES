@@ -168,7 +168,7 @@ export function NotificationBell() {
             </div>
           </div>
 
-          <div className="overflow-y-auto flex-1">
+          <div data-lenis-prevent className="overflow-y-auto flex-1">
             {isAuthenticated && (actionError || isError) && <div className="p-4 text-sm text-red-700" role="alert">
               {actionError || 'Could not load notifications. Please try again.'}
               {isError && <Button variant="ghost" size="sm" onClick={() => void refetch()}>Retry</Button>}

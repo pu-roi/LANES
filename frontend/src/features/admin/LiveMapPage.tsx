@@ -17,6 +17,7 @@ import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodHeatmapLayer } from "@/features/map/hooks/useFloodHeatmapLayer";
 import { useStaffMapData } from "@/features/map/hooks/useStaffMapData";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
+import { ActiveFloodMapStatus } from "@/features/map/components/ActiveFloodMapStatus";
 import { usePendingReportsLayer } from "@/features/map/hooks/usePendingReportsLayer";
 import { computeCenterCoordinate, flyToFeature, flyToCoordinates } from "@/features/map/mapGeoUtils";
 import { 
@@ -142,7 +143,7 @@ export default function LiveMapPage() {
   const createZoneDraftUserId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   
   // Keep the legacy 'pending' key compatible with report handoffs and layers.
-  const [activeTab, setActiveTab] = useState<"pending" | "zones">("pending");
+  const [activeTab, setActiveTab] = useState<"pending" | "zones">(() => searchParams.get("tab") === "zones" ? "zones" : "pending");
   
   // Pending Moderation State
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
@@ -214,6 +215,13 @@ export default function LiveMapPage() {
   const isCompactLayout = useMediaQuery("(max-width: 767px)");
   const isTouchDevice = useMediaQuery("(max-width: 767px), (pointer: coarse)");
   const [isMobileMapVisible, setIsMobileMapVisible] = useState(false);
+  const [zoneLayerError, setZoneLayerError] = useState<string | null>(null);
+  const [zoneDrawAttempt, setZoneDrawAttempt] = useState(0);
+  const [overviewRequest, setOverviewRequest] = useState(() =>
+    searchParams.get("tab") === "zones" && !searchParams.get("focus_report_id")
+      && !(searchParams.get("lat") && searchParams.get("lng")) ? 1 : 0);
+  const framedOverview = useRef(0);
+  const initiallyFramedMap = useRef<Map | null>(null);
 
   // DRAWER WIDTH: Consistent standard width across secondary workspace panels
   const DRAWER_WIDTH = 440;
@@ -326,7 +334,7 @@ export default function LiveMapPage() {
     enabled: isAuthenticated && focusedModerationReport?.status === "approved" && focusedModerationReport.zone_id != null });
   const focusedZone = useQuery({ ...zoneDetailQuery(selectedZoneId), enabled: isAuthenticated && selectedZoneId !== null });
   const contributorFocus = useQuery({ ...contributorDetailQuery(selectedContributorId), enabled: isAuthenticated && selectedContributorId !== null });
-  useEffect(() => { if (mapRead.error || focusedZone.error || contributorFocus.error) showMapError("Could not load the selected flood geometry. Please retry the zone or refresh the map."); }, [mapRead.error, focusedZone.error, contributorFocus.error, showMapError]);
+  useEffect(() => { if (focusedZone.error || contributorFocus.error) showMapError("Could not load the selected flood geometry. Please retry the zone or refresh the map."); }, [focusedZone.error, contributorFocus.error, showMapError]);
 
   useEffect(() => {
     if (focusedReportError) showMapError("Could not locate the selected flood report. It may be unavailable or no longer exist.");
@@ -346,6 +354,10 @@ export default function LiveMapPage() {
     const lngStr = searchParams.get("lng");
     const zoomStr = searchParams.get("zoom");
     const reviewToken = searchParams.get("review_token");
+
+    // A coordinate handoff must wait for the compact canvas to become visible;
+    // otherwise resize can interrupt its flight after the URL was marked handled.
+    if (!focusId && latStr && lngStr && isCompactLayout && !isMobileMapVisible) return;
 
     const queryKey = `${focusId}_${tabParam}_${latStr}_${lngStr}_${reviewToken}`;
     if (!focusId && !latStr && !lngStr) return;
@@ -424,7 +436,7 @@ export default function LiveMapPage() {
     // Small delay ensures MapLibre terrain and canvas resizing are settled
     const timer = setTimeout(executeFocus, 250);
     return () => clearTimeout(timer);
-  }, [searchParams, focusedModerationReport, focusedReportFetching, focusedReportError, handoffZone.data, handoffZone.isFetching, mapZones, mapZonesFetching, mapZonesError, mapInstance, isLoaded, showMapError]);
+  }, [searchParams, focusedModerationReport, focusedReportFetching, focusedReportError, handoffZone.data, handoffZone.isFetching, mapZones, mapZonesFetching, mapZonesError, mapInstance, isLoaded, isCompactLayout, isMobileMapVisible, showMapError]);
 
   const countQuery = useQuery({
     queryKey: ["adminZones", "count"],
@@ -553,10 +565,11 @@ export default function LiveMapPage() {
   // Modular Map Layers
   // When an existing zone is being edited, exclude it from the solid active zones layer so
   // that its baseline is represented exclusively by the preview layer (orange dashed line).
+  const allowFocusedOverlay = !activeOnly || !!mapRead.error || mapRead.isFetching || mapRead.summary?.mapped_count !== 0;
   const visibleMapZones = useMemo(() => {
-    if (isolatedReportId !== null) return [];
+    if (activeTab === "pending" && isolatedReportId !== null) return [];
     const source = [...mapZones];
-    if (selectedZone) {
+    if (selectedZone && (!activeOnly || selectedZone.is_active !== false) && allowFocusedOverlay) {
       const report = contributorFocus.data;
       const focused = report && report.zone_id === selectedZone.id ? { ...selectedZone, contributors: [
         ...(selectedZone.contributors || []).filter(item => item.report_id !== report.id),
@@ -572,7 +585,8 @@ export default function LiveMapPage() {
       return source.filter((z: AvoidanceZone) => z.id !== editingZone.id);
     }
     return source;
-  }, [isEditZoneDrawerOpen, editingZone, isolatedReportId, mapZones, selectedZone, contributorFocus.data]);
+  }, [activeTab, activeOnly, isEditZoneDrawerOpen, editingZone, isolatedReportId, mapZones, selectedZone,
+    contributorFocus.data, allowFocusedOverlay]);
 
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(
@@ -584,7 +598,9 @@ export default function LiveMapPage() {
     selectedZoneId,
     setSelectedZoneId,
     selectedContributorId,
-    setSelectedContributorId
+    setSelectedContributorId,
+    undefined,
+    { onError: setZoneLayerError, retryKey: zoneDrawAttempt }
   );
   usePendingReportsLayer(
     mapInstance, 
@@ -616,19 +632,21 @@ export default function LiveMapPage() {
   // Fit to Pasig City bounds on first visit ONLY IF no focus query or coordinates present
   useEffect(() => {
     if (!mapInstance || !isLoaded) return;
+    if (initiallyFramedMap.current === mapInstance) return;
     
     const focusId = searchParams.get("focus_report_id");
     const latStr = searchParams.get("lat");
     const lngStr = searchParams.get("lng");
     
     // If arriving with specific report or coordinates, skip default fitBounds
-    if (focusId || (latStr && lngStr)) return;
+    initiallyFramedMap.current = mapInstance;
+    if (focusId || (latStr && lngStr) || activeTab === "zones") return;
 
     mapInstance.fitBounds(PASIG_BOUNDS, {
       padding: { top: 40, bottom: 40, left: 40, right: 40 },
       duration: 1000,
     });
-  }, [mapInstance, isLoaded, searchParams]);
+  }, [mapInstance, isLoaded, searchParams, activeTab]);
 
   // Save camera movements to localStorage
   useEffect(() => {
@@ -704,6 +722,51 @@ export default function LiveMapPage() {
 
     lastPrimaryTabRef.current = activeTab;
   }, [activeTab, isLoaded, mapInstance, mapRead.summary, mapRead.error, mapZones, pendingReports, selectedReport, selectedZone]);
+
+  const showActiveOverview = useCallback(() => {
+    setSelectedZoneId(null);
+    setSelectedContributorId(null);
+    setZoneToShowOnMap(null);
+    setGroupToShowOnMap(null);
+    setIsolatedReportId(null);
+    setOverviewRequest(value => value + 1);
+  }, []);
+
+  // An explicit overview request fits global server bounds exactly once. A
+  // hidden mobile canvas waits until visible; polling/panning never re-fits it.
+  useEffect(() => {
+    if (!mapInstance || !isLoaded || activeTab !== "zones" || !overviewRequest
+        || framedOverview.current === overviewRequest || (isCompactLayout && !isMobileMapVisible)
+        || !mapRead.summary || mapRead.error) return;
+    if (selectedZoneId !== null) { framedOverview.current = overviewRequest; return; }
+    let frame: number | undefined;
+    const fit = () => {
+      if (framedOverview.current === overviewRequest || !mapInstance.isStyleLoaded()) return;
+      const canvas = mapInstance.getCanvas();
+      if (!canvas.clientWidth || !canvas.clientHeight) return;
+      const bounds = mapRead.summary!.bounds;
+      if (!bounds) { framedOverview.current = overviewRequest; return; }
+      if (!bounds.every(Number.isFinite) || bounds[0] >= bounds[2] || bounds[1] >= bounds[3]) return;
+      framedOverview.current = overviewRequest;
+      mapInstance.resize();
+      mapInstance.fitBounds([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], {
+        padding: 48, maxZoom: 16, pitch: mapInstance.getPitch(),
+        duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1000,
+        essential: false,
+      });
+    };
+    const schedule = () => { if (frame !== undefined) cancelAnimationFrame(frame); frame = requestAnimationFrame(fit); };
+    schedule();
+    mapInstance.on("idle", schedule);
+    mapInstance.on("style.load", schedule);
+    mapInstance.on("resize", schedule);
+    return () => {
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      mapInstance.off("idle", schedule);
+      mapInstance.off("style.load", schedule);
+      mapInstance.off("resize", schedule);
+    };
+  }, [mapInstance, isLoaded, activeTab, overviewRequest, selectedZoneId, isCompactLayout, isMobileMapVisible, mapRead.summary, mapRead.error]);
 
   // Mutations
   const approveMutation = useMutation({
@@ -861,6 +924,7 @@ export default function LiveMapPage() {
       showMapError(`Zone #${zone.id} has no mapped boundary to show.`);
       return;
     }
+    framedOverview.current = overviewRequest;
     setSelectedZoneId(zone.id);
     setSelectedContributorId(null);
     setZoneToShowOnMap(zone);
@@ -873,6 +937,7 @@ export default function LiveMapPage() {
       showMapError("This zone group has no valid mapped boundary to show.");
       return;
     }
+    framedOverview.current = overviewRequest;
     setSelectedZoneId(null);
     setSelectedContributorId(null);
     setZoneToShowOnMap(null);
@@ -919,6 +984,13 @@ export default function LiveMapPage() {
   }, [zoneToShowOnMap, mapInstance, isLoaded, isCompactLayout, isMobileMapVisible, showMapError]);
 
   const isZoneWorkspaceOpen = isCreateZoneDrawerOpen || isEditZoneDrawerOpen;
+  const activeMapFeedback = activeTab === "zones" && (!isCompactLayout || isMobileMapVisible) ?
+    <ActiveFloodMapStatus
+      error={zoneLayerError || (mapRead.error ? "Active flood map could not be refreshed." : null)}
+      loading={!!mapRead.isLoading} refreshing={mapRead.isFetching}
+      empty={mapRead.summary?.mapped_count === 0} hasFeatures={!zoneLayerError && visibleMapZones.length > 0}
+      onRetry={() => { setZoneDrawAttempt(attempt => attempt + 1); refetchMap(); }}
+    /> : null;
 
   return (
     <MapProvider>
@@ -953,7 +1025,20 @@ export default function LiveMapPage() {
                   }
                 ]}
                 activeTab={activeTab}
-                onChange={(tab) => setActiveTab(tab)}
+                onChange={(tab) => {
+                  if (tab === activeTab) return;
+                  setActiveTab(tab);
+                  if (tab === "zones") {
+                    // Collapse visible workspaces, retaining their independent
+                    // drafts/sessions so overview isolation cannot leak in.
+                    setIsMergeDrawerOpen(false);
+                    setIsMergeMobileMapVisible(false);
+                    setIsCreateZoneDrawerOpen(false);
+                    setIsEditZoneDrawerOpen(false);
+                    setActiveOnly(true);
+                    showActiveOverview();
+                  }
+                }}
                 variant="segmented"
               />
             </div>
@@ -998,6 +1083,8 @@ export default function LiveMapPage() {
             </div>
           </div>
 
+          {activeMapFeedback}
+
           {/* TAB 1: SOURCE-AWARE NEEDS REVIEW QUEUE */}
           <div className={`${activeTab === "pending" ? "flex" : "hidden"} min-h-0 flex-1 flex-col`}>
             <NeedsReviewPanel
@@ -1035,6 +1122,7 @@ export default function LiveMapPage() {
               onCount={setZoneCount}
               onRequestBulkDeactivate={() => setConfirmBulk(true)}
               onViewGroupOnMap={showGroupOnMap}
+              onOverview={showActiveOverview}
               flyToZone={flyToZone}
               onViewZoneOnMap={showZoneOnMap}
               setConfirmId={setConfirmId}
@@ -1442,6 +1530,9 @@ export default function LiveMapPage() {
             </div>
           )}
         </BaseMap>
+        {isCompactLayout && isMobileMapVisible && activeMapFeedback && (
+          <div className="absolute inset-x-0 top-0 z-30 bg-white/95">{activeMapFeedback}</div>
+        )}
         {isCompactLayout && !isMergeDrawerOpen && isMobileMapVisible && (
           <Button
             type="button"

@@ -120,7 +120,7 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
         </div>
 
         {/* Content */}
-        <div className="p-5 overflow-y-auto custom-scrollbar pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5">
+        <div data-lenis-prevent className="p-5 overflow-y-auto custom-scrollbar pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5">
           
           {/* Dynamic AI Insights Section */}
           <div className="mb-6">

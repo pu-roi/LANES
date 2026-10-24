@@ -33,7 +33,17 @@ def release_file(path: Path, expected_sha256: str) -> dict:
 def resolver_for_release(release: dict) -> GeminiResolver:
     configured = replace(AuditorConfig.from_environment(), provider='gemini', model=release['resolver']['model'])
     batch_plan = None
-    if 'inline_batch_manifest' in release:
+    if 'tribune_replay_manifest' in release:
+        from app.services.news_tribune_replay import TribuneReplayBatchPlan
+        from app.services.news_pilot_budget import GCSLedgerStore
+        def cached_tribune(index: int) -> dict:
+            reference = release['tribune_replay_references'][index]
+            value, _ = GCSLedgerStore('lanes-storage',reference['object']).read()
+            if sha(value) != reference['sha256']:
+                raise ResolutionError('tribune_replay_bundle_changed')
+            return value
+        batch_plan = TribuneReplayBatchPlan(release['tribune_replay_manifest'],cache_loader=cached_tribune)
+    elif 'inline_batch_manifest' in release:
         from app.services.news_gma_inline_continuation import InlineBatchPlan,CACHE_PINS
         from app.services.news_pilot_budget import GCSLedgerStore
         def cached_inline(index: int) -> dict:

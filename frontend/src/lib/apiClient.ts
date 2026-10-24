@@ -136,7 +136,20 @@ export const apiClient = {
       if (token) headers['Authorization'] = `Bearer ${token}`;
     }
     const response = await fetch(url, { method: 'GET', headers });
-    if (!response.ok) throw new Error('Download failed');
+    if (!response.ok) {
+      let errorMsg = `Download failed with status ${response.status}`;
+      try {
+        const errorData = await response.json();
+        if (errorData.detail) {
+          errorMsg = Array.isArray(errorData.detail)
+            ? errorData.detail.map((e: any) => e.msg).join(", ")
+            : (typeof errorData.detail === 'object' ? JSON.stringify(errorData.detail) : String(errorData.detail));
+        }
+      } catch (e) {
+        // Response was not JSON
+      }
+      throw new Error(errorMsg);
+    }
     const blob = await response.blob();
     const objectUrl = window.URL.createObjectURL(blob);
     const a = document.createElement('a');

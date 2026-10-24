@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     # Defaults to PostgreSQL with psycopg (v3) driver
     DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@localhost:5432/lanes"
 
+    # Backup Storage Configuration (Google Cloud Storage / Local)
+    BACKUP_STORAGE_BUCKET: str = "lanes-storage"
+    BACKUP_STORAGE_PREFIX: str = "backups"
+
     # OpenRouteService API Configuration
     ORS_URL: str = "https://api.openrouteservice.org/v2"
     ORS_API_KEY: str = ""

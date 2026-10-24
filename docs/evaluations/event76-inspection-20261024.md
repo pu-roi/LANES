@@ -46,3 +46,15 @@ Required disposable PostGIS testing owns a fresh isolated container/database, ru
 Initial test runs exposed fixture setup/QA locator errors and an incorrectly encoded JSON-null comparison; these were corrected before the passing frozen image. The final implementation uses a static typed SQL literal, not a JSON-encoded string or user SQL. Malformed media remains an error.
 
 **Integration pending:** scoped release checkout excludes four unrelated frontend edits. Backend trigger remains disabled until the reviewed repair is merged into `main`; publication and one exact merged-commit build are required before CI/CD completion. Preserve recovery reader revision/v30, private pre/post configurations, fingerprints and tests under ignored `data/history-details-repair-20261024/`. No reset or article replay is needed for rollback.
+
+## Completed publication and restored CI/CD
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). October 24, 2026, 02:21 AM Asia/Manila.
+
+PR [#142](https://github.com/pu-roi/LANES/pull/142) merged reviewed head `b88dcd6e4a015163ae6e5c5a7a8859c42e965d63` into `main` as `8c33ae04b071bdf587b4b72e98289de5f77db583`. The existing `^main$` trigger was restored only after that exact tree was verified. Controlled build `d52b144e-2809-4f3c-b941-5d378c21bc33` passed all seven stages and serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33` at 100% traffic. Its protected canary confirms correction 388 (three observations) and event 76 with all five evidence collections. Cloud tests: 323 passed/one repository-only skip, required PostGIS 18 passed plus repeated migration; no new schema migration.
+
+Final hosted desktop/mobile News Intelligence evidence/scrolling, real history detail/collections/map focus, active-zone details and public-map popups all pass. Direct history, analytics and JSON exports contain only genuine event 76; active zones remain 77–79. All 13 protected fingerprints, manual-worker specification, stopped 42-attempt ledger (US$0.7524937), expiry OFF, paused news, inert old seed and four unrelated frontend edits are unchanged. No NER, Gemini, token counts, seeding or database cleanup occurred.
+
+Immutable safe receipt bundle: `gs://lanes-storage/private/history-detail-repair/20261024/8c33ae04b071bdf587b4b72e98289de5f77db583/`. Recovery configuration and original worker/data snapshots remain private locally; the accepted manual revision and v30 are retained. Final records are published on roi-branch after the verified main deployment; the preceding pending integration text records its earlier checkpoint.
+
+Final main-build image digest: `sha256:50f3d77568eff16e02f23d60cb8c5636b40bfc9c61ff4e5d5c7de8119ca34ea0`. Private receipt bundle generation `1792779653726778`, SHA-256 `4ce1a83ab1f20ed7bd38c3fddf427b02eadcf9d9f381c2b40ea45bbb39b50346`; conditional creation and stored MD5 verification passed. Full private build descriptor is retained locally.

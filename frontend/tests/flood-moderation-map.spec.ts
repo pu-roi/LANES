@@ -1,4 +1,5 @@
 import { expect as baseExpect, test, type Page } from "@playwright/test";
+import { zoneMapResponse } from "./helpers/chrisIntegration";
 const expect = baseExpect.configure({ timeout: 30_000 });
 
 test.setTimeout(90_000);
@@ -49,6 +50,11 @@ async function setup(page: Page, status: Status = "pending") {
       body = current;
     } else if (path.endsWith("/admin/reports/pending")) body = state.status === "pending" ? [current] : [];
     else if (path.endsWith("/reports/active-zones")) body = state.activeZone ? [zone] : [];
+    else if (path.endsWith("/admin/zones/map")) body = zoneMapResponse(state.activeZone ? [zone] : [], route.request().url());
+    else if (path.endsWith("/admin/zones/9")) {
+      if (!state.activeZone) return route.fulfill({ status: 404, json: { detail: "Zone not found" } });
+      body = zone;
+    }
     else if (path.endsWith("/admin/zones/queue")) body = { items: [], zones: [], total: state.activeZone ? 1 : 0, item_total: state.activeZone ? 1 : 0,
       counts: { all: state.activeZone ? 1 : 0, user_reports: state.activeZone ? 1 : 0, news: 0, official: 0, other: 0 }, facets: { cities: [], barangays: [] }, page: 1, pages: 1, page_size: 20, read_only: true };
     else if (path.endsWith("/admin/zones/groups/9/members")) body = { zone_id: 9, zones: state.activeZone ? [zone] : [], total: state.activeZone ? 1 : 0, page: 1, pages: 1, page_size: 20, group_reason: "Nearby active zones", read_only: true };

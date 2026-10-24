@@ -223,6 +223,9 @@ def require_event(db: Session, event_id: int, dataset_id: str | None = None) -> 
         models.FloodEvent.id == event_id, or_(active_only_event(), superseded_event())).first()
     if blocked and blocked.active_only:
         raise HTTPException(404, "Flood Event not found")
+    from app.services.news_tribune_pilot import pending_history_event
+    if db.query(models.FloodEvent.id).filter(models.FloodEvent.id == event_id, pending_history_event()).first():
+        raise HTTPException(404, "Flood Event not found")
     if blocked:
         raise HTTPException(409, "This news archive was superseded after a source correction. Review the current Flood History records.")
     return event

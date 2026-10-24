@@ -20,6 +20,7 @@ export interface FloodZoneLayerOptions {
   namespace?: string;
   mode?: "active" | "review";
   onError?: (message: string | null) => void;
+  retryKey?: number;
 }
 
 export function useFloodZonesLayer(
@@ -40,6 +41,7 @@ export function useFloodZonesLayer(
   const namespace = options?.namespace ?? "active-zones";
   const reviewMode = options?.mode === "review";
   const onError = options?.onError;
+  const retryKey = options?.retryKey;
   const sourceId = `${namespace}-source`;
   const fillLayer = `${namespace}-layer`;
   const roadLayer = `${namespace}-road-core-layer`;
@@ -264,6 +266,16 @@ export function useFloodZonesLayer(
           filter: ["==", ["get", "is_zoomed_out_point"], true],
         });
       }
+      // Boundary sources can return after terrain/style restoration. Keep
+      // flood paint above the mask without disturbing an already-correct stack.
+      const layers = map.getStyle()?.layers ?? [];
+      const maskIndex = layers.findIndex(layer => layer.id === "pasig-mask-fill");
+      if (maskIndex >= 0 && [fillLayer, roadLayer, pinLayer].some(id => {
+        const index = layers.findIndex(layer => layer.id === id);
+        return index >= 0 && index < maskIndex;
+      })) {
+        for (const id of [fillLayer, roadLayer, pinLayer]) if (map.getLayer(id)) map.moveLayer(id);
+      }
     };
 
     const draw = () => {
@@ -284,7 +296,7 @@ export function useFloodZonesLayer(
 
     return () => { map.off("style.load", handleMapStyleData); };
   }, [map, isLoaded, activeZonesData, activeTab, selectedZoneId, selectedContributorId,
-    reviewMode, sourceId, fillLayer, roadLayer, pinLayer, onError]);
+    reviewMode, sourceId, fillLayer, roadLayer, pinLayer, onError, retryKey]);
 
   useEffect(() => {
     if (!map || !isLoaded || activeTab !== "zones") return;

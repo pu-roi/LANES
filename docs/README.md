@@ -1,6 +1,31 @@
 # LANES documentation
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Active Zones color and visibility repair
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The shared GeoJSON updater now preserves severity colors, feature identities and evidence during selection. Active Zones frames all mapped active floods on overview entry/return, retains last-loaded shapes during viewport refreshes, surfaces persistent retryable failures, and restores layers after style/terrain changes. Compact coordinate handoffs wait for the visible canvas. **72 desktop/mobile functional cases pass**, plus desktop 1,000/10,000-zone scale checks; TypeScript passes and scoped lint adds no diagnostics over the 20 existing errors. Four unrelated frontend edits and concurrent unrelated changes remain untouched. Source publication is included in this `roi-branch` push; frontend deployment remains pending. [Investigation, implementation and acceptance](evaluations/active-zone-visibility-20261024.md).
+
+## Latest Tribune outcome — all three roads plotted
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Correction **397** records the developer-reviewed shared **September 24, 4:34 PM** time. New zones **81, 82** plot Quirino/Guazon and Gov. Pascual/Sitio 6 alongside preserved Boni 80 and GMA 77–79. Serving API `lanes-api-tribune-time-20261024-v1`, protected checks and hosted desktop/mobile news/maps pass. 401 CI tests and 45 required PostGIS checks pass; original data, stopped ledger, paused automation and four unrelated frontend edits remain intact. Future timestamp-free active reports have a recorded publication-time fallback; explicit individual clocks and supported shared scope retain precedence. [Evidence](evaluations/tribune-reviewed-time-20261024.md). Source follow-up is published in [PR #143](https://github.com/pu-roi/LANES/pull/143); main integration remains pending.
+
+## Source publication — October 24
+
+[PR #143](https://github.com/pu-roi/LANES/pull/143) publishes the scoped Tribune pilot, context repair, cleared-area filtering and CI checks on `roi-branch`. Validation: 385 normal-gate tests and 42 required PostGIS checks pass. Main review/merge and its deployment remain pending. [Latest evidence](evaluations/tribune-context-repair-20261024.md).
+
+## Tribune context and cleared-list repair — October 24
+
+[Context, saved evidence and release checks](evaluations/tribune-context-repair-20261024.md). Correction 395 saves three Tribune road observations; the patched reader excludes Quezon City subsided evidence from Flooded Areas while preserving authenticated source inspection. API `lanes-api-tribune-context-20261024-v6` now serves the repair; candidate/serving and hosted/local desktop/mobile checks pass. Four active zones and all original data/ledger are preserved. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Tribune saved-article pilot — October 24
+
+[Approved source/lifecycle plan](plans/tribune-saved-article-pilot.md) · [Actual cloud runs, spending, tests and limitations](evaluations/tribune-pilot-20261024.md). Raw NER 390 and zero-provider finalized correction 392 are saved. Active event/zone **80** is deployed through `lanes-api-tribune-20261024-v3`; protected candidate/serving checks and hosted/local desktop/mobile acceptance pass. Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. Quirino/Gov. Pascual and specific cleared-road evidence gaps remain unresolved. Tribune's selected lifecycle enters unified history after manual deactivation; GMA's original exclusion is unchanged.
+
+
+## Latest completion — event details and checked CI/CD restored
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). PR [#142](https://github.com/pu-roi/LANES/pull/142), main `8c33ae04b071bdf587b4b72e98289de5f77db583`, cloud build `d52b144e-2809-4f3c-b941-5d378c21bc33`: all gates and final desktop/mobile acceptance pass. Serving API `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33` loads event 76 with zero media; three correction-388 observations and active zones 77–79 remain intact. The existing main trigger is enabled; news automation remains paused. [Release evidence](evaluations/event76-inspection-20261024.md#completed-publication-and-restored-cicd). Earlier sections retain their checkpoint status.
 
 ## Latest investigation — event 76 details and CI/CD integration
 
@@ -16,7 +41,7 @@ API `lanes-api-reader-recovery-20261024-v1` restores the three saved correction-
 - [Conversation bug/status reconciliation](others/bug-log.md#conversation-status-reconciliation--october-24)
 - [Current screen behavior and reader release](others/system-documentation.md#current-news-intelligence-readers-and-presentation-state--october-24)
 
-The latest verified pilot has three GMA observations and active presentation zones; Tribune 25 and Philstar 274 are unprocessed. Existing history contains unrelated event 76, not replacement GMA archives. Older headings below record earlier results and are not the current work queue.
+The latest verified pilot has five observations and four active polygons: unchanged GMA 77–79 plus Tribune Boni event/zone 80. Tribune 25 is processed with partial evidence acceptance; Philstar 274 remains unprocessed. Existing history contains unrelated event 76, not replacement GMA archives. Older headings below record earlier results and are not the current work queue.
 
 
 ## Prior spatial rollout — three connected-road GMA active zones

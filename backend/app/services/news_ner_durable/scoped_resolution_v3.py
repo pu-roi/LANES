@@ -97,7 +97,9 @@ def source_layout(text: str, candidates: list[dict]) -> dict:
         'affirmative_status_candidates':[i for i,q in enumerate(options) if has_flood_observation(q['quote'])]}
 
 
-def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog: object) -> tuple:
+def evaluate_rows(source: object, baseline: object, rows: list | tuple, catalog: object, *,
+                  reviewed_time_context: bool = False) -> tuple:
     from .resolution import targets
     return evaluate_v2(source,baseline,rows,catalog,
-        _layout=source_layout(source.article_text,targets(baseline)),_require_city_heading=True)
+        _layout=source_layout(source.article_text,targets(baseline)),_require_city_heading=True,
+        reviewed_time_context=reviewed_time_context)

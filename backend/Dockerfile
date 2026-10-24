@@ -12,9 +12,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Working directory inside the container
 WORKDIR /app
 
-# Install minimal OS runtime packages required for networking & healthchecks
+# Install minimal OS runtime packages required for networking, healthchecks & database tooling
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl libexpat1 \
+    curl libexpat1 postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only dependency files first to leverage Docker layer caching

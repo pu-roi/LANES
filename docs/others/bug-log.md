@@ -1,15 +1,58 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 2:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 12:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+## Selected active flood turns black; overview floods seem absent
+
+**Status:** Resolved and verified locally; frontend deployment pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Selecting a flood road produces a black stroke; Active Zones can show cards without visible floods.
+2. **Root cause:** Clearing/re-adding every GeoJSON property loses worker properties. The overview camera remains in Pasig; viewport loading and stale review isolation can also clear/hide shapes. Hidden compact-canvas flights can be interrupted by resize.
+3. **Solution:** Property deltas, explicit global overview framing, scoped retained geometry, persistent draw/read errors and retry, layer restoration, and visible-canvas handoff sequencing.
+4. **Files/checks:** Shared map updater/hooks, admin map/panel, accessible status component and Playwright regressions. 72 functional cases plus desktop 1,000/10,000 scale checks pass; TypeScript passes and there are no added lint diagnostics. [Detailed evidence and remaining release gate](../evaluations/active-zone-visibility-20261024.md).
+
+## Tribune reviewed-time and locality clue follow-up
+
+**Status:** Resolved on serving API; source follow-up published in PR #143; main integration pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The two additional flooded roads lacked exact times; Sitio 6 was retained only in the road description, blocking locality matching.
+2. **Cause:** The strict paragraph-specific time rule needed an explicit developer-reviewed shared-time policy; resolution omitted the source local-area field.
+3. **Fix:** Exact-source V3 adoption records the reviewed clock and source qualifier, with additional-output selection preserving Boni and GMA. Timestamp-free active reports gain a recorded publication proxy; unrelated clocks/cleared or historical reports stay protected.
+4. **Verification:** 401 normal CI tests, 45 required PostGIS checks, two offline replays, actual-data lifecycle/concurrency/rollback/reuse and candidate/serving plus desktop/mobile acceptance pass. [Evidence](../evaluations/tribune-reviewed-time-20261024.md).
+
+## Tribune source publication status
+
+Source/CI changes are published on `roi-branch` in [PR #143](https://github.com/pu-roi/LANES/pull/143); reviewed main integration remains pending. The deployed context/list repair remains accepted; publication verification passes 385 normal-gate tests and 42 required PostGIS checks. No additional data correction or provider request was performed.
+
+## Tribune cleared-list inclusion, missing date citations and sitio role
+
+**Status:** Resolved on serving API `lanes-api-tribune-context-20261024-v6`; source published in PR #143; main integration pending. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Quezon City correctly says subsided in saved evidence but appears under Flooded Areas. Quirino/Gov. Pascual provider rows return Thursday without its source citation; Sitio 6 is placed in a canonical barangay slot.
+2. **Root cause:** Native/legacy list readers permit cleared rows. Structured provider evidence omits date links and confuses a local-area qualifier with a barangay. A replay attempted to reuse the previous write-once receipt prefix, then a missing zero-budget `stop` method masked its storage failure.
+3. **Solution:** Exclude subsided rows before all attention-list counts/pagination while retaining direct saved evidence. Exact-source V2 adoption repairs the reviewed citation and role, preserves clocks/measurements and classifies crossing/locality context. Use a separate receipt session and nonmutating failure-stop handler; retain failed 394 and append corrected 395.
+4. **Files/verification:** `crud/news_ner_results.py`, `crud/news_results.py`, `services/news_tribune_replay.py`, worker diagnostics, packaged-reader selection and dedicated tests. 113 targeted checks plus the added diagnostic regression, 110 Linux checks, 42 mandatory PostGIS checks, two original-response replays, actual-data preservation/reuse, protected candidate/serving and desktop/mobile news checks pass. No new paid calls, geometry/schema/dependencies or frontend design changes. [Evidence](../evaluations/tribune-context-repair-20261024.md).
+
+
+## Tribune crossing-road duplication and count-stage dispatch contract
+
+**Status:** Software repairs, cloud finalization and active event/zone 80 deployed and verified; genuine source-evidence gaps remain unresolved. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The first count stage failed before token dispatch. The subsequent four accepted provider responses also treated F. Ortigas as a separately flooded road at Boni's intersection. Other rows omitted date citations, put Sitio 6 in a canonical-barangay field, or supplied unsupported access/locality evidence.
+2. **Root cause:** A keyword-only authority operation was passed positionally. Separately, per-target validation alone did not distinguish a named crossing qualifier from its accepted owning-road observation. Transport success did not establish complete article acceptance.
+3. **Solution:** Repair the typed call and exercise the complete count stage with a mocked tokenizer. Adopt only the four immutable responses under a separate zero-provider replay identity; suppress a secondary road only when its exact intersection, facts and citations equal a separately accepted owner. Preserve independent/conflicting observations. Keep genuine citation/role gaps unresolved rather than inserting evidence.
+4. **Changed/verified:** `news_tribune_pilot.py`, `news_tribune_budget.py`, `news_tribune_replay.py`, scoped worker/reader wiring and dedicated regressions. 142 Linux checks, 41 mandatory PostGIS checks, two actual-response replays and restored-data persistence/lifecycle checks pass. GMA/source/provider history remains unchanged. [Actual outcomes and unresolved facts](../evaluations/tribune-pilot-20261024.md).
+
 
 ## Event 76 history-detail 503 — JSON-null media counting
 
-**Status:** Resolved on serving API `lanes-api-history-details-20261024-v1`; CI/CD integration in progress. **Severity:** Medium (history inspection unavailable). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Resolved and integrated through PR #142/main; checked build d52b144e-2809-4f3c-b941-5d378c21bc33 serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. **Severity:** Medium (history inspection unavailable). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 1. **Problem:** Opening event 76's detail modal returns 503 while history cards and the three News Intelligence results load normally.
 2. **Root cause:** `history_overview` directly invokes `jsonb_array_length` on zone 76's JSON-null `media_urls`. PostgreSQL raises `cannot get array length of a scalar`; aggregate coalesce cannot catch that error, and the read wrapper returns 503. Both current reader-recovery and retained v30 reproduce it, ruling out a new deployment replacement.
 3. **Solution:** Normalize only SQL/JSON null inside the array-count expression; keep malformed scalars rejected. Mandatory isolated PostGIS gates cover arrays/no-photo and staff authorization. Protected canary checks real history overviews/collections against database expectations, and hosted desktop/mobile actually open event 76. Linux 323 passed/one source-only skip, PostGIS 18 passed and fresh/repeated migration head passed.
-4. **Files/verification:** `spatial_browse_service.py`, `test_history_media_postgres.py`, `check_history_media_ci.sh`, `run_history_media_tests.py`, `check_news_reader.py`, `cloudbuild.yaml` and responsive `history-inspection.spec.ts`. Zero-traffic and serving checks passed; all protected records/manual-worker spec unchanged. CI/CD remains disabled pending scoped PR/main integration. [Evidence and exact integration state](../evaluations/event76-inspection-20261024.md).
+4. **Files/verification:** `spatial_browse_service.py`, `test_history_media_postgres.py`, `check_history_media_ci.sh`, `run_history_media_tests.py`, `check_news_reader.py`, `cloudbuild.yaml` and responsive `history-inspection.spec.ts`. Zero-traffic and serving checks passed; all protected records/manual-worker spec unchanged. CI/CD integration completed through PR #142; the main trigger is enabled after exact-commit deployment acceptance. [Evidence and exact integration state](../evaluations/event76-inspection-20261024.md).
 
 ## Conversation status reconciliation — October 24
 
@@ -29,7 +72,7 @@ Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). The entries below r
 
 ## Saved News Intelligence reader missing from automatic deployment image
 
-**Status:** Resolved on serving API `lanes-api-reader-recovery-20261024-v1`; protected-branch integration remains pending. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+**Status:** Resolved and integrated through PR #142; the main trigger is enabled and its verified build serves `lanes-api-build-d52b144e-2809-4f3c-b941-5d378c21bc33`. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 1. **Problem:** News Intelligence returned 503 while the three saved observations and zones 77–79 remained in Cloud SQL.
 2. **Root cause:** The ordinary Docker image omitted the hash-pinned reader file but inherited `/release/read-context.json` from a manually qualified release. Cloud Build checked ordinary source-mode tests and a discovery execution rather than the protected saved-reader endpoint, then promoted the incomplete image.
