@@ -1,6 +1,14 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 4:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Active-zone handoff source publication checkpoint
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Updated task/progress, screen/API documentation, bug status and master index for the requested `roi-branch` source publication. The verified handoff retains 39 passing backend checks, 14 passing desktop/mobile cases, TypeScript/scoped lint and unchanged existing LiveMapPage lint diagnostics. The full-tree checkpoint also preserves the existing SOP 1 presentation guide and dated read-only cloud-state evidence. No dependency/model/migration changes, deployment, main merge or production write. [Publication audit](evaluations/news-active-zone-handoff-20261025.md#source-publication-checkpoint).
+
+## News Flood Details handoff implemented locally
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Inspect placement on map now resolves an exact saved source/group to an active zone through an authenticated read-only endpoint. Spatial Operations opens Active Zones, fetches/selects the linked zone and flies to its geometry after mobile canvas visibility. Native groups without projected ordinals are supported; unplotted review and visible retry/deactivation handling remain. All 39 backend and 14 desktop/mobile browser cases pass, with inspected screenshots, TypeScript/scoped lint and zero new diagnostics over LiveMapPage's existing lint baseline. [Verification](evaluations/news-active-zone-handoff-20261025.md). No schema/dependency change, production write, push or deployment.
 
 ## October 25 source publication documentation checkpoint
 

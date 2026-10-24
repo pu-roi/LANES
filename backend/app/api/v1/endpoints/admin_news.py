@@ -51,7 +51,7 @@ from app.schemas.news_automation import NewsAutomationStatus
 from app.services.news_automation_service import read_news_automation
 from app.services.news_saved_run_service import SavedRunReadError, saved_run_summary
 from app.services.news_ner_durable.readers import get_news_read_context, read_native_group
-from app.schemas.news_results import NewsNativeGroupDetail
+from app.schemas.news_results import NewsNativeGroupDetail, NewsMapTarget
 
 
 router = APIRouter()
@@ -159,6 +159,28 @@ def read_result_group(
     if detail is None:
         raise HTTPException(status_code=404,detail='News result not found')
     return detail
+
+
+@router.get("/results/{run_id}/map-target", response_model=NewsMapTarget)
+def read_result_map_target(
+    run_id: int = Path(ge=1),
+    claim_index: int | None = Query(default=None, ge=0),
+    group_id: str | None = Query(default=None, pattern=r'^(?:g[0-9]{1,31}|resolved-n[0-9]{1,22}|resolved-v44-[a-f0-9]{24})$', max_length=37),
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsMapTarget:
+    from app.services.news_map_handoff_service import resolve_map_target
+    if (claim_index is None) == (group_id is None):
+        raise HTTPException(status_code=422, detail="Select one saved news claim or group.")
+    try:
+        target = resolve_map_target(db, run_id, claim_index, group_id)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="Saved flood zone links are unavailable. Please retry.") from exc
+    if target is None:
+        raise HTTPException(status_code=404, detail="News result not found")
+    return NewsMapTarget.model_validate(target)
 
 
 @router.get("/results/{run_id}/{claim_index}", response_model=NewsResultDetail)

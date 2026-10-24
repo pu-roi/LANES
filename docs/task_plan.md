@@ -1,6 +1,16 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 4:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## News Intelligence active-zone map handoff
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Implementation and evidence](evaluations/news-active-zone-handoff-20261025.md).
+
+- [x] Resolve exact saved claim/group links to current active zones on the backend without writes or inferred proximity.
+- [x] Navigate the existing modal action to Active Zones, retain explicit selection and focus the fetched zone independently of list/viewport; open mobile map automatically.
+- [x] Preserve unplotted placement review and visible error/retry/deactivation handling; include API/PostGIS regressions in existing CI gates.
+- [x] Pass 39 backend and 14 desktop/mobile browser cases, TypeScript and scoped lint; inspect screenshots and confirm no new LiveMapPage lint diagnostics over its existing baseline.
+- [x] Synchronize documentation and package the verified source for the requested `roi-branch` publication, including the retained SOP 1 guide and dated cloud-state evidence under the full-tree push protocol. No deployment, main merge or production-data operation is part of this publication.
 
 ## October 25 roi-branch source publication
 

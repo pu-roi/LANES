@@ -16,7 +16,7 @@ def main() -> None:
     os.environ['LANES_REQUIRE_HISTORY_MEDIA_TESTS'] = '1'
     import pytest
     result = pytest.main(['tests/test_history_media_postgres.py', 'tests/test_flood_history_authorization.py',
-                          'tests/test_news_tribune_pilot.py', 'tests/test_news_philstar_pilot.py', 'tests/test_news_reviewed_corner.py', 'tests/test_news_philstar_pins.py',
+                          'tests/test_news_tribune_pilot.py', 'tests/test_news_philstar_pilot.py', 'tests/test_news_reviewed_corner.py', 'tests/test_news_philstar_pins.py', 'tests/test_news_map_handoff.py',
                           '--confcutdir=tests', '-q', '--tb=short', '-p', 'no:cacheprovider'])
     if result:
         raise SystemExit(result)

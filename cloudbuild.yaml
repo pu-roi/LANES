@@ -33,7 +33,7 @@ steps:
         tests/test_news_automation.py tests/test_news_publication_lifecycle.py
         tests/test_news_estimated_road.py tests/test_news_pipeline.py
         tests/test_news_weather.py tests/test_news_collection_cadence.py
-        tests/test_news_reader_release.py tests/test_news_results.py tests/test_news_verification_presentation.py tests/test_news_philstar_pins.py tests/test_spatial_browse.py
+        tests/test_news_reader_release.py tests/test_news_results.py tests/test_news_map_handoff.py tests/test_news_verification_presentation.py tests/test_news_philstar_pins.py tests/test_spatial_browse.py
         tests/test_news_tribune_pilot.py tests/test_news_tribune_replay.py tests/test_news_philstar_pilot.py tests/test_news_native_group_route.py tests/test_news_junction_estimate.py tests/test_news_reviewed_corner.py --confcutdir=tests -q -p no:cacheprovider
 
   # Required real PostgreSQL/JSONB gate; the script owns an isolated container
