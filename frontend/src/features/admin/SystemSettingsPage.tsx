@@ -127,7 +127,7 @@ export default function SystemSettingsPage() {
 
     <Section id="evidence-expiry" active={activeSection === "evidence-expiry"} icon={Clock} title="Evidence Expiry by Depth" description="When evidence expires, current conditions become Unconfirmed. This does not establish clearance or predict when water will subside. Fresh, qualified observations can refresh their contribution.">
       {toggle("automatic_expiry_enabled", "Enable automatic expiry", "Applies to timed flood zones and news evidence in all covered cities. Turn off to pause scheduled expiry and deadline-based map hiding; manual deactivation and verified clearance still work.")}
-      {toggle("pasig_ml_expiry_enabled", "Use ML expiry for Pasig", "Eligible Pasig zones use the experimental model’s upper duration estimate. Other cities and unsupported cases retain fixed deadlines. Field accuracy is unverified; expiry means Unconfirmed, not dry.")}
+      {toggle("pasig_ml_expiry_enabled", "Use ML expiry for Pasig", "Eligible Pasig zones use the experimental model’s upper duration estimate. With ML off, zones use fixed deadlines; zones without a saved timer use the configured depth duration from original activation. Field accuracy is unverified; expiry means Unconfirmed, not dry.")}
       {!draft.automatic_expiry_enabled && <p role="status" className="text-sm text-amber-800">Active records stay active past their saved deadlines. Already inactive records stay inactive. Turning expiry back on applies the original deadlines immediately.</p>}
       <fieldset className="min-w-0 space-y-3">
         <legend className="text-sm font-semibold text-gray-900">Observation freshness</legend>
@@ -149,6 +149,7 @@ export default function SystemSettingsPage() {
         </fieldset>
       </div>
       <p className="border-t border-gray-100 pt-4 text-sm leading-relaxed text-gray-500">Observation time must be explicit and no more than 30 minutes old. Known depth, matching conditions and validated continuous road geometry are required. Conflicts, copied evidence and incomplete reports remain in review.</p>
+      <p className="text-sm leading-relaxed text-gray-500">The current Report Flood form does not collect observation time, so its submissions remain in staff review even when automatic approval is enabled.</p>
     </Section>
 
     <Section id="news-automation" active={activeSection === "news-automation"} icon={Newspaper} title="News Automation" description="Pause stages independently. Saved evidence remains available. Qualified clearance continues; automatic expiry follows the Evidence expiry toggle.">

@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { installChrisFixtures, expectNoOverflow } from './helpers/chrisIntegration';
 
+test.use({ browserName: 'chromium' });
+
 const date = '2026-10-23T02:00:00Z';
 const original = { title: 'Flood report', publisher: 'fictional', canonical_url: 'https://example.org/report', published_at: date, excerpt: '',
   article_text: 'Quezon City (as of 8:55 a.m.)\n▶️ Waist-deep (37 inches)\nDon Jose Street\nPalali Street' };

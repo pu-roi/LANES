@@ -377,3 +377,61 @@ def test_disabling_ml_preserves_generated_retention_for_legacy_null_timer(zone_d
     configure(db,staff,enabled=True)
     assert policy.apply_zone_policy(db,zone.id,now=now+timedelta(minutes=2))['method']=='fixed_fallback'
     assert zone.expires_at==deadline
+
+
+@pytest.mark.parametrize("legacy_cache", [False, True])
+@pytest.mark.parametrize("depth,minutes", [("knee", 30), (None, 45)])
+def test_ml_disabled_assigns_configured_timer_to_untimed_zone_and_details(zone_db, monkeypatch, legacy_cache, depth, minutes):
+    db, staff, zone, report, now = zone_db
+    zone.created_at, zone.expires_at = now-timedelta(minutes=10), None
+    report.depth = depth
+    config = settings.read_configuration(db)
+    config.pasig_ml_expiry_enabled = False
+    config.evidence_expiry_minutes[depth or "unknown"] = minutes
+    settings.save_configuration(db, ConfigurationUpdate(revision=0, settings=config), actor_id=staff.id)
+    if legacy_cache:
+        db.add(AuditLog(action_type=policy.ACTION, target_table="flood_avoidance_zones", target_id=zone.id,
+            metadata_json={"policy_version": "pasig-experimental-ml-expiry-v3", "ml_enabled": False,
+                "method": "fixed", "deadline": None, "fixed_deadline": None,
+                "source_signature": policy._source_signature(db, zone)}, created_at=now))
+    db.commit()
+    def no_inference(*args, **kwargs):
+        pytest.fail("ML must not run when disabled")
+    monkeypatch.setattr(policy.predictions, "resolve_zone_prediction", no_inference)
+    result = policy.apply_zone_policy(db, zone.id, now=now)
+    db.commit()
+    deadline = zone.created_at+timedelta(minutes=minutes)
+    assert result["method"] == "fixed" and result["fallback_basis"] == "activation_retention"
+    assert zone.expires_at == deadline
+    assert policy.apply_zone_policy(db, zone.id, now=now+timedelta(minutes=1)) == result
+    db.commit()
+    app.dependency_overrides[get_db] = lambda: db
+    app.dependency_overrides[get_current_user] = lambda: staff
+    try:
+        client = TestClient(app)
+        details = client.get(f"/api/v1/admin/zones/{zone.id}")
+        status = client.get(f"/api/v1/admin/zones/{zone.id}/expiry-policy")
+        assert details.status_code == status.status_code == 200
+        assert details.json()["expires_at"] == status.json()["deadline"]
+        assert status.json()["method"] == "fixed" and status.json()["automatic_expiry_enabled"]
+    finally:
+        app.dependency_overrides.clear()
+    assert expire_due_zones(db, deadline+timedelta(seconds=1)) == 1
+    assert not zone.is_active and zone.flood_event.status == FloodEventStatus.ENDED
+
+
+def test_generated_fixed_timer_reacts_to_duration_change_without_rolling_activation(zone_db):
+    db, staff, zone, report, now = zone_db
+    zone.created_at, zone.expires_at = now-timedelta(minutes=10), None
+    configure(db, staff, enabled=False)
+    policy.apply_zone_policy(db, zone.id, now=now)
+    db.commit()
+    original = zone.expires_at
+    config = settings.read_configuration(db)
+    config.evidence_expiry_minutes[zone.depth] = 30
+    settings.save_configuration(db, ConfigurationUpdate(revision=1, settings=config), actor_id=staff.id)
+    assert policy.expiry_status(db, zone.id)["method"] == "pending_sync"
+    policy.apply_zone_policy(db, zone.id, now=now+timedelta(minutes=5))
+    db.commit()
+    assert zone.expires_at == zone.created_at+timedelta(minutes=30) < original
+    assert policy.expiry_status(db, zone.id)["method"] == "fixed"

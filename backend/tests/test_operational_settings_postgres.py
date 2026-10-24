@@ -144,6 +144,41 @@ def test_copied_media_does_not_supply_independent_support(isolated_db):
     assert db.scalar(select(func.count()).select_from(models.FloodAvoidanceZone)) == 0
 
 
+@pytest.mark.asyncio
+async def test_current_report_form_without_observation_cannot_automatically_approve(isolated_db, monkeypatch):
+    import json
+    import httpx
+    from app.main import app
+    from app.api.deps import get_current_user
+    from app.core.database import get_db
+    from app.services import report_service
+    from app.services.citizen_approval_service import observation
+    db, admin = isolated_db
+    enable(db, admin)
+    user = citizen(db, admin.role_id)
+    reviewed_history(db, user, admin)
+    monkeypatch.setattr(report_service, "validate_report_road_geometry",
+        lambda geometry, *args: (geometry, "SINGLE_DIRECTION"))
+    app.dependency_overrides[get_db] = lambda: db
+    app.dependency_overrides[get_current_user] = lambda: user
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://fixture") as client:
+            response = await client.post("/api/v1/reports", data={
+                "raw_text": "Current knee-deep flood on this road", "source": "direct_user",
+                "severity": "medium", "depth": "knee", "city": "Pasig", "barangay": "Maybunga",
+                "human_readable_location": "Fixture road",
+                "geometry": json.dumps({"type": "LineString", "coordinates": list(LINE.coords)}),
+                "survey_data": json.dumps({"passable_vehicles": "Large Trucks / Buses", "hidden_hazards": "no"}),
+            })
+        assert response.status_code == 201, response.text
+        assert settings.read_configuration(db).citizen_auto_approval_enabled
+        assert response.json()["status"] == "pending"
+        assert response.json()["automatic_review_reason"] == "explicit_observation_time_required"
+        assert observation(db, response.json()["id"])["observed_at"] is None
+    finally:
+        app.dependency_overrides.clear()
+
+
 def qualifying_pair(db, admin):
     enable(db, admin)
     first, second = citizen(db, admin.role_id), citizen(db, admin.role_id)

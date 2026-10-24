@@ -1,6 +1,30 @@
 # LANES documentation
 
-> **Last Updated:** October 24, 2026, 05:02 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 25 source publication checkpoint
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Combined roi-branch audit](evaluations/roi-publication-audit-20261025.md) packages the expiry repair, citizen approval investigation and retained news/map changes under the repository's full-tree push protocol. Earlier unpushed-source statements are dated checkpoints. This publication adds no deployment, settings or production-data operation; citizen eligibility and remaining Philstar coverage gaps remain explicit.
+
+## System Settings expiry and citizen approval
+
+[Fixed expiry and citizen approval investigation](evaluations/settings-expiry-citizen-approval-20261025.md): local policy v4 gives untimed zones configured retention with ML disabled; the current report form omits observation time required for citizen automatic approval. Backend regressions and responsive verification are recorded separately from deployment.
+
+## Philstar location accuracy investigation — corrections pending
+
+**Reviewed-pin plotting complete live:** [Two-coordinate plan](plans/philstar-reviewed-pins-20261025.md) · [Rollout evidence](evaluations/philstar-reviewed-pins-20261025.md). West Riverside Interior **92** and Riverside/Attorney Pat Senador **93** are active estimated road zones at the developer-reviewed coordinates. Original source/mapped locality differences remain traceable. Backup, 504 runtime / 105 PostGIS checks, restored rehearsal, exact cloud apply/zero-write reuse, preservation and actual desktop/mobile selected/public map checks pass. Active total is 17; nine of ten accepted Philstar observations are plotted. Talipapa Alley stays skipped. No Gemini request, Git push/main merge or frontend deployment occurred.
+
+**Local UI follow-up:** [Field verification badges](evaluations/news-verification-badges-20261025.md) add backend-owned field reasons to Flooded Areas cards and details. 90 backend checks and six desktop/mobile cases pass; TypeScript and scoped lint pass. No deployment or flood-record change has been made. The supplied Riverside coordinates remain unverified hints and Talipapa Alley remains unplotted.
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Read-only findings](evaluations/philstar-location-accuracy-investigation-20261025.md): live News Intelligence has ten accepted Philstar observations, seven plotted and three blocked by missing canonical roads. The full source lists 27 entries; seventeen never reached accepted results. The two Banawe reports concern a mapped boundary junction and must retain separate barangays/depths. Administrative aliases, source heading inheritance and stale map-status summaries need correction. The developer cancelled the proposed extent expansion; no application, deployment or database changes were made for it.
+
+## Philstar reviewed street correction completed
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Correction plan](plans/philstar-street-correction-20261024.md) · [Evidence and current state](evaluations/philstar-street-correction-20261024.md). The earlier circular junction placement followed Amoranto rather than the developer-reviewed connecting streets and did not match existing rounded road buffers. **480 runtime / 94 PostGIS** checks, restored lifecycle rehearsal, checked backend publication, exact cloud apply/reuse, unrelated-row preservation and real production-basemap desktop/mobile acceptance pass. Corrected 83/84/85/88/89 in place; Don Jose 90/Ubay 91 are added. Source remains uncommitted on `roi-branch`.
+
+## Philstar UP NOAH junction follow-up
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Source-bound junction plan](plans/philstar-noah-junctions-20261024.md) · [Execution and checks](evaluations/philstar-noah-junctions-20261024.md). Palali/Tabayoc estimates are saved as zones **88/89**. Both adjoining sections have equal class-3 coverage in all three scenarios; the 25 m review window is an application estimate, not measured flood extent. **126** scoped checks, actual restored-PostGIS rehearsal, cloud preview/apply/reuse, full 41-table preservation and hosted desktop/mobile selected/public map checks pass. All 11 prior active zones and the stopped ledger remain unchanged; no provider request was added. Ubay overlap and Don Jose conflict remain separate. Source publication is pending on `roi-branch`.
 
 ## roi-branch publication audit and capstone review
 

@@ -44,6 +44,19 @@ def test_exact_single_article_authority_is_separate_from_gma(monkeypatch):
     authority.validate(engine)
 
 
+def test_junction_followup_is_limited_to_the_two_clear_groups(monkeypatch):
+    from app.services.news_three_article_pilot import PilotAuthority
+    from app.services.news_junction_estimate_service import VERSION
+    authority,engine=grant_fixture(monkeypatch)
+    policy=deepcopy(authority.policy)
+    policy.update(allowed_operations=['outputs'],junction_policy=VERSION,output_group_ids=pilot.JUNCTION_GROUPS)
+    PilotAuthority(policy,sha(policy),authority.trusted).validate(engine)
+    for change in ({'output_group_ids':['resolved-n15']},{'junction_policy':'other'},
+                   {'allowed_operations':['resolve']}):
+        invalid={**policy,**change}
+        with pytest.raises(ResolutionError):PilotAuthority(invalid,sha(invalid),authority.trusted).validate(engine)
+
+
 @pytest.mark.parametrize('field,value',[
     ('schema_version','gma-source-repair-v1'),('session_id','other'),('dataset_id','other'),
     ('allowed_operations',['ner','resolve']),('allowed_operations',['archive']),

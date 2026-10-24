@@ -201,6 +201,20 @@ def preview_result_placement(
         raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
     if detail is None:
         raise HTTPException(status_code=404, detail="News result not found")
+    from app.services.news_reviewed_corner_projection import saved_corner_preview
+    try:
+        reviewed=saved_corner_preview(db,run_id,claim_index)
+    except SavedRunReadError as exc:
+        raise HTTPException(status_code=409,detail=str(exc)) from exc
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503,detail="News placement storage is unavailable") from exc
+    if reviewed:
+        claim=detail.claim.model_copy(update={'canonical_road':reviewed['road'],
+            'raw_place_name':reviewed['road'],'road_segment_raw':reviewed['label'],
+            'evidence_sentence':reviewed['excerpt']})
+        return NewsResultPlacementPreview(run_id=run_id,claim_index=claim_index,
+            input_fingerprint=detail.input_fingerprint,evidence_pipeline_version=detail.pipeline_version,
+            placement_revision=reviewed['revision'],claim=claim,preview=reviewed['preview'])
     service = get_news_placement_preview_service()
     return NewsResultPlacementPreview(run_id=run_id, claim_index=claim_index,
         input_fingerprint=detail.input_fingerprint, evidence_pipeline_version=detail.pipeline_version,

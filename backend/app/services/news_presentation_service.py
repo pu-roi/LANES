@@ -46,6 +46,7 @@ def claim_reading_reason(claim: ExtractedClaim) -> str | None:
 
 
 def summarize_news_claim(claim: ExtractedClaim) -> NewsFloodSummary:
+    from app.services.news_verification_presentation import with_verification
     location = claim.road_segment_raw or claim.raw_place_name
     if not claim.road_segment_raw and claim.local_area_raw:
         broad_names = {value.casefold() for value in [claim.canonical_barangay, claim.canonical_city, claim.canonical_province] if value}
@@ -74,7 +75,7 @@ def summarize_news_claim(claim: ExtractedClaim) -> NewsFloodSummary:
             and not (claim.is_forecast or claim.is_negated or claim.is_historical)):
         time_label = ("Floodwater subsided by" if re.match(r"^\s*by\b", claim.event_time_raw or "", re.I)
                       else "Floodwater subsided in article")
-    return NewsFloodSummary(
+    return with_verification(NewsFloodSummary(
         location=location, area=", ".join(area) or None,
         location_qualifier=" · ".join(qualifiers) or None,
         # A canonical gauge is a normalization, not a publisher measurement.
@@ -92,4 +93,4 @@ def summarize_news_claim(claim: ExtractedClaim) -> NewsFloodSummary:
                     "unresolved": "Exact map location unknown", "source_unavailable": "Map data unavailable"}.get(
                         claim.road_placement.status if claim.road_placement else None, "Map location not checked"),
         reading_status="needs_checking" if reason else "reported_location", reading_reason=reason,
-    )
+    ), claim)

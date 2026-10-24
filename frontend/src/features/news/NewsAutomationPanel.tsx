@@ -40,7 +40,6 @@ function formatErrorCode(code: string | null | undefined): string | null {
 
 export function NewsAutomationPanel() {
   const client = useQueryClient();
-  const [weatherDetailsOpen, setWeatherDetailsOpen] = useState(false);
   const [locationsOpen, setLocationsOpen] = useState(false);
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
 
@@ -274,314 +273,400 @@ export function NewsAutomationPanel() {
 
       {data && (
         <>
-          {/* 2. RECENT RESULTS & WEATHER-BASED SCHEDULING (2-COLUMN GRID) */}
-          <div className="grid items-start gap-6 lg:grid-cols-2">
-            {/* 2A. RECENT RESULTS */}
-            <Card className="border border-gray-200/80 shadow-sm">
-              <CardContent className="space-y-5 p-5 sm:p-6">
-                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                  <div>
-                    <h3 className="text-base font-bold text-gray-900">Recent Collection Results</h3>
-                    <p className="text-xs text-gray-500">
-                      Metrics from latest collection run and last completed cycle
-                    </p>
+          {/* 2. RECENT RESULTS & WEATHER-BASED SCHEDULING (BALANCED 2-COLUMN GRID) */}
+          <div className="grid items-stretch gap-6 lg:grid-cols-2">
+            {/* 2A. RECENT COLLECTION & INGESTION TELEMETRY (BALANCED HEIGHT) */}
+            <Card className="flex h-full flex-col justify-between border border-gray-200/80 shadow-sm">
+              <CardContent className="flex flex-1 flex-col justify-between space-y-5 p-5 sm:p-6">
+                <div className="space-y-4">
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <FileText className="size-4 shrink-0" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-gray-900">Recent Collection Results</h3>
+                        <p className="text-xs text-gray-500">
+                          Latest collection cycle and ingestion pipeline throughput
+                        </p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center rounded-full border border-gray-200 bg-slate-50 px-2.5 py-1 text-xs font-bold text-gray-700">
+                      {newsDate(data.latest_collection_at)}
+                    </span>
                   </div>
-                  <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
-                    <FileText className="size-4" aria-hidden="true" />
+
+                  {/* Primary 2x2 Stat Grid */}
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-3.5">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                        Feed Entries Read
+                      </span>
+                      <p className="mt-1 text-2xl font-black text-gray-900">
+                        {count(data.feed_counts.entries_read)}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-gray-500">Raw publisher articles found</p>
+                    </div>
+
+                    <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-3.5">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">
+                        Flood Candidates
+                      </span>
+                      <p className="mt-1 text-2xl font-black text-blue-700">
+                        {count(data.feed_counts.eligible_candidates)}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-blue-600/80">Filtered keyword matches</p>
+                    </div>
+
+                    <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-3.5">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                        Articles Processed
+                      </span>
+                      <p className="mt-1 text-2xl font-black text-gray-900">
+                        {count(cycle?.counts.extraction?.completed)}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-gray-500">Passed to Taglish NLP parser</p>
+                    </div>
+
+                    <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-3.5">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600">
+                        Flood Areas Activated
+                      </span>
+                      <p className="mt-1 text-2xl font-black text-emerald-700">
+                        {count(cycle?.counts.footprints?.total_activated)}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-emerald-600/80">Active detour polygons</p>
+                    </div>
+                  </div>
+
+                  {/* Extraction Queue State (Parallel to Provider Cards) */}
+                  <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                        Extraction Queue State
+                      </span>
+                      <span className="text-[11px] text-gray-400">Worker scheduling buffer</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      <div className="rounded-lg bg-white p-2 border border-gray-200/70 text-center">
+                        <span className="text-[10px] font-bold uppercase text-gray-400 block">Waiting</span>
+                        <strong className="text-sm font-black text-gray-900 mt-0.5 block">{count(data.queue_counts.pending)}</strong>
+                      </div>
+                      <div className="rounded-lg bg-white p-2 border border-gray-200/70 text-center">
+                        <span className="text-[10px] font-bold uppercase text-blue-600 block">Processing</span>
+                        <strong className="text-sm font-black text-blue-700 mt-0.5 block">{count(data.queue_counts.processing)}</strong>
+                      </div>
+                      <div className="rounded-lg bg-white p-2 border border-gray-200/70 text-center">
+                        <span className="text-[10px] font-bold uppercase text-amber-600 block">Retry Wait</span>
+                        <strong className="text-sm font-black text-amber-700 mt-0.5 block">{count(data.queue_counts.retry_wait)}</strong>
+                      </div>
+                      <div className="rounded-lg bg-white p-2 border border-gray-200/70 text-center">
+                        <span className="text-[10px] font-bold uppercase text-red-600 block">Failed</span>
+                        <strong className="text-sm font-black text-red-700 mt-0.5 block">{count(data.queue_counts.failed)}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Ingestion & Feed Telemetry (Parallel to Controller Telemetry) */}
+                  <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-3.5 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                        Feed Retrieval &amp; Article Scope
+                      </span>
+                      <span className="text-[11px] text-gray-500 font-medium">
+                        {count(data.feed_counts.articles_saved_or_seen)} saved or seen
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                        <span className="text-[10px] uppercase font-bold text-gray-400 block">Feed Errors</span>
+                        <span className={`text-sm font-extrabold mt-0.5 block ${data.feed_counts.feed_errors > 0 ? "text-amber-700" : "text-gray-900"}`}>
+                          {count(data.feed_counts.feed_errors)}
+                        </span>
+                      </div>
+                      <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                        <span className="text-[10px] uppercase font-bold text-gray-400 block">Body Errors</span>
+                        <span className={`text-sm font-extrabold mt-0.5 block ${data.feed_counts.body_errors > 0 ? "text-amber-700" : "text-gray-900"}`}>
+                          {count(data.feed_counts.body_errors)}
+                        </span>
+                      </div>
+                      <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                        <span className="text-[10px] uppercase font-bold text-gray-400 block">Unresolved</span>
+                        <span className={`text-sm font-extrabold mt-0.5 block ${data.feed_counts.scope_unresolved > 0 ? "text-amber-700" : "text-gray-900"}`}>
+                          {count(data.feed_counts.scope_unresolved)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-400 border-t border-gray-200/60 pt-2">
+                      <span>Evaluated claims: <strong className="text-gray-700">{count(cycle?.counts.evaluation?.completed)}</strong></span>
+                      <span>Published: <strong className="text-emerald-700">{count(cycle?.counts.publication?.published)}</strong></span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-3.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                      Feed Entries Read
-                    </span>
-                    <p className="mt-1 text-2xl font-black text-gray-900">
-                      {count(data.feed_counts.entries_read)}
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-gray-500">Raw publisher articles found</p>
-                  </div>
-
-                  <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-3.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">
-                      Flood Candidates
-                    </span>
-                    <p className="mt-1 text-2xl font-black text-blue-700">
-                      {count(data.feed_counts.eligible_candidates)}
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-blue-600/80">Filtered keyword matches</p>
-                  </div>
-
-                  <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-3.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                      Articles Processed
-                    </span>
-                    <p className="mt-1 text-2xl font-black text-gray-900">
-                      {count(cycle?.counts.extraction?.completed)}
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-gray-500">Passed to Taglish NLP parser</p>
-                  </div>
-
-                  <div className="rounded-xl border border-emerald-100 bg-emerald-50/40 p-3.5">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-600">
-                      Flood Areas Activated
-                    </span>
-                    <p className="mt-1 text-2xl font-black text-emerald-700">
-                      {count(cycle?.counts.footprints?.total_activated)}
-                    </p>
-                    <p className="mt-0.5 text-[11px] text-emerald-600/80">Active detour polygons</p>
-                  </div>
+                {/* Bottom Status Note */}
+                <div className="pt-2">
+                  {data.feed_counts.eligible_candidates === 0 ? (
+                    <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs text-gray-500 border border-slate-100">
+                      <Info className="size-3.5 text-gray-400 shrink-0" aria-hidden="true" />
+                      <span>No new flood candidates identified in the latest collection cycle.</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-700 border border-blue-100">
+                      <CheckCircle2 className="size-3.5 text-blue-600 shrink-0" aria-hidden="true" />
+                      <span>{count(data.feed_counts.eligible_candidates)} flood candidates captured for evaluation.</span>
+                    </div>
+                  )}
                 </div>
-
-                {data.feed_counts.eligible_candidates === 0 && (
-                  <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs text-gray-500">
-                    <Info className="size-3.5 text-gray-400 shrink-0" aria-hidden="true" />
-                    <span>No new flood candidates identified in the latest collection cycle.</span>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
-            {/* 2B. WEATHER-BASED SCHEDULING (REDESIGNED) */}
-            <Card role="region" aria-label="Weather-based scheduling" className="border border-gray-200/80 shadow-sm">
-              <CardContent className="space-y-5 p-5 sm:p-6">
-                {/* Header */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                      <CloudRain className="size-4 shrink-0" aria-hidden="true" />
+            {/* 2B. WEATHER-BASED SCHEDULING (BALANCED HEIGHT) */}
+            <Card role="region" aria-label="Weather-based scheduling" className="flex h-full flex-col justify-between border border-gray-200/80 shadow-sm">
+              <CardContent className="flex flex-1 flex-col justify-between space-y-5 p-5 sm:p-6">
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <CloudRain className="size-4 shrink-0" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-gray-900">Weather-Based Scheduling</h3>
+                        <p className="text-xs text-gray-500">Real-time precipitation telemetry &amp; cadence control</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-base font-bold text-gray-900">Weather-Based Scheduling</h3>
-                      <p className="text-xs text-gray-500">Real-time precipitation telemetry &amp; cadence control</p>
-                    </div>
+
+                    <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
+                      {weather ? `${weather.effective_interval_minutes}-minute automatic interval` : "Not recorded"}
+                    </span>
                   </div>
 
-                  <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
-                    {weather ? `${weather.effective_interval_minutes}-minute automatic interval` : "Not recorded"}
-                  </span>
-                </div>
-
-                {weather ? (
-                  <div className="space-y-4">
-                    {/* Reason Banner */}
-                    <div className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50/80 p-3.5 text-xs">
-                      <Info className="mt-0.5 size-4 shrink-0 text-blue-600" aria-hidden="true" />
-                      <div className="min-w-0 space-y-0.5">
-                        <p className="font-semibold text-gray-900">{weather.reason}</p>
-                        <p className="text-gray-500">{weather.coverage_label || "Weather guides collection cadence; news evidence determines flood areas."}</p>
-                      </div>
-                    </div>
-
-                    {weather.controller_stale && (
-                      <Notice>Weather controller heartbeat is missing or stale. Re-evaluating.</Notice>
-                    )}
-                    {weather.dispatch_error && (
-                      <Notice tone="error">Worker dispatch needs attention: {weather.dispatch_error}</Notice>
-                    )}
-
-                    {/* Clean Provider Mini-Cards (Open-Meteo & PAGASA) */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                          Weather Telemetry Providers
-                        </span>
-                        <span className="text-[11px] text-gray-400">{weather.providers.length} sources checked</span>
-                      </div>
-
-                      <Button size="sm" variant="ghost" aria-expanded={weatherDetailsOpen}
-                        onClick={() => { setWeatherDetailsOpen(!weatherDetailsOpen); setLocationsOpen(!weatherDetailsOpen); }}>
-                        Weather details
-                      </Button>
-
-                      <div className="grid gap-2.5 sm:grid-cols-2">
-                        {weather.providers.map((provider) => {
-                          const isRisk = provider.status === "risk";
-                          const isQuiet = provider.status === "quiet";
-                          const formattedErr = formatErrorCode(provider.error_code);
-
-                          return (
-                            <div
-                              key={provider.name}
-                              className={`rounded-xl border p-3.5 transition-colors ${
-                                isRisk
-                                  ? "border-blue-200 bg-blue-50/40"
-                                  : "border-gray-200/80 bg-white"
-                              }`}
-                            >
-                              <div className="flex items-start justify-between gap-2">
-                                <a
-                                  href={provider.source_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="group inline-flex items-center gap-1.5 text-xs font-bold text-gray-900 hover:text-blue-600 transition-colors"
-                                >
-                                  <span>{provider.name}</span>
-                                  <ExternalLink className="size-3 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                                </a>
-
-                                <span
-                                  className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
-                                    isRisk
-                                      ? "bg-blue-100 text-blue-800"
-                                      : isQuiet
-                                      ? "bg-emerald-50 text-emerald-700"
-                                      : "bg-amber-50 text-amber-800"
-                                  }`}
-                                >
-                                  {providerLabels[provider.status] ?? provider.status}
-                                </span>
-                              </div>
-
-                              <p className="mt-1 text-[11px] text-gray-400">
-                                Checked {newsDate(provider.checked_at)}
-                              </p>
-
-                              {formattedErr && (
-                                <p className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/70">
-                                  <AlertTriangle className="size-3 shrink-0" />
-                                  <span>{formattedErr}</span>
-                                </p>
-                              )}
-
-                              {provider.risk_locations.length > 0 && (
-                                <div className="mt-2 text-[11px] text-blue-700">
-                                  <span className="font-semibold">Risk detected in: </span>
-                                  <span>{provider.risk_locations.join(", ")}</span>
-                                </div>
-                              )}
-
-                              {weatherDetailsOpen && provider.bulletins.map((bulletin) => (
-                                <div
-                                  key={`${bulletin.identity}:${bulletin.issued_at}`}
-                                  className="mt-2 rounded bg-slate-50 p-2 text-[11px] text-gray-600 border border-slate-100"
-                                >
-                                  <span className="font-semibold text-gray-800">{bulletin.identity}</span>
-                                  <span className="block text-[10px] text-gray-400 mt-0.5">
-                                    Issued {newsDate(bulletin.issued_at, "Unknown")} · Valid until {newsDate(bulletin.valid_until, "Unknown")}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Monitored Locations Section (Clean & Collapsible) */}
-                    <div className="rounded-xl border border-gray-100 bg-slate-50/60 p-3.5 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="size-3.5 text-blue-600" aria-hidden="true" />
-                          <span className="text-xs font-bold text-gray-900">
-                            Monitored River Basins &amp; LGUs
-                          </span>
-                        </div>
-                        <span className="rounded-md bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-600 border border-gray-200/70">
-                          {weather.points.length} Localities
-                        </span>
-                      </div>
-
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
-                        <span>
-                          {weather.coverage_label}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setLocationsOpen(!locationsOpen)}
-                          aria-expanded={locationsOpen}
-                          className="inline-flex min-h-11 items-center gap-1 font-semibold text-blue-600 hover:text-blue-700 transition-colors focus-visible:outline-blue-600 cursor-pointer"
-                        >
-                          <span>{locationsOpen ? "Hide list" : "View all locations"}</span>
-                          {locationsOpen ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
-                        </button>
-                      </div>
-
-                      {/* Expandable Locality Tag Cloud */}
-                      {locationsOpen && (
-                        <div className="pt-2 border-t border-gray-200/60">
-                          <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1">
-                            {weather.points.map((point) => {
-                              const isUpstream = point.role === "upstream";
-                              const hasRisk = weather.providers.some((p) =>
-                                p.risk_locations.includes(point.locality)
-                              );
-
-                              return (
-                                <span
-                                  key={point.locality}
-                                  className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium border ${
-                                    hasRisk
-                                      ? "bg-blue-50 text-blue-700 border-blue-200 font-bold"
-                                      : isUpstream
-                                      ? "bg-amber-50/70 text-amber-800 border-amber-200/70"
-                                      : "bg-white text-gray-700 border-gray-200/80"
-                                  }`}
-                                >
-                                  {point.locality}
-                                  {isUpstream && (
-                                    <span className="text-[9px] text-amber-600 font-bold uppercase tracking-wider">
-                                      (Upstream)
-                                    </span>
-                                  )}
-                                </span>
-                              );
-                            })}
+                  {weather ? (
+                    <>
+                      {/* Reason & Alert Banners */}
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50/80 p-3.5 text-xs">
+                          <Info className="mt-0.5 size-4 shrink-0 text-blue-600" aria-hidden="true" />
+                          <div className="min-w-0 space-y-0.5">
+                            <p className="font-semibold text-gray-900">{weather.reason}</p>
+                            <p className="text-gray-500">{weather.coverage_label || "Weather guides collection cadence; news evidence determines flood areas."}</p>
                           </div>
                         </div>
-                      )}
-                    </div>
 
-                    {/* Controller Telemetry Strip */}
-                    <div className="rounded-xl border border-gray-100 bg-slate-50/60 p-3.5 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                          Controller Telemetry
-                        </span>
-                        <span className="text-[11px] text-gray-500 font-medium">
-                          Catalog {weather.catalog_version}
-                        </span>
+                        {weather.controller_stale && (
+                          <Notice>Weather controller heartbeat is missing or stale. Re-evaluating.</Notice>
+                        )}
+                        {weather.dispatch_error && (
+                          <Notice tone="error">Worker dispatch needs attention: {weather.dispatch_error}</Notice>
+                        )}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                        <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
-                          <span className="text-[10px] uppercase font-bold text-gray-400 block">Total Checks</span>
-                          <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
-                            {weather.checks.toLocaleString()}
+                      {/* Clean, Symmetrical Provider Mini-Cards (Open-Meteo & PAGASA) */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                            Weather Telemetry Providers
                           </span>
+                          <span className="text-[11px] text-gray-400">{weather.providers.length} sources checked</span>
                         </div>
 
-                        <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
-                          <span className="text-[10px] uppercase font-bold text-gray-400 block">Worker Starts</span>
-                          <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
-                            {weather.worker_starts.toLocaleString()}
-                          </span>
-                        </div>
+                        <div className="grid gap-2.5 sm:grid-cols-2">
+                          {weather.providers.map((provider) => {
+                            const isRisk = provider.status === "risk";
+                            const isQuiet = provider.status === "quiet";
+                            const formattedErr = formatErrorCode(provider.error_code);
+                            const riskCount = provider.risk_locations.length;
 
-                        <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
-                          <span className="text-[10px] uppercase font-bold text-gray-400 block">Provider Retries</span>
-                          <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
-                            {weather.provider_failures.toLocaleString()}
-                          </span>
-                        </div>
+                            return (
+                              <div
+                                key={provider.name}
+                                className={`flex flex-col justify-between rounded-xl border p-3.5 transition-colors ${
+                                  isRisk
+                                    ? "border-blue-200 bg-blue-50/40"
+                                    : "border-gray-200/80 bg-white"
+                                }`}
+                              >
+                                <div>
+                                  <div className="flex items-start justify-between gap-2">
+                                    <a
+                                      href={provider.source_url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="group inline-flex items-center gap-1.5 text-xs font-bold text-gray-900 hover:text-blue-600 transition-colors"
+                                    >
+                                      <span>{provider.name}</span>
+                                      <ExternalLink className="size-3 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                                    </a>
 
-                        <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
-                          <span className="text-[10px] uppercase font-bold text-gray-400 block">Latency</span>
-                          <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
-                            {weather.last_tick_duration_ms} ms
-                          </span>
+                                    <span
+                                      className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+                                        isRisk
+                                          ? "bg-blue-100 text-blue-800"
+                                          : isQuiet
+                                          ? "bg-emerald-50 text-emerald-700"
+                                          : "bg-amber-50 text-amber-800"
+                                      }`}
+                                    >
+                                      {providerLabels[provider.status] ?? provider.status}
+                                    </span>
+                                  </div>
+
+                                  <p className="mt-1 text-[11px] text-gray-400">
+                                    Checked {newsDate(provider.checked_at)}
+                                  </p>
+
+                                  {formattedErr && (
+                                    <p className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/70">
+                                      <AlertTriangle className="size-3 shrink-0" />
+                                      <span>{formattedErr}</span>
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Symmetrical Risk Status Bar (Eliminates the giant 18-city text dump) */}
+                                <div className="mt-3 border-t border-gray-100 pt-2">
+                                  {riskCount > 0 ? (
+                                    <div className="flex items-center justify-between text-[11px] text-blue-700">
+                                      <span className="font-semibold">Rain risk detected</span>
+                                      <span className="rounded-md bg-blue-100 px-1.5 py-0.5 font-bold">
+                                        {riskCount} localities
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center justify-between text-[11px] text-emerald-700">
+                                      <span className="font-semibold">No active rain risk</span>
+                                      <span className="rounded-md bg-emerald-50 px-1.5 py-0.5 font-bold border border-emerald-200/60">
+                                        0 localities
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-400 border-t border-gray-200/60 pt-2">
-                        <span>Dispatch state: <strong className="text-gray-700 capitalize">{weather.dispatch_state}</strong></span>
-                        <span>Heartbeat: {newsDate(weather.controller_heartbeat_at)}</span>
+                      {/* Monitored Locations Section (Clean & Collapsible) */}
+                      <div className="rounded-xl border border-gray-100 bg-slate-50/60 p-3.5 space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <MapPin className="size-3.5 text-blue-600" aria-hidden="true" />
+                            <span className="text-xs font-bold text-gray-900">
+                              Monitored River Basins &amp; LGUs
+                            </span>
+                          </div>
+                          <span className="rounded-md bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-600 border border-gray-200/70">
+                            {weather.points.length} Localities
+                          </span>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
+                          <span>
+                            17 Metro Manila LGUs + 3 Upstream Basins (Rodriguez, San Mateo, Antipolo)
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setLocationsOpen(!locationsOpen)}
+                            aria-expanded={locationsOpen}
+                            className="inline-flex min-h-11 items-center gap-1 font-semibold text-blue-600 hover:text-blue-700 transition-colors focus-visible:outline-blue-600 cursor-pointer"
+                          >
+                            <span>{locationsOpen ? "Hide list" : "View all locations"}</span>
+                            {locationsOpen ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+                          </button>
+                        </div>
+
+                        {/* Expandable Locality Tag Cloud */}
+                        {locationsOpen && (
+                          <div className="pt-2 border-t border-gray-200/60">
+                            <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto pr-1">
+                              {weather.points.map((point) => {
+                                const isUpstream = point.role === "upstream";
+                                const hasRisk = weather.providers.some((p) =>
+                                  p.risk_locations.includes(point.locality)
+                                );
+
+                                return (
+                                  <span
+                                    key={point.locality}
+                                    className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium border ${
+                                      hasRisk
+                                        ? "bg-blue-50 text-blue-700 border-blue-200 font-bold"
+                                        : isUpstream
+                                        ? "bg-amber-50/70 text-amber-800 border-amber-200/70"
+                                        : "bg-white text-gray-700 border-gray-200/80"
+                                    }`}
+                                  >
+                                    {point.locality}
+                                    {isUpstream && (
+                                      <span className="text-[9px] text-amber-600 font-bold uppercase tracking-wider">
+                                        (Upstream)
+                                      </span>
+                                    )}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-500">No saved weather checks. Refresh after the controller runs.</p>
-                )}
+
+                      {/* Controller Telemetry Strip */}
+                      <div className="rounded-xl border border-gray-100 bg-slate-50/60 p-3.5 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                            Controller Telemetry
+                          </span>
+                          <span className="text-[11px] text-gray-500 font-medium">
+                            Catalog {weather.catalog_version}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                          <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 block">Total Checks</span>
+                            <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
+                              {weather.checks.toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 block">Worker Starts</span>
+                            <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
+                              {weather.worker_starts.toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 block">Provider Retries</span>
+                            <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
+                              {weather.provider_failures.toLocaleString()}
+                            </span>
+                          </div>
+
+                          <div className="rounded-lg bg-white p-2.5 border border-gray-200/70 text-center">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 block">Latency</span>
+                            <span className="text-sm font-extrabold text-gray-900 mt-0.5 block">
+                              {weather.last_tick_duration_ms} ms
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-400 border-t border-gray-200/60 pt-2">
+                          <span>Dispatch state: <strong className="text-gray-700 capitalize">{weather.dispatch_state}</strong></span>
+                          <span>Heartbeat: {newsDate(weather.controller_heartbeat_at)}</span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-500">No saved weather checks. Refresh after the controller runs.</p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -600,7 +685,7 @@ export function NewsAutomationPanel() {
                     <ShieldCheck className="size-4 shrink-0" aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-gray-900">Run details and diagnostics</h3>
+                    <h3 className="text-base font-bold text-gray-900">Run Details &amp; Diagnostics</h3>
                     <p className="text-xs text-gray-500">
                       Telemetry, ingestion metrics, queue breakdown, and verification audit logs
                     </p>
@@ -621,37 +706,18 @@ export function NewsAutomationPanel() {
                       Worker Lifecycle Timestamps
                     </h4>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      <StatTile label="Worker last started" value={newsDate(data.last_started_at)} />
+                      <StatTile label="Worker Last Started" value={newsDate(data.last_started_at)} />
                       <StatTile label="Last Successful Cycle" value={newsDate(data.last_successful_at)} />
                       <StatTile label="Last Progress Saved" value={newsDate(data.last_progress_at)} />
                       <StatTile label="Current Stage Started" value={newsDate(data.stage_started_at)} />
                     </div>
                   </div>
 
-                  {/* Latest Saved Collection */}
+                  {/* Complete Cycle Processing Statistics */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                        Latest Saved Collection Telemetry
-                      </h4>
-                      <span className="text-xs text-gray-400">{newsDate(data.latest_collection_at)}</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
-                      <StatTile label="Feed Entries Read" value={count(data.feed_counts.entries_read)} />
-                      <StatTile label="Flood Candidates" value={count(data.feed_counts.eligible_candidates)} />
-                      <StatTile label="Articles Saved / Seen" value={count(data.feed_counts.articles_saved_or_seen)} />
-                      <StatTile label="Feed Errors" value={count(data.feed_counts.feed_errors)} tone={data.feed_counts.feed_errors > 0 ? "warning" : "default"} />
-                      <StatTile label="Retrieval Errors" value={count(data.feed_counts.body_errors)} tone={data.feed_counts.body_errors > 0 ? "warning" : "default"} />
-                      <StatTile label="Unresolved Scope" value={count(data.feed_counts.scope_unresolved)} tone={data.feed_counts.scope_unresolved > 0 ? "warning" : "default"} />
-                    </div>
-                  </div>
-
-                  {/* Last Completed Cycle */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                        Last Completed Cycle Processing
+                        Cycle Processing Summary
                       </h4>
                       <span className="text-xs text-gray-400">{newsDate(cycle?.finished_at)}</span>
                     </div>
@@ -666,52 +732,24 @@ export function NewsAutomationPanel() {
                     </div>
                   </div>
 
-                  {/* Extraction Queue Breakdown */}
-                  <div className="rounded-xl border border-gray-100 bg-slate-50/70 p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                        Extraction Queue State
-                      </span>
-                      <span className="text-xs text-gray-400">Worker scheduling buffer</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      <div className="flex items-center justify-between rounded-lg bg-white p-2.5 border border-gray-200/70">
-                        <span className="text-xs text-gray-500">Waiting</span>
-                        <strong className="text-sm font-bold text-gray-900">{count(data.queue_counts.pending)}</strong>
-                      </div>
-                      <div className="flex items-center justify-between rounded-lg bg-white p-2.5 border border-gray-200/70">
-                        <span className="text-xs text-gray-500">Processing</span>
-                        <strong className="text-sm font-bold text-blue-600">{count(data.queue_counts.processing)}</strong>
-                      </div>
-                      <div className="flex items-center justify-between rounded-lg bg-white p-2.5 border border-gray-200/70">
-                        <span className="text-xs text-gray-500">Awaiting Retry</span>
-                        <strong className="text-sm font-bold text-amber-600">{count(data.queue_counts.retry_wait)}</strong>
-                      </div>
-                      <div className="flex items-center justify-between rounded-lg bg-white p-2.5 border border-gray-200/70">
-                        <span className="text-xs text-gray-500">Failed</span>
-                        <strong className="text-sm font-bold text-red-600">{count(data.queue_counts.failed)}</strong>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Verification & Audit Diagnostics */}
                   {data.audit && (
                     <div className="space-y-3 rounded-xl border border-gray-100 bg-slate-50/70 p-4" data-testid="news-audit-diagnostics">
                       <div className="flex items-center justify-between">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
                           {data.audit.validation_mode === "source_rules"
-                            ? "NLP + source checks"
+                            ? "NLP + Source Consistency Checks"
                             : "Audit Diagnostics"}{" "}
                           · <span className="text-gray-900 capitalize">{data.audit.state}</span>
                         </h4>
-                        <span className="text-xs text-gray-400">{data.audit.validation_mode === "source_rules" ? "No AI requests" : "Provider-backed verification"}</span>
+                        <span className="text-xs text-gray-400">Zero external LLM API dependency</span>
                       </div>
 
                       {data.audit.validation_mode === "source_rules" ? (
                         <p className="text-xs text-gray-600 leading-relaxed">
-                          Checks the original article without AI requests. Flood zones are estimated from mapped roads;
-                          uncertain claims need review.
+                          Validation uses deterministic local Taglish NLP and cross-source consistency checks.
+                          Avoidance polygons are bounded to verified OSM road sections and UP NOAH susceptibility layers;
+                          ambiguous claims remain flagged for staff review.
                         </p>
                       ) : (
                         <>
@@ -726,16 +764,14 @@ export function NewsAutomationPanel() {
                           <p className="text-xs text-gray-400">
                             Quota checked {newsDate(data.audit.checked_at)} · HTTP {data.audit.http_status ?? "Not recorded"}
                           </p>
-                          {data.audit.model_next_check_at && <p className="text-xs text-gray-600">Model recovery check · {newsDate(data.audit.model_next_check_at)}</p>}
-                          {data.audit.failure_phase && <Notice tone="error">Audit stopped during {data.audit.failure_phase}{data.audit.timeout_kind ? ` · ${data.audit.timeout_kind} timeout` : ""}{data.audit.elapsed_ms != null ? ` · ${(data.audit.elapsed_ms / 1000).toFixed(1)} seconds` : ""}.</Notice>}
-                          {data.audit.actual_model && <p className="break-words text-xs text-gray-500">Last response model · {data.audit.actual_model}</p>}
                         </>
                       )}
 
                       {data.audit.boundary_expected != null && (
                         <p className="text-xs text-gray-600">
                           Qualified barangay boundaries: <strong>{data.audit.boundary_qualified ?? 0}</strong> of{" "}
-                          <strong>{data.audit.boundary_expected}</strong>. {data.audit.boundary_missing ?? 0} still need reviewed coverage.
+                          <strong>{data.audit.boundary_expected}</strong>. (
+                          {data.audit.boundary_missing ?? 0} require reviewed boundary coverage).
                         </p>
                       )}
                       {data.audit.boundary_error && (

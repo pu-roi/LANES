@@ -65,6 +65,22 @@ async function switchTab(page: Page, name: string) {
   await page.getByRole("navigation", { name: "Settings sections" }).getByRole("button", { name, exact: true }).click();
 }
 
+test("citizen approval explains missing observation time while the toggle persists", async ({ page }, info) => {
+  await setup(page);
+  await switchTab(page, "Citizen approval");
+  const toggle = page.getByRole("checkbox", { name: "Enable citizen automatic approval" });
+  await toggle.check();
+  await page.getByRole("button", { name: "Save settings", exact: true }).click();
+  await expect(page.getByText("Saved configuration · revision 2")).toBeVisible();
+  await page.reload();
+  await switchTab(page, "Citizen approval");
+  await expect(toggle).toBeChecked();
+  await expect(page.getByText(/current Report Flood form does not collect observation time/)).toBeVisible();
+  await page.getByText(/current Report Flood form does not collect observation time/).scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("citizen-approval-limitation.png"), scale: "css" });
+});
+
 test("automatic expiry toggle persists without changing saved durations", async ({ page }, info) => {
   await setup(page);
   await switchTab(page, "Evidence expiry");

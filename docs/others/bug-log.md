@@ -1,7 +1,81 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 24, 2026, 05:10 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**October 25 publication checkpoint:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The local expiry repair, citizen approval investigation and previously retained news/map fixes are packaged for the requested `roi-branch` source publication. Earlier unpushed-source wording describes its dated checkpoint. Citizen eligibility remains unresolved for the timestamp-free form; publication does not deploy the expiry change or alter production state. [Audit](../evaluations/roi-publication-audit-20261025.md).
+
+## Untimed zones kept no expiry when Pasig ML was disabled
+
+**Status:** Resolved locally; not deployed. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** With automatic expiry on and Pasig ML off, an active zone with no original deadline showed no expiry and could stay active indefinitely.
+2. **Root cause:** The fixed branch retained a null fallback; activation retention was generated only for ML abstention or a previously recorded fallback. Cached fixed-null results were accepted indefinitely.
+3. **Solution:** Policy v4 creates configured depth retention for untimed fixed decisions, retains the original activation clock, invalidates old caches and tracks duration settings. Existing saved/manual deadlines, pause and historical forecasts remain.
+4. **Files/checks:** `pasig_ml_expiry_service.py`, existing System Settings explanations and regression suites. 73 backend checks, TypeScript and scoped lint pass; [full verification](../evaluations/settings-expiry-citizen-approval-20261025.md).
+
+## Enabled citizen approval cannot admit the current Report Flood form
+
+**Status:** Investigated; current-form eligibility remains a product follow-up. **Severity:** Medium. **Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Turning on citizen automatic approval does not automatically approve current public form submissions.
+2. **Root cause:** BUG-122 intentionally removed new-report observation-time collection/submission. The backend still requires explicit observation within 30 minutes after trust/human-history checks. The toggle itself persists and is read correctly.
+3. **Strategy:** Explain this limitation in the existing settings page and retain admission rules and the current form. Restoring eligibility requires deciding how to collect explicit observation evidence.
+4. **Files/checks:** `SystemSettingsPage.tsx`; a native authenticated multipart regression verifies pending status with `explicit_observation_time_required` despite qualifying trust/history. [Details](../evaluations/settings-expiry-citizen-approval-20261025.md).
+
+
+## Two Riverside observations lacked plotted placement despite supplied coordinates
+
+**Status:** Resolved live for the two explicitly reviewed pins; source/mapped locality uncertainty remains recorded. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** West Riverside Interior/Damayan and Riverside/Pat Senador/Del Monte were accepted observations without canonical-road placement. Developer pins differed from saved community boundaries and, for the latter, from the exact mapped intersection. The developer explicitly instructed plotting these reviewed positions after the investigation.
+2. **Root cause:** The original accepted claims retained road phrases but null canonical roads. Generic placement correctly could not convert those phrases or mismatched coordinates into a proved article junction; investigation-only handling had not persisted a reviewed estimate.
+3. **Solution:** Add an exact source/group/pin-bound manual policy, preserving original facts and separately recording mapped localities, pin provenance and unconfirmed source-junction identity. Check named ground-level OSM blocks and exact NOAH scenarios, then atomically append estimated zones **92/93**, effective source metadata and receipts. Existing records are untouched; no universal alias/locality override or routing activation is added. Talipapa remains skipped.
+4. **Files/checks:** `news_philstar_pin_service.py`, exact pilot dispatch, saved correction readers/map handoffs, pin regressions and CI/PostGIS runner integration. **504 runtime / 105 mandatory PostGIS** checks, restored lifecycle rehearsal, protected release, exact cloud preview/apply/reuse and actual desktop/mobile selected/public map checks pass. A lazy-catalog load, UTC comparison, private-authority size and live telemetry/audit baseline conditions stopped earlier attempts before flood writes and are documented. [Full results](../evaluations/philstar-reviewed-pins-20261025.md).
+
+## Flooded Areas cards did not identify which fields need verification
+
+**Status:** Resolved and verified locally; all six new/existing desktop/mobile checks pass. Not deployed. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Admins could see extracted depth and place text without immediately knowing whether the street, exact location, time or source needed checking. Saved Philstar estimates also retained ambiguous-candidate summary wording.
+2. **Root cause:** The presentation response had only a broad reading reason and placement label; cards did not expose field-specific uncertainty or missing normalization. Source consistency and plotted geometry could be mistaken for exact field verification.
+3. **Solution:** Add server-computed verification metadata with typed field/state/reason entries; reuse one accessible notice component in cards and details. Preserve known measurements, combine water level/depth, distinguish plotted estimates and avoid fabricated Verified states. No manual confirmation action, provider request or persisted record change is introduced.
+4. **Files/checks:** `news_presentation.py`, `news_verification_presentation.py`, existing presentation/list/source/correction readers, `newsApi.ts`, `NewsVerificationNotice.tsx`, cards/dialogs and focused backend/browser tests. 90 backend checks, TypeScript/scoped lint and six new/existing desktop/mobile cases pass; three unchanged geometry checks skip without disposable PostGIS. [Full evidence and remaining release boundary](../evaluations/news-verification-badges-20261025.md).
+
+## Philstar source coverage, missing canonical roads and boundary-junction ambiguity
+
+**Status:** Investigating; read-only diagnosis complete, system repairs pending discussion. **Severity:** High (omitted observations and potential location/depth confusion), Medium (stale map summaries). **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Ten accepted Philstar observations obscure 27 source-list entries. Three accepted observations have no polygon; the ten-inch Santo Domingo/Banawe report is absent from accepted results while Sienna's 26-inch report is plotted. Some saved polygons still have ambiguous-map summaries.
+2. **Root cause:** The three accepted rows have null canonical roads and their placement GETs return `no_reported_road`. Administrative lookup does not match source variants to Santo Domingo/Doña Imelda. Other omissions involve missing city-heading evidence, missing targets and an unsupported classification. Banawe's physical junction is shared by barangay boundaries, so name equality or one point-in-polygon test cannot distinguish reported approaches or depths. NOAH classes tie and do not resolve the actual observation.
+3. **Proposed strategy:** Audit every source-list entry, preserve city/barangay headings and raw evidence, repair supported city-scoped aliases, verify exact OSM junctions/approaches and corroborate the same observation time with original LGU evidence. Use NOAH after location identification. Discuss corrections before applying them; do not silently merge differing source reports or extend corner depths along entire streets.
+4. **Changes/checks:** Documentation only. Protected GETs and read-only Cloud SQL confirm seven active Philstar polygons and three unresolved placement responses. Local checked OSM/boundary/NOAH catalogs reproduce the findings. The cancelled expansion produced no application/deployment/database changes, and its three temporary files were removed. Existing work remains intact. [Full investigation](../evaluations/philstar-location-accuracy-investigation-20261025.md).
+
+## Philstar primary-road interpretation and cut outer buffers
+
+**Status:** Resolved live; production-basemap desktop/mobile visual checks passed. **Severity:** High (placement), Medium (shape/presentation). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The user screenshots showed Palali/Tabayoc estimates following Amoranto, with circles and cropped auras unlike existing road polygons. Earlier source/candidate/persistence/color checks missed the semantic street-choice defect.
+2. **Root cause:** Saved extraction treated Amoranto as the primary road; the later junction policy retained that role. Earlier estimated corridors clipped the outer buffer to barangay boundaries; the junction policy substituted a circle for a road buffer. These were stored-geometry choices, not a MapLibre color/rendering defect.
+3. **Solution/status:** Store the developer-reviewed five street roles separately from immutable extraction. Use exact checked junctions and up-to-25 m connected arms, retain NOAH-supported cores/gaps, and apply full rounded staff-road buffers without administrative/model clipping. Keep 83/84/85/88/89 IDs and source facts; add separately qualified Don Jose 90 and Ubay 91. Keep Don Jose/Scout Alcaraz and G. Araneta/Kitanlad primary roads. Exact source-line excerpts replace metadata-prefixed card notes; saved map handoffs follow the correction. Append before/after evidence and effective metadata, preserving old receipts and history.
+4. **Files/checks:** `news_reviewed_corner_service.py`, `news_philstar_street_correction.py`, `news_reviewed_corner_projection.py`, scoped pilot/reader/history/placement integration and regression/CI coverage. **480 runtime / 94 PostGIS**, actual restored rollback/concurrency/reuse/history, exact cloud preview/apply/reuse and allowlisted 41-table preservation pass. A sub-nanometre cloud serialization difference stopped writes until deterministic generated-buffer serialization was tested. Real production-basemap desktop/mobile checks passed for all seven zones; inspected screenshots confirm correct street axes and complete rounded buffers. [Evidence](../evaluations/philstar-street-correction-20261024.md).
+
+## Philstar adjoining OSM sections required explicit junction estimates
+
+**Status:** Resolved for Palali/Tabayoc; Ubay overlap and Don Jose conflict retained. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** Four accepted NS Amoranto intersection observations stayed unplotted because two equally supported bounded road sections were returned; describing this simply as an unresolved location obscured that both meet at the same junction.
+2. **Root cause:** The existing road-section policy correctly rejected an unqualified tie, but did not support a source-checked junction display estimate. Both candidates match the same city/barangay and have identical NOAH class-3 coverage; ranking them by susceptibility cannot resolve the tie.
+3. **Solution/status:** Add opt-in `source-junction-noah-v1`, binding the exact shared OSM junction, source, locality, all three modeled scenarios and complete preview. Keep gaps/holes and original source cores. Save Palali 88/Tabayoc 89; leave Ubay overlapping 83 without a duplicate and Don Jose's differing depth/access overlap with 84 unresolved. NOAH is modeled susceptibility; the 25 m review window is not a measured flood radius.
+4. **Files/checks:** `news_junction_estimate_service.py`, scoped `news_philstar_pilot.py` integration, junction/pilot regressions and CI gate. **126 passed**, actual restored-PostGIS rollback/concurrency/reuse/history rehearsal, cloud preview/apply/reuse and full original-row preservation pass. Hosted desktop/mobile news/details/history and selected/public polygon colors pass with a lightweight test basemap and real API. Source publication remains pending. [Evidence](../evaluations/philstar-noah-junctions-20261024.md).
+
+## Routine Active Zones refresh row and Philstar excerpt quality
+
+**Status:** Refresh label resolved locally; excerpt issue Investigating. **Severity:** Low (label), Medium (evidence presentation). **Resolver/reviewer:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+1. **Problem:** The routine “Updating flood map…” row remains above Active Zones during viewport refresh. The supplied Zone 85 screenshot also shows publication metadata and Facebook/Twitter boilerplate in the quote/admin notes.
+2. **Root cause:** The shared status component rendered the same visible padded row for initial loads and refreshes with retained geometry. Philstar output stores `claim.evidence_sentence[:1000]` as `admin_notes` and the full evidence sentence as `source_excerpt`; an article-wide sentence that begins with metadata consequently produces an unhelpful card prefix.
+3. **Solution/status:** Make only retained-feature refresh feedback screen-reader-only; preserve errors/Retry and initial/empty messages. The excerpt cleanup is separate pending work: display source-bound target passages and preserve immutable originals. No stored records were edited for this request.
+4. **Files/checks:** `frontend/src/features/map/components/ActiveFloodMapStatus.tsx` and the existing refresh regression in `frontend/tests/active-zone-visibility.spec.ts`. TypeScript/scoped lint pass; four distinct desktop/mobile functional cases pass after two initial page-load timeouts and an explicit-ready two-case rerun. `backend/app/services/news_philstar_pilot.py` is inspected, not modified. Frontend publication/deployment is pending.
 
 ## Capstone audit retains routing geometry and numeric-depth defects
 

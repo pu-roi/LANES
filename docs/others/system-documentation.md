@@ -1,7 +1,45 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 24, 2026, 05:02 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+## October 25 source publication boundary
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The combined `roi-branch` checkpoint includes the existing reviewed-placement readers/services, field-verification notices, News Automation responsive layout, accessible background map-refresh status and configured fixed-expiry correction. Documentation of previous hosted releases remains dated evidence; this source publication performs no new deployment or database operation. Current Report Flood submissions still lack the explicit observation required by automatic approval. [Full audit](../evaluations/roi-publication-audit-20261025.md).
+
+## System Settings expiry and citizen approval — October 25 local correction
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). `SystemSettingsPage.tsx` keeps the existing responsive tabs and controls while explaining fixed retention with ML off and the current Report Flood form's lack of explicit observation time. Citizen automatic approval still requires that observation plus its existing eligibility/corroboration rules; its enabled setting does not override them.
+
+`pasig_ml_expiry_service.py` policy v4 assigns configured per-depth retention from original activation to untimed fixed decisions. The cache includes retention durations and migrates older active null decisions; inactive v1–v3 forecasts remain readable. Existing saved/manual timers and automatic-expiry pause remain. Existing zone details `expires_at`, private expiry-policy `deadline`, worker and shared desktop/mobile details components expose/apply the saved deadline without new endpoints, model fields or migrations. [Investigation and verification](../evaluations/settings-expiry-citizen-approval-20261025.md). No production rollout is included.
+
+
+## Philstar reviewed pin placement — live
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The explicit manual `philstar-reviewed-pins-v1` policy in `news_philstar_pin_service.py` binds only article 274/source 573/result 401/groups 5/7 and the developer coordinates. Ground-level named OSM blocks, 15-metre maximum pin snapping, up-to-25-metre arms, exact NOAH scenarios and full rounded EPSG:32651 buffers produce estimated road zones. Source-reported barangays remain separate from mapped community boundaries; a coordinate does not prove the article's exact junction or measured flood extent.
+
+Zones/events **92/93** append to existing JSONB/audit structures without schema or endpoint additions. Readers and the existing protected placement GET return saved reviewed road/core/aura; original extraction is unchanged. Exact preview/baseline/asset/application binding, locks, preservation and receipt reuse prevent duplicates or reactivation. Existing historical presentation routing/statistical exclusions and final-deactivation-to-history remain. API `lanes-api-philstar-pins-20261025-v2` is live; frontend field-badge source remains unpushed. Active total is 17; nine of ten accepted Philstar observations are plotted, with Talipapa skipped. [Execution evidence](../evaluations/philstar-reviewed-pins-20261025.md).
+
+## News Intelligence per-field verification presentation — local
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). Flooded Areas cards (`NewsResults.tsx`) and Flood Details (`NewsResultDialog.tsx`) reuse `NewsVerificationNotice.tsx`. The existing GET response's `NewsFloodSummary` adds `verification_status`, `verification_issues` (field, label, state, code, reason) and `placement_is_estimate`. FastAPI's pure `news_verification_presentation.py` computes review needs from saved evidence; the frontend only displays wrapping field chips and an accessible explanation disclosure. Water level/depth share one field. Legacy/unassessed responses show unavailable status; absence of a warning is not a Verified certification.
+
+Existing source detail composition recovers the complete native claim before assessment, so a lightweight DTO omitting a road phrase does not hide its verification need. Saved Philstar corrections identify the existing plotted estimate without altering raw extraction or geometry. No route, auth rule, table/column, migration, provider execution or automation behavior changed. This source is local, not deployed. [Validation](../evaluations/news-verification-badges-20261025.md).
+
+## Reviewed Philstar street roles and uncut corner buffers
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). The explicit `philstar-reviewed-street-corner-v1` correction follows developer-reviewed Don Jose, Palali, Banawe, Tabayoc and Ubay arms from Amoranto. Don Jose/Scout Alcaraz and G. Araneta/Kitanlad retain their own primary roads. Arms stop at 25 m or the next junction/end; checked OSM identity/grade/locality and all three NOAH scenarios support the cores. Full EPSG:32651 rounded `ST_Buffer` auras use the configured staff-road margin without clipping to administrative/model boundaries. These are display estimates, not measured flood width/extent.
+
+Zones/events 83/84/85/88/89 retain identity, source facts and active state; 90/91 add the distinct Don Jose/Amoranto and Ubay observations. Append-only correction receipts retain old/new geometry; latest effective historical metadata projects reviewed street labels and exact source excerpts while original result 401 remains unchanged. The existing authenticated placement endpoint returns saved corrected core/aura for news map handoffs. History reference selection uses the latest import per source/group, without erasing other source references or changing final-deactivation behavior. Existing APIs/models, routing/statistical exclusions, paused automation and disabled expiry remain. Checked serving API: `lanes-api-philstar-streets-20261024-v3`. [Evidence](../evaluations/philstar-street-correction-20261024.md).
+
+## Source-bound junction estimates in existing news/maps/history
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). `news_junction_estimate_service.py` supports opt-in `source-junction-noah-v1` through the existing manual Philstar output worker. The policy binds article 274/source 573/result 401, the shared OSM node/crossing, checked locality and NOAH assets, preserving source depth/access. All three modeled scenarios cover both adjoining sections equally; no more susceptible side is inferred. A 25 m application display window intersected with NOAH retains dry gaps/holes and source road cores, with full city containment and barangay identity validation. The radius is not source-measured extent.
+
+Palali event/zone **88** and Tabayoc **89** are saved; Ubay overlap with 83 and Don Jose conflict with 84 are retained without mutation. Existing authenticated readers show the same source observations and new active polygons. The same events enter unified history only after final manual deactivation, rehearsed on the restored disposable database. No endpoint/schema or serving API deployment was needed. Existing records, stopped budget, paused automation and disabled expiry are preserved. [Checks and limits](../evaluations/philstar-noah-junctions-20261024.md).
+
+## Active Zones refresh feedback follow-up
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). `ActiveFloodMapStatus.tsx` uses a screen-reader-only status during background refresh with retained features, removing the visible row and its spacing. Initial loading and authoritative-empty messages remain visible; failures still expose alerts, stale-data context and Retry. Both desktop and compact map layouts use the shared component. No API or stored-data change. Source is local; deployment is pending. [Verification](../evaluations/active-zone-visibility-20261024.md#routine-refresh-label-follow-up).
 
 ## News Automation monitoring and source publication
 

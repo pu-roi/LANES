@@ -68,7 +68,7 @@ async function setup(page: Page, handoff = false) {
     else if (path.endsWith("/admin/zones/count")) body = { total: 2 };
     return route.fulfill({ json: body });
   });
-  await page.goto(handoff ? "/admin/map?focus_report_id=501&tab=pending" : "/admin/map");
+  await page.goto(handoff ? "/admin/map?focus_report_id=501&tab=pending" : "/admin/map", { waitUntil: "domcontentloaded" });
   if (handoff) await expect(page.getByRole("region", { name: "User report evidence", exact: true }))
     .toContainText("Pending Pasig fixture", { timeout: 30_000 });
   await page.getByRole("button", { name: /Active Zones/ }).click();
@@ -203,6 +203,7 @@ test("slow and failed viewport refreshes retain geometry; authoritative empty re
     await mapLayers(page, { center: [camera!.center[0]+.002,camera!.center[1]] });
     await expect.poll(() => state.viewportReads).toBeGreaterThan(pendingReads);
     expect(await coloredZones(page)).toEqual([91,92]);
+    await expect(page.getByText("Updating flood map…", { exact: true })).toHaveCount(0);
     state.failed = true; release(); state.gate = null;
     await expect(page.getByRole("alert").filter({ hasText: "Active flood map could not be refreshed.", visible: true }))
       .toContainText("Previously loaded floods remain visible");

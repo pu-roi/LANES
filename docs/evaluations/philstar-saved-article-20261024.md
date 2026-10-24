@@ -1,6 +1,14 @@
 # Philstar saved-article pilot — published with three qualified polygons
 
-> **Last Updated:** October 24, 2026, 03:14 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 24, 2026, 09:20 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Reviewed street correction
+
+The [reviewed street correction](philstar-street-correction-20261024.md) now preserves result 401 while correcting 83/84/85/88/89 and adding Don Jose/Amoranto **90** and Ubay **91**. Seven accepted observations have polygons. Earlier circle/overlap descriptions below are retained checkpoints, superseded by the developer-reviewed target-road policy and full rounded staff-road buffers.
+
+## Later junction follow-up
+
+October 24, 2026, 7:54 PM PHT — [@roicambe](https://github.com/roicambe) (Roi Cambe). [UP NOAH junction follow-up](philstar-noah-junctions-20261024.md) reuses unchanged result 401 and adds Palali **88** / Tabayoc **89** using a source-bound junction estimate. Ubay overlaps 83 and Don Jose conflicts with 84; three other accepted observations still lack canonical-road placement. The original three-polygon/seven-unplotted checkpoint below is retained as execution history. No provider requests were added.
 
 ## Accepted result
 

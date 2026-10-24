@@ -26,7 +26,7 @@ from app.services.local_news_scenario_service import scoped_clock
 from app.services.spatial_review_grouping import utc
 
 ACTION = "APPLY_ZONE_EXPIRY_POLICY"
-POLICY_VERSION = "pasig-experimental-ml-expiry-v3"
+POLICY_VERSION = "pasig-experimental-ml-expiry-v4"
 QUANTILE = 0.9
 MAX_POLICY_HOURS = 48
 NEGATIVE_RETRY_SECONDS = 60
@@ -125,6 +125,7 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
     for report in predictions.store.linked_reports(db, zone.id):
         reconcile_report_locality(db, report)
     signature = _source_signature(db, zone)
+    retention_minutes = config.evidence_expiry_minutes
     prior = latest_policy(db, zone_id)
     saved = prior.metadata_json if prior else {}
     # Qualification depends on source availability as well as its identity. A
@@ -138,7 +139,9 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
     retry_negative = saved.get("method") == "fixed_fallback" and (retry_at is None or clock >= retry_at)
     if (saved.get("policy_version") == POLICY_VERSION and saved.get("source_signature") == signature
             and saved.get("ml_enabled") == config.pasig_ml_expiry_enabled
+            and saved.get("retention_minutes") == retention_minutes
             and saved.get("deadline") == (utc(zone.expires_at).isoformat() if zone.expires_at else None)
+            and not (saved.get("method") == "fixed" and zone.expires_at is None)
             and not retry_negative):
         return saved
     current = utc(zone.expires_at) if zone.expires_at else None
@@ -148,9 +151,6 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
     if not config.pasig_ml_expiry_enabled:
         decision = {"method": "fixed", "deadline": fallback, "reason": "Pasig ML expiry is disabled.",
             "reference_basis": None, "model_sha256": None}
-        if saved.get("fallback_basis") == "activation_retention" and fallback is None:
-            decision.update(deadline=evidence_deadline(config, utc(zone.created_at), zone.depth),
-                fallback_basis="activation_retention")
     else:
         try:
             resolved = predictions.resolve_zone_prediction(db, zone.id, now=clock,
@@ -169,7 +169,7 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
     if manual is not None and (manual.metadata_json or {}).get("expires_at") is not None:
         decision = {"method": "fixed", "deadline": current,
             "reason": "Explicit staff deadline retained.", "reference_basis": None, "model_sha256": None}
-    if decision["method"] == "fixed_fallback" and decision["deadline"] is None:
+    if decision["method"] in {"fixed", "fixed_fallback"} and decision["deadline"] is None:
         # An abstention must not keep active evidence indefinitely. This uses
         # the existing configurable retention policy, NOT a clearance model.
         # Its clock is immutable activation, never the current retry/edit time.
@@ -180,7 +180,7 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
             decision["reason"] += " Evidence retention uses the configured timer from original zone activation; this is not a subsidence prediction."
     deadline = decision.pop("deadline")
     metadata = {"policy_version": POLICY_VERSION, "source_signature": signature,
-        "ml_enabled": config.pasig_ml_expiry_enabled, **decision,
+        "ml_enabled": config.pasig_ml_expiry_enabled, "retention_minutes": dict(retention_minutes), **decision,
         "deadline": deadline.isoformat() if deadline else None,
         "fixed_deadline": fallback.isoformat() if fallback else None,
         "quantile": QUANTILE if decision["method"].startswith("ml_") else None,
@@ -223,9 +223,10 @@ def expiry_status(db: Session, zone_id: int) -> dict:
     config, prior = read_configuration(db), latest_policy(db, zone_id)
     saved = prior.metadata_json if prior else {}
     historical = (not zone.is_active and saved.get("policy_version") in {
-        "pasig-experimental-ml-expiry-v1", "pasig-experimental-ml-expiry-v2", POLICY_VERSION})
+        "pasig-experimental-ml-expiry-v1", "pasig-experimental-ml-expiry-v2", "pasig-experimental-ml-expiry-v3", POLICY_VERSION})
     matches = ((historical or (saved.get("policy_version") == POLICY_VERSION
-        and saved.get("ml_enabled") == config.pasig_ml_expiry_enabled))
+        and saved.get("ml_enabled") == config.pasig_ml_expiry_enabled
+        and saved.get("retention_minutes") == config.evidence_expiry_minutes))
         and saved.get("deadline") == (utc(zone.expires_at).isoformat() if zone.expires_at else None))
     return {"automatic_expiry_enabled": config.automatic_expiry_enabled,
         "pasig_ml_expiry_enabled": config.pasig_ml_expiry_enabled,
