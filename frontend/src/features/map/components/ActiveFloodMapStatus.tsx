@@ -8,8 +8,8 @@ export function ActiveFloodMapStatus({ error, loading, refreshing, empty, hasFea
     <p className="min-w-0 flex-1">{error}{hasFeatures ? " Previously loaded floods remain visible and may be out of date." : ""}</p>
     <Button variant="outline" size="sm" className="min-h-11 md:min-h-0" onClick={onRetry}>Retry flood map</Button>
   </div>;
-  if (loading || refreshing) return <p role="status" className="px-3 py-2 text-xs text-slate-600">
-    {hasFeatures ? "Updating flood map…" : "Loading active flood map…"}
+  if (loading || refreshing) return <p role="status" className={hasFeatures ? "sr-only" : "px-3 py-2 text-xs text-slate-600"}>
+    {hasFeatures ? "Refreshing active flood data." : "Loading active flood map…"}
   </p>;
   if (empty) return <p role="status" className="px-3 py-2 text-xs text-slate-600">No active floods have mapped boundaries.</p>;
   return null;

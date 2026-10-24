@@ -23,6 +23,7 @@ VERSION = 'philstar-saved-article-pilot-v1'
 DATASET = 'philstar-active-history-20260909-v1'
 SESSION = 'philstar-pilot-20261024-v1'
 BODY = 'd23a9c30b6dc8ceac9aa9d479958130c8569ecff92e891bf8fce48c73d7d08e9'
+JUNCTION_GROUPS = ['resolved-v44-b77759c975d8674259235ef2', 'resolved-v44-c2c11dccbe8140f2360e77bb']
 
 
 def require(ok: bool, reason: str) -> None:
@@ -62,6 +63,20 @@ def validate_authority(authority: Any, engine: Any) -> None:
         require(p['allowed_operations'] == ['outputs']
             and p['output_group_ids'] == sorted(set(p['output_group_ids']))
             and bool(p['output_group_ids']), 'philstar_output_selection_invalid')
+    if 'junction_policy' in p:
+        from app.services.news_junction_estimate_service import VERSION as JUNCTION_VERSION
+        require(p['allowed_operations'] == ['outputs'] and p['junction_policy'] == JUNCTION_VERSION
+            and p.get('output_group_ids') == JUNCTION_GROUPS, 'philstar_junction_selection_invalid')
+    if 'street_correction' in p:
+        from app.services.news_reviewed_corner_service import VERSION as CORNER_VERSION, STREETS
+        require(p['allowed_operations'] == ['outputs'] and p['street_correction'] == CORNER_VERSION
+            and 'junction_policy' not in p and p.get('correction_claims') == sorted(STREETS),
+            'philstar_street_correction_invalid')
+    if 'pin_policy' in p:
+        from app.services.news_philstar_pin_service import VERSION as PIN_VERSION, PINS
+        require(p['allowed_operations']==['outputs'] and p['pin_policy']==PIN_VERSION
+            and p.get('reviewed_pins')=={str(k):v for k,v in PINS.items()}
+            and 'street_correction' not in p and 'junction_policy' not in p,'philstar_pin_selection_invalid')
     inputs = p.get('inputs', [])
     require(len(inputs) == 1 and inputs[0].get('article_id') == 274
         and inputs[0].get('source_version_id') == 573
@@ -152,13 +167,18 @@ def qualify(db: Session, authority: Any, run_id: int, sources: tuple,
                 and claim.event_time_resolved.date().isoformat() == '2026-09-09', 'philstar_observation_date_unresolved')
             require(audit.outcome == 'verified', 'philstar_source_audit_unresolved')
             attributes = _operational_zone_attributes(claim, audit)
-            corridor = build_estimated_road_zone(claim, service=placement_service)
+            if authority.policy.get('junction_policy'):
+                from app.services.news_junction_estimate_service import build_junction_estimate
+                corridor = build_junction_estimate(claim, service=placement_service)
+            else:
+                corridor = build_estimated_road_zone(claim, service=placement_service)
             geometry = shape(corridor.geometry)
             require(db.scalar(select(FloodAvoidanceZone.id).where(FloodAvoidanceZone.is_active.is_(True),
                 func.ST_Intersects(FloodAvoidanceZone.geometry, from_shape(geometry, srid=4326))).limit(1)) is None,
                 'philstar_existing_active_overlap')
             item.update(outcome='geometry_qualified', geometry=corridor.geometry,
-                geometry_evidence=corridor.evidence.model_dump(mode='json'), geometry_checksum=corridor.checksum,
+                geometry_evidence=(corridor.evidence if isinstance(corridor.evidence, dict)
+                    else corridor.evidence.model_dump(mode='json')), geometry_checksum=corridor.checksum,
                 zone_attributes={k:getattr(v, 'value', v) for k,v in attributes.items()})
         except (ResolutionError, NewsPublicationError) as exc:
             item['reasons'].append(exc.code if isinstance(exc, ResolutionError) else str(exc))
@@ -182,6 +202,12 @@ def reject_candidate_overlaps(outputs: list[dict]) -> None:
 
 def outputs(engine: Any, authority: Any, run_id: int, sources: tuple, *,
             apply: bool = False, placement_service: Any = None) -> dict:
+    if authority.policy.get('pin_policy'):
+        from app.services.news_philstar_pin_service import outputs as pinned
+        return pinned(engine,authority,run_id,sources,apply=apply,placement_service=placement_service)
+    if authority.policy.get('street_correction'):
+        from app.services.news_philstar_street_correction import outputs as correct
+        return correct(engine,authority,run_id,sources,apply=apply,placement_service=placement_service)
     from app.services.historical_news_metadata import ENTRY, HistoricalNewsMetadata
     from app.services.news_history_protection import protected_fingerprints, verify_protected
     from app.services.flood_event_service import record_event_locations
@@ -196,6 +222,7 @@ def outputs(engine: Any, authority: Any, run_id: int, sources: tuple, *,
         authority.validate_session(db, (run_id,), sources, operation='outputs')
         saved = list(db.scalars(select(Timeline).where(Timeline.entry_type == 'news_philstar_pilot_output',
             Timeline.snapshot_json['session_id'].as_string() == SESSION)))
+        saved = [t for t in saved if t.snapshot_json.get('placement_policy') == authority.policy.get('junction_policy')]
         if 'output_group_ids' in authority.policy:
             saved = [t for t in saved if t.snapshot_json.get('group_id') in authority.policy['output_group_ids']]
         if saved:
@@ -255,6 +282,7 @@ def outputs(engine: Any, authority: Any, run_id: int, sources: tuple, *,
             db.add(Timeline(event_id=event.id, entry_type='news_philstar_pilot_output', occurred_at=now,
                 summary=metadata.label, snapshot_json=dict(schema_version=VERSION, session_id=SESSION,
                     result_sha256=sha(run.result), outputs_sha256=sha(preview),
+                    placement_policy=authority.policy.get('junction_policy'),
                     group_id=item['group_id'], geometry_evidence=item['geometry_evidence'],
                     )))
             created.append(dict(group_id=item['group_id'], event_id=event.id, zone_ids=zone_ids))
@@ -265,7 +293,8 @@ def outputs(engine: Any, authority: Any, run_id: int, sources: tuple, *,
                 continue
             source = _source(db, run, item['claim_index'], result.claims[item['claim_index']], now)
             db.add(NewsClaimEvaluation(claim_source_id=source.id,
-                policy_fingerprint=sha(dict(schema=VERSION,session=SESSION,result=sha(run.result),group=item['group_id'])),
+                policy_fingerprint=sha(dict(schema=VERSION,session=SESSION,result=sha(run.result),group=item['group_id'],
+                    **({'placement_policy':authority.policy['junction_policy']} if authority.policy.get('junction_policy') else {}))),
                 status='completed', attempt_count=0, result=item, created_at=now,updated_at=now,completed_at=now))
         db.flush()
         verify_protected(before, protected_fingerprints(db))

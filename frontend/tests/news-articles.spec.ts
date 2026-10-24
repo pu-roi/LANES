@@ -200,10 +200,13 @@ test("Info keeps processing history inside Source Article with responsive panes"
   const bounds = await dialog.boundingBox();
   expect(bounds!.height).toBeLessThanOrEqual(viewport.height);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  expect(await evidence.evaluate((node) => getComputedStyle(node).overflowY)).toBe("auto");
+  // Flood Details uses the dialog's flow scroller; source panels scroll independently.
+  const mapAction = evidence.getByRole("button", { name: "Inspect placement on map", exact: true });
+  await mapAction.scrollIntoViewIfNeeded();
+  await expect(mapAction).toBeInViewport();
   await dialog.getByRole("button", { name: "Source Article", exact: true }).click();
   await expect(dialog.getByRole("heading", { name: article.title })).toBeVisible();
-  await expect(dialog.getByText("Saved in LANES", { exact: true })).toBeVisible();
+  await expect(dialog.getByText("Extraction input saved", { exact: true })).toBeVisible();
   await expect(dialog.getByText(input.article_text, { exact: true })).toBeVisible();
   await expect(evidence.getByText(article.excerpt, { exact: true })).toHaveCount(0);
   if (isMobile) {

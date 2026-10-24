@@ -1,7 +1,101 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 24, 2026, 05:10 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 25, 2026, 2:47 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+## October 25 roi-branch source publication
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Publication audit](evaluations/roi-publication-audit-20261025.md).
+
+- [x] Synchronize documentation for configured fixed expiry and the confirmed citizen observation-time blocker; preserve completed desktop/mobile and backend evidence.
+- [x] Audit the complete retained news/map/settings working tree, dependency registration, schema boundaries and author/branch state before the required full-tree commit.
+- [x] Record that this source checkpoint includes the earlier Philstar readers/placements and pending frontend notices/layout changes; no new deployment or production write is authorized by this push.
+- [ ] Resolve citizen form observation evidence and remaining Philstar coverage through their separate follow-ups; this publication does not mark them complete.
+
+## System Settings fixed expiry and citizen approval investigation
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Evidence and scope](evaluations/settings-expiry-citizen-approval-20261025.md).
+
+- [x] Generate configured depth retention from original activation for untimed zones with Pasig ML disabled; invalidate legacy null caches and retain saved/manual timers, pause and inactive history.
+- [x] Verify matching expiry timestamps in zone details and policy APIs, duration changes and native expiry lifecycle; 73 backend checks pass.
+- [x] Reproduce current multipart report submission remaining pending despite enabled citizen approval because observation time is absent; explain the limitation in existing settings.
+- [x] Complete six desktop/mobile browser scenarios for settings explanations and fixed expiry details; inspect screenshots and verify TypeScript/scoped lint.
+- [ ] Decide how current Report Flood submissions should provide explicit observation evidence before changing automatic-approval admission. No production release or setting change is included.
+
+
+## Reviewed Philstar coordinates plotted live
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Plan](plans/philstar-reviewed-pins-20261025.md) · [Actual results](evaluations/philstar-reviewed-pins-20261025.md).
+
+- [x] Bind the two developer-reviewed coordinates to unchanged article 274/source 573/result 401/groups 5/7; preserve original barangays, 19/8-inch depths, restrictions and 4:30 PM source time. Skip Talipapa.
+- [x] Ground the pins on checked OSM ways/blocks, check all three NOAH scenarios, retain source/mapped locality differences and full rounded estimated buffers.
+- [x] Take a fresh backup; pass 504 runtime / 105 mandatory PostGIS checks and restored rollback/concurrency/reuse/history/no-reactivation rehearsal.
+- [x] Publish checked backend `lanes-api-philstar-pins-20261025-v2`; match cloud/rehearsed previews and atomically create zones/events **92/93**. Repeat with zero writes.
+- [x] Preserve all original non-visit-table rows, all fifteen prior active zones, stopped ledger, paused automation and disabled expiry. Total active: **17**. No new Gemini/NER operation.
+- [x] Verify protected source/zone/public reads and actual desktop/mobile selected/public colors; inspect rounded placement on labeled production streets.
+
+Nine of ten accepted Philstar observations are now plotted. Talipapa remains skipped; seventeen other source-list entries remain absent from accepted results. These are not silently marked complete. Source remains local on `roi-branch`; Git push/main merge and frontend badge deployment are outside this plotting task.
+
+## News Intelligence field verification badges
+
+**Subsequent plotting follow-up:** The two coordinates were later explicitly approved for plotting and saved as **92/93**; see the completed checkpoint above. Backend verification metadata is included in the checked API overlay; frontend badges remain local. The earlier investigation-only boundary is superseded for these two pins only.
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Local implementation and validation](evaluations/news-verification-badges-20261025.md).
+
+- [x] Add backend-owned per-field missing/uncertain/conflicting reasons without changing stored extraction or flood records.
+- [x] Display Needs Verification and field chips on Flooded Areas cards and the existing details dialog; retain reported source values and combined water-level/depth scope.
+- [x] Distinguish saved estimated polygons from exact verified extent; keep legacy/unassessed metadata explicit without a false Verified badge.
+- [x] Pass new desktop/mobile browser cases and inspect actual responsive screenshots; TypeScript and scoped lint pass. Three unchanged geometry/PostGIS cases skip without a disposable spatial database.
+- [x] Pass all six new/existing source/dialog desktop/mobile browser cases, 90 backend checks and final documentation review. Source is local; deployment/Git publication has not occurred.
+
+The two Riverside coordinate hints remain separate from source evidence because checked boundary/junction mismatches need review. Talipapa Alley is skipped for plotting and remains an observation with visible verification needs.
+
+## Philstar location accuracy — investigate before further corrections
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Read-only investigation](evaluations/philstar-location-accuracy-investigation-20261025.md). The proposed street expansion was cancelled before implementation; its three local analysis files were removed. Existing source changes and saved zones remain intact.
+
+- [x] Confirm live accepted inventory and actual zone relationships: seven plotted, three unplotted; placement GETs for all three report `no_reported_road`.
+- [x] Reproduce Santo Domingo/Matalahib and Doña Imelda name-lookup failures; verify the Banawe junction touches different barangays and has tied NOAH classes.
+- [x] Find a shared OSM West Riverside/Pat Senador junction; retain uncertainty about the Damayan interior and Talipapa Alley.
+- [x] Correct overall coverage accounting: 27 list entries, seven plotted, three accepted/unplotted, seventeen not accepted; separate morning caption.
+- [ ] Discuss source heading/alias repairs and barangay-specific junction approaches before making system changes.
+- [ ] Review the seventeen omitted entries and misleading map-status summaries; no additional polygon count is promised.
+
+## Philstar reviewed street correction
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Plan](plans/philstar-street-correction-20261024.md) · [Evidence](evaluations/philstar-street-correction-20261024.md).
+
+- [x] Record the developer-reviewed Don Jose/Palali/Banawe/Tabayoc/Ubay roles; retain source 274/573/result 401 unchanged.
+- [x] Construct up-to-25 m source-bound corner arms with all three NOAH scenarios and full EPSG:32651 rounded staff-road buffers; never crop the outer aura to administrative/model boundaries.
+- [x] Back up/restore, pass 480 runtime / 94 PostGIS checks, and rehearse rollback, concurrent reuse, source/history inspection and no reactivation.
+- [x] Publish checked API `lanes-api-philstar-streets-20261024-v3`; match the exact cloud preview and atomically correct 83/84/85/88/89, adding Don Jose/Amoranto 90 and Ubay 91.
+- [x] Verify only allowlisted zone fields changed, all unrelated 41-table rows survived, all 13 prior active zones remain active, and duplicate-free reuse writes nothing. Preserve the stopped ledger, paused automation and disabled expiry.
+- [x] Pass real production-basemap desktop/mobile source/history/zone checks and inspect street alignment/rounded boundaries in actual screenshots.
+- [ ] Publish local source on `roi-branch` when requested. No Git push/main merge is included.
+
+Seven of ten accepted Philstar observations now have their own polygons. Damayan, Del Monte and Talipapa Alley still lack accepted canonical-road placement; nineteen additional verification targets remain unresolved. The earlier circle-based junction checkpoint below is superseded by this reviewed correction.
+
+## Philstar junction estimates with UP NOAH
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe). [Plan](plans/philstar-noah-junctions-20261024.md) · [Evidence](evaluations/philstar-noah-junctions-20261024.md).
+
+- [x] Check the shared OSM junction, Sienna/Quezon City identity and all three NOAH scenarios; retain the equal class-3 result without inventing a wetter side.
+- [x] Qualify the opt-in 25 m display estimates, preserve source depth/access, and rehearse rollback, concurrent reuse and history on a fresh restored backup.
+- [x] Match the complete cloud preview; atomically save Palali **88** and Tabayoc **89**; repeat with zero writes.
+- [x] Verify all original rows across 41 tables, all 11 prior active zones, unchanged serving API/ledger and protected source/map/history responses.
+- [x] Pass hosted desktop/mobile news/details/history and selected/public polygon color checks with the real API and lightweight test basemap.
+- [ ] Publish the local source changes on `roi-branch` when requested; no main merge is included.
+- [ ] Resolve Don Jose's overlap/depth/access conflict explicitly; avoid duplicating Ubay's overlap with 83. Three other accepted observations still lack canonical-road placement.
+
+## Active Zones refresh wording and remaining evidence presentation
+
+[@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+- [x] Remove the visible routine refresh label without hiding initial loading, errors or Retry.
+- [x] Verify desktop/mobile refresh retention, authoritative empty results and drawing-error recovery; run TypeScript/scoped lint.
+- [ ] Publish/deploy this local frontend follow-up.
+- [ ] Replace article-header/social-link boilerplate in Philstar zone-card excerpts with source-linked flood-specific passages while preserving immutable input and original evidence.
+
+Philstar's seven accepted but unplotted observations and nineteen unresolved verification targets remain tracked in its existing evaluation. This UI follow-up changes no flood record, geometry, schema, automation setting or provider spending.
 
 ## Publication audit and retained capstone findings
 

@@ -31,6 +31,13 @@ def evidence_refs() -> Any:
     legacy = legacy.select_from(Link).join(Zone, Zone.id == Link.zone_id).join(
         Decision, Decision.id == Link.decision_id).join(Source,
         Source.id == cast(Decision.snapshot['claim_source_id'].as_string(), Integer))
+    from sqlalchemy.orm import aliased
+    older = aliased(Timeline)
+    latest_import = select(func.max(older.id)).where(older.event_id==Timeline.event_id,
+        older.entry_type=='historical_import',
+        older.snapshot_json['run_id'].as_string()==Timeline.snapshot_json['run_id'].as_string(),
+        older.snapshot_json['group_id'].as_string()==Timeline.snapshot_json['group_id'].as_string(),
+        older.snapshot_json['schema_version'].as_string()=='historical-import-v1').correlate(Timeline).scalar_subquery()
     imported = select(Timeline.event_id, cast(literal(None), Integer).label('zone_id'),
         cast(Timeline.snapshot_json['run_id'].as_string(), Integer).label('run_id'),
         cast(literal(None), Integer).label('claim_index'),
@@ -38,6 +45,7 @@ def evidence_refs() -> Any:
         cast(Timeline.snapshot_json['observed_at'].as_string(), DateTime(timezone=True)).label('observed_at'),
         cast(literal(None), JSONB).label('snapshot'), Timeline.snapshot_json.label('metadata')).where(
             Timeline.entry_type == 'historical_import',
+            Timeline.id == latest_import,
             Timeline.snapshot_json['schema_version'].as_string() == 'historical-import-v1')
     return union_all(legacy, imported).subquery('history_news_refs')
 
@@ -180,10 +188,10 @@ def news_sources(db: Session, event_id: int, page: int) -> Any:
             run_id=row['run_id'], claim_index=row['resolved_index'], group_id=row['group_id'],
             title=row['title'], publisher=public.get('source_publisher') or publishers.get(row['publisher'], row['publisher']), source_url=row['canonical_url'],
             published_at=row['published_at'], published_date=metadata.get('source_published_date'), captured_text_available=bool(row['has_text']),
-            excerpt=claim.get('evidence_sentence') or metadata.get('source_excerpt') or public.get('evidence_excerpt'),
+            excerpt=metadata.get('source_excerpt') or claim.get('evidence_sentence') or public.get('evidence_excerpt'),
             observed_at=row['observed_at'], occurrence_date=metadata.get('occurrence_date'),
             precision=metadata.get('precision') or ('instant' if row['observed_at'] else 'unknown'),
-            road=claim.get('canonical_road') or claim.get('raw_place_name') or metadata.get('canonical_road'),
+            road=metadata.get('canonical_road') or claim.get('canonical_road') or claim.get('raw_place_name'),
             city=claim.get('canonical_city') or metadata.get('canonical_city'),
             barangay=claim.get('canonical_barangay') or metadata.get('canonical_barangay'),
             depth_raw=claim.get('depth_raw'), depth_normalized=claim.get('depth_canonical'),

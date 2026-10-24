@@ -117,6 +117,14 @@ export interface NewsArticleDetail {
   flood_summaries: Record<number, NewsFloodSummary[]>;
 }
 
+export interface NewsVerificationIssue {
+  field: "location" | "road" | "water_level" | "flood_time" | "condition" | "source";
+  label: string;
+  state: "missing" | "uncertain" | "conflicting";
+  code: string;
+  reason: string;
+}
+
 export interface NewsFloodSummary {
   location: string;
   area: string | null;
@@ -129,6 +137,9 @@ export interface NewsFloodSummary {
   map_status: string;
   reading_status: "reported_location" | "needs_checking";
   reading_reason: string | null;
+  verification_status?: "not_assessed" | "needs_verification" | "no_issues_recorded";
+  verification_issues?: NewsVerificationIssue[];
+  placement_is_estimate?: boolean;
 }
 
 export function getNewsArticles(filters: NewsArticleFilters, signal?: AbortSignal) {

@@ -101,6 +101,8 @@ async def test_results_guard_filters_order_and_separate_claims(result_db):
             return response.json()
         page = await read(page_size=2)
         assert page["total"] == 4 and page["pages"] == 2
+        assert page['items'][0]['summary']['verification_status']=='needs_verification'
+        assert any(i['field']=='location' for i in page['items'][0]['summary']['verification_issues'])
         assert [item["key"] for item in page["items"]] == ["3:0", "2:0"]
         second = await read(page_size=2, page=2)
         assert [item["key"] for item in second["items"]] == ["2:1", "2:2"]

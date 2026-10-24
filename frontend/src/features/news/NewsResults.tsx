@@ -7,6 +7,7 @@ import { Button, Card, CardContent, Input, Pagination, Select, Skeleton } from "
 import { getNewsResults, type NewsResultFilters, type NewsResultItem } from "./newsApi";
 import { newsDate } from "./newsPresentation";
 import { NewsResultDialog } from "./NewsResultDialog";
+import { NewsVerificationNotice } from "./NewsVerificationNotice";
 
 const initialFilters: NewsResultFilters = { page: 1, search: "", publisher: "", condition: "", placement: "", order: "extraction_newest" };
 const conditionOptions = [{ value: "active", label: "Flooding reported" }, { value: "rising", label: "Water rising" }, { value: "receding", label: "Water receding" }, { value: "subsided", label: "Floodwater subsided" }, { value: "unknown", label: "Condition not stated" }];
@@ -35,8 +36,9 @@ export function NewsResults({ active, defaultSearch = "" }: { active: boolean; d
     {query.isError && <Card><CardContent className="space-y-3 p-5"><p role="alert" className="text-sm text-red-800">Flood locations could not be loaded. {query.error.message}</p><Button variant="outline" size="sm" onClick={() => void query.refetch()}>Retry locations</Button></CardContent></Card>}
     {query.data && <>
       <p role="status" className="text-xs text-slate-500">{query.data.total} reported flood locations · Page {query.data.page} of {query.data.pages}. Flood times refer to the article’s observations; they do not confirm flooding now.</p>
-      {query.data.items.length === 0 ? <Card><CardContent className="p-6 text-sm text-slate-500">No reported flood locations match these filters. Open Collection status for articles awaiting processing or needing checking.</CardContent></Card> : <div className="grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3">{query.data.items.map((result) => <Card key={result.key} className="shadow-sm"><CardContent className="flex h-full flex-col gap-3 p-4 sm:p-5">
+      {query.data.items.length === 0 ? <Card><CardContent className="p-6 text-sm text-slate-500">No reported flood locations match these filters. Open Collection status for articles awaiting processing or needing checking.</CardContent></Card> : <div className="grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-3">{query.data.items.map((result) => <Card key={result.key} role="article" aria-label={`Flood observation: ${result.summary.location}`} className="shadow-sm"><CardContent className="flex h-full flex-col gap-3 p-4 sm:p-5">
         <div><h3 className="break-words text-base font-bold leading-snug">{result.summary.location}</h3>{result.summary.area && <p className="mt-1 break-words text-sm text-slate-500">{result.summary.area}</p>}{result.summary.location_qualifier && <p className="mt-1 break-words text-sm text-slate-600">{result.summary.location_qualifier}</p>}</div>
+        <NewsVerificationNotice summary={result.summary} />
         <dl className="space-y-2"><div><dt className="text-xs text-slate-400">Water level</dt><dd className="mt-0.5 text-sm font-bold text-blue-700">{result.summary.water_level}</dd></div><div><dt className="text-xs text-slate-400">{result.summary.flood_time_label}</dt><dd className="mt-0.5 text-sm text-slate-700">{newsDate(result.summary.flood_time, "Not stated in article")}</dd></div></dl>
         <p className="text-xs text-slate-500">{result.summary.condition}</p>
         <p className="mt-auto text-xs text-slate-500">{result.publisher} · Article published {newsDate(result.published_at, "at an unknown time")}</p>

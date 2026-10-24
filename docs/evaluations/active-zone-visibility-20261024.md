@@ -28,3 +28,13 @@ Key files: `frontend/src/features/map/syncGeoJSONSource.ts`, `hooks/useStaffMapD
 - All four original unrelated frontend file hashes match their pre-task records. Concurrent unrelated backend and other frontend changes were left untouched. API requests in the functional fixtures are intercepted; no Cloud SQL, flood, schema, dependency, extraction, Gemini, automation or deployed-service changes were made by this repair.
 
 The regression fixtures are fictional browser data, not new flood evidence. QA uses a frozen source snapshot on local port 3005 and the existing Playwright setup; test logs/screenshots/traces are private build artifacts. This push publishes the source to `roi-branch`; frontend deployment remains a separate follow-up.
+
+## Routine refresh label follow-up
+
+> **Last Updated:** October 24, 2026, 06:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+At the developer's request, remove the visible routine “Updating flood map…” label when existing flood features remain on the map. `ActiveFloodMapStatus` retains a screen-reader-only refresh status with no padded visual row. Initial loading, empty results, stale-data alerts and retryable drawing/refresh failures remain visible. Shared use in `LiveMapPage` covers desktop and compact map layouts. No records, geometry, API, dependency or schema changes.
+
+Verification: TypeScript and scoped lint pass. The existing desktop/mobile drawing-error/recovery cases passed initially; the refresh-retention/overlapping-request/authoritative-empty cases first timed out at `page.goto` waiting for the page `load` event, before application assertions. The helper now waits for `domcontentloaded` and retains explicit content/canvas/rendered-feature readiness checks. The two refresh cases pass on a one-worker rerun, including the assertion that the removed label is absent. Four distinct cases are accepted across these runs; this is not a clean first-run claim. Fictional API/geometry fixtures and lightweight basemaps are used. Source remains local and frontend deployment is pending.
+
+The supplied Zone 85 screenshot separately exposes article-header/social boilerplate in its evidence/admin-notes excerpt. That presentation defect is logged as unresolved, alongside the seven accepted but unplotted Philstar observations and nineteen unresolved verification targets. It does not authorize editing original source text or creating guessed polygons.

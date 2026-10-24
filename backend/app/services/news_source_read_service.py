@@ -42,7 +42,9 @@ def with_source_review(db: Session, detail: Detail | None) -> Detail | None:
         rows = [row for row in resolution.get('results', []) if target and row.get('target_id') == target]
         if len(rows) == 1 and rows[0].get('depth_scope') in ('shared', 'individual'):
             updates['depth_scope'] = rows[0]['depth_scope']
-    return detail.model_copy(update=updates)
+    from app.services.news_reviewed_corner_projection import corrected_detail
+    from app.services.news_verification_presentation import detail_with_verification
+    return detail_with_verification(corrected_detail(db,detail.model_copy(update=updates)))
 
 
 def supporting_passages(group: dict, text: str) -> list[str]:

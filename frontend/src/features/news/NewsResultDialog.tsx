@@ -10,6 +10,7 @@ import { articleDisplayText, floodSummaryData } from "./newsPresentation";
 import { NewsSourceArticle } from "./NewsSourceArticle";
 import { NewsProcessingDetails } from "./NewsProcessingDetails";
 import { NewsExtractionRecordView } from "./NewsExtractionRecordView";
+import { NewsVerificationNotice } from "./NewsVerificationNotice";
 
 type DetailTab = "flood" | "source";
 const tabs = [{ id: "flood", label: "Flood Details", icon: MapPin }, { id: "source", label: "Source Article", icon: FileText }] satisfies { id: DetailTab; label: string; icon: typeof MapPin }[];
@@ -38,6 +39,7 @@ export function NewsResultDialog({ runId, claimIndex, groupId, onClose }: { runI
       <RecordDetailsPanels mainLabel="News evidence" asideLabel="Article processing records" scrollable={tab === "source"} showAsideOnMobile={tab === "source" && mobileHistory} main={<TabContentPanel tabKey={tab} direction={direction}>
         {tab === "flood" ? <section aria-label="Flood details" className="space-y-4">
           {data.source_review?.state === "different_capture" && <p role="alert" className="text-sm leading-6 text-amber-800">This observation comes from a different saved article version. Review Source Article before using these details.</p>}
+          <NewsVerificationNotice summary={data.item.summary} />
           <FloodLocationSummary showPublication={false} data={floodSummaryData(data.item.summary, data.captured_input.published_at)} locationDetails={
             <section aria-label="Reported location" className="space-y-3">
               <h4 className="text-sm font-semibold text-slate-900">Reported location</h4>
